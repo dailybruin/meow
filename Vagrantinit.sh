@@ -4,6 +4,7 @@
 sudo apt-get update
 
 # Install basic requirements
+sudo apt-get -y install ntp
 sudo apt-get -y install vim
 sudo apt-get -y install python-pip
 sudo apt-get -y install python-setuptools
@@ -28,4 +29,7 @@ pip install -r /vagrant/requirements.txt
 
 chown -R vagrant /home/vagrant/.virtualenvs
 rm -r /vagrant/build
+
+echo -e "export VISUAL=vim; export EDITOR=vim\n" >> /home/vagrant/.bashrc
+
 echo -e "workon meow" >> /home/vagrant/.bashrc
