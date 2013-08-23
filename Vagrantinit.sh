@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## Note: this is only an example. Vagrant will not run it.
+
 # Update apt-get
 sudo apt-get update
 
