@@ -1,3 +1,7 @@
+## Add to settings:
+# twitter_consumer_key
+# twitter_consumer_secret
+
 from django.core.management.base import BaseCommand, CommandError
 from scheduler.models import *
 import tweepy
@@ -26,14 +30,14 @@ class Command(BaseCommand):
         
         # Initialize the Graph API with a valid access token (optional,
         # but will allow you to do all sorts of fun stuff).
-        graph = GraphAPI('CAACEdEose0cBAEb6WoOrrsPcZASONpBfZCZBqoIWzoWOsKC66CZC4NUQ9cQ6FUaNPc8EVZC4bgIDtAWrch1rceI7u3TP0RZCiSeZBOqZCc4eXGzHhFteLjZCIJoshJLRgjfv3XrtU0QGj9OQ4uyebqTMBuz1RZCnZBY5fpNHQ8dLnhoLdgnJ9STQabCZBox2hs2CbgcZD')
-
-        # Get my latest posts
-        graph.get('me/posts')
+        
+        # Get token from here: https://developers.facebook.com/docs/opengraph/howtos/publishing-with-app-token/
+#        graph = GraphAPI('72296391616|_vtz8ShgOfzLSgKeDw2quIS1pCc')
+        graph = GraphAPI('CAAAAENUzY8ABAFx3ZBkkbpaGmlgM6q3iYUcO3b0R7wxwEUGTnOQVIbgnvQH0u59w1iqkiwtZCnPq3K5frJQLQ5VnAZBkNGiZAVcudSN4g5o0ZBznBAQsBq8BVoc2vF2ezlSCEEkvaoz0WTANyqoqITcLdj2JjPWgQ9jJwLkrTu5gELvZAE93cLYqHNFQQ2xqcZD')
 
         # Post a photo of a parrot
         graph.post(
             path = '668459723166194/feed',
-            message = 'parrot22.jpg'
+            message = 'Kenny is a human bean.'
         )
         
