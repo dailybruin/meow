@@ -1,4 +1,4 @@
 Django==1.5.2
 psycopg2==2.5.1
 tweepy==2.1
-facebook-sdk==0.4.0
+facepy==0.8.4
