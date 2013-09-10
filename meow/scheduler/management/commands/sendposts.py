@@ -8,6 +8,7 @@ import tweepy
 from facepy import GraphAPI
 from scheduler.models import *
 from datetime import datetime
+from urllib2 import urlopen
 
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
@@ -55,7 +56,7 @@ class Command(BaseCommand):
             link = smpost.story_url,
             picture = "http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg",
             type= "photo",
-            source = open('icon.jpg'),
+            source = urlopen('http://dailybruin.com/images/2013/09/d0148560-ba9c-4ce7-87fe-deee9935ab5b-640x418.jpg'),
         )
 
     def handle(self, *args, **options):
