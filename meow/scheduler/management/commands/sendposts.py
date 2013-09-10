@@ -105,7 +105,6 @@ class Command(BaseCommand):
             if post.post_facebook is not None:
                 self.sendFacebookPost(post)
             if post.post_twitter is not None:
-                break
                 self.sendTweet(post)
             post.sent = True
-            post.save() # Save that we sent the post
+            post.save()
