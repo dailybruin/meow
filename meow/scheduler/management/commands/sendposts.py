@@ -43,10 +43,12 @@ class Command(BaseCommand):
 
         # Post a photo of a parrot
         graph.post(
-            path = '668459723166194/feed',
+            path = '668459723166194/photos',
             message = smpost.post_facebook,
             link = smpost.story_url,
             picture = "http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg",
+            type= "photo",
+            source = open('icon.jpg'),
         )
 
     def handle(self, *args, **options):
