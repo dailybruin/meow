@@ -24,7 +24,13 @@ class Command(BaseCommand):
         auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
         
         api = tweepy.API(auth)
-        api.update_status(smpost.post_twitter)
+        
+        # Make the tweet follow DB social media standards
+        tweet = smpost.post_twitter
+        if smpost.story_url is not None:
+            tweet = tweet + " " + smpost.story_url
+        
+        api.update_status(tweet)
         
 
     def sendFacebookPost(self, smpost):
@@ -72,4 +78,4 @@ class Command(BaseCommand):
             if post.post_twitter is not None:
                 self.sendTweet(post)
             post.sent = True
-            post.save()
+            post.save() # Save that we sent the post
