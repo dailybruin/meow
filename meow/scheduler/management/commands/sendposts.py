@@ -7,6 +7,7 @@ from scheduler.models import *
 import tweepy
 from facepy import GraphAPI
 from scheduler.models import *
+from datetime import datetime
 
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
@@ -52,5 +53,21 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        p = SMPost.objects.get(pk=1)
-        self.sendFacebookPost(p)
+        # Get posts from the database
+        posts = SMPost.objects.filter(
+                pub_date__lte=datetime.now().date()
+            ).filter(
+                pub_time__lte=datetime.now().time()
+            ).filter(
+                pub_ready_copy=True
+            ).filter(
+                pub_ready_online=True
+            ).exclude(
+                sent=True
+            )
+        
+        for post in posts:
+            if post.post_facebook is not None:
+                self.sendFacebookPost(post)
+            if post.post_twitter is not None:
+                self.sendTweet(post)
