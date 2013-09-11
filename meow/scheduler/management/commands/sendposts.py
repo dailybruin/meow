@@ -16,8 +16,8 @@ class Command(BaseCommand):
     
     def sendTweet(self, smpost):
         print smpost.post_twitter
-        CONSUMER_KEY = "OtVavzvwyUfOlETpDOg"
-        CONSUMER_SECRET = "0wUHlrQSvB8GMHWDoCdFNjwrmDddug9AjUBjh2qE"
+        CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
+        CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
         ACCESS_KEY = "1983491-SphvxRyfObEscR0uxzZrEcIiCVEjyiQIbQiNJjH4"
         ACCESS_SECRET = "Sb7PBeCTRVx6AdnUHpDoXAHWwmtHIm9V9Oxk8k2s8w"
         
@@ -71,11 +71,12 @@ class Command(BaseCommand):
         
         # The story does not have an image
         if has_image is False:
+            DEFAULT_PHOTO = MeowSetting.objects.get(setting_key='fb_default_photo').setting_value
             graph.post(
                 path = '668459723166194/feed',
                 message = smpost.post_facebook,
                 link = smpost.story_url,
-                picture = "http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg",
+                picture = DEFAULT_PHOTO,
             )
         
         # The story has an image

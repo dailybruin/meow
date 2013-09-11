@@ -19,10 +19,10 @@ class Section(models.Model):
     name = models.CharField(max_length=100, blank=False)
     twitter_account_handle = models.CharField(max_length=100, null=True, blank=True)
     facebook_account_handle = models.CharField(max_length=100, null=True, blank=True)
-    also_post_to = models.ForeignKey('Section', blank=True)
+    also_post_to = models.ForeignKey('Section', blank=True, help_text="This only goes down one level (i.e. no recursion)", null=True)
     twitter_access_key = models.CharField(max_length=500, null=True, blank=True)
     twitter_access_secret = models.CharField(max_length=500, null=True, blank=True)
-    facebook_key = models.CharField(max_length=500, null=True, blank=True)
+    facebook_key = models.CharField(max_length=500, null=True, blank=True, help_text="<a target='_blank' href='http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page'>Instructions here</a>")
     facebook_page_id = models.CharField(max_length=200, null=True, blank=True)
     
     def __unicode__(self):
