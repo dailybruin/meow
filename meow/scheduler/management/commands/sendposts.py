@@ -14,12 +14,12 @@ from bs4 import BeautifulSoup
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
     
-    def sendTweet(self, smpost):
+    def sendTweet(self, smpost, section):
         print smpost.post_twitter
         CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
         CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
-        ACCESS_KEY = "1983491-SphvxRyfObEscR0uxzZrEcIiCVEjyiQIbQiNJjH4"
-        ACCESS_SECRET = "Sb7PBeCTRVx6AdnUHpDoXAHWwmtHIm9V9Oxk8k2s8w"
+        ACCESS_KEY = section.twitter_access_key
+        ACCESS_SECRET = section.twitter_access_secret
         
         
         auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
@@ -35,7 +35,7 @@ class Command(BaseCommand):
         api.update_status(tweet)
         
 
-    def sendFacebookPost(self, smpost):
+    def sendFacebookPost(self, smpost, section):
         print smpost.post_facebook
         #follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
         #Facebook needs the following permissions:
@@ -47,8 +47,10 @@ class Command(BaseCommand):
         
         # Get token from here: https://developers.facebook.com/docs/opengraph/howtos/publishing-with-app-token/
         # appGraph = GraphAPI('72296391616|_vtz8ShgOfzLSgKeDw2quIS1pCc')
-        graph = GraphAPI('CAAAAENUzY8ABAGsDJqlrs0yNcLbq8tHAxFFoZBpkneXLZBaeAwMDnJUDEiROJZC9H9Pt7trXF4ZC8xRsM8ptfUGRP6RvBi8VlW73x8zzDqaor6VYboHs5XUxFaQ3TK9qjkqyQFMbx7yu801CJdxlx43LOZCk4h2pelKvqgrPaNkDQ0VTeJWuatBwPO6vW7QQZD') # This should not expire
+        GRAPH_KEY = section.facebook_key
+        graph = GraphAPI(GRAPH_KEY) # This should not expire
 
+        PAGE_ID = section.facebook_page_id
 
         # Get the post HTML
         usock = urllib2.urlopen(smpost.story_url)
@@ -73,7 +75,7 @@ class Command(BaseCommand):
         if has_image is False:
             DEFAULT_PHOTO = MeowSetting.objects.get(setting_key='fb_default_photo').setting_value
             graph.post(
-                path = '668459723166194/feed',
+                path = PAGE_ID+'/feed',
                 message = smpost.post_facebook,
                 link = smpost.story_url,
                 picture = DEFAULT_PHOTO,
@@ -82,7 +84,7 @@ class Command(BaseCommand):
         # The story has an image
         else:
             graph.post(
-                path = '668459723166194/photos',
+                path = PAGE_ID+'/photos',
                 message = smpost.post_facebook + "\n\nRead more: " + smpost.story_url,
                 type= "photo",
                 source = urllib2.urlopen(post_image_url),
@@ -103,9 +105,24 @@ class Command(BaseCommand):
             )
         
         for post in posts:
+            # Post to facebook
             if post.post_facebook is not None:
-                self.sendFacebookPost(post)
+                if ((post.section.facebook_page_id is not None) and
+                    (post.section.facebook_key is not None)):
+                    self.sendFacebookPost(post, post.section)
+                if ((post.section.also_post_to is not None) and 
+                    (post.section.facebook_page_id is not None) and
+                    (post.section.facebook_key is not None)):
+                    self.sendFacebookPost(post, post.section.also_post_to)
+            # Post to twitter
             if post.post_twitter is not None:
-                self.sendTweet(post)
+                if ((post.section.twitter_access_key is not None) and 
+                    (post.section.twitter_access_secret is not None)):
+                    self.sendTweet(post, post.section)
+                if ((post.section.also_post_to is not None) and 
+                    (post.section.also_post_to.twitter_access_key is not None) and
+                    (post.section.also_post_to.twitter_access_secret is not None)):
+                    self.sendTweet(post, post.section.also_post_to)
+                    
             post.sent = True
             post.save()
