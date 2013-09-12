@@ -62,7 +62,7 @@ class Command(BaseCommand):
                 post_html = usock.read()
                 usock.close()
             except urllib2.HTTPError as e:
-                if e.code != 404:
+                if e.code != 500:
                     raise
                 else:
                     smpost.log_error(e, section)
