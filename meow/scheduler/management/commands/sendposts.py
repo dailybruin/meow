@@ -1,7 +1,3 @@
-## Add to settings:
-# twitter_consumer_key
-# twitter_consumer_secret
-
 from django.core.management.base import BaseCommand, CommandError
 from scheduler.models import *
 import tweepy
