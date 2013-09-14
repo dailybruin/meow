@@ -13,7 +13,7 @@
 <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
 {% csrf_token %}
 
-<input id="id_username" maxlength="254" name="username" type="text" value="ssdf" placeholder="username" />
+<input id="id_username" maxlength="254" name="username" type="text" placeholder="username" />
 
 <input id="id_password" name="password" type="password" placeholder="password" />
 
@@ -27,6 +27,11 @@
 </div><!-- end div#login-form -->
 
 
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#id_username').focus();
+});
+</script>
 
 {% endblock %}
 
