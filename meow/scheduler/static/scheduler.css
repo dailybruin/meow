@@ -1,0 +1,51 @@
+html {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+h1 {
+    color: #0f5a6a;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    -webkit-appearance: none;
+    border: 1px solid #F3F2F2;
+    padding: 10px;
+    font-size: 20px;
+    color: #333;
+    margin: 15px 0;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border: 1px solid #1b798d;
+    outline: none;
+}
+
+input[type="button"], input[type="submit"] {
+    -webkit-appearance: none;
+    border: none;
+    background-color: #0f5a6a;
+    color: white;
+    font-weight: bold;
+    padding: 8px 13px;
+    border-bottom: 4px solid #1b798d;
+}
+
+#login-form {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:100px;
+    margin-bottom:50px;
+}
+#login-form h1 {
+    text-align:center;
+    margin-bottom:40px;
+}
+
+#login-form input[type="submit"] {
+    width: 100%;
+    font-size: 18px;
+    margin-top: 21px;
+}
+
