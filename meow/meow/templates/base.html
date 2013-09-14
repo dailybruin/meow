@@ -1,7 +1,12 @@
 <!doctype html>
 <html>
 <head>
-    <title>Test django</title>
+    <title>{% block title %}Test django{% endblock %}</title>
+    
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}normalize.css" type="text/css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}scheduler.css" type="text/css">
+    
 </head>
     
 <body>
