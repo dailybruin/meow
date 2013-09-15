@@ -15,6 +15,8 @@ def dashboard(request):
 
 @login_required
 def edit(request, post_id):
+    if request.method == "POST":
+        print request.POST.get('url',None)
     post = get_object_or_404(SMPost, pk=post_id)
     context = {
         "user" : request.user,
