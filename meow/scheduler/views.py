@@ -8,7 +8,8 @@ from scheduler.models import *
 def dashboard(request):
     context = {
         "user" : request.user,
-        "sections" : Section.objects.all()
+        "sections" : Section.objects.all(),
+        "smposts" : SMPost.objects.all(),
     }
     return render(request, 'scheduler/dashboard.html', context)
 

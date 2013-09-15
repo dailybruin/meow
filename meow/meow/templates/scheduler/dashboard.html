@@ -1,10 +1,47 @@
 {% extends "base.html" %}
+
+{% block extra-js %}
+<script src="/static/stupidtable.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#poststable').stupidtable()
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="header">
         <span class="page-title">meow</span>
         <span class="user-settings">{{ user.first_name }} {{ user.last_name }}</span>
     </div><!-- end div.header -->
+    
+    <table id="poststable">
+        <thead>
+            <tr>
+                <th data-sort="string">a</th>
+                <th data-sort="string">Slug</th>
+                <th data-sort="string">Section</th>
+                <th data-sort="string">Tweet</th>
+                <th data-sort="string">Facebook post</th>
+                <th data-sort="int">Post time</th>
+                <th data-sort="string">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in smposts %}
+            <tr>
+                <td>a</td>
+                <td>{{ post.slug }}</td>
+                <td>{{ post.section }}</td>
+                <td>{{ post.post_twitter }}</td>
+                <td>{{ post.post_facebook }}</td>
+                <td data-sort-value="{{ post.pub_time|time:'Hi' }}">{{ post.pub_time }}</td>
+                <td>a</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div><!-- end div.container -->
 
 
