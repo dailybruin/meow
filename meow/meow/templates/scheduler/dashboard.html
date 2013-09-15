@@ -1,4 +1,11 @@
-{{ hi }}
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="header">
+        <span class="page-title">meow</span>
+        <span class="user-settings">{{ user.first_name }} {{ user.last_name }}</span>
+    </div><!-- end div.header -->
+</div><!-- end div.container -->
 
 
-yo
+{% endblock %}
