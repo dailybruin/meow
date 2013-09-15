@@ -15,9 +15,27 @@ def dashboard(request):
 
 @login_required
 def edit(request, post_id):
-    if request.method == "POST":
-        print request.POST.get('url',None)
     post = get_object_or_404(SMPost, pk=post_id)
+    
+    if request.method == "POST":
+        post.story_url = request.POST.get('url',None)
+        post.slug = request.POST.get('slug',None)
+        post.section = Section.objects.get(pk=request.POST.get('section',None))
+        post.post_twitter = request.POST.get('tweet',None)
+        post.post_facebook = request.POST.get('fb',None)
+        if request.POST.get('approve-copy',False) == 'on':
+            post.pub_ready_copy = True
+        else:
+            post.pub_ready_copy = False
+        
+        if request.POST.get('approve-online',False) == 'on':
+            post.pub_ready_online = True
+        else:
+            post.pub_ready_online = False
+        
+        
+        post.save()
+        print request.POST.get('url',None)
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
