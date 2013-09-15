@@ -36,7 +36,7 @@ $(document).ready(function(){
         <tbody>
             {% for post in smposts %}
             <tr {% if post.sent %}class="sent"{% endif %}>
-                <td><a class="btn btn-small" href="#">{% if post.sent %}View{% else %}Edit{% endif %}</button></td>
+                <td><a class="btn btn-small" href="/edit/{{ post.id }}/">{% if post.sent %}View{% else %}Edit{% endif %}</button></td>
                 <td>{{ post.slug }}</td>
                 <td>{{ post.section }}</td>
                 <td>{{ post.post_twitter }}</td>
