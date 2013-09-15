@@ -21,39 +21,29 @@ input[type="text"]:focus, input[type="password"]:focus {
     outline: none;
 }
 
-input[type="button"], input[type="submit"] {
+input[type="button"], input[type="submit"], button, .btn {
     -webkit-appearance: none;
+    display:block;
     border: none;
     background-color: #0f5a6a;
     color: white;
     font-weight: bold;
     padding: 8px 13px;
     border-bottom: 4px solid #1b798d;
-}
-
-#login-form {
-    width: 300px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top:100px;
-    margin-bottom:50px;
-}
-#login-form h1 {
+    text-decoration:none;
     text-align:center;
-    margin-bottom:40px;
+}
+input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover {
+    background-color:#106b7e;
 }
 
-#login-form input[type="submit"] {
-    width: 100%;
-    font-size: 18px;
-    margin-top: 21px;
+.btn-small {
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 4px 9px;
 }
 
-.container {
-    width:960px;
-    margin-left:auto;
-    margin-right:auto;
-}
+
 
 #poststable td {
     padding:10px;
@@ -91,6 +81,10 @@ input[type="button"], input[type="submit"] {
     opacity:0.4;
 }
 
+#poststable .sorting-desc, #poststable .sorting-asc {
+    border-bottom: 2px solid #0f5a6a;
+}
+
 #poststable tbody {
     color: #333;
     font-size: 15px;
@@ -111,4 +105,30 @@ input[type="button"], input[type="submit"] {
     font-size: 15px;
     opacity: 0.5;
     margin-left: 21px;
+}
+
+.container {
+    width:960px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+
+#login-form {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:100px;
+    margin-bottom:50px;
+}
+
+#login-form h1 {
+    text-align:center;
+    margin-bottom:40px;
+}
+
+#login-form input[type="submit"] {
+    width: 100%;
+    font-size: 18px;
+    margin-top: 21px;
 }
