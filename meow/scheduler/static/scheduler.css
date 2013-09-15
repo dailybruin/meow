@@ -54,3 +54,61 @@ input[type="button"], input[type="submit"] {
     margin-left:auto;
     margin-right:auto;
 }
+
+#poststable td {
+    padding:10px;
+}
+
+#poststable thead tr {
+    border-bottom: 1px solid #0f5a6a;
+    margin-bottom: 10px;
+    line-height: 36px;
+}
+
+#poststable th {
+    user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    -webkit-user-select:none;
+    cursor:pointer;
+    
+    color:#0f5a6a;
+    font-weight:400;
+    font-size: 20px;
+}
+
+#poststable tr:hover {
+    background-color: #f5f5f5;;
+}
+#poststable thead tr:hover {
+    background-color:white;
+}
+#poststable .time-column {
+    min-width:96px;
+}
+
+#poststable tbody .sent {
+    opacity:0.4;
+}
+
+#poststable tbody {
+    color: #333;
+    font-size: 15px;
+}
+
+.header {
+    margin-bottom:18px;
+}
+
+.page-title {
+    color: #0f5a6a;
+    opacity: 0.5;
+    font-weight: bold;
+    font-size: 21px;
+}
+.user-settings {
+    color: #0f5a6a;
+    font-size: 15px;
+    opacity: 0.5;
+    margin-left: 21px;
+}

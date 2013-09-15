@@ -24,13 +24,13 @@ $(document).ready(function(){
                 <th data-sort="string">Section</th>
                 <th data-sort="string">Tweet</th>
                 <th data-sort="string">Facebook post</th>
-                <th data-sort="int">Post time</th>
+                <th data-sort="int" class="time-column">Post time</th>
                 <th data-sort="string">Status</th>
             </tr>
         </thead>
         <tbody>
             {% for post in smposts %}
-            <tr>
+            <tr {% if post.sent %}class="sent"{% endif %}>
                 <td>a</td>
                 <td>{{ post.slug }}</td>
                 <td>{{ post.section }}</td>
