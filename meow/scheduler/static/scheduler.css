@@ -43,7 +43,20 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     padding: 4px 9px;
 }
 
+.header {
+    height: 16px;
+    margin-top: 5px;
+}
+.header-left {
+    float:left;
+}
+.header-right {
+    float:right;
+}
 
+#poststable {
+    width: 100%;
+}
 
 #poststable td {
     padding:10px;
@@ -99,12 +112,14 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     opacity: 0.5;
     font-weight: bold;
     font-size: 21px;
+    line-height:23px;
 }
 .user-settings {
     color: #0f5a6a;
     font-size: 15px;
     opacity: 0.5;
     margin-left: 21px;
+    line-height:23px;
 }
 
 .container {
