@@ -8,7 +8,7 @@ class SMPost(models.Model):
     story_url = models.URLField(max_length=500, null=True, blank=True)
     post_twitter = models.TextField(null=True, blank=True)
     post_facebook = models.TextField(null=True, blank=True)
-    section = models.ForeignKey('Section', blank=True)
+    section = models.ForeignKey('Section', blank=True, null=True)
     pub_ready_copy = models.BooleanField(default=False, help_text="Is this copy-edited?")
     pub_ready_online = models.BooleanField(default=False, help_text="Is this ready to send out?")
     

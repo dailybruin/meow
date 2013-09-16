@@ -50,7 +50,10 @@ def edit(request, post_id, post=None):
     if request.method == "POST":
         post.story_url = request.POST.get('url',None)
         post.slug = request.POST.get('slug',None)
-        post.section = Section.objects.get(pk=request.POST.get('section',None))
+        try:
+            post.section = Section.objects.get(pk=request.POST.get('section',None))
+        except:
+            post.section = None
         post.post_twitter = request.POST.get('tweet',None)
         post.post_facebook = request.POST.get('fb',None)
         date_str = request.POST.get('pub_date',None)
