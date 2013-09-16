@@ -22,6 +22,12 @@ $(document).ready(function(){
         </div>
     </div><!-- end div.header -->
     
+    {% if message %}
+    <div class="message-{{ message.mtype }}">
+        {{ message.mtext }}
+    </div>
+    {% endif %}
+    
     <table id="poststable">
         <thead>
             <tr>

@@ -247,6 +247,18 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     background-color:#eee;
 }
 
+#post-delete input[type="submit"] {
+    background: none;
+    color: #999;
+    font-weight: normal;
+    border: none;
+    padding: 0;
+    margin: 0;
+    float: right;
+    margin-top: 16px;
+    font-size: 15px;
+}
+
 .message-success {
     background-color: #f0fbef;
     padding: 10px;

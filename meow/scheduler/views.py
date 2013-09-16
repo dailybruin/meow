@@ -8,10 +8,21 @@ import parsedatetime.parsedatetime as pdt
 
 @login_required
 def dashboard(request):
+    message = {}
+    if request.method == "POST":
+        post_id = request.POST.get('post_id_to_delete',None)
+        post = get_object_or_404(SMPost, pk=post_id)
+        post.delete()
+        message = {
+            "mtype":"success",
+            "mtext":"Your post was deleted",
+        }
+
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
         "smposts" : SMPost.objects.all(),
+        "message" : message,
     }
     return render(request, 'scheduler/dashboard.html', context)
 

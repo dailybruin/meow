@@ -26,7 +26,13 @@ $(document).ready(function(){
         defaultTime: false,
     });
     
-    $('.message-success').animate({opacity:0.2}, 5000);
+    $('#post-delete').submit(function(){
+        var r = confirm("Are you sure you want to delete this post?")
+        if (r != true)
+        {
+            return false;
+        }
+    });
 });
 </script>
 {% endblock %}
@@ -108,6 +114,14 @@ $(document).ready(function(){
         </div></div>
             
     </form>
+    
+    {% if post.id %}
+    <form id="post-delete" method="post" action="/">
+        {% csrf_token %}
+        <input type="hidden" value="{{ post.id }}" name="post_id_to_delete" />
+        <input type="submit" value="Delete post"></a>
+    </form>
+    {% endif %}
 </div><!-- end div.container -->
 
 
