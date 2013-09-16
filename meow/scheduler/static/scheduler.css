@@ -247,6 +247,11 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     background-color:#eee;
 }
 
+#post-edit input[disabled], #post-edit textarea[disabled] {
+    border: none;
+    padding-left: 0;
+}
+
 #post-delete input[type="submit"] {
     background: none;
     color: #999;

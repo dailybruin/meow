@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block extra-css %}
+<link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-timepicker.min.css" type="text/css">
+
+{% endblock %}
+
+{% block extra-js %}
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-timepicker.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#pub_date_today').click(function(e){
+        e.preventDefault();
+        $('#pub_date').val('Today')
+    });
+    $('#pub_date_tomorrow').click(function(e) {
+        e.preventDefault();
+        $('#pub_date').val('Tomorrow')
+    });
+    
+    $('#pub_time').timepicker({
+        template: false,
+        showInputs: false,
+        minuteStep: 5,
+        defaultTime: false,
+    });
+    
+    $('#post-delete').submit(function(){
+        var r = confirm("Are you sure you want to delete this post?")
+        if (r != true)
+        {
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <div class="header-left">
+            <a class="page-title" href="/">meow</a>
+            <span class="user-settings">{{ user.first_name }} {{ user.last_name }}</span>
+            <a class="logout-link" href="/logout">Log out</a>
+        </div>
+        <div class="header-right">
+            <a href="/add" class="btn btn-small">+ New</a>
+        </div>
+    </div><!-- end div.header -->
+
+    {% if message %}
+    <div class="message-{{ message.mtype }}">
+        {{ message.mtext }}
+    </div>
+    {% endif %}
+
+    <form id="post-edit" method="post">
+        {% csrf_token %}
+        {% if post.id %}
+            <input type="hidden" name="post_id" value="{{ post.id }}" />
+        {% endif %}
+        
+        <div class="col60"><div class="right-pad">
+            <div class="col70"><div class="right-pad">
+                <label for="slug">Slug</label>
+                <input type="text" id="slug" name="slug" placeholder="None" value="{{ post.slug }}" disabled />
+            </div></div>
+            <div class="col30"><div class="left-pad">
+                <label for="section">Section</label>
+                <select id="section" name="section" disabled>
+                    {% if not post.section %}
+                        <option disabled selected>Select a section</option>
+                    {% endif %}
+                    {% for section in sections %}
+                    <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
+                    {% endfor %}
+                </select>
+            </div></div>
+            
+            <div style="clear:both"></div>
+        
+            <label for="url">URL</label>
+            <input type="text" id="url" name="url" placeholder="None" value="{{ post.story_url }}" disabled />
+        
+            <label for="tweet">Tweet</label>
+            <textarea type="text" id="tweet" name="tweet" placeholder="None" rows="3" disabled>{{ post.post_twitter }}</textarea>
+        
+            <label for="fb">Facebook post</label>
+            <textarea type="text" id="fb" name="fb" placeholder="None" rows="5" disabled>{{ post.post_facebook }}</textarea>
+        </div></div>
+        
+        <div class="col40"><div class="left-pad">
+            <fieldset id="prepublish-checks">
+                <div class="prepublish-inside">
+                    <input disabled type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %}/>
+                    <label for="approve-copy">Copy-edited</label>
+                </div>
+                <div class="prepublish-inside">
+                    <input disabled type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %}/> 
+                    <label for="approve-online">Ready to publish</label>
+                </div>
+            </fieldset>
+            
+            <label for="pub_date">Publish date</label>
+            <input disabled type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" />
+            
+            <label for="pub_time">Publish time</label>
+            <input disabled type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time }}{% endif %}"></input>
+        </div></div>
+            
+    </form>
+    
+</div><!-- end div.container -->
+
+
+{% endblock %}
