@@ -211,7 +211,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     border: 0;
     margin: 0;
     background-color: #ebf4f5;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 #post-edit #prepublish-checks label {
     display:inline;
@@ -226,4 +226,23 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     font-size: 24px;
     font-weight: 200;
     letter-spacing: 1px;
+}
+
+#post-edit label[for="pub_date"] {
+    float:left;
+}
+
+#post-edit .pub_date_quick {
+    display:block;
+    float:right;
+    margin-left:10px;
+    text-transform:uppercase;
+    color:#999;
+    text-decoration:none;
+    font-size: 10px;
+    padding:4px;
+    border-radius:2px;
+}
+#post-edit .pub_date_quick:hover {
+    background-color:#eee;
 }
