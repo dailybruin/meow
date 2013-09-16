@@ -22,7 +22,8 @@ $(document).ready(function(){
     $('#pub_time').timepicker({
         template: false,
         showInputs: false,
-        minuteStep: 5
+        minuteStep: 5,
+        defaultTime: false,
     });
     
     $('.message-success').animate({opacity:0.2}, 5000);
@@ -39,7 +40,7 @@ $(document).ready(function(){
             <a class="logout-link" href="/logout">Log out</a>
         </div>
         <div class="header-right">
-            <a href="#" class="btn btn-small">+ New</a>
+            <a href="/add" class="btn btn-small">+ New</a>
         </div>
     </div><!-- end div.header -->
 
@@ -102,7 +103,7 @@ $(document).ready(function(){
             <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" />
             
             <label for="pub_time">Publish time</label>
-            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{{ post.pub_time }}"></input>
+            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time }}{% endif %}"></input>
             <input type="submit" value="Save" name="submit" />
         </div></div>
             

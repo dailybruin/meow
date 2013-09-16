@@ -16,8 +16,9 @@ def dashboard(request):
     return render(request, 'scheduler/dashboard.html', context)
 
 @login_required
-def edit(request, post_id):
-    post = get_object_or_404(SMPost, pk=post_id)
+def edit(request, post_id, post=None):
+    if not post:
+        post = get_object_or_404(SMPost, pk=post_id)
     
     message = {}
     if request.method == "POST":
@@ -60,12 +61,35 @@ def edit(request, post_id):
             "mtype":"success",
             "mtext":"Your changes were saved!",
         }
+    if request.method == "GET":
+        if request.GET.get('add',None) == "true":
+            message = {
+                "mtype":"success",
+                "mtext":"Your post was successfully created!",
+            }
+
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
         "post" : post,
         "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
         "message" : message,
+    }
+    return render(request, 'scheduler/edit.html', context)
+    
+@login_required
+def add(request):
+    post_id = -1
+    if request.method == "POST":
+        post = SMPost()
+        edit(request, -1, post)
+        post_id = post.id
+        return redirect("/edit/"+str(post.id)+"/?add=true")
+        
+    context = {
+        "user" : request.user,
+        "sections" : Section.objects.all(),
+        "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
     }
     return render(request, 'scheduler/edit.html', context)
 
