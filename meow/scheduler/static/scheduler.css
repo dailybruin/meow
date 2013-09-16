@@ -5,10 +5,32 @@ h1 {
     color: #0f5a6a;
 }
 
-input[type="text"], input[type="password"] {
+.col10 { width:10%; }
+.col20 { width:20%; }
+.col30 { width:30%; }
+.col40 { width:40%; }
+.col50 { width:50%; }
+.col60 { width:60%; }
+.col70 { width:70%; }
+.col80 { width:80%; }
+.col90 { width:90%; }
+
+.col10, .col20, .col30, .col40, .col50, .col60, .col70, .col80, .col90 {
+    display:block;
+    float:left;
+}
+
+.left-pad {
+    padding-left:10px;
+}
+.right-pad {
+    padding-right:10px;
+}
+
+input[type="text"], input[type="password"], textarea {
     width: 100%;
     -webkit-appearance: none;
-    border: 1px solid #F3F2F2;
+    border: 1px solid #ddd;
     padding: 10px;
     font-size: 20px;
     color: #333;
@@ -16,7 +38,7 @@ input[type="text"], input[type="password"] {
     box-sizing: border-box;
 }
 
-input[type="text"]:focus, input[type="password"]:focus {
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
     border: 1px solid #1b798d;
     outline: none;
 }
@@ -36,6 +58,8 @@ input[type="button"], input[type="submit"], button, .btn {
 input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover {
     background-color:#106b7e;
 }
+
+
 
 .btn-small {
     text-transform: uppercase;
@@ -113,6 +137,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     font-weight: bold;
     font-size: 21px;
     line-height:23px;
+    text-decoration:none;
 }
 .user-settings {
     color: #0f5a6a;
@@ -157,4 +182,48 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     text-decoration: none;
     position: relative;
     top: -1px;
+}
+
+#post-edit {
+    margin-top: 33px;
+    display: block;
+}
+
+#post-edit label {
+    color: #0f5a6a;
+    font-size: 18px;
+    font-weight: 200;
+    display:block;
+}
+
+#post-edit #slug {
+    font-weight:bold;
+}
+
+#post-edit input[type="text"] {
+    margin-top: 5px;
+}
+#post-edit #section {
+    margin-top: 10px;
+}
+#post-edit #prepublish-checks {
+    padding: 10px;
+    border: 0;
+    margin: 0;
+    background-color: #ebf4f5;
+    margin-bottom: 5px;
+}
+#post-edit #prepublish-checks label {
+    display:inline;
+}
+#post-edit .prepublish-inside {
+    display:block;
+    padding:10px;
+}
+#post-edit input[type="submit"] {
+    margin-top: 10px;
+    width: 100%;
+    font-size: 24px;
+    font-weight: 200;
+    letter-spacing: 1px;
 }

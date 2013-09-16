@@ -4,7 +4,7 @@
 <div class="container">
     <div class="header">
         <div class="header-left">
-            <span class="page-title">meow</span>
+            <a class="page-title" href="/">meow</a>
             <span class="user-settings">{{ user.first_name }} {{ user.last_name }}</span>
             <a class="logout-link" href="/logout">Log out</a>
         </div>
@@ -19,38 +19,49 @@
             <input type="hidden" name="post_id" value="{{ post.id }}" />
         {% endif %}
         
-        <label for="slug">Slug</label>
-        <input type="text" id="slug" name="slug" placeholder="slug" value="{{ post.slug }}" />
-        
-        <label for="section">Section</label>
-        <select id="section" name="section">
-            {% if not post.section %}
-                <option disabled selected>Select a section</option>
-            {% endif %}
-            {% for section in sections %}
-            <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
-            {% endfor %}
-        </select>
-        
-        <label for="url">URL</label>
-        <input type="text" id="url" name="url" placeholder="http://" value="{{ post.story_url }}" />
-        
-        <label for="tweet">Tweet</label>
-        <textarea type="text" id="tweet" name="tweet" placeholder="tweet">{{ post.post_twitter }}</textarea>
-        
-        <label for="fb">Facebook post</label>
-        <textarea type="text" id="fb" name="fb" placeholder="post">{{ post.post_facebook }}</textarea>
-        
-        <fieldset id="prepublish-checks">
-            <label for="approve-copy">Copy-edited</label>
-            <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %}/>
+        <div class="col60"><div class="right-pad">
+            <div class="col70"><div class="right-pad">
+                <label for="slug">Slug</label>
+                <input type="text" id="slug" name="slug" placeholder="slug" value="{{ post.slug }}" />
+            </div></div>
+            <div class="col30"><div class="left-pad">
+                <label for="section">Section</label>
+                <select id="section" name="section">
+                    {% if not post.section %}
+                        <option disabled selected>Select a section</option>
+                    {% endif %}
+                    {% for section in sections %}
+                    <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
+                    {% endfor %}
+                </select>
+            </div></div>
             
-            <label for="approve-online">Ready to publish</label>
-            <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %}/> 
-        </fieldset>
+            <div style="clear:both"></div>
         
-        <input type="submit" value="Save" name="submit" />
+            <label for="url">URL</label>
+            <input type="text" id="url" name="url" placeholder="http://" value="{{ post.story_url }}" />
         
+            <label for="tweet">Tweet</label>
+            <textarea type="text" id="tweet" name="tweet" placeholder="tweet" rows="3">{{ post.post_twitter }}</textarea>
+        
+            <label for="fb">Facebook post</label>
+            <textarea type="text" id="fb" name="fb" placeholder="post" rows="5">{{ post.post_facebook }}</textarea>
+        </div></div>
+        
+        <div class="col40"><div class="left-pad">
+            <fieldset id="prepublish-checks">
+                <div class="prepublish-inside">
+                    <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %}/>
+                    <label for="approve-copy">Copy-edited</label>
+                </div>
+                <div class="prepublish-inside">
+                    <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %}/> 
+                    <label for="approve-online">Ready to publish</label>
+                </div>
+            </fieldset>
+            <input type="submit" value="Save" name="submit" />
+        </div></div>
+            
     </form>
 </div><!-- end div.container -->
 
