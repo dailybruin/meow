@@ -1,5 +1,35 @@
 {% extends "base.html" %}
 
+{% block extra-css %}
+<link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-timepicker.min.css" type="text/css">
+
+{% endblock %}
+
+{% block extra-js %}
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-timepicker.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#pub_date_today').click(function(e){
+        e.preventDefault();
+        $('#pub_date').val('Today')
+    });
+    $('#pub_date_tomorrow').click(function(e) {
+        e.preventDefault();
+        $('#pub_date').val('Tomorrow')
+    });
+    
+    $('#pub_time').timepicker({
+        template: false,
+        showInputs: false,
+        minuteStep: 5
+    });
+    
+    $('.message-success').animate({opacity:0.2}, 5000);
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="header">
@@ -12,6 +42,12 @@
             <a href="#" class="btn btn-small">+ New</a>
         </div>
     </div><!-- end div.header -->
+
+    {% if message %}
+    <div class="message-{{ message.mtype }}">
+        {{ message.mtext }}
+    </div>
+    {% endif %}
 
     <form id="post-edit" method="post">
         {% csrf_token %}
@@ -59,6 +95,14 @@
                     <label for="approve-online">Ready to publish</label>
                 </div>
             </fieldset>
+            
+            <label for="pub_date">Publish date</label>
+            <a href="#" class="pub_date_quick" id="pub_date_today">Today</a>
+            <a href="#" class="pub_date_quick" id="pub_date_tomorrow">Tomorrow</a>
+            <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" />
+            
+            <label for="pub_time">Publish time</label>
+            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{{ post.pub_time }}"></input>
             <input type="submit" value="Save" name="submit" />
         </div></div>
             

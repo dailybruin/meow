@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from scheduler.models import *
+import datetime
+import parsedatetime.parsedatetime as pdt
 
 @login_required
 def dashboard(request):
@@ -17,12 +19,32 @@ def dashboard(request):
 def edit(request, post_id):
     post = get_object_or_404(SMPost, pk=post_id)
     
+    message = {}
     if request.method == "POST":
         post.story_url = request.POST.get('url',None)
         post.slug = request.POST.get('slug',None)
         post.section = Section.objects.get(pk=request.POST.get('section',None))
         post.post_twitter = request.POST.get('tweet',None)
         post.post_facebook = request.POST.get('fb',None)
+        date_str = request.POST.get('pub_date',None)
+        time_str = request.POST.get('pub_time',None)
+        
+        # Date
+        cal = pdt.Calendar()
+        date_parsed = cal.parse(date_str)
+        if date_parsed[1] == 1 or date_parsed[1] == 3:
+            post.pub_date = datetime.date(date_parsed[0][0], date_parsed[0][1], date_parsed[0][2])
+        else:
+            post.pub_date = None
+            
+        # Time
+        time_parsed = cal.parse(time_str)
+        if time_parsed[1] == 2 or time_parsed[1] == 3:
+            post.pub_time = datetime.time(time_parsed[0][3], time_parsed[0][4])
+        else:
+            post.pub_time = None
+        
+        # Checkboxes
         if request.POST.get('approve-copy',False) == 'on':
             post.pub_ready_copy = True
         else:
@@ -32,14 +54,18 @@ def edit(request, post_id):
             post.pub_ready_online = True
         else:
             post.pub_ready_online = False
-        
-        
+            
         post.save()
-        print request.POST.get('url',None)
+        message = {
+            "mtype":"success",
+            "mtext":"Your changes were saved!",
+        }
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
         "post" : post,
+        "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
+        "message" : message,
     }
     return render(request, 'scheduler/edit.html', context)
 

@@ -246,3 +246,11 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
 #post-edit .pub_date_quick:hover {
     background-color:#eee;
 }
+
+.message-success {
+    background-color: #f0fbef;
+    padding: 10px;
+    border-top: 3px solid #25db1d;
+    margin-top: 32px;
+    color:#333;
+}
