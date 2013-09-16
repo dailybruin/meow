@@ -271,3 +271,10 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     margin-top: 32px;
     color:#333;
 }
+.message-status {
+    background-color: #fbfbfb;
+    padding: 10px;
+    border-top: 3px solid #dbdbdb;
+    margin-top: 32px;
+    color:#333;
+}

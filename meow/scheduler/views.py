@@ -31,6 +31,21 @@ def edit(request, post_id, post=None):
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
     
+    if post.sent:
+        message = {
+            "mtype":"status",
+            "mtext":"This post has already been sent and cannot be edited",
+        }
+        
+        context = {
+            "user" : request.user,
+            "sections" : Section.objects.all(),
+            "post" : post,
+            "message" : message,
+        }
+        return render(request, 'scheduler/view.html', context)
+    
+    
     message = {}
     if request.method == "POST":
         post.story_url = request.POST.get('url',None)
