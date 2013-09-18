@@ -17,6 +17,14 @@ def can_edit_post(user, post):
     return False
 
 @login_required
+def user_settings(request):
+    context = {
+        "user" : request.user,
+        "message" : message,
+    }
+    return render(request, 'scheduler/user_settings.html', context)
+
+@login_required
 def dashboard(request):
     message = {}
     has_delete_permission = request.user.has_perm('scheduler.add_edit_post')
