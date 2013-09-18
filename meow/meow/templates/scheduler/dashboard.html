@@ -15,7 +15,7 @@ $(document).ready(function(){
     
     <form id="posts-date">
         <label for="date-change">Displaying posts for...</label>
-        <input type="text" id="date-change" name="date" value="{{ view_date }}" />
+        <input type="text" id="date-change" name="date" value="{{ view_date|date:"F j, Y" }}" />
         <input type="submit" value="Go" />
     </form><!-- end div#posts-date -->
     
