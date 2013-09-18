@@ -7,6 +7,14 @@ import datetime
 import parsedatetime.parsedatetime as pdt
 from itertools import chain
 
+def can_edit_post(user, post):
+    if (user.has_perm('scheduler.add_edit_post') and
+        (user.has_perm('scheduler.approve_copy') or not post.pub_ready_copy) and
+        (user.has_perm('scheduler.approve_online') or not post.pub_ready_online) and
+        not post.sent):
+        return True
+    return False
+
 @login_required
 def dashboard(request):
     message = {}
@@ -23,8 +31,6 @@ def dashboard(request):
     alt_date = None
     if request.method == "GET":
         date_change_str = request.GET.get('date',None)
-        print date_change_str
-        print "BLAH"
         if date_change_str:
             cal = pdt.Calendar()
             date_change = cal.parse(date_change_str)
@@ -56,12 +62,12 @@ def edit(request, post_id, post=None):
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
     
-    if post.sent or not request.user.has_perm('scheduler.add_edit_post'):
+    if post.sent or not can_edit_post(request.user, post):
         message = {
             "mtype":"status",
         }
         
-        if not request.user.has_perm('scheduler.add_edit_post'):
+        if not can_edit_post(request.user, post):
             message['mtext'] = "You do not have permission to edit this post"
         
         if post.sent:
@@ -77,7 +83,7 @@ def edit(request, post_id, post=None):
     
     
     message = {}
-    if request.method == "POST" and request.user.has_perm('scheduler.add_edit_post'):
+    if request.method == "POST" and can_edit_post(request.user, post):
         post.story_url = request.POST.get('url',None)
         post.slug = request.POST.get('slug',None)
         try:
