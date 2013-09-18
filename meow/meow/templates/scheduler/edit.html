@@ -36,20 +36,22 @@ $(document).ready(function(){
         }
     });
     
-    $('#tweet').bind('paste keyup blur', function(){
-        var curLength = $(this).val().length;
+    function checkTweet() {
+        var curLength = $('#tweet').val().length;
         if(curLength > TWITTER_LIMIT)
         {
-            $(this).addClass('tooLong')
+            $('#tweet').addClass('tooLong')
             $('#tweet-count').addClass('tooLong')
         }
         else
         {
-            $(this).removeClass('tooLong')
+            $('#tweet').removeClass('tooLong')
             $('#tweet-count').removeClass('tooLong')
         }
         $('#tweet-count').text(TWITTER_LIMIT - curLength)
-    });
+    }
+    $('#tweet').bind('paste keyup blur', checkTweet);
+    checkTweet();
 });
 </script>
 {% endblock %}
