@@ -118,6 +118,10 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     opacity:0.4;
 }
 
+#poststable tbody .lost {
+    background-color:#F5EDEB;
+}
+
 #poststable .sorting-desc, #poststable .sorting-asc {
     border-bottom: 2px solid #0f5a6a;
 }
@@ -292,4 +296,31 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     font-size: 12px;
     position: relative;
     top: -10px;
+}
+
+#posts-date {
+    text-align: center;
+    margin-bottom: 14px;
+}
+#posts-date #date-change {
+    width: auto;
+    margin: 0;
+    display: inline;
+    padding: 5px;
+    font-size: 19px;
+    border-left:none;
+    border-top:none;
+}
+#posts-date #date-change:focus {
+    border-color:#333;
+}
+#posts-date input[type="submit"] {
+    display: inline-block;
+    margin-left: 5px;
+    border-bottom: none;
+    background-color: #333;
+    margin: 0;
+    padding: 8px;
+    position: relative;
+    left: -4px;
 }

@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from scheduler.models import *
 import datetime
 import parsedatetime.parsedatetime as pdt
+from itertools import chain
 
 @login_required
 def dashboard(request):
@@ -17,12 +18,35 @@ def dashboard(request):
             "mtype":"success",
             "mtext":"Your post was deleted",
         }
+        
+    alt_date = None
+    if request.method == "GET":
+        date_change_str = request.GET.get('date',None)
+        print date_change_str
+        print "BLAH"
+        if date_change_str:
+            cal = pdt.Calendar()
+            date_change = cal.parse(date_change_str)
+            if date_change[1] == 1 or date_change[1] == 3:
+                alt_date = datetime.date(date_change[0][0], date_change[0][1], date_change[0][2])
+
+    if alt_date:
+        view_date = alt_date
+    else:
+        if datetime.datetime.now().hour <= 4:
+            view_date = datetime.date.today()
+        else:
+            view_date = datetime.date.today() + datetime.timedelta(days=1)
+
+    tomorrow_posts = SMPost.objects.filter(pub_date=view_date)
+    lost_posts = SMPost.objects.filter(pub_date=None)
 
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
-        "smposts" : SMPost.objects.all(),
+        "smposts" : list(chain(tomorrow_posts, lost_posts)),
         "message" : message,
+        "view_date" : view_date,
     }
     return render(request, 'scheduler/dashboard.html', context)
 

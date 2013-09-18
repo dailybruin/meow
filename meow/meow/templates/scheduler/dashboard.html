@@ -22,6 +22,12 @@ $(document).ready(function(){
         </div>
     </div><!-- end div.header -->
     
+    <form id="posts-date">
+        <label for="date-change">Displaying posts for...</label>
+        <input type="text" id="date-change" name="date" value="{{ view_date }}" />
+        <input type="submit" value="Go" />
+    </form><!-- end div#posts-date -->
+    
     {% if message %}
     <div class="message-{{ message.mtype }}">
         {{ message.mtext }}
@@ -42,7 +48,7 @@ $(document).ready(function(){
         </thead>
         <tbody>
             {% for post in smposts %}
-            <tr {% if post.sent %}class="sent"{% endif %}>
+            <tr class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
                 <td><a class="btn btn-small" href="/edit/{{ post.id }}/">{% if post.sent %}View{% else %}Edit{% endif %}</button></td>
                 <td>{{ post.slug }}</td>
                 <td>{{ post.section }}</td>
