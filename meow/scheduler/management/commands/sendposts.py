@@ -15,7 +15,7 @@ class Command(BaseCommand):
     
     def sendTweet(self, smpost, section):
         try:
-            print smpost.post_twitter
+            print smpost.post_twitter.encode('ascii','ignore')
             CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
             CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
             ACCESS_KEY = section.twitter_access_key
@@ -40,7 +40,7 @@ class Command(BaseCommand):
 
     def sendFacebookPost(self, smpost, section):
         try:
-            print smpost.post_facebook
+            print smpost.post_facebook.encode('ascii','ignore')
             #follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
             #Facebook needs the following permissions:
             # status_update, manage_pages
