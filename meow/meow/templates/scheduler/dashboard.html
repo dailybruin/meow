@@ -18,7 +18,7 @@ $(document).ready(function(){
             <a class="logout-link" href="/logout">Log out</a>
         </div>
         <div class="header-right">
-            <a href="/add" class="btn btn-small">+ New</a>
+            {% if perms.scheduler.add_edit_post %}<a href="/add" class="btn btn-small">+ New</a>{% endif %}
         </div>
     </div><!-- end div.header -->
     
@@ -49,7 +49,7 @@ $(document).ready(function(){
         <tbody>
             {% for post in smposts %}
             <tr class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
-                <td><a class="btn btn-small" href="/edit/{{ post.id }}/">{% if post.sent %}View{% else %}Edit{% endif %}</button></td>
+                <td><a class="btn btn-small" href="/edit/{{ post.id }}/">{% if post.sent or not perms.scheduler.add_edit_post %}View{% else %}Edit{% endif %}</button></td>
                 <td>{{ post.slug }}</td>
                 <td>{{ post.section }}</td>
                 <td>{{ post.post_twitter }}</td>

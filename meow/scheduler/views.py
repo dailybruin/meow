@@ -10,7 +10,8 @@ from itertools import chain
 @login_required
 def dashboard(request):
     message = {}
-    if request.method == "POST":
+    has_delete_permission = request.user.has_perm('scheduler.add_edit_post')
+    if request.method == "POST" and has_delete_permission:
         post_id = request.POST.get('post_id_to_delete',None)
         post = get_object_or_404(SMPost, pk=post_id)
         post.delete()
@@ -55,11 +56,16 @@ def edit(request, post_id, post=None):
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
     
-    if post.sent:
+    if post.sent or not request.user.has_perm('scheduler.add_edit_post'):
         message = {
             "mtype":"status",
-            "mtext":"This post has already been sent and cannot be edited",
         }
+        
+        if not request.user.has_perm('scheduler.add_edit_post'):
+            message['mtext'] = "You do not have permission to edit this post"
+        
+        if post.sent:
+            message['mtext'] = "This post has already been sent and cannot be edited"
         
         context = {
             "user" : request.user,
@@ -71,7 +77,7 @@ def edit(request, post_id, post=None):
     
     
     message = {}
-    if request.method == "POST":
+    if request.method == "POST" and request.user.has_perm('scheduler.add_edit_post'):
         post.story_url = request.POST.get('url',None)
         post.slug = request.POST.get('slug',None)
         try:
@@ -99,22 +105,24 @@ def edit(request, post_id, post=None):
             post.pub_time = None
         
         # Checkboxes
-        if request.POST.get('approve-copy',False) == 'on':
-            post.pub_ready_copy = True
-        else:
-            post.pub_ready_copy = False
+        if request.user.has_perm('scheduler.approve_copy'):
+            if request.POST.get('approve-copy',False) == 'on':
+                post.pub_ready_copy = True
+            else:
+                post.pub_ready_copy = False
         
-        if request.POST.get('approve-online',False) == 'on':
-            post.pub_ready_online = True
-        else:
-            post.pub_ready_online = False
+        if request.user.has_perm('scheduler.approve_online'):
+            if request.POST.get('approve-online',False) == 'on':
+                post.pub_ready_online = True
+            else:
+                post.pub_ready_online = False
             
         post.save()
         message = {
             "mtype":"success",
             "mtext":"Your changes were saved!",
         }
-    if request.method == "GET":
+    if request.method == "GET" and request.user.has_perm('scheduler.add_edit_post'):
         if request.GET.get('add',None) == "true":
             message = {
                 "mtype":"success",
@@ -127,14 +135,16 @@ def edit(request, post_id, post=None):
         "post" : post,
         "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
         "message" : message,
-        "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value
+        "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
     }
     return render(request, 'scheduler/edit.html', context)
     
 @login_required
 def add(request):
+    if not request.user.has_perm('scheduler.add_edit_post'):
+        return redirect('/')
     post_id = -1
-    if request.method == "POST":
+    if request.method == "POST" and request.user.has_perm('scheduler.add_edit_post'):
         post = SMPost()
         edit(request, -1, post)
         post_id = post.id
@@ -144,6 +154,7 @@ def add(request):
         "user" : request.user,
         "sections" : Section.objects.all(),
         "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
+        "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
     }
     return render(request, 'scheduler/edit.html', context)
 

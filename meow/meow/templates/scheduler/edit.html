@@ -63,7 +63,7 @@ $(document).ready(function(){
             <a class="logout-link" href="/logout">Log out</a>
         </div>
         <div class="header-right">
-            <a href="/add" class="btn btn-small">+ New</a>
+            {% if perms.scheduler.add_edit_post %}<a href="/add" class="btn btn-small">+ New</a>{% endif %}
         </div>
     </div><!-- end div.header -->
 
@@ -112,11 +112,11 @@ $(document).ready(function(){
         <div class="col40"><div class="left-pad">
             <fieldset id="prepublish-checks">
                 <div class="prepublish-inside">
-                    <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %}/>
+                    <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %} {% if not perms.scheduler.approve_copy %}disabled{% endif %} />
                     <label for="approve-copy">Copy-edited</label>
                 </div>
                 <div class="prepublish-inside">
-                    <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %}/> 
+                    <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %} {% if not perms.scheduler.approve_online %}disabled{% endif %} /> 
                     <label for="approve-online">Ready to publish</label>
                 </div>
             </fieldset>

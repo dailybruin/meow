@@ -19,6 +19,13 @@ class SMPost(models.Model):
     
     def __unicode__(self):
         return self.slug
+    
+    class Meta:
+        permissions = (
+            ("add_edit_post", "Can add and edit posts"),
+            ("approve_copy", "Can mark the post as approved by copy"),
+            ("approve_online", "Can mark the post as approved by online"),
+        )
         
     def log_error(self, e, section):
         self.sent_error = True
