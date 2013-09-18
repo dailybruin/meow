@@ -18,6 +18,29 @@ def can_edit_post(user, post):
 
 @login_required
 def user_settings(request):
+    user = request.user
+    message = {}
+    
+    if request.method == "POST":
+        message = {
+            "mtype":"success",
+            "mtext":"Your information has been updated",
+        }
+        
+        first_name = request.POST.get('first_name',None)
+        last_name = request.POST.get('last_name',None)
+        password1 = request.POST.get('password1',None)
+        password2 = request.POST.get('password2',None)
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if password1 and password2 and (password1 == password2) and len(password1) > 5:
+            user.set_password(password1)
+        if password1 and password2 and (password1 != password2):
+            message['mtext'] = "Your passwords don't match"
+            message['mtype'] = "fail"
+            
     context = {
         "user" : request.user,
         "message" : message,

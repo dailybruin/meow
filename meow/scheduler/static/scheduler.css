@@ -149,6 +149,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     opacity: 0.5;
     margin-left: 21px;
     line-height:23px;
+    text-decoration:none;
 }
 
 .container {
@@ -282,6 +283,13 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     margin-top: 32px;
     color:#333;
 }
+.message-fail {
+    background-color: #FBEFEF;
+    padding: 10px;
+    border-top: 3px solid #DB1D5A;
+    margin-top: 32px;
+    color: #333;
+}
 
 #tweet.tooLong {
     border-color:red;
@@ -323,4 +331,24 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     padding: 8px;
     position: relative;
     left: -4px;
+}
+
+.user-edit .unbold {
+    font-weight:normal;
+}
+.user-edit #password2 {
+    margin-top:0;
+}
+
+.user-edit h2 {
+    margin-top:0;
+    color:#0f5a6a;
+}
+
+.user-edit .permission {
+    color:#0f5a6a;
+    text-transform: uppercase;
+    font-size: 11px;
+    display: block;
+    width: 100%;
 }

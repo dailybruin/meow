@@ -8,5 +8,6 @@ urlpatterns = patterns('',
     (r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'scheduler/login.html'}),
     url(r'^edit/(?P<post_id>\d+)/$', views.edit, name="edit"),
     url(r'^add/$', views.add, name="add"),
+    url(r'^settings/$', views.user_settings, name="settings"),
     url(r'^$', views.dashboard, name='dashboard'),
 )

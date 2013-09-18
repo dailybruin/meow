@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+
+{% block extra-js %}
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+    
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% include "scheduler/include_header.html" %}
+
+    {% if message %}
+    <div class="message-{{ message.mtype }}">
+        {{ message.mtext }}
+    </div>
+    {% endif %}
+    
+
+    <form id="post-edit" class="user-edit" method="post">
+        {% csrf_token %}
+        
+        <div class="col30"><div class="right-pad">
+            <h2><span class="unbold">Username:</span> {{ user.username }}</h2>
+            {% if perms.scheduler.approve_copy %}<span class="permission">Copy</span>{% endif %}
+            {% if perms.scheduler.approve_online %}<span class="permission">Online</span>{% endif %}
+        </div></div>
+        
+        <div class="col70"><div class="left-pad">
+            <div class="col50"><div class="right-pad">
+                <label for="first_name">First name</label>
+                <input type="text" id="first_name" name="first_name" placeholder="Joe" value="{{ user.first_name }}" />
+            </div></div>
+            <div class="col50"><div class="left-pad">
+                <label for="last_name">Last name</label>
+                <input type="text" id="last_name" name="last_name" placeholder="Bruin" value="{{ user.last_name }}" />
+            </div></div>
+            
+            <div style="clear:both"></div>
+            
+            <label for="password">Change password</label>
+            <input type="password" id="password1" name="password1" placeholder="password" />
+            
+            <input type="password" id="password2" name="password2" placeholder="again" />
+            
+            <input type="submit" value="Save" name="submit" />
+            
+            
+    </form>
+    
+    {% if post.id %}
+    <form id="post-delete" method="post" action="/">
+        {% csrf_token %}
+        <input type="hidden" value="{{ post.id }}" name="post_id_to_delete" />
+        <input type="submit" value="Delete post"></a>
+    </form>
+    {% endif %}
+</div><!-- end div.container -->
+
+
+{% endblock %}
