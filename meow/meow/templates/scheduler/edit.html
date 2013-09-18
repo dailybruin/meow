@@ -120,7 +120,7 @@ $(document).ready(function(){
             <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" />
             
             <label for="pub_time">Publish time</label>
-            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time }}{% endif %}"></input>
+            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}"></input>
             <input type="submit" value="Save" name="submit" />
         </div></div>
             
