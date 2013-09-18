@@ -278,3 +278,18 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     margin-top: 32px;
     color:#333;
 }
+
+#tweet.tooLong {
+    border-color:red;
+}
+
+#tweet-count.tooLong {
+    color:red;
+}
+
+#tweet-count {
+    text-align: right;
+    font-size: 12px;
+    position: relative;
+    top: -10px;
+}

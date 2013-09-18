@@ -103,6 +103,7 @@ def edit(request, post_id, post=None):
         "post" : post,
         "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
         "message" : message,
+        "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value
     }
     return render(request, 'scheduler/edit.html', context)
     

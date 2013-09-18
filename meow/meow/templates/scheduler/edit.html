@@ -9,6 +9,8 @@
 <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-timepicker.min.js"></script>
 
 <script type="text/javascript">
+var TWITTER_LIMIT = {{ twitter_limit }};
+
 $(document).ready(function(){
     $('#pub_date_today').click(function(e){
         e.preventDefault();
@@ -32,6 +34,21 @@ $(document).ready(function(){
         {
             return false;
         }
+    });
+    
+    $('#tweet').bind('paste keyup blur', function(){
+        var curLength = $('#tweet').val().length;
+        if(curLength > TWITTER_LIMIT)
+        {
+            $('#tweet').addClass('tooLong')
+            $('#tweet-count').addClass('tooLong')
+        }
+        else
+        {
+            $('#tweet').removeClass('tooLong')
+            $('#tweet-count').removeClass('tooLong')
+        }
+        $('#tweet-count').text(TWITTER_LIMIT - curLength)
     });
 });
 </script>
@@ -86,6 +103,7 @@ $(document).ready(function(){
         
             <label for="tweet">Tweet</label>
             <textarea type="text" id="tweet" name="tweet" placeholder="tweet" rows="3">{{ post.post_twitter }}</textarea>
+            <div id="tweet-count">{{ twitter_limit }}</div>
         
             <label for="fb">Facebook post</label>
             <textarea type="text" id="fb" name="fb" placeholder="post" rows="5">{{ post.post_facebook }}</textarea>
