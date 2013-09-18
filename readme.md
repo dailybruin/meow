@@ -10,6 +10,7 @@ Right now, meow requires the following settings defined in the settings model:
   1 | twitter_consumer_key    | OtVavzvwyUfOlETpDOg
   2 | twitter_consumer_secret | 0wUHlrQSvB8GMHWDoCdFNjwrmDddug9AjUBjh2qE
   3 | fb_default_photo        | http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg
+  4 | twitter_character_limit | 117
 ```
 
 Please note that these are sample values.
