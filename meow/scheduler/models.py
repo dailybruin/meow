@@ -24,6 +24,41 @@ class SMPost(models.Model):
         self.sent_error = True
         self.sent_error_text = str(self.sent_error_text) + "Error: " + str(section.name) + " " + str(datetime.now()) + " -- " + str(e) + "\n"
         self.save()
+        
+    # This whole thing is to be able to change the dashboard message without messing with application logic
+    #  and to enumerate statuses. Maybe I just like C a little too much.
+    class post_statuses:
+        SEND_ERROR = 1
+        SENT = 2
+        READY = 3
+        NOT_SCHEDULED = 4
+        COPY_EDITED = 5
+        DRAFT = 6
+        
+    def post_status(self):
+        # Please don't change the order of these unless you understand what you're doing
+        if self.sent and self.sent_error:
+            return self.post_statuses.SEND_ERROR
+        elif self.sent:
+            return self.post_statuses.SENT
+        elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook) and self.pub_date and self.pub_time:
+            return self.post_statuses.READY
+        elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook):
+            return self.post_statuses.NOT_SCHEDULED
+        elif self.pub_ready_copy and (self.post_twitter or self.post_facebook):
+            return self.post_statuses.COPY_EDITED
+        else:
+            return self.post_statuses.DRAFT
+    
+    def post_status_string(self):
+        return {
+            self.post_statuses.SEND_ERROR : "Send error",
+            self.post_statuses.SENT : "Sent",
+            self.post_statuses.READY : "Ready",
+            self.post_statuses.NOT_SCHEDULED: "Not scheduled",
+            self.post_statuses.COPY_EDITED : "Copy-edited",
+            self.post_statuses.DRAFT : "Draft",
+        }[self.post_status()]
     
 class Section(models.Model):
     name = models.CharField(max_length=100, blank=False)

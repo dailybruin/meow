@@ -49,7 +49,7 @@ $(document).ready(function(){
                 <td>{{ post.post_twitter }}</td>
                 <td>{{ post.post_facebook }}</td>
                 <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
-                <td>a</td>
+                <td>{{ post.post_status_string }}</td>
             </tr>
             {% endfor %}
         </tbody>
