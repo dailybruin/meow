@@ -37,15 +37,15 @@ $(document).ready(function(){
     });
     
     $('#tweet').bind('paste keyup blur', function(){
-        var curLength = $('#tweet').val().length;
+        var curLength = $(this).val().length;
         if(curLength > TWITTER_LIMIT)
         {
-            $('#tweet').addClass('tooLong')
+            $(this).addClass('tooLong')
             $('#tweet-count').addClass('tooLong')
         }
         else
         {
-            $('#tweet').removeClass('tooLong')
+            $(this).removeClass('tooLong')
             $('#tweet-count').removeClass('tooLong')
         }
         $('#tweet-count').text(TWITTER_LIMIT - curLength)
