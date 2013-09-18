@@ -40,6 +40,7 @@ def user_settings(request):
         if password1 and password2 and (password1 != password2):
             message['mtext'] = "Your passwords don't match"
             message['mtype'] = "fail"
+        user.save()
             
     context = {
         "user" : request.user,
