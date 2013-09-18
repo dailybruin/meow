@@ -48,7 +48,7 @@ $(document).ready(function(){
         </thead>
         <tbody>
             {% for post in smposts %}
-            <tr class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
+            <tr class="{% if post.sent or post.post_status == 3 %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
                 <td><a class="btn btn-small" href="/edit/{{ post.id }}/">{% if post.sent or not perms.scheduler.add_edit_post %}View{% else %}Edit{% endif %}</button></td>
                 <td>{{ post.slug }}</td>
                 <td>{{ post.section }}</td>
