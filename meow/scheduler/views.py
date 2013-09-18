@@ -9,9 +9,10 @@ from itertools import chain
 
 def can_edit_post(user, post):
     if (user.has_perm('scheduler.add_edit_post') and
-        (user.has_perm('scheduler.approve_copy') or not post.pub_ready_copy) and
-        (user.has_perm('scheduler.approve_online') or not post.pub_ready_online) and
-        not post.sent):
+        (((user.has_perm('scheduler.approve_copy') or not post.pub_ready_copy) and
+        (user.has_perm('scheduler.approve_online') or not post.pub_ready_online))
+        or (user.has_perm('scheduler.approve_online')))
+        and not post.sent):
         return True
     return False
 
