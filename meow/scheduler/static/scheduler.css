@@ -291,7 +291,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     color: #333;
 }
 
-#tweet.tooLong {
+#tweet.tooLong, input.bad, #tweet.tooLong:focus, input.bad:focus {
     border-color:red;
 }
 

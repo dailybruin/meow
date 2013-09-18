@@ -6,6 +6,31 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+    function checkPass() {
+        console.log("yay");
+        var pass1 = $('#password1').val();
+        var pass2 = $('#password2').val();
+        
+        if(pass1.length == 0 || pass2.length == 0)
+        {
+            $('#password1').removeClass('bad')
+            $('#password2').removeClass('bad')
+            return
+        }
+        if(pass1 != pass2)
+        {
+            $('#password1').addClass('bad')
+            $('#password2').addClass('bad')
+        }
+        else
+        {
+            $('#password1').removeClass('bad')
+            $('#password2').removeClass('bad')
+        }
+    }
+    $('#password1').bind('paste keyup blur', checkPass);
+    $('#password2').bind('paste keyup blur', checkPass);
+    checkPass();
     
 });
 </script>
@@ -26,7 +51,7 @@ $(document).ready(function(){
         {% csrf_token %}
         
         <div class="col30"><div class="right-pad">
-            <h2><span class="unbold">Username:</span> {{ user.username }}</h2>
+            <h2>{{ user.username }}</h2>
             {% if perms.scheduler.approve_copy %}<span class="permission">Copy</span>{% endif %}
             {% if perms.scheduler.approve_online %}<span class="permission">Online</span>{% endif %}
         </div></div>
