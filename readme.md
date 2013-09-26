@@ -1,6 +1,35 @@
 # Meow
 *Daily Bruin's Twitter and Facebook poster*
 
+## Getting Started
+
+### Without Vagrant, With Virtualenv
+
+Make sure your system meets the requirements. If not, install the dependencies listed in the vagrantinit file.
+
+'''
+sudo apt-get -y install ntp
+sudo apt-get -y install vim
+sudo apt-get -y install python-pip
+sudo apt-get -y install python-setuptools
+sudo apt-get -y install python-dev
+sudo apt-get -y install fabric
+sudo apt-get -y install git
+sudo apt-get -y install postgresql
+sudo apt-get -y install postgresql-server-dev-9.1
+sudo apt-get -y install screen
+sudo easy_install virtualenv
+''' 
+
+Install psycopg2
+
+'easy_install psycopg2'
+
+Create a virtualenv 'virtualenv meow' in a directory of your choosing. 
+Within the virtualenv, install all the python libraries listed in requirements.txt.
+
+'pip install -r requirements.txt'
+
 ## Settings
 Right now, meow requires the following settings defined in the settings model:
 
