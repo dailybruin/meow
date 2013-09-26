@@ -23,12 +23,21 @@ sudo easy_install virtualenv
 
 Install psycopg2
 
-'easy_install psycopg2'
+`easy_install psycopg2`
 
-Create a virtualenv 'virtualenv meow' in a directory of your choosing. 
+Create a virtualenv `virtualenv meow` in a directory of your choosing. 
 Within the virtualenv, install all the python libraries listed in requirements.txt.
 
-'pip install -r requirements.txt'
+`pip install -r requirements.txt`
+
+Sync the databases through django
+
+`python manage.py syncdb`
+`python manage.py migrate`
+
+Configure django to connect to your database. Within meow/settings.py, you may have to change the host, user, or password fields of the connection. 
+
+If you are running meow on a local development VM, you may have to specify localhost for the host. In addition, you may have to configure postgres to accept connections from meow. For developmental purposes, you may edit pg_hba.conf to trust all connections from localhost/127.0.0.1. DO NOT DO THIS IN PRODUCTION.
 
 ## Settings
 Right now, meow requires the following settings defined in the settings model:
