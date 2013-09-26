@@ -7,7 +7,7 @@
 
 Make sure your system meets the requirements. If not, install the dependencies listed in the vagrantinit file.
 
-'''
+```
 sudo apt-get -y install ntp
 sudo apt-get -y install vim
 sudo apt-get -y install python-pip
@@ -19,7 +19,7 @@ sudo apt-get -y install postgresql
 sudo apt-get -y install postgresql-server-dev-9.1
 sudo apt-get -y install screen
 sudo easy_install virtualenv
-''' 
+```
 
 Install psycopg2
 
