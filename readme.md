@@ -1,86 +1,138 @@
 # Meow
 *Daily Bruin's Twitter and Facebook poster*
 
-## Getting Started
+## Installation instructions
 
-### Without Vagrant, With Virtualenv
+### 1. Install system packages
+These instructions are meant for Ubuntu. If you are using something other than ubuntu, find the packages on your own.
+#### With Vagrant
+If you want to use [Vagrant](http://www.vagrantup.com/), clone this repo and `vagrant up` will automatically install everything in this section.
+#### Without Vagrant
+Install the required packages:
 
-Make sure your system meets the requirements. If not, install the dependencies listed in the vagrantinit file.
+    sudo apt-get update
+    sudo apt-get install python-pip python-setuptools python-dev fabric git postgresql postgresql-server-dev-9.1
+
+### 2. Create a virtual environment (optional)
+I prefer virtualenvwrapper since virtualenv depends on symlinks and VirtualBox shared folders don't support symlinks.
+
+Install it like this: 
+
+    sudo easy_install virtualenv
+    sudo pip install virtualenvwrapper
+
+And add this line to your `.bashrc`:
+
+    source /usr/local/bin/virtualenvwrapper.sh
+
+Make a virtualenv:
+
+    mkvirtualenv meow
+
+And activate the vitualenv (it does this automatically after creating it):
+
+    workon meow
+
+To deactiveate...
+
+    deactivate
+
+### 3. Install python packages
+Install psycopg2 (a postgres adapter) outside of your virtualenv
+
+    easy_install psycopg2
+
+Then within your virtualenv install everything in `requirements.txt` within this repo
+
+    pip install -r requirements.txt
+
+
+### 4. Configure django
+Configure your database in django. For development environments, open `/etc/postgresql/9.1/main/pg_hba.conf` in a text editor (you may need to install something like `vim`) and, around line 84, change the word `peer` or `md5` to `trust` like so:
 
 ```
-sudo apt-get -y install ntp
-sudo apt-get -y install vim
-sudo apt-get -y install python-pip
-sudo apt-get -y install python-setuptools
-sudo apt-get -y install python-dev
-sudo apt-get -y install fabric
-sudo apt-get -y install git
-sudo apt-get -y install postgresql
-sudo apt-get -y install postgresql-server-dev-9.1
-sudo apt-get -y install screen
-sudo easy_install virtualenv
+# Database administrative login by Unix domain socket
+local   all             postgres                                trust
+
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     trust
 ```
 
-Install psycopg2
+Create a database (this makes a database with the name "meow"):
 
-`easy_install psycopg2`
+    createdb -U postgres meow
 
-Create a virtualenv `virtualenv meow` in a directory of your choosing. 
-Within the virtualenv, install all the python libraries listed in requirements.txt.
-
-`pip install -r requirements.txt`
-
-Sync the databases through django
-
-`python manage.py syncdb`
-`python manage.py migrate`
-
-Configure django to connect to your database. Within meow/settings.py, you may have to change the host, user, or password fields of the connection. 
-
-If you are running meow on a local development VM, you may have to specify localhost for the host. In addition, you may have to configure postgres to accept connections from meow. For developmental purposes, you may edit pg_hba.conf to trust all connections from localhost/127.0.0.1. DO NOT DO THIS IN PRODUCTION.
-
-## Settings
-Right now, meow requires the following settings defined in the settings model:
+Then in `meow/meow/settings.py` configure your database settings. If you followed these instructions, this should work:
 
 ```
- id |       setting_key       |                       setting_value
-----+-------------------------+-----------------------------------------------------------
-  1 | twitter_consumer_key    | OtVavzvwyUfOlETpDOg
-  2 | twitter_consumer_secret | 0wUHlrQSvB8GMHWDoCdFNjwrmDddug9AjUBjh2qE
-  3 | fb_default_photo        | http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg
-  4 | twitter_character_limit | 117
+'ENGINE': 'django.db.backends.postgresql_psycopg2',
+'NAME': 'meow',
+'USER': 'postgres',
+'PASSWORD': '',
 ```
 
-Please note that these are sample values.
+Sync the databases through django and create your own superuser:
+
+    python manage.py syncdb
+    python manage.py migrate
+
+
+### 5. Configure meow
+Right now, meow requires the following settings defined in the settings model. You can input these in the django admin in the "Meow settings" model.
+
+```
+       setting_key       |                       setting_value
+-------------------------+-----------------------------------------------------------
+ twitter_consumer_key    | OtVavzvwyUfOlETpDOg
+ twitter_consumer_secret | 0wUHlrQSvB8GMHWDoCdFNjwrmDddug9AjUBjh2qE
+ fb_default_photo        | http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg
+ twitter_character_limit | 117
+```
+
+
+## Running meow
+Run meow by going into the `meow` directory of the repo and typing
+
+    fab rs
+
+This will run meow on 0.0.0.0:8000 (not the default 127.0.0.1:8000) so it can be accessible from other machines. (i.e. accessing meow from a host when meow is running on a VM).
+
+If you want to run it on a different port, the fabric command takes an argument. For instance,
+
+    fab rs:2000
+
+will listen on port 2000.
+
+## Sending tweets
+Tweets are sent through a management command. In `meow/`, execute:
+
+    python manage.py sendposts
+
+This will send any posts that are marked as copy-edited and ready for publication but are not yet sent. If you want posts to send automatically, put this on a cron job.
+
+The Daily Bruin's cron job is something like:
+
+```
+#! /bin/bash
+source meow-venv/bin/activate
+python meow/manage.py sendposts
+```
+
+`sendposts` will output the facebook post or tweet when it tries to send to `stdout` (in ASCII) so feel free to implement logging. Almost all sending errors, however, are saved within meow's database for easy access.
+
+***
 
 ## Test accounts
 These are only used for testing and are set as private. When testing is over, these accounts should be deleted and removed from this page.
 
 ### General
-#### Twitter
-**FakeDB1**    
-`db1111`    
-online+fakedb@media.ucla.edu
-
 #### Facebook
 **FakeDB**    
 Page ID: `1416676115217881`
 
-### Opinion
-#### Twitter
-**FakeDBOP**    
-`db1111`    
-online+fakedbop@media.ucla.edu
-
 ### A&E
-#### Twitter
-**FakeDBAE**    
-`db1111`    
-online+fakedbae@media.ucla.edu
-
 #### Facebook
 **FakeDB A&E**    
 Page ID: `1415944791959246`
-
-### Sports
-Sports does not currently have any of its own accounts.
