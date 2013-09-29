@@ -115,8 +115,8 @@ $(document).ready(function(){
             </fieldset>
             
             <label for="pub_date">Publish date</label>
-            <a href="#" class="pub_date_quick" id="pub_date_today">Today</a>
             <a href="#" class="pub_date_quick" id="pub_date_tomorrow">Tomorrow</a>
+            <a href="#" class="pub_date_quick" id="pub_date_today">Today</a>
             <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" />
             
             <label for="pub_time">Publish time</label>
