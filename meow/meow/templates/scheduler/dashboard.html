@@ -37,12 +37,12 @@ $(document).ready(function(){
 </div>
 {% endif %}
 
-<div class="row">
+<div class="row"><div class="large-12 columns">
     <table id="poststable">
         <thead>
             <tr>
                 <th data-sort="string">Slug</th>
-                <th data-sort="string">Section</th>
+                <th data-sort="string" class="section-column">Section</th>
                 <th data-sort="string" class="twitter-column">Tweet</th>
                 <th data-sort="string" class="facebook-column">Facebook post</th>
                 <th data-sort="int" class="time-column">Post time</th>
@@ -53,7 +53,7 @@ $(document).ready(function(){
             {% for post in smposts %}
                 <tr class="{% if post.sent or post.post_status == 3 %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
                     <td><a href="/edit/{{ post.id }}/">{{ post.slug }}</a></td>
-                    <td>{{ post.section }}</td>
+                    <td class="section-column">{{ post.section }}</td>
                     <td class="twitter-column">{{ post.post_twitter }}</td>
                     <td class="facebook-column">{{ post.post_facebook }}</td>
                     <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
@@ -63,7 +63,7 @@ $(document).ready(function(){
             {% endfor %}
         </tbody>
     </table>
-</div>
+</div></div>
 
 
 {% endblock %}

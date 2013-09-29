@@ -366,7 +366,11 @@ body {
 @media screen and (orientation: landscape) {  }
 
 /* Portrait Orientation */
-@media screen and (orientation: portrait) {  }
+@media screen and (orientation: portrait) { 
+    #poststable .section-column {
+        display:none;
+    }
+}
 
 /* Touch Detection */
 .touch .your-class { ... }
