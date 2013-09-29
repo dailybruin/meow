@@ -15,10 +15,10 @@ $(document).ready(function(){
 <div class="row">
     <form id="posts-date" class="large-6 columns large-centered">
         <div class="row collapse">
-            <div class="small-4 columns">
-                <label for="date-change" class="right inline">Displaying posts for...</label>
+            <div class="small-3 columns">
+                <label for="date-change" class="right inline">Posts for</label>
             </div>
-            <div class="small-6 columns">
+            <div class="small-7 columns">
                 <input type="text" id="date-change" name="date" value="{{ view_date|date:"F j, Y" }}" />
             </div>
             <div class="small-2 columns">
@@ -37,32 +37,34 @@ $(document).ready(function(){
 </div>
 {% endif %}
 
-<table id="poststable">
-    <thead>
-        <tr>
-            <th data-sort="string"></th>
-            <th data-sort="string">Slug</th>
-            <th data-sort="string">Section</th>
-            <th data-sort="string">Tweet</th>
-            <th data-sort="string">Facebook post</th>
-            <th data-sort="int" class="time-column">Post time</th>
-            <th data-sort="string">Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for post in smposts %}
-        <tr class="{% if post.sent or post.post_status == 3 %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
-            <td><a class="btn btn-small" href="/edit/{{ post.id }}/">{% if post.sent or not perms.scheduler.add_edit_post %}View{% else %}Edit{% endif %}</button></td>
-            <td>{{ post.slug }}</td>
-            <td>{{ post.section }}</td>
-            <td>{{ post.post_twitter }}</td>
-            <td>{{ post.post_facebook }}</td>
-            <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
-            <td>{{ post.post_status_string }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="row">
+    <table id="poststable">
+        <thead>
+            <tr>
+                <th data-sort="string"></th>
+                <th data-sort="string">Slug</th>
+                <th data-sort="string">Section</th>
+                <th data-sort="string" class="twitter-column">Tweet</th>
+                <th data-sort="string" class="facebook-column">Facebook post</th>
+                <th data-sort="int" class="time-column">Post time</th>
+                <th data-sort="string">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in smposts %}
+            <tr class="{% if post.sent or post.post_status == 3 %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
+                <td><a href="/edit/{{ post.id }}/">{% if post.sent or not perms.scheduler.add_edit_post %}View{% else %}Edit{% endif %}</button></td>
+                <td>{{ post.slug }}</td>
+                <td>{{ post.section }}</td>
+                <td class="twitter-column">{{ post.post_twitter }}</td>
+                <td class="facebook-column">{{ post.post_facebook }}</td>
+                <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
+                <td>{{ post.post_status_string }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 
 {% endblock %}
