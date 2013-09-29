@@ -41,7 +41,6 @@ $(document).ready(function(){
     <table id="poststable">
         <thead>
             <tr>
-                <th data-sort="string"></th>
                 <th data-sort="string">Slug</th>
                 <th data-sort="string">Section</th>
                 <th data-sort="string" class="twitter-column">Tweet</th>
@@ -52,15 +51,15 @@ $(document).ready(function(){
         </thead>
         <tbody>
             {% for post in smposts %}
-            <tr class="{% if post.sent or post.post_status == 3 %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
-                <td><a href="/edit/{{ post.id }}/">{% if post.sent or not perms.scheduler.add_edit_post %}View{% else %}Edit{% endif %}</button></td>
-                <td>{{ post.slug }}</td>
-                <td>{{ post.section }}</td>
-                <td class="twitter-column">{{ post.post_twitter }}</td>
-                <td class="facebook-column">{{ post.post_facebook }}</td>
-                <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
-                <td>{{ post.post_status_string }}</td>
-            </tr>
+                <tr class="{% if post.sent or post.post_status == 3 %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
+                    <td><a href="/edit/{{ post.id }}/">{{ post.slug }}</a></td>
+                    <td>{{ post.section }}</td>
+                    <td class="twitter-column">{{ post.post_twitter }}</td>
+                    <td class="facebook-column">{{ post.post_facebook }}</td>
+                    <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
+                    <td>{{ post.post_status_string }}</td>
+                </tr>
+            </a>
             {% endfor %}
         </tbody>
     </table>

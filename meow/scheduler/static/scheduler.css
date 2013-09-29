@@ -344,6 +344,10 @@ label[for="date-change"] {
     width: 100%;
 }
 
+body {
+    padding-bottom:20px;
+}
+
 /* Very large screens */
 @media only screen and (min-width: 1441px) {  }
 
