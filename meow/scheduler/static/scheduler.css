@@ -56,29 +56,6 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
     color: #333;
 }
 
-
-.col10 { width:10%; }
-.col20 { width:20%; }
-.col30 { width:30%; }
-.col40 { width:40%; }
-.col50 { width:50%; }
-.col60 { width:60%; }
-.col70 { width:70%; }
-.col80 { width:80%; }
-.col90 { width:90%; }
-
-.col10, .col20, .col30, .col40, .col50, .col60, .col70, .col80, .col90 {
-    display:block;
-    float:left;
-}
-
-.left-pad {
-    padding-left:10px;
-}
-.right-pad {
-    padding-right:10px;
-}
-
 input[type="text"], input[type="password"], textarea {
     width: 100%;
     -webkit-appearance: none;
