@@ -222,6 +222,10 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     display: block;
 }
 
+#post-edit textarea {
+    min-height:100px;
+}
+
 #post-edit label {
     color: #0f5a6a;
     font-size: 18px;
@@ -293,7 +297,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     padding: 0;
     margin: 0;
     float: right;
-    margin-top: 16px;
+    margin-top: 0px;
     font-size: 15px;
 }
 

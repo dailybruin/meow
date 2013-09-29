@@ -61,8 +61,10 @@ $(document).ready(function(){
 
 {% if message %}
 <div class="row">
-    <div class="alert-box {{ message.mtype }}">
-        {{ message.mtext }}
+    <div class="large-12 columns">
+        <div class="alert-box {{ message.mtype }}">
+            {{ message.mtext }}
+        </div>
     </div>
 </div>
 {% endif %}
@@ -124,18 +126,20 @@ $(document).ready(function(){
         
             <label for="pub_time">Publish time</label>
             <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}"></input>
-            <input type="submit" value="Save" name="submit" />
+            <input type="submit" value="Save" name="submit" class="button" />
         </div>
         
     </form>
 </div><!-- end div.row -->
 
 {% if post.id %}
-<form id="post-delete" method="post" action="/">
-    {% csrf_token %}
-    <input type="hidden" value="{{ post.id }}" name="post_id_to_delete" />
-    <input type="submit" value="Delete post"></a>
-</form>
+<div class="row">
+    <form id="post-delete" method="post" action="/" class="large-12 columns">
+        {% csrf_token %}
+        <input type="hidden" value="{{ post.id }}" name="post_id_to_delete" />
+        <input type="submit" value="Delete post"></a>
+    </form>
+</div>
 {% endif %}
 
 
