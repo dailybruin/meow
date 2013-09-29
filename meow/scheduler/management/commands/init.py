@@ -1,5 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
 from scheduler.models import MeowSetting
+from django.contrib.auth.models import Group, Permission
+
+
 
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
@@ -26,5 +29,26 @@ class Command(BaseCommand):
         self.set_preference("twitter_character_limit", "Twitter character limit", "117")
         self.set_preference("bitly_access_token", "Bit.ly access token")
         
+        # Configure gruops
+        if Group.objects.filter(name='Editors').count() == 0:
+            group_editors = Group(name='Editors')
+            group_editors.save()
+            group_editors.permissions.add(Permission.objects.get(codename='add_edit_post'))
+            group_editors.save()
+        
+        if Group.objects.filter(name='Copy').count() == 0:
+            group_copy = Group(name='Copy')
+            group_copy.save()
+            group_copy.permissions.add(Permission.objects.get(codename='add_edit_post'))
+            group_copy.permissions.add(Permission.objects.get(codename='approve_copy'))
+            group_copy.save()
+        
+        if Group.objects.filter(name='Online').count() == 0:
+            group_online = Group(name='Online')
+            group_online.save()        
+            group_online.permissions.add(Permission.objects.get(codename='add_edit_post'))
+            group_online.permissions.add(Permission.objects.get(codename='approve_copy'))
+            group_online.permissions.add(Permission.objects.get(codename='approve_online'))
+            group_online.save()        
         
         
