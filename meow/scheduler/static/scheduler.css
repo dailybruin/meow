@@ -286,7 +286,6 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
 
 #post-edit input[disabled], #post-edit textarea[disabled] {
     border: none;
-    padding-left: 0;
 }
 
 #post-delete input[type="submit"] {

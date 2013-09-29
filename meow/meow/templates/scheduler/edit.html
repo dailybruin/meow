@@ -132,7 +132,7 @@ $(document).ready(function(){
     </form>
 </div><!-- end div.row -->
 
-{% if post.id %}
+{% if post.id and not post.sent %}
 <div class="row">
     <form id="post-delete" method="post" action="/" class="large-12 columns">
         {% csrf_token %}
