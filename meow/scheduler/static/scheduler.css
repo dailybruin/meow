@@ -146,8 +146,11 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     min-width:96px;
 }
 
-#poststable tbody .sent {
-    opacity:0.4;
+#poststable tbody .sent td {
+    color:#999;
+}
+#poststable tbody .ready td {
+    color:#1dae17;
 }
 
 #poststable tbody .lost {

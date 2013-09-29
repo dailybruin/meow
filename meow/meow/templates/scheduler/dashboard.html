@@ -51,7 +51,7 @@ $(document).ready(function(){
         </thead>
         <tbody>
             {% for post in smposts %}
-                <tr href="/edit/{{ post.id }}/" class="{% if post.sent or post.post_status == 3 %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
+                <tr href="/edit/{{ post.id }}/" class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}{% if post.post_status == 3 %}ready {% endif %}">
                     <td>{{ post.slug }}</td>
                     <td class="section-column">{{ post.section }}</td>
                     <td class="twitter-column">{{ post.post_twitter }}</td>
