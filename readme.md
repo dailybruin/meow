@@ -81,6 +81,7 @@ Sync the databases through django and create your own superuser:
 
 ### 5. Configure meow
 Right now, meow requires the following settings defined in the settings model. You can input these in the django admin in the "Meow settings" model.
+These are sample values.
 
 ```
        setting_key       |                       setting_value
@@ -89,6 +90,7 @@ Right now, meow requires the following settings defined in the settings model. Y
  twitter_consumer_secret | 0wUHlrQSvB8GMHWDoCdFNjwrmDddug9AjUBjh2qE
  fb_default_photo        | http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg
  twitter_character_limit | 117
+ bitly_access_token      | ff2g4d50bf7093928d8a5cff9d04gh8a12c1e824
 ```
 
 
