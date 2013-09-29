@@ -18,11 +18,44 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 }
 
 .alert-box {
-    border-top-width: 7px;
+    border-top-width: 3px;
     border-bottom: none;
     border-left: none;
     border-right: none;
+    font-weight:400;
 }
+.alert-box.success {
+    background-color:#f0fbef;
+    color:black;
+}
+.alert-box.alert {
+    background-color:#FBEFEF;
+    color:black;
+}
+
+/* These .message-* rules should be removed */
+.message-success {
+    background-color: #f0fbef;
+    padding: 10px;
+    border-top: 3px solid #25db1d;
+    margin-top: 32px;
+    color:#333;
+}
+.message-status {
+    background-color: #fbfbfb;
+    padding: 10px;
+    border-top: 3px solid #dbdbdb;
+    margin-top: 32px;
+    color:#333;
+}
+.message-fail {
+    background-color: #FBEFEF;
+    padding: 10px;
+    border-top: 3px solid #DB1D5A;
+    margin-top: 32px;
+    color: #333;
+}
+
 
 .col10 { width:10%; }
 .col20 { width:20%; }
@@ -282,27 +315,6 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     font-size: 15px;
 }
 
-.message-success {
-    background-color: #f0fbef;
-    padding: 10px;
-    border-top: 3px solid #25db1d;
-    margin-top: 32px;
-    color:#333;
-}
-.message-status {
-    background-color: #fbfbfb;
-    padding: 10px;
-    border-top: 3px solid #dbdbdb;
-    margin-top: 32px;
-    color:#333;
-}
-.message-fail {
-    background-color: #FBEFEF;
-    padding: 10px;
-    border-top: 3px solid #DB1D5A;
-    margin-top: 32px;
-    color: #333;
-}
 
 #tweet.tooLong, input.bad, #tweet.tooLong:focus, input.bad:focus {
     border-color:red;

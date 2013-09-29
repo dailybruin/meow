@@ -29,8 +29,11 @@ $(document).ready(function(){
 </div>
 
 {% if message %}
-<div class="message-{{ message.mtype }}">
-    {{ message.mtext }}
+<div class="row">
+    <div data-alert class="alert-box {{ message.mtype }}">
+        {{ message.mtext }}
+        <a href="#" class="close">&times;</a>
+    </div>
 </div>
 {% endif %}
 
