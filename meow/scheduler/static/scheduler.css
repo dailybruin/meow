@@ -107,6 +107,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
 #poststable {
     width: 100%;
     border:none;
+    font-size:1em;
 }
 
 #poststable td {
@@ -159,7 +160,6 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
 
 #poststable tbody {
     color: #333;
-    font-size: 15px;
 }
 
 .header {
@@ -346,6 +346,10 @@ label[for="date-change"] {
 
 body {
     padding-bottom:20px;
+}
+
+table tr[href] {
+    cursor:pointer;
 }
 
 /* Very large screens */

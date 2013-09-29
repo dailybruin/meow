@@ -21,7 +21,18 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
+            // Fade alert boxes
             $('.alert-box.success').animate({opacity:0.2}, 5000);
+            // Make tables clickable
+            $('table tr').click(function(e){
+                if($(this).attr('href') != "" && $(this).attr('href') != void 0)
+                {
+                    e.preventDefault();
+                    window.location = $(this).attr('href');
+                    return false;
+                }
+            });
+            
         });
     </script>
     
