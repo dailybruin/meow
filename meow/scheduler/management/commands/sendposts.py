@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from scheduler.models import *
 import tweepy
+import bitly_api
 from facepy import GraphAPI
 from facepy.exceptions import *
 from scheduler.models import *
@@ -12,8 +13,8 @@ import HTMLParser
 
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
-    
-    def sendTweet(self, smpost, section):
+
+    def sendTweet(self, smpost, section, bitly_link):
         try:
             print smpost.post_twitter.encode('ascii','ignore')
             CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
@@ -21,16 +22,22 @@ class Command(BaseCommand):
             ACCESS_KEY = section.twitter_access_key
             ACCESS_SECRET = section.twitter_access_secret
         
-        
             auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
             auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
         
             api = tweepy.API(auth)
         
+            # Check for bitly link
+            if bitly_link is not None:
+                url = bitly_link
+            else:
+                url = smpost.story_url
+
             # Make the tweet follow DB social media standards
             tweet = smpost.post_twitter
+
             if smpost.story_url is not None:
-                tweet = tweet + " " + smpost.story_url
+                tweet = tweet + " " + url
         
             api.update_status(tweet)
         
@@ -38,7 +45,7 @@ class Command(BaseCommand):
             smpost.log_error(e, section)
         
 
-    def sendFacebookPost(self, smpost, section):
+    def sendFacebookPost(self, smpost, section, bitly_link):
         try:
             print smpost.post_facebook.encode('ascii','ignore')
             #follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
@@ -81,6 +88,12 @@ class Command(BaseCommand):
                 if post_image_url is not None:
                     has_image = True
         
+            # Check for bitly link
+            if bitly_link is not None:
+                url = bitly_link
+            else:
+                url = smpost.story_url
+
             ### Now actually post to Facebook
         
             # The story does not have an image
@@ -97,7 +110,7 @@ class Command(BaseCommand):
             else:
                 graph.post(
                     path = PAGE_ID+'/photos',
-                    message = smpost.post_facebook + "\n\nRead more: " + smpost.story_url,
+                    message = smpost.post_facebook + "\n\nRead more: " + url,
                     type= "photo",
                     source = urllib2.urlopen(post_image_url),
                 )
@@ -106,6 +119,11 @@ class Command(BaseCommand):
             smpost.log_error(e, section)
 
     def handle(self, *args, **options):
+        # Bitly Goodness
+        ### Put this in the handle to decrease the number of api loads, since the same url is used for twitter and facebook
+        BITLY_ACCESS_TOKEN = MeowSetting.objects.get(setting_key='bitly_access_token').setting_value
+        api=bitly_api.Connection(access_token=BITLY_ACCESS_TOKEN)    
+
         # Get posts from the database
         posts = SMPost.objects.filter(
                 pub_date__lte=datetime.now().date()
@@ -120,24 +138,30 @@ class Command(BaseCommand):
             )
         
         for post in posts:
+            try:
+                link = api.shorten(post.story_url)['url']
+            except bitly_api.BitlyError as e:
+                link = None
+                post.log_error(e, post.section)
+
             # Post to facebook
             if post.post_facebook is not None:
                 # Section's account
                 if (post.section.facebook_page_id and post.section.facebook_key):
-                    self.sendFacebookPost(post, post.section)
+                    self.sendFacebookPost(post, post.section, link)
                 # Also post to account
                 if (post.section.also_post_to and 
                     post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
-                    self.sendFacebookPost(post, post.section.also_post_to)
+                    self.sendFacebookPost(post, post.section.also_post_to, link)
             # Post to twitter
             if post.post_twitter is not None:
                 # Section's account
                 if (post.section.twitter_access_key and post.section.twitter_access_secret):
-                    self.sendTweet(post, post.section)
+                    self.sendTweet(post, post.section, link)
                 # Also post to account
                 if (post.section.also_post_to and 
                     post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
-                    self.sendTweet(post, post.section.also_post_to)
+                    self.sendTweet(post, post.section.also_post_to, link)
                     
             post.sent = True
             post.sent_time = timezone.now()
