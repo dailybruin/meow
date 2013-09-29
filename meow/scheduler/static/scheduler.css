@@ -5,6 +5,25 @@ h1 {
     color: #0f5a6a;
 }
 
+input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, textarea:focus {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea {
+    -webkit-transition: -webkit-box-shadow 0.1s,border-color 0.1s ease-in-out;
+    -moz-transition: -moz-box-shadow 0.1s,border-color 0.1s ease-in-out;
+    transition: box-shadow 0.1s,border-color 0.1s ease-in-out;
+}
+
+.alert-box {
+    border-top-width: 7px;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+}
+
 .col10 { width:10%; }
 .col20 { width:20%; }
 .col30 { width:30%; }
@@ -43,7 +62,7 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
     outline: none;
 }
 
-input[type="button"], input[type="submit"], button, .btn {
+input[type="button"], input[type="submit"], button, .button {
     -webkit-appearance: none;
     display:block;
     border: none;
@@ -55,27 +74,24 @@ input[type="button"], input[type="submit"], button, .btn {
     text-decoration:none;
     text-align:center;
 }
-input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover {
+input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:hover {
     background-color:#106b7e;
 }
 
 
 
-.btn-small {
+.button-small {
     text-transform: uppercase;
     font-size: 12px;
     padding: 4px 9px;
 }
 
 .header {
-    height: 16px;
     margin-top: 5px;
-}
-.header-left {
-    float:left;
 }
 .header-right {
     float:right;
+    text-align:right;
 }
 
 #poststable {
@@ -152,17 +168,14 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     text-decoration:none;
 }
 
-.container {
-    width:960px;
-    margin-left:auto;
-    margin-right:auto;
+#new-button {
+    width: 70px;
+    float: right;
+    padding: 0.2em;
+    margin: 0;
 }
 
-
 #login-form {
-    width: 300px;
-    margin-left: auto;
-    margin-right: auto;
     margin-top:100px;
     margin-bottom:50px;
 }
