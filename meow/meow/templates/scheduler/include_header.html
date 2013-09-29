@@ -1,6 +1,11 @@
 <div class="header row">
     <div class="large-12 columns">
         <a class="page-title" href="/">meow</a>
+        {% if perms.add_user %}
+        <a class="meow-manage" href="/manage">
+            <i class="foundicon-settings"></i>
+        </a>
+        {% endif %}
         <a class="user-settings" href="/settings">{{ user.first_name }} {{ user.last_name }}</a>
         <a class="logout-link" href="/logout">Log out</a>
         <div class="header-right">

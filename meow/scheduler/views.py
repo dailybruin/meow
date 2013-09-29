@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from scheduler.models import *
@@ -196,6 +196,17 @@ def add(request):
         "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
     }
     return render(request, 'scheduler/edit.html', context)
+    
+    
+def can_manage(user):
+    return user.has_perm('add_user')    
+@user_passes_test(can_manage)
+def manage(request):
+    context = {
+        "user" : request.user,
+    }
+    return render(request, 'scheduler/manage.html', context)
+    
 
 def logout(request):
     return logout(request)

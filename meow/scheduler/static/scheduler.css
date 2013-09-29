@@ -185,6 +185,12 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     line-height:23px;
     text-decoration:none;
 }
+.meow-manage {
+    opacity:0.5;
+    position: relative;
+    top: 2px;
+    margin-left: 4px;
+}
 
 #new-button {
     width: 70px;
