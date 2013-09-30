@@ -221,7 +221,24 @@ def manage(request):
     message = {}
     old_fields = {}
     error = False;
+    action = None
     if request.method == "POST":
+        action = request.POST.get('action',None)
+    
+    if request.method == "POST" and action == "meow-switch":
+        send_posts = request.POST.get('switch-x', None)
+        if send_posts:
+            s = MeowSetting.objects.get(setting_key="send_posts")
+            old = s.setting_value
+            s.setting_value = send_posts
+            s.save()
+            if send_posts != old:
+                message = {
+                    "mtype":"success",
+                    "mtext":"Meow status successfully changed. Be careful out there.",
+                }
+        
+    if request.method == "POST" and action == "add-user":
         try:
             old_fields['first_name'] = request.POST['first_name']
             old_fields['last_name'] = request.POST['last_name']
@@ -285,10 +302,12 @@ Thanks,
                 old_fields={}
                 error = True
     
+    send_posts = MeowSetting.objects.get(setting_key='send_posts').setting_value
     context = {
         "user" : request.user,
         "message" : message,
         "old_fields" : old_fields,
+        "send_posts" : send_posts,
     }
     return render(request, 'scheduler/manage.html', context)
     

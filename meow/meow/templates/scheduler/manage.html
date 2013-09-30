@@ -28,6 +28,7 @@
             <div class="content" data-section-content>
                 <form class="add-user" method="post" data-abide>
                     {% csrf_token %}
+                    <input type="hidden" name="action" value="add-user" />
                     
                     <div class="row">
                         <div class="large-6 columns">
@@ -77,6 +78,29 @@
                         <div class="large-2 columns large-centered">
                             <input type="submit" value="Save" name="submit" class="button large" />
                         </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <section>
+            <p class="title" data-section-title><a href="#panel2">Settings</a></p>
+            <div class="content" data-section-content>
+                <form class="meow-settings" method="post" data-abide>
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="meow-switch" />
+                    
+                    <h3>On-switch</h3>
+                    <p>If you need meow to stop sending posts for any reason, flip this switch to temporarily turn off sending tweets and posts. Meow is currently:</p>
+                    <div class="large-2 columns large-centered on-switch-form">
+                        <div class="switch round">
+                          <input id="x" name="switch-x" type="radio" value="No" {% if send_posts != "Yes" %}checked{% endif %}>
+                          <label for="x" onclick="">Off</label>
+
+                          <input id="x1" name="switch-x" type="radio" value="Yes" {% if send_posts == "Yes" %}checked{% endif %}>
+                          <label for="x1" onclick="">On</label>
+                          <span></span>
+                        </div>
+                        <input type="submit" value="Save" />
                     </div>
                 </form>
             </div>

@@ -106,6 +106,10 @@ class Command(BaseCommand):
             smpost.log_error(e, section)
 
     def handle(self, *args, **options):
+        send_posts = MeowSetting.objects.get(setting_key="send_posts").setting_value
+        if send_posts == "No" or send_posts == "no":
+            print "Post sending is currently off!"
+            return
         # Get posts from the database
         posts = SMPost.objects.filter(
                 pub_date__lte=datetime.now().date()

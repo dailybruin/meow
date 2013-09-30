@@ -374,6 +374,10 @@ label[for="date-change"] {
     color: #fff;
 }
 
+.on-switch-form input[type="submit"] {
+    width:100%;
+}
+
 body {
     padding-bottom:20px;
 }
