@@ -158,6 +158,10 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     color:white;
 }
 
+#poststable tbody .copy-edited td {
+    color:#a26917;
+}
+
 #poststable tbody .ready td {
     color:#1dae17;
 }
