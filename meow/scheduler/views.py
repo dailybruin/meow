@@ -151,16 +151,22 @@ def edit(request, post_id, post=None):
         # Checkboxes
         if request.user.has_perm('scheduler.approve_copy'):
             if request.POST.get('approve-copy',False) == 'on':
+                if post.pub_ready_copy == False:
+                    post.pub_ready_copy_user = request.user
                 post.pub_ready_copy = True
             else:
                 post.pub_ready_copy = False
         
         if request.user.has_perm('scheduler.approve_online'):
             if request.POST.get('approve-online',False) == 'on':
+                if post.pub_ready_online == False:
+                    post.pub_ready_online_user = request.user
                 post.pub_ready_online = True
             else:
                 post.pub_ready_online = False
             
+        post.last_edit_user = request.user
+        
         post.save()
         message = {
             "mtype":"success",

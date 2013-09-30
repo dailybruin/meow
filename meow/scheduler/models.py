@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)
@@ -11,6 +12,10 @@ class SMPost(models.Model):
     section = models.ForeignKey('Section', blank=True, null=True)
     pub_ready_copy = models.BooleanField(default=False, help_text="Is this copy-edited?")
     pub_ready_online = models.BooleanField(default=False, help_text="Is this ready to send out?")
+    
+    pub_ready_copy_user = models.ForeignKey(User, blank=True, null=True, related_name='+')
+    pub_ready_online_user = models.ForeignKey(User, blank=True, null=True, related_name='+')
+    last_edit_user = models.ForeignKey(User, blank=True, null=True, related_name='+')
     
     sent = models.BooleanField(default=False, help_text="Sent out? This should never be set manually.")
     sent_time = models.DateTimeField(null=True, blank=True, help_text="What time was it actually sent out?")
