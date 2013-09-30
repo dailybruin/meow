@@ -341,6 +341,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
 
 label[for="date-change"] {
     margin-right:5px;
+    margin-top: -5px;
 }
 #date-change {
     font-size:0.875em;
