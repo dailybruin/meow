@@ -153,6 +153,11 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
 #poststable tbody .sent td {
     color:#999;
 }
+#poststable tbody .sent.sent-error td {
+    background-color:#db1d5a;
+    color:white;
+}
+
 #poststable tbody .ready td {
     color:#1dae17;
 }
