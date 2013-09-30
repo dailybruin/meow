@@ -241,7 +241,7 @@ def manage(request):
         # Now send them an email with the username/pass
         if not error:
             try:
-                message = """
+                email_message = """
 Hey {first_name},
 
 Your new Meow account is ready. Log in with:
@@ -254,8 +254,9 @@ at http://meow.dailybruin.com/ and change your password.
 Thanks,
 Daily Bruin Online
                 """
-                message = message.format(first_name=old_fields['first_name'], username=old_fields['username'], password=password)
-                send_mail('[Daily Bruin] Your new meow account', message, 'noreply@dailybruin.com', [old_fields['email']], fail_silently=False)
+                email_message = email_message.format(first_name=old_fields['first_name'], username=old_fields['username'], password=password)
+                send_mail('[Daily Bruin] Your new meow account', email_message, 'noreply@dailybruin.com', [old_fields['email']], fail_silently=False)
+                old_fields={}
             except:
                 print "Couldn't send email"
                 message = {
