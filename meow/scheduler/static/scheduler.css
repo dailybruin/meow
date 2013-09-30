@@ -427,6 +427,9 @@ body {
     #poststable .twitter-column, #poststable .facebook-column {
         display:none;
     }
+    #poststable {
+        font-size: 0.7em;
+    }
 }
 
 /* Landscape Orientation */
