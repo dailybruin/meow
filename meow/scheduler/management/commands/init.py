@@ -8,8 +8,7 @@ class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
     
     def set_preference(self, machine_name, human_name, default=""):
-        s = MeowSetting.objects.get(setting_key=machine_name)
-        if s is not None:
+        if MeowSetting.objects.filter(setting_key=machine_name).count() > 0:
             return
         input_string = human_name
         if default is not "" and default is not None:
@@ -28,6 +27,9 @@ class Command(BaseCommand):
         self.set_preference("fb_default_photo", "Default facebook icon", "http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg")
         self.set_preference("twitter_character_limit", "Twitter character limit", "117")
         self.set_preference("bitly_access_token", "Bit.ly access token")
+        self.set_preference("site_url", "Meow URL", "http://meow.dailybruin.com")
+        self.set_preference("organization_name", "Organization Name", "Daily Bruin Online")
+        self.set_preference("from_email", "Email (from):", "noreply@dailybruin.com")
         
         # Configure gruops
         if Group.objects.filter(name='Editors').count() == 0:

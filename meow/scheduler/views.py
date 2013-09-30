@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.contrib.auth.models import User, Group
+import sys
 
 def can_edit_post(user, post):
     if (user.has_perm('scheduler.add_edit_post') and
@@ -252,16 +253,20 @@ Your new Meow account is ready. Log in with:
 Username: {username}
 Password: {password}
 
-at http://meow.dailybruin.com/ and change your password.
+at {site_url} and change your password.
 
 Thanks,
-Daily Bruin Online
+{organization_name}
                 """
-                email_message = email_message.format(first_name=old_fields['first_name'], username=old_fields['username'], password=password)
-                send_mail('[Daily Bruin] Your new meow account', email_message, 'noreply@dailybruin.com', [old_fields['email']], fail_silently=False)
+                site_url = MeowSetting.objects.get(setting_key='site_url').setting_value
+                organization_name = MeowSetting.objects.get(setting_key='organization_name').setting_value
+                from_email = MeowSetting.objects.get(setting_key='from_email').setting_value
+                
+                email_message = email_message.format(first_name=old_fields['first_name'], username=old_fields['username'], password=password, site_url=site_url, organization_name=organization_name)
+                send_mail('['+organization_name+'] Your new meow account', email_message, from_email, [old_fields['email']], fail_silently=False)
                 old_fields={}
             except:
-                print "Couldn't send email"
+                print sys.exc_info()[0]
                 message = {
                     "mtype":"alert",
                     "mtext":"Account created but couldn't send password to "+old_fields['email']+".",
