@@ -382,10 +382,6 @@ body {
     padding-bottom:20px;
 }
 
-table tr[href] {
-    cursor:pointer;
-}
-
 .approval-by {
     font-weight: 200;
     color: #1b798d;
@@ -410,6 +406,13 @@ table tr[href] {
 
 [data-abide] .error small.error, [data-abide] span.error, [data-abide] small.error {
     margin-top:-15px;
+}
+
+#poststable a {
+    color:inherit;
+}
+#poststable a:hover {
+    text-decoration:underline;
 }
 
 /* Very large screens */

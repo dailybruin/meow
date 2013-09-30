@@ -42,6 +42,7 @@ $(document).ready(function(){
     <table id="poststable">
         <thead>
             <tr>
+                <th></th>
                 <th data-sort="string">Slug</th>
                 <th data-sort="string" class="section-column">Section</th>
                 <th data-sort="string" class="twitter-column">Tweet</th>
@@ -52,8 +53,9 @@ $(document).ready(function(){
         </thead>
         <tbody>
             {% for post in smposts %}
-                <tr href="/edit/{{ post.id }}/" class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}{% if post.post_status == 3 %}ready {% endif %}{% if post.post_status == 1 %}sent-error {% endif %}{% if post.post_status == 5 %}copy-edited{% endif %}">
-                    <td>{{ post.slug }}</td>
+                <tr class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}{% if post.post_status == 3 %}ready {% endif %}{% if post.post_status == 1 %}sent-error {% endif %}{% if post.post_status == 5 %}copy-edited{% endif %}">
+                    <td><a href="/edit/{{ post.id }}/"><i class="foundicon-edit"></i></a></td>
+                    <td><a href="/edit/{{ post.id }}/">{{ post.slug }}</a></td>
                     <td class="section-column">{{ post.section }}</td>
                     <td class="twitter-column">{{ post.post_twitter }}</td>
                     <td class="facebook-column">{{ post.post_facebook }}</td>
