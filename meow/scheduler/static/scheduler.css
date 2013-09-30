@@ -348,14 +348,20 @@ label[for="date-change"] {
 .user-edit h2 {
     margin-top:0;
     color:#0f5a6a;
+    font-size:1.5em;
 }
 
-.user-edit .permission {
-    color:#0f5a6a;
-    text-transform: uppercase;
-    font-size: 11px;
-    display: block;
-    width: 100%;
+.user-edit .user-permissions {
+    margin-bottom:10px;
+}
+
+.label.staff {
+    background-color:#803c12;
+    color:#fff;
+}
+.label.super {
+    background-color: #490f6a;
+    color: #fff;
 }
 
 body {

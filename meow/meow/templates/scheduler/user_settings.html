@@ -53,13 +53,15 @@ $(document).ready(function(){
     <form id="post-edit" class="user-edit" method="post">
         {% csrf_token %}
     
-        <div class="large-2 columns">
+        <div class="large-4 columns user-permissions">
             <h2>{{ user.username }}</h2>
-            {% if perms.scheduler.approve_copy %}<span class="permission">Copy</span>{% endif %}
-            {% if perms.scheduler.approve_online %}<span class="permission">Online</span>{% endif %}
+            {% if perms.is_super %}<span class="label super">Admin</span>
+            {% elif perms.scheduler.approve_online %}<span class="label">Online</span>
+            {% elif perms.scheduler.approve_copy %}<span class="label">Copy</span>{% endif %}
+            {% if perms.is_staff %}<a href="/admin"><span class="label staff">Developer</span></a>{% endif %}
         </div>
 
-        <div class="large-10 columns">
+        <div class="large-8 columns">
             <div class="row">
                 <div class="large-6 columns">
                     <label for="first_name">First name</label>
