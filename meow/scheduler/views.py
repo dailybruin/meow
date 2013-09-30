@@ -12,6 +12,13 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User, Group
 import sys
 
+
+def get_settings():
+    return {
+        "site_message" : MeowSetting.objects.get(setting_key='site_message').setting_value,
+        "send_posts" : MeowSetting.objects.get(setting_key='send_posts').setting_value,
+    }
+
 def can_edit_post(user, post):
     if (user.has_perm('scheduler.add_edit_post') and
         (((user.has_perm('scheduler.approve_copy') or not post.pub_ready_copy) and
@@ -50,9 +57,11 @@ def user_settings(request):
             user.email = email
         user.save()
             
+    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
     context = {
         "user" : request.user,
         "message" : message,
+        "site_settings" : get_settings(),
     }
     return render(request, 'scheduler/user_settings.html', context)
 
@@ -89,12 +98,14 @@ def dashboard(request):
     tomorrow_posts = SMPost.objects.filter(pub_date=view_date)
     lost_posts = SMPost.objects.filter(pub_date=None)
 
+    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
         "smposts" : list(chain(tomorrow_posts, lost_posts)),
         "message" : message,
         "view_date" : view_date,
+        "site_settings" : get_settings(),
     }
     return render(request, 'scheduler/dashboard.html', context)
 
@@ -114,11 +125,13 @@ def edit(request, post_id, post=None):
         if post.sent:
             message['mtext'] = "This post has already been sent and cannot be edited"
         
+        site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
         context = {
             "user" : request.user,
             "sections" : Section.objects.all(),
             "post" : post,
             "message" : message,
+            "site_settings" : get_settings(),
         }
         return render(request, 'scheduler/view.html', context)
     
@@ -184,6 +197,7 @@ def edit(request, post_id, post=None):
                 "mtext":"Your post was successfully created!",
             }
 
+    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
@@ -191,6 +205,7 @@ def edit(request, post_id, post=None):
         "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
         "message" : message,
         "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
+        "site_settings" : get_settings(),
     }
     return render(request, 'scheduler/edit.html', context)
     
@@ -205,11 +220,13 @@ def add(request):
         post_id = post.id
         return redirect("/edit/"+str(post.id)+"/?add=true")
         
+    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
         "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
         "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
+        "site_settings" : get_settings(),
     }
     return render(request, 'scheduler/edit.html', context)
     
@@ -237,7 +254,19 @@ def manage(request):
                     "mtype":"success",
                     "mtext":"Meow status successfully changed. Be careful out there.",
                 }
-        
+                
+    if request.method == "POST" and action == "post-site-message":
+        site_message = request.POST.get('site-message', None)
+        s = MeowSetting.objects.get(setting_key="site_message")
+        old = s.setting_value
+        s.setting_value = site_message
+        s.save()
+        if site_message != old:
+            message = {
+                "mtype":"success",
+                "mtext":"Site message successfully changed",
+            }
+    
     if request.method == "POST" and action == "add-user":
         try:
             old_fields['first_name'] = request.POST['first_name']
@@ -303,11 +332,13 @@ Thanks,
                 error = True
     
     send_posts = MeowSetting.objects.get(setting_key='send_posts').setting_value
+    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
     context = {
         "user" : request.user,
         "message" : message,
         "old_fields" : old_fields,
         "send_posts" : send_posts,
+        "site_settings" : get_settings(),
     }
     return render(request, 'scheduler/manage.html', context)
     

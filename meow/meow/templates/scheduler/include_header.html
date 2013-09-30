@@ -1,3 +1,13 @@
+{% if site_settings.send_posts == "No" or siet_settings.send_posts == "no" %}
+<div class="site-message alert">
+    Sending is currently turned off. Nothing will send until an administrator turns it back on.
+</div>
+{% endif %}
+{% if site_settings.site_message %}
+<div class="site-message">
+    {{ site_settings.site_message }}
+</div>
+{% endif %}
 <div class="header row">
     <div class="large-12 columns">
         <a class="page-title" href="/">meow</a>

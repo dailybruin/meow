@@ -31,6 +31,7 @@ class Command(BaseCommand):
         self.set_preference("organization_name", "Organization Name", "Daily Bruin Online")
         self.set_preference("from_email", "Email (from):", "noreply@dailybruin.com")
         self.set_preference("send_posts","Send posts","Yes")
+        self.set_preference("site_message","Site message (blank)")
         
         # Configure gruops
         if Group.objects.filter(name='Editors').count() == 0:

@@ -83,14 +83,14 @@
             </div>
         </section>
         <section>
-            <p class="title" data-section-title><a href="#panel2">Settings</a></p>
+            <p class="title" data-section-title><a href="#panel2">On-switch</a></p>
             <div class="content" data-section-content>
                 <form class="meow-settings" method="post" data-abide>
                     {% csrf_token %}
                     <input type="hidden" name="action" value="meow-switch" />
                     
                     <h3>On-switch</h3>
-                    <p>If you need meow to stop sending posts for any reason, flip this switch to temporarily turn off sending tweets and posts. Meow is currently:</p>
+                    <p>If you need meow to stop sending posts for any reason, flip this switch to temporarily turn off sending tweets and posts. Note that when Meow is turned back on, all posts marked as ready will send at once. Meow is currently:</p>
                     <div class="large-2 columns large-centered on-switch-form">
                         <div class="switch round">
                           <input id="x" name="switch-x" type="radio" value="No" {% if send_posts != "Yes" %}checked{% endif %}>
@@ -102,6 +102,21 @@
                         </div>
                         <input type="submit" value="Save" />
                     </div>
+                    <div style="width: 100%;clear: both;display:block;"></div>
+                </form>
+            </div>
+        </section>
+        <section>
+            <p class="title" data-section-title><a href="#panel2">Site message</a></p>
+            <div class="content" data-section-content>
+                <form id="site-message-form" method="post" data-abide>
+                    <h3>Site message</h3>
+                    <p>Post a message at the top of every page on the site. Good for letting users know of downtime. Do not overuse this.</p>
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="post-site-message" />
+                    <label for="site-message">Message</label>
+                    <textarea id="site-message" name="site-message">{{ site_settings.site_message }}</textarea>
+                    <input type="submit" value="Save" />
                 </form>
             </div>
         </section>

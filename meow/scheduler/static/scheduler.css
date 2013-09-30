@@ -392,6 +392,22 @@ table tr[href] {
     font-size: 0.7em;
 }
 
+#site-message-form #site-message {
+    min-height:100px;
+}
+
+.site-message {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #1b798d;
+    color: white;
+}
+.site-message.alert {
+    background-color:#db1d5a;
+}
+
 [data-abide] .error small.error, [data-abide] span.error, [data-abide] small.error {
     margin-top:-15px;
 }
