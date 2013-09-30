@@ -9,5 +9,6 @@ urlpatterns = patterns('',
     url(r'^edit/(?P<post_id>\d+)/$', views.edit, name="edit"),
     url(r'^add/$', views.add, name="add"),
     url(r'^settings/$', views.user_settings, name="settings"),
+    url(r'^manage/$', views.manage, name="manage"),
     url(r'^$', views.dashboard, name='dashboard'),
 )

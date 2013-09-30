@@ -6,6 +6,9 @@ from scheduler.models import *
 import datetime
 import parsedatetime.parsedatetime as pdt
 from itertools import chain
+from django.contrib.auth.models import User
+from django.db import IntegrityError
+from django.core.mail import send_mail
 
 def can_edit_post(user, post):
     if (user.has_perm('scheduler.add_edit_post') and
@@ -202,8 +205,70 @@ def can_manage(user):
     return user.has_perm('add_user')    
 @user_passes_test(can_manage)
 def manage(request):
+    message = {}
+    old_fields = {}
+    error = False;
+    if request.method == "POST":
+        try:
+            old_fields['first_name'] = request.POST['first_name']
+            old_fields['last_name'] = request.POST['last_name']
+            old_fields['email'] = request.POST['email']
+            old_fields['username'] = request.POST['username']
+            password = User.objects.make_random_password()
+            
+            u = User(username=old_fields['username'], first_name=old_fields['first_name'], last_name=old_fields['last_name'], email=old_fields['email'], password="bruin")
+            u.save()
+            u.set_password(password)
+            u.save()
+            
+            message = {
+                "mtype":"success",
+                "mtext":"User added successfully!",
+            }
+        except KeyError as e:
+            message = {
+                "mtype":"alert",
+                "mtext":"User not added; please fill out all fields!",
+            }
+            error=True;
+        except IntegrityError as e:
+            message = {
+                "mtype":"alert",
+                "mtext":"Username "+ old_fields['username'] +" already exists",
+            }
+            error=True;
+            
+        # Now send them an email with the username/pass
+        if not error:
+            try:
+                message = """
+Hey {first_name},
+
+Your new Meow account is ready. Log in with:
+
+Username: {username}
+Password: {password}
+
+at http://meow.dailybruin.com/ and change your password.
+
+Thanks,
+Daily Bruin Online
+                """
+                message = message.format(first_name=old_fields['first_name'], username=old_fields['username'], password=password)
+                send_mail('[Daily Bruin] Your new meow account', message, 'noreply@dailybruin.com', [old_fields['email']], fail_silently=False)
+            except:
+                print "Couldn't send email"
+                message = {
+                    "mtype":"alert",
+                    "mtext":"Account created but couldn't send password to "+old_fields['email']+".",
+                }
+                old_fields={}
+                error = True
+    
     context = {
         "user" : request.user,
+        "message" : message,
+        "old_fields" : old_fields,
     }
     return render(request, 'scheduler/manage.html', context)
     

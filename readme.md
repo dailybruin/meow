@@ -11,7 +11,7 @@ If you want to use [Vagrant](http://www.vagrantup.com/), clone this repo and `va
 Install the required packages:
 
     sudo apt-get update
-    sudo apt-get install python-pip python-setuptools python-dev fabric git postgresql postgresql-server-dev-9.1
+    sudo apt-get install python-pip python-setuptools python-dev fabric git postgresql postgresql-server-dev-9.1 sendmail
 
 ### 2. Create a virtual environment (optional)
 I prefer virtualenvwrapper since virtualenv depends on symlinks and VirtualBox shared folders don't support symlinks.

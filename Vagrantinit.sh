@@ -16,6 +16,7 @@ sudo apt-get -y install git
 sudo apt-get -y install postgresql
 sudo apt-get -y install postgresql-server-dev-9.1
 sudo apt-get -y install screen
+sudo apt-get -y install sendmail
 sudo easy_install virtualenv
 sudo pip install virtualenvwrapper
 
