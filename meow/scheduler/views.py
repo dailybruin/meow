@@ -36,6 +36,7 @@ def user_settings(request):
         last_name = request.POST.get('last_name',None)
         password1 = request.POST.get('password1',None)
         password2 = request.POST.get('password2',None)
+        email = request.POST.get('email',None)
         if first_name:
             user.first_name = first_name
         if last_name:
@@ -45,6 +46,8 @@ def user_settings(request):
         if password1 and password2 and (password1 != password2):
             message['mtext'] = "Your passwords don't match"
             message['mtype'] = "fail"
+        if email:
+            user.email = email
         user.save()
             
     context = {
