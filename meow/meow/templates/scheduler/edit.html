@@ -112,10 +112,12 @@ $(document).ready(function(){
                 <div class="prepublish-inside">
                     <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %} {% if not perms.scheduler.approve_copy %}disabled{% endif %} />
                     <label for="approve-copy">Copy-edited</label>
+                    {% if post.pub_ready_copy_user %}<span class="approval-by">by {{ post.pub_ready_copy_user.first_name }} {{ post.pub_ready_copy_user.last_name }}</span>{% endif %}
                 </div>
                 <div class="prepublish-inside">
                     <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %} {% if not perms.scheduler.approve_online %}disabled{% endif %} /> 
                     <label for="approve-online">Ready to publish</label>
+                    {% if post.pub_ready_online_user %}<span class="approval-by">by {{ post.pub_ready_online_user.first_name }} {{ post.pub_ready_online_user.last_name }}</span>{% endif %}
                 </div>
             </fieldset>
         
@@ -127,6 +129,7 @@ $(document).ready(function(){
             <label for="pub_time">Publish time</label>
             <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}"></input>
             <input type="submit" value="Save" name="submit" class="button" />
+            {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
         </div>
         
     </form>

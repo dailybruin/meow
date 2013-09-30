@@ -276,6 +276,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     font-size: 24px;
     font-weight: 200;
     letter-spacing: 1px;
+    margin-bottom:10px;
 }
 
 #post-edit label[for="pub_date"] {
@@ -363,6 +364,12 @@ body {
 
 table tr[href] {
     cursor:pointer;
+}
+
+.approval-by {
+    font-weight: 200;
+    color: #1b798d;
+    font-size: 0.7em;
 }
 
 [data-abide] .error small.error, [data-abide] span.error, [data-abide] small.error {
