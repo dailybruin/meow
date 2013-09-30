@@ -156,6 +156,7 @@ def edit(request, post_id, post=None):
                 post.pub_ready_copy = True
             else:
                 post.pub_ready_copy = False
+                post.pub_ready_copy_user = None
         
         if request.user.has_perm('scheduler.approve_online'):
             if request.POST.get('approve-online',False) == 'on':
@@ -164,6 +165,7 @@ def edit(request, post_id, post=None):
                 post.pub_ready_online = True
             else:
                 post.pub_ready_online = False
+                post.pub_ready_online_user = None
             
         post.last_edit_user = request.user
         
