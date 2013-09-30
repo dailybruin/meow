@@ -9,6 +9,7 @@ from itertools import chain
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.mail import send_mail
+from django.contrib.auth.models import User, Group
 
 def can_edit_post(user, post):
     if (user.has_perm('scheduler.add_edit_post') and
@@ -214,11 +215,13 @@ def manage(request):
             old_fields['last_name'] = request.POST['last_name']
             old_fields['email'] = request.POST['email']
             old_fields['username'] = request.POST['username']
+            old_fields['permission'] = request.POST['permission']
             password = User.objects.make_random_password()
             
             u = User(username=old_fields['username'], first_name=old_fields['first_name'], last_name=old_fields['last_name'], email=old_fields['email'], password="bruin")
             u.save()
             u.set_password(password)
+            u.groups.add(Group.objects.get(name=old_fields['permission']))
             u.save()
             
             message = {

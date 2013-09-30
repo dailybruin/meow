@@ -47,10 +47,7 @@
                     </div>
                         
                     <div class="row">
-                        <div class="large-2 push-10 columns">
-                            <p>A password will be automatically generated and sent by email.</p>
-                        </div>
-                        <div class="large-5 pull-2 columns">
+                        <div class="large-5 columns">
                             <div class="username-field">
                                 <label for="username">Username</label>
                                 <input name="username" type="text" required placeholder="jbruin" value="{{ old_fields.username }}"></input>
@@ -58,11 +55,21 @@
                             </div>
                         </div>
                         
-                        <div class="large-5 pull-2 columns">
+                        <div class="large-5 columns">
                             <div class="email-field">
                                 <label for="email">Email address</label>
                                 <input name="email" type="email" required placeholder="jbruin@media.ucla.edu" value="{{ old_fields.email }}"></input>
                                 <small class="error">Please enter a valid email address.</small>
+                            </div>
+                        </div>
+                        <div class="large-2 columns">
+                            <div class="permissions-field">
+                                <label for="permission">Permissions</label>
+                                <select name="permission" required>
+                                    <option value="Editor" {% if old_fields.permission == 'Editor' %}selected{% endif %}>Editor</option>
+                                    <option value="Copy" {% if old_fields.permission == 'Copy' %}selected{% endif %}>Copy</option>
+                                    <option value="Online" {% if old_fields.permission == 'Online' %}selected{% endif %}>Online</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -72,12 +79,6 @@
                         </div>
                     </div>
                 </form>
-            </div>
-        </section>
-        <section>
-            <p class="title" data-section-title><a href="#panel2">Section 2</a></p>
-            <div class="content" data-section-content>
-                <p>Content of section 2.</p>
             </div>
         </section>
     </div>
