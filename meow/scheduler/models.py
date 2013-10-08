@@ -47,6 +47,7 @@ class SMPost(models.Model):
         COPY_EDITED = 5
         DRAFT = 6
         NO_PUB_DATE = 7
+        NO_SECTION = 8
         
     def post_status(self):
         # Please don't change the order of these unless you understand what you're doing
@@ -56,7 +57,7 @@ class SMPost(models.Model):
             return self.post_statuses.SENT
         elif self.pub_date == None:
             return self.post_statuses.NO_PUB_DATE
-        elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook) and self.pub_date and self.pub_time:
+        elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook) and self.pub_date and self.pub_time and self.section:
             return self.post_statuses.READY
         elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook):
             return self.post_statuses.NOT_SCHEDULED
@@ -74,6 +75,7 @@ class SMPost(models.Model):
             self.post_statuses.COPY_EDITED : "Copy-edited",
             self.post_statuses.DRAFT : "Draft",
             self.post_statuses.NO_PUB_DATE : "No date",
+            self.post_statuses.NO_SECTION : "No section",
         }[self.post_status()]
     
 class Section(models.Model):

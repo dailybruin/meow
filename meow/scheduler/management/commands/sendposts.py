@@ -121,6 +121,8 @@ class Command(BaseCommand):
                 pub_ready_online=True
             ).exclude(
                 sent=True
+            ).exclude(
+                section=None
             )
         
         for post in posts:
