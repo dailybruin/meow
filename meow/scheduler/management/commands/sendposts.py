@@ -127,7 +127,7 @@ class Command(BaseCommand):
         
         for post in posts:
             # Post to facebook
-            if post.post_facebook is not None:
+            if post.post_facebook:
                 # Section's account
                 if (post.section.facebook_page_id and post.section.facebook_key):
                     self.sendFacebookPost(post, post.section)
@@ -136,7 +136,7 @@ class Command(BaseCommand):
                     post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
                     self.sendFacebookPost(post, post.section.also_post_to)
             # Post to twitter
-            if post.post_twitter is not None:
+            if post.post_twitter:
                 # Section's account
                 if (post.section.twitter_access_key and post.section.twitter_access_secret):
                     self.sendTweet(post, post.section)
