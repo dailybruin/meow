@@ -127,3 +127,10 @@ Page ID: `1416676115217881`
 #### Facebook
 **FakeDB A&E**    
 Page ID: `1415944791959246`
+
+***
+
+## License
+Meow is released under GPLv2. See `LICENSE` for more details. 
+
+Though not required, if you use this software or would like to contribute to its development, please let us know by emailing us at online@media.ucla.edu. We'd love to know what it's being used for, especially if it's at another college newspaper.
