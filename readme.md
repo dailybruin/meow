@@ -131,6 +131,6 @@ Page ID: `1415944791959246`
 ***
 
 ## License
-Meow is released under AGPLv3. See `LICENSE` for more details. 
+Meow is released under GNU AGPLv3. See `LICENSE` for more details. 
 
 Though not required, if you use this software or would like to contribute to its development, please let us know by emailing us at online@media.ucla.edu. We'd love to know what it's being used for, especially if it's at another college newspaper.
