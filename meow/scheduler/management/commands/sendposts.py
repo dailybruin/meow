@@ -152,8 +152,6 @@ class Command(BaseCommand):
             
             # This is just Bitly -- it won't throw any exceptions
             send_url = post.get_send_url()
-            print send_url
-            exit()
                 
             # Post to facebook
             if post.post_facebook:

@@ -87,7 +87,6 @@ class SMPost(models.Model):
     # Returns a 2-tuple with (canonical URL, sending URL)
     # Either both are set or neither are set
     def get_send_url(self):
-        print "GET SEND URL"
         # If we don't have a URL in the first place, return empty strings
         # Or return the short URL if it has already been made
         if not self.story_url:
@@ -103,12 +102,12 @@ class SMPost(models.Model):
         try:
             short_url = api.shorten(self.story_url)['url']
         except bitly_api.BitlyError as e:
-            post.log_error(e, post.section, false)
+            self.log_error(e, self.section)
             short_url = None
         except:
             e = sys.exc_info()[0]
             short_url = None
-            post.log_error(e, post.section, false)
+            self.log_error(e, self.section)
 
         if short_url:
             self.story_short_url = short_url
