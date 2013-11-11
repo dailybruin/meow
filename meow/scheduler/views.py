@@ -141,7 +141,7 @@ def edit(request, post_id, post=None):
     
     message = {}
     if request.method == "POST" and can_edit_post(request.user, post):
-        post.story_url = urllib.quote(request.POST.get('url',None).encode('ascii', 'ignore'))
+        post.story_url = request.POST.get('url',None).encode('ascii', 'ignore')
         post.slug = request.POST.get('slug',None)
         try:
             post.section = Section.objects.get(pk=request.POST.get('section',None))
