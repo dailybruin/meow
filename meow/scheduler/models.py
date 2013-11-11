@@ -1,12 +1,15 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
+import sys
+import bitly_api
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)
     pub_date = models.DateField(null=True, blank=True)
     pub_time = models.TimeField(null=True, blank=True)
     story_url = models.URLField(max_length=500, null=True, blank=True)
+    story_short_url = models.URLField(max_length=500, null=True, blank=True)
     post_twitter = models.TextField(null=True, blank=True)
     post_facebook = models.TextField(null=True, blank=True)
     section = models.ForeignKey('Section', blank=True, null=True)
@@ -18,6 +21,7 @@ class SMPost(models.Model):
     last_edit_user = models.ForeignKey(User, blank=True, null=True, related_name='+')
     
     sent = models.BooleanField(default=False, help_text="Sent out? This should never be set manually.")
+    sending = models.BooleanField(default=False, help_text="Is something currently trying to send this post?")
     sent_time = models.DateTimeField(null=True, blank=True, help_text="What time was it actually sent out?")
     sent_error = models.BooleanField(default=False, blank=False, null=False, help_text="Did the send generate an error?")
     sent_error_text = models.TextField(null=True, blank=True)
@@ -32,10 +36,11 @@ class SMPost(models.Model):
             ("approve_online", "Can mark the post as approved by online"),
         )
         
-    def log_error(self, e, section):
+    def log_error(self, e, section, send_email=False):
         self.sent_error = True
         self.sent_error_text = str(self.sent_error_text) + "Error: " + str(section.name) + " " + str(datetime.now()) + " -- " + str(e) + "\n"
         self.save()
+        #TODO implement send_email
         
     # This whole thing is to be able to change the dashboard message without messing with application logic
     #  and to enumerate statuses. Maybe I just like C a little too much.
@@ -48,6 +53,7 @@ class SMPost(models.Model):
         DRAFT = 6
         NO_PUB_DATE = 7
         NO_SECTION = 8
+        RETRY = 9
         
     def post_status(self):
         # Please don't change the order of these unless you understand what you're doing
@@ -77,6 +83,41 @@ class SMPost(models.Model):
             self.post_statuses.NO_PUB_DATE : "No date",
             self.post_statuses.NO_SECTION : "No section",
         }[self.post_status()]
+    
+    # Returns a 2-tuple with (canonical URL, sending URL)
+    # Either both are set or neither are set
+    def get_send_url(self):
+        print "GET SEND URL"
+        # If we don't have a URL in the first place, return empty strings
+        # Or return the short URL if it has already been made
+        if not self.story_url:
+            return (None,None)
+        elif self.story_short_url:
+            return (self.story_url, self.story_short_url)
+        
+        # Set up for Bitly Goodness
+        BITLY_ACCESS_TOKEN = MeowSetting.objects.get(setting_key='bitly_access_token').setting_value
+        api=bitly_api.Connection(access_token=BITLY_ACCESS_TOKEN)    
+        
+        # If Bitly fails, we'll just continue with our canonical URL
+        try:
+            short_url = api.shorten(self.story_url)['url']
+        except bitly_api.BitlyError as e:
+            post.log_error(e, post.section, false)
+            short_url = None
+        except:
+            e = sys.exc_info()[0]
+            short_url = None
+            post.log_error(e, post.section, false)
+
+        if short_url:
+            self.story_short_url = short_url
+            self.save()
+            return (self.story_url, short_url)
+        else:
+            return (self.story_url, self.story_url)
+        
+        
     
 class Section(models.Model):
     name = models.CharField(max_length=100, blank=False)

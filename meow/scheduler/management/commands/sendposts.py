@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from scheduler.models import *
 import tweepy
-import bitly_api
 from facepy import GraphAPI
 from facepy.exceptions import *
 from scheduler.models import *
@@ -121,16 +120,13 @@ class Command(BaseCommand):
             smpost.log_error(e, section)
 
     def handle(self, *args, **options):
-        # Bitly Goodness
-        ### Put this in the handle to decrease the number of api loads, since the same url is used for twitter and facebook
-        BITLY_ACCESS_TOKEN = MeowSetting.objects.get(setting_key='bitly_access_token').setting_value
-        api=bitly_api.Connection(access_token=BITLY_ACCESS_TOKEN)    
-
         send_posts = MeowSetting.objects.get(setting_key="send_posts").setting_value
         if send_posts == "No" or send_posts == "no":
             print "Post sending is currently off!"
             return
-        # Get posts from the database
+            
+
+        # Get posts from the database that are ready to send
         posts = SMPost.objects.filter(
                 pub_date__lte=datetime.now().date()
             ).filter(
@@ -146,12 +142,19 @@ class Command(BaseCommand):
             )
         
         for post in posts:
-            try:
-                link = api.shorten(post.story_url)['url']
-            except bitly_api.BitlyError as e:
-                link = None
-                post.log_error(e, post.section)
-
+            # Make sure nothing else is trying to send this post right now
+            # This is not atomic; if meow ever scales a lot more, this will need to be re-written
+            if post.sending:
+                continue
+            else:
+                post.sending = True
+                post.save()
+            
+            # This is just Bitly -- it won't throw any exceptions
+            send_url = post.get_send_url()
+            print send_url
+            exit()
+                
             # Post to facebook
             if post.post_facebook:
                 # Section's account
@@ -170,7 +173,8 @@ class Command(BaseCommand):
                 if (post.section.also_post_to and 
                     post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
                     self.sendTweet(post, post.section.also_post_to, link)
-                    
+            
+            post.sending = False;        
             post.sent = True
             post.sent_time = timezone.now()
             post.save()
