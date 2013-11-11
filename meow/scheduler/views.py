@@ -114,7 +114,7 @@ def edit(request, post_id, post=None):
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
     
-    if post.sent or not can_edit_post(request.user, post):
+    if post.sent or not can_edit_post(request.user, post) or post.sending:
         message = {
             "mtype":"status",
         }
@@ -122,8 +122,11 @@ def edit(request, post_id, post=None):
         if not can_edit_post(request.user, post):
             message['mtext'] = "You do not have permission to edit this post"
         
-        if post.sent:
+        elif post.sent:
             message['mtext'] = "This post has already been sent and cannot be edited"
+        
+        elif post.sending:
+            message['mtext'] = "This post is currently sending and cannot be edited"
         
         site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
         context = {

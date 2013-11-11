@@ -57,7 +57,7 @@ class SMPost(models.Model):
         DRAFT = 6
         NO_PUB_DATE = 7
         NO_SECTION = 8
-        RETRY = 9
+        SENDING = 9
         
     def post_status(self):
         # Please don't change the order of these unless you understand what you're doing
@@ -65,6 +65,8 @@ class SMPost(models.Model):
             return self.post_statuses.SEND_ERROR
         elif self.sent:
             return self.post_statuses.SENT
+        elif self.sending:
+            return self.post_statuses.SENDING
         elif self.pub_date == None:
             return self.post_statuses.NO_PUB_DATE
         elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook) and self.pub_date and self.pub_time and self.section:
@@ -86,6 +88,7 @@ class SMPost(models.Model):
             self.post_statuses.DRAFT : "Draft",
             self.post_statuses.NO_PUB_DATE : "No date",
             self.post_statuses.NO_SECTION : "No section",
+            self.post_statuses.SENDING : "Sending...",
         }[self.post_status()]
     
     # Returns a 2-tuple with (canonical URL, sending URL)

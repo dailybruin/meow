@@ -53,7 +53,7 @@ $(document).ready(function(){
         </thead>
         <tbody>
             {% for post in smposts %}
-                <tr class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}{% if post.post_status == 3 %}ready {% endif %}{% if post.post_status == 1 %}sent-error {% endif %}{% if post.post_status == 5 %}copy-edited{% endif %}">
+                <tr class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}{% if post.post_status == 3 %}ready {% endif %}{% if post.post_status == 1 %}sent-error {% endif %}{% if post.post_status == 5 %}copy-edited {% endif %}{% if post.sending %}sending {% endif %}">
                     <td><a href="/edit/{{ post.id }}/"><i class="foundicon-edit"></i></a></td>
                     <td><a href="/edit/{{ post.id }}/">{{ post.slug }}</a></td>
                     <td class="section-column">{{ post.section }}</td>
