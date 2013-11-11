@@ -6,6 +6,7 @@ import bitly_api
 import urllib2
 from bs4 import BeautifulSoup
 import HTMLParser
+import urllib
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)

@@ -119,12 +119,12 @@ def edit(request, post_id, post=None):
             "mtype":"status",
         }
         
-        if not can_edit_post(request.user, post):
-            message['mtext'] = "You do not have permission to edit this post"
-        
-        elif post.sent:
+        if post.sent:
             message['mtext'] = "This post has already been sent and cannot be edited"
         
+        elif not can_edit_post(request.user, post):
+            message['mtext'] = "You do not have permission to edit this post"
+                
         elif post.sending:
             message['mtext'] = "This post is currently sending and cannot be edited"
         
@@ -141,7 +141,7 @@ def edit(request, post_id, post=None):
     
     message = {}
     if request.method == "POST" and can_edit_post(request.user, post):
-        post.story_url = request.POST.get('url',None)
+        post.story_url = urllib.quote(request.POST.get('url',None).encode('ascii', 'ignore'))
         post.slug = request.POST.get('slug',None)
         try:
             post.section = Section.objects.get(pk=request.POST.get('section',None))
