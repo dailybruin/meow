@@ -5,53 +5,68 @@
 <script type="text/javascript">
 $(document).ready(function(){
     $('#poststable').stupidtable()
+    $('#time-column .time-column').click()
 });
 </script>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    {% include "scheduler/include_header.html" %}
-    
-    <form id="posts-date">
-        <label for="date-change">Displaying posts for...</label>
-        <input type="text" id="date-change" name="date" value="{{ view_date|date:"F j, Y" }}" />
-        <input type="submit" value="Go" />
+{% include "scheduler/include_header.html" %}
+
+<div class="row">
+    <form id="posts-date" class="large-6 columns large-centered">
+        <div class="row collapse">
+            <div class="small-3 columns">
+                <label for="date-change" class="right inline">Posts for</label>
+            </div>
+            <div class="small-7 columns">
+                <input type="text" id="date-change" name="date" value="{{ view_date|date:"F j, Y" }}" />
+            </div>
+            <div class="small-2 columns">
+                <input type="submit" value="Go" class="button prefix" />
+            </div>
+        </div>
     </form><!-- end div#posts-date -->
-    
-    {% if message %}
-    <div class="message-{{ message.mtype }}">
+</div>
+
+{% if message %}
+<div class="row">
+    <div data-alert class="alert-box {{ message.mtype }}">
         {{ message.mtext }}
+        <a href="#" class="close">&times;</a>
     </div>
-    {% endif %}
-    
+</div>
+{% endif %}
+
+<div class="row"><div class="large-12 columns">
     <table id="poststable">
         <thead>
             <tr>
-                <th data-sort="string"></th>
+                <th></th>
                 <th data-sort="string">Slug</th>
-                <th data-sort="string">Section</th>
-                <th data-sort="string">Tweet</th>
-                <th data-sort="string">Facebook post</th>
+                <th data-sort="string" class="section-column">Section</th>
+                <th data-sort="string" class="twitter-column">Tweet</th>
+                <th data-sort="string" class="facebook-column">Facebook post</th>
                 <th data-sort="int" class="time-column">Post time</th>
                 <th data-sort="string">Status</th>
             </tr>
         </thead>
         <tbody>
             {% for post in smposts %}
-            <tr class="{% if post.sent or post.post_status == 3 %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}">
-                <td><a class="btn btn-small" href="/edit/{{ post.id }}/">{% if post.sent or not perms.scheduler.add_edit_post %}View{% else %}Edit{% endif %}</button></td>
-                <td>{{ post.slug }}</td>
-                <td>{{ post.section }}</td>
-                <td>{{ post.post_twitter }}</td>
-                <td>{{ post.post_facebook }}</td>
-                <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
-                <td>{{ post.post_status_string }}</td>
-            </tr>
+                <tr class="{% if post.sent %}sent {% endif %}{% if not post.pub_date %}lost {% endif %}{% if post.post_status == 3 %}ready {% endif %}{% if post.post_status == 1 %}sent-error {% endif %}{% if post.post_status == 5 %}copy-edited{% endif %}">
+                    <td><a href="/edit/{{ post.id }}/"><i class="foundicon-edit"></i></a></td>
+                    <td><a href="/edit/{{ post.id }}/">{{ post.slug }}</a></td>
+                    <td class="section-column">{{ post.section }}</td>
+                    <td class="twitter-column">{{ post.post_twitter }}</td>
+                    <td class="facebook-column">{{ post.post_facebook }}</td>
+                    <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
+                    <td>{{ post.post_status_string }}</td>
+                </tr>
+            </a>
             {% endfor %}
         </tbody>
     </table>
-</div><!-- end div.container -->
+</div></div>
 
 
 {% endblock %}

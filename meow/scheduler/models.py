@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)
@@ -11,6 +12,10 @@ class SMPost(models.Model):
     section = models.ForeignKey('Section', blank=True, null=True)
     pub_ready_copy = models.BooleanField(default=False, help_text="Is this copy-edited?")
     pub_ready_online = models.BooleanField(default=False, help_text="Is this ready to send out?")
+    
+    pub_ready_copy_user = models.ForeignKey(User, blank=True, null=True, related_name='+')
+    pub_ready_online_user = models.ForeignKey(User, blank=True, null=True, related_name='+')
+    last_edit_user = models.ForeignKey(User, blank=True, null=True, related_name='+')
     
     sent = models.BooleanField(default=False, help_text="Sent out? This should never be set manually.")
     sent_time = models.DateTimeField(null=True, blank=True, help_text="What time was it actually sent out?")
@@ -42,6 +47,7 @@ class SMPost(models.Model):
         COPY_EDITED = 5
         DRAFT = 6
         NO_PUB_DATE = 7
+        NO_SECTION = 8
         
     def post_status(self):
         # Please don't change the order of these unless you understand what you're doing
@@ -51,7 +57,7 @@ class SMPost(models.Model):
             return self.post_statuses.SENT
         elif self.pub_date == None:
             return self.post_statuses.NO_PUB_DATE
-        elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook) and self.pub_date and self.pub_time:
+        elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook) and self.pub_date and self.pub_time and self.section:
             return self.post_statuses.READY
         elif self.pub_ready_copy and self.pub_ready_online and (self.post_twitter or self.post_facebook):
             return self.post_statuses.NOT_SCHEDULED
@@ -69,6 +75,7 @@ class SMPost(models.Model):
             self.post_statuses.COPY_EDITED : "Copy-edited",
             self.post_statuses.DRAFT : "Draft",
             self.post_statuses.NO_PUB_DATE : "No date",
+            self.post_statuses.NO_SECTION : "No section",
         }[self.post_status()]
     
 class Section(models.Model):

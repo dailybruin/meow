@@ -15,6 +15,7 @@ class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
 
     def sendTweet(self, smpost, section, bitly_link):
+        print "Send tweet"
         try:
             print smpost.post_twitter.encode('ascii','ignore')
             CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
@@ -46,6 +47,7 @@ class Command(BaseCommand):
         
 
     def sendFacebookPost(self, smpost, section, bitly_link):
+        print "send fb"
         try:
             print smpost.post_facebook.encode('ascii','ignore')
             #follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
@@ -124,6 +126,10 @@ class Command(BaseCommand):
         BITLY_ACCESS_TOKEN = MeowSetting.objects.get(setting_key='bitly_access_token').setting_value
         api=bitly_api.Connection(access_token=BITLY_ACCESS_TOKEN)    
 
+        send_posts = MeowSetting.objects.get(setting_key="send_posts").setting_value
+        if send_posts == "No" or send_posts == "no":
+            print "Post sending is currently off!"
+            return
         # Get posts from the database
         posts = SMPost.objects.filter(
                 pub_date__lte=datetime.now().date()
@@ -135,6 +141,8 @@ class Command(BaseCommand):
                 pub_ready_online=True
             ).exclude(
                 sent=True
+            ).exclude(
+                section=None
             )
         
         for post in posts:
@@ -145,7 +153,7 @@ class Command(BaseCommand):
                 post.log_error(e, post.section)
 
             # Post to facebook
-            if post.post_facebook is not None:
+            if post.post_facebook:
                 # Section's account
                 if (post.section.facebook_page_id and post.section.facebook_key):
                     self.sendFacebookPost(post, post.section, link)
@@ -154,7 +162,7 @@ class Command(BaseCommand):
                     post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
                     self.sendFacebookPost(post, post.section.also_post_to, link)
             # Post to twitter
-            if post.post_twitter is not None:
+            if post.post_twitter:
                 # Section's account
                 if (post.section.twitter_access_key and post.section.twitter_access_secret):
                     self.sendTweet(post, post.section, link)

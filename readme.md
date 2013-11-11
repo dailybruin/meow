@@ -11,7 +11,7 @@ If you want to use [Vagrant](http://www.vagrantup.com/), clone this repo and `va
 Install the required packages:
 
     sudo apt-get update
-    sudo apt-get install python-pip python-setuptools python-dev fabric git postgresql postgresql-server-dev-9.1
+    sudo apt-get install python-pip python-setuptools python-dev fabric git postgresql postgresql-server-dev-9.1 sendmail
 
 ### 2. Create a virtual environment (optional)
 I prefer virtualenvwrapper since virtualenv depends on symlinks and VirtualBox shared folders don't support symlinks.
@@ -80,6 +80,7 @@ Sync the databases through django and create your own superuser:
 
 
 ### 5. Configure meow
+<<<<<<< HEAD
 Right now, meow requires the following settings defined in the settings model. You can input these in the django admin in the "Meow settings" model.
 These are sample values.
 
@@ -92,6 +93,9 @@ These are sample values.
  twitter_character_limit | 117
  bitly_access_token      | ff2g4d50bf7093928d8a5cff9d04gh8a12c1e824
 ```
+=======
+Run `python manage.py init` to configure all settings.
+>>>>>>> zurb
 
 
 ## Running meow
@@ -147,3 +151,10 @@ Page ID: `1416676115217881`
 #### Facebook
 **FakeDB A&E**    
 Page ID: `1415944791959246`
+
+***
+
+## License
+Meow is released under GNU AGPLv3. See `LICENSE` for more details. 
+
+Though not required, if you use this software or would like to contribute to its development, please let us know by emailing us at online@media.ucla.edu. We'd love to know what it's being used for, especially if it's at another college newspaper.

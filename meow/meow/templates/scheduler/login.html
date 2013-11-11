@@ -2,29 +2,31 @@
 
 {% block content %}
 
-<div id="login-form">
-<h1>meow</h1>
+<div class="row">
+    <div id="login-form" class="large-4 columns small-centered">
+    <h1>meow</h1>
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
-
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-{% csrf_token %}
-
-<input id="id_username" maxlength="254" name="username" type="text" placeholder="username" />
-
-<input id="id_password" name="password" type="password" placeholder="password" />
-
-<input type="submit" value="Login" />
-<input type="hidden" name="next" value="{{ next }}" />
+    {% if form.errors %}
+    <p class="alert-box alert">Your username and password didn't match. Please try again.</p>
+    {% endif %}
 
 
-</form>
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+    {% csrf_token %}
+
+    <input id="id_username" maxlength="254" name="username" type="text" placeholder="username" />
+
+    <input id="id_password" name="password" type="password" placeholder="password" />
+
+    <input type="submit" value="Login" class="button expand" />
+    <input type="hidden" name="next" value="{{ next }}" />
 
 
-</div><!-- end div#login-form -->
+    </form>
+
+
+    </div><!-- end div#login-form -->
+</div>
 
 
 <script type="text/javascript">

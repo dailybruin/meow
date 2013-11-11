@@ -5,29 +5,58 @@ h1 {
     color: #0f5a6a;
 }
 
-.col10 { width:10%; }
-.col20 { width:20%; }
-.col30 { width:30%; }
-.col40 { width:40%; }
-.col50 { width:50%; }
-.col60 { width:60%; }
-.col70 { width:70%; }
-.col80 { width:80%; }
-.col90 { width:90%; }
-
-.col10, .col20, .col30, .col40, .col50, .col60, .col70, .col80, .col90 {
-    display:block;
-    float:left;
+input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, textarea:focus {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 
-.left-pad {
-    padding-left:10px;
-}
-.right-pad {
-    padding-right:10px;
+input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea {
+    -webkit-transition: -webkit-box-shadow 0.1s,border-color 0.1s ease-in-out;
+    -moz-transition: -moz-box-shadow 0.1s,border-color 0.1s ease-in-out;
+    transition: box-shadow 0.1s,border-color 0.1s ease-in-out;
 }
 
-input[type="text"], input[type="password"], textarea {
+.alert-box {
+    border-top-width: 3px;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    font-weight:400;
+}
+.alert-box.success {
+    background-color:#f0fbef;
+    color:black;
+}
+.alert-box.alert {
+    background-color:#FBEFEF;
+    color:black;
+}
+
+/* These .message-* rules should be removed */
+.message-success {
+    background-color: #f0fbef;
+    padding: 10px;
+    border-top: 3px solid #25db1d;
+    margin-top: 32px;
+    color:#333;
+}
+.message-status {
+    background-color: #fbfbfb;
+    padding: 10px;
+    border-top: 3px solid #dbdbdb;
+    margin-top: 32px;
+    color:#333;
+}
+.message-fail {
+    background-color: #FBEFEF;
+    padding: 10px;
+    border-top: 3px solid #DB1D5A;
+    margin-top: 32px;
+    color: #333;
+}
+
+input[type="text"], input[type="password"], textarea, input[type="email"] {
     width: 100%;
     -webkit-appearance: none;
     border: 1px solid #ddd;
@@ -37,13 +66,17 @@ input[type="text"], input[type="password"], textarea {
     margin: 15px 0;
     box-sizing: border-box;
 }
+label+input[type="text"], label+input[type="password"], label+textarea, label+input[type="email"] {
+    margin-top:2px;
+}
 
-input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus, input[type="email"]:focus {
     border: 1px solid #1b798d;
     outline: none;
 }
 
-input[type="button"], input[type="submit"], button, .btn {
+input[type="button"], input[type="submit"], button, .button {
     -webkit-appearance: none;
     display:block;
     border: none;
@@ -55,35 +88,38 @@ input[type="button"], input[type="submit"], button, .btn {
     text-decoration:none;
     text-align:center;
 }
-input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover {
+input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:hover {
     background-color:#106b7e;
 }
 
 
 
-.btn-small {
+.button-small {
     text-transform: uppercase;
     font-size: 12px;
     padding: 4px 9px;
 }
 
 .header {
-    height: 16px;
     margin-top: 5px;
-}
-.header-left {
-    float:left;
 }
 .header-right {
     float:right;
+    text-align:right;
 }
 
 #poststable {
     width: 100%;
+    border:none;
+    font-size:1em;
 }
 
 #poststable td {
     padding:10px;
+}
+
+#poststable thead {
+    background-color:transparent;
 }
 
 #poststable thead tr {
@@ -114,8 +150,20 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     min-width:96px;
 }
 
-#poststable tbody .sent {
-    opacity:0.4;
+#poststable tbody .sent td {
+    color:#999;
+}
+#poststable tbody .sent.sent-error td {
+    background-color:#db1d5a;
+    color:white;
+}
+
+#poststable tbody .copy-edited td {
+    color:#a26917;
+}
+
+#poststable tbody .ready td {
+    color:#1dae17;
 }
 
 #poststable tbody .lost {
@@ -128,7 +176,6 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
 
 #poststable tbody {
     color: #333;
-    font-size: 15px;
 }
 
 .header {
@@ -151,18 +198,21 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     line-height:23px;
     text-decoration:none;
 }
-
-.container {
-    width:960px;
-    margin-left:auto;
-    margin-right:auto;
+.meow-manage {
+    opacity:0.5;
+    position: relative;
+    top: 2px;
+    margin-left: 4px;
 }
 
+#new-button {
+    width: 70px;
+    float: right;
+    padding: 0.2em;
+    margin: 0;
+}
 
 #login-form {
-    width: 300px;
-    margin-left: auto;
-    margin-right: auto;
     margin-top:100px;
     margin-bottom:50px;
 }
@@ -194,7 +244,11 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     display: block;
 }
 
-#post-edit label {
+#post-edit textarea {
+    min-height:100px;
+}
+
+#post-edit label, label {
     color: #0f5a6a;
     font-size: 18px;
     font-weight: 200;
@@ -231,6 +285,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     font-size: 24px;
     font-weight: 200;
     letter-spacing: 1px;
+    margin-bottom:10px;
 }
 
 #post-edit label[for="pub_date"] {
@@ -254,7 +309,6 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
 
 #post-edit input[disabled], #post-edit textarea[disabled] {
     border: none;
-    padding-left: 0;
 }
 
 #post-delete input[type="submit"] {
@@ -265,31 +319,10 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     padding: 0;
     margin: 0;
     float: right;
-    margin-top: 16px;
+    margin-top: 0px;
     font-size: 15px;
 }
 
-.message-success {
-    background-color: #f0fbef;
-    padding: 10px;
-    border-top: 3px solid #25db1d;
-    margin-top: 32px;
-    color:#333;
-}
-.message-status {
-    background-color: #fbfbfb;
-    padding: 10px;
-    border-top: 3px solid #dbdbdb;
-    margin-top: 32px;
-    color:#333;
-}
-.message-fail {
-    background-color: #FBEFEF;
-    padding: 10px;
-    border-top: 3px solid #DB1D5A;
-    margin-top: 32px;
-    color: #333;
-}
 
 #tweet.tooLong, input.bad, #tweet.tooLong:focus, input.bad:focus {
     border-color:red;
@@ -306,31 +339,13 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
     top: -10px;
 }
 
-#posts-date {
-    text-align: center;
-    margin-bottom: 14px;
+label[for="date-change"] {
+    margin-right:5px;
+    margin-top: -5px;
 }
-#posts-date #date-change {
-    width: auto;
-    margin: 0;
-    display: inline;
-    padding: 5px;
-    font-size: 19px;
-    border-left:none;
-    border-top:none;
-}
-#posts-date #date-change:focus {
-    border-color:#333;
-}
-#posts-date input[type="submit"] {
-    display: inline-block;
-    margin-left: 5px;
-    border-bottom: none;
-    background-color: #333;
-    margin: 0;
-    padding: 8px;
-    position: relative;
-    left: -4px;
+#date-change {
+    font-size:0.875em;
+    margin:0;
 }
 
 .user-edit .unbold {
@@ -343,12 +358,89 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .btn:hover
 .user-edit h2 {
     margin-top:0;
     color:#0f5a6a;
+    font-size:1.5em;
 }
 
-.user-edit .permission {
-    color:#0f5a6a;
-    text-transform: uppercase;
-    font-size: 11px;
+.user-edit .user-permissions {
+    margin-bottom:10px;
+}
+
+.label.staff {
+    background-color:#803c12;
+    color:#fff;
+}
+.label.super {
+    background-color: #490f6a;
+    color: #fff;
+}
+
+.on-switch-form input[type="submit"] {
+    width:100%;
+}
+
+body {
+    padding-bottom:20px;
+}
+
+.approval-by {
+    font-weight: 200;
+    color: #1b798d;
+    font-size: 0.7em;
+}
+
+#site-message-form #site-message {
+    min-height:100px;
+}
+
+.site-message {
     display: block;
     width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #1b798d;
+    color: white;
 }
+.site-message.alert {
+    background-color:#db1d5a;
+}
+
+[data-abide] .error small.error, [data-abide] span.error, [data-abide] small.error {
+    margin-top:-15px;
+}
+
+#poststable a {
+    color:inherit;
+}
+#poststable a:hover {
+    text-decoration:underline;
+}
+
+/* Very large screens */
+@media only screen and (min-width: 1441px) {  }
+
+/* Medium screens */
+@media only screen and (max-width: 1279px) and (min-width: 768px) { 
+}
+
+/* Small screens */
+@media only screen and (max-width: 767px) { 
+    #poststable .twitter-column, #poststable .facebook-column {
+        display:none;
+    }
+    #poststable {
+        font-size: 0.7em;
+    }
+}
+
+/* Landscape Orientation */
+@media screen and (orientation: landscape) {  }
+
+/* Portrait Orientation */
+@media screen and (orientation: portrait) { 
+    #poststable .section-column {
+        display:none;
+    }
+}
+
+/* Touch Detection */
+.touch .your-class { ... }

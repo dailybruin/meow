@@ -9,6 +9,8 @@
 <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-timepicker.min.js"></script>
 
 <script type="text/javascript">
+var TWITTER_LIMIT = {{ twitter_limit }};
+
 $(document).ready(function(){
     $('#pub_date_today').click(function(e){
         e.preventDefault();
@@ -33,77 +35,122 @@ $(document).ready(function(){
             return false;
         }
     });
+    
+    function checkTweet() {
+        var curLength = $('#tweet').val().length;
+        if(curLength > TWITTER_LIMIT)
+        {
+            $('#tweet').addClass('tooLong')
+            $('#tweet-count').addClass('tooLong')
+        }
+        else
+        {
+            $('#tweet').removeClass('tooLong')
+            $('#tweet-count').removeClass('tooLong')
+        }
+        $('#tweet-count').text(TWITTER_LIMIT - curLength)
+    }
+    $('#tweet').bind('paste keyup blur', checkTweet);
+    checkTweet();
 });
 </script>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    {% include "scheduler/include_header.html" %}
+{% include "scheduler/include_header.html" %}
 
-    {% if message %}
-    <div class="message-{{ message.mtype }}">
-        {{ message.mtext }}
+{% if message %}
+<div class="row">
+    <div class="large-12 columns">
+        <div class="alert-box {{ message.mtype }}">
+            {{ message.mtext }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    {% if post.sent_error %}
+    <div class="large-12 columns">
+        <div class="alert-box alert">
+            <p><strong>This post did not send correctly. Here's the error message:</strong></p>
+            {{ post.sent_error_text }}
+        </div>
     </div>
     {% endif %}
-
+    
     <form id="post-edit" method="post">
         {% csrf_token %}
         {% if post.id %}
             <input type="hidden" name="post_id" value="{{ post.id }}" />
         {% endif %}
+    
+        <div class="large-7 columns">
+            <div class="row">
+                <div class="large-8 columns">
+                    <label for="slug">Slug</label>
+                    <input type="text" id="slug" name="slug" placeholder="slug" value="{{ post.slug }}" disabled />
+                </div>
+                <div class="large-4 columns">
+                    <label for="section">Section</label>
+                    <select id="section" name="section" disabled>
+                        {% if not post.section %}
+                            <option disabled selected>Select a section</option>
+                        {% endif %}
+                        {% for section in sections %}
+                        <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
         
-        <div class="col60"><div class="right-pad">
-            <div class="col70"><div class="right-pad">
-                <label for="slug">Slug</label>
-                <input type="text" id="slug" name="slug" placeholder="None" value="{{ post.slug }}" disabled />
-            </div></div>
-            <div class="col30"><div class="left-pad">
-                <label for="section">Section</label>
-                <select id="section" name="section" disabled>
-                    {% if not post.section %}
-                        <option disabled selected>Select a section</option>
-                    {% endif %}
-                    {% for section in sections %}
-                    <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
-                    {% endfor %}
-                </select>
-            </div></div>
-            
-            <div style="clear:both"></div>
-        
+            </div><!-- end div.row -->
+    
             <label for="url">URL</label>
-            <input type="text" id="url" name="url" placeholder="None" value="{{ post.story_url }}" disabled />
-        
+            <input type="text" id="url" name="url" placeholder="http://" value="{{ post.story_url }}" disabled />
+    
             <label for="tweet">Tweet</label>
-            <textarea type="text" id="tweet" name="tweet" placeholder="None" rows="3" disabled>{{ post.post_twitter }}</textarea>
-        
+            <textarea type="text" id="tweet" name="tweet" placeholder="tweet" rows="3" disabled>{{ post.post_twitter }}</textarea>
+            <div id="tweet-count">{{ twitter_limit }}</div>
+    
             <label for="fb">Facebook post</label>
-            <textarea type="text" id="fb" name="fb" placeholder="None" rows="5" disabled>{{ post.post_facebook }}</textarea>
-        </div></div>
-        
-        <div class="col40"><div class="left-pad">
+            <textarea type="text" id="fb" name="fb" placeholder="post" rows="5" disabled>{{ post.post_facebook }}</textarea>
+        </div>
+    
+        <div class="large-5 columns">
             <fieldset id="prepublish-checks">
                 <div class="prepublish-inside">
-                    <input disabled type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %}/>
+                    <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %} {% if not perms.scheduler.approve_copy %}disabled{% endif %} disabled />
                     <label for="approve-copy">Copy-edited</label>
+                    {% if post.pub_ready_copy_user %}<span class="approval-by">by {{ post.pub_ready_copy_user.first_name }} {{ post.pub_ready_copy_user.last_name }}</span>{% endif %}
                 </div>
                 <div class="prepublish-inside">
-                    <input disabled type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %}/> 
+                    <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %} {% if not perms.scheduler.approve_online %}disabled{% endif %} disabled /> 
                     <label for="approve-online">Ready to publish</label>
+                    {% if post.pub_ready_online_user %}<span class="approval-by">by {{ post.pub_ready_online_user.first_name }} {{ post.pub_ready_online_user.last_name }}</span>{% endif %}
                 </div>
             </fieldset>
-            
+        
             <label for="pub_date">Publish date</label>
-            <input disabled type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" />
-            
+            <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" disabled />
+        
             <label for="pub_time">Publish time</label>
-            <input disabled type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time }}{% endif %}"></input>
-        </div></div>
+            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}" disabled></input>
             
+            {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
+        </div>
+        
     </form>
-    
-</div><!-- end div.container -->
+</div><!-- end div.row -->
+
+{% if post.id and not post.sent %}
+<div class="row">
+    <form id="post-delete" method="post" action="/" class="large-12 columns">
+        {% csrf_token %}
+        <input type="hidden" value="{{ post.id }}" name="post_id_to_delete" />
+        <input type="submit" value="Delete post"></a>
+    </form>
+</div>
+{% endif %}
 
 
 {% endblock %}

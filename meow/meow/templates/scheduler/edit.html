@@ -57,83 +57,93 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    {% include "scheduler/include_header.html" %}
+{% include "scheduler/include_header.html" %}
 
-    {% if message %}
-    <div class="message-{{ message.mtype }}">
-        {{ message.mtext }}
+{% if message %}
+<div class="row">
+    <div class="large-12 columns">
+        <div class="alert-box {{ message.mtype }}">
+            {{ message.mtext }}
+        </div>
     </div>
-    {% endif %}
+</div>
+{% endif %}
 
+<div class="row">
     <form id="post-edit" method="post">
         {% csrf_token %}
         {% if post.id %}
             <input type="hidden" name="post_id" value="{{ post.id }}" />
         {% endif %}
+    
+        <div class="large-7 columns">
+            <div class="row">
+                <div class="large-8 columns">
+                    <label for="slug">Slug</label>
+                    <input type="text" id="slug" name="slug" placeholder="slug" value="{{ post.slug }}" />
+                </div>
+                <div class="large-4 columns">
+                    <label for="section">Section</label>
+                    <select id="section" name="section">
+                        {% if not post.section %}
+                            <option disabled selected>Select a section</option>
+                        {% endif %}
+                        {% for section in sections %}
+                        <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
         
-        <div class="col60"><div class="right-pad">
-            <div class="col70"><div class="right-pad">
-                <label for="slug">Slug</label>
-                <input type="text" id="slug" name="slug" placeholder="slug" value="{{ post.slug }}" />
-            </div></div>
-            <div class="col30"><div class="left-pad">
-                <label for="section">Section</label>
-                <select id="section" name="section">
-                    {% if not post.section %}
-                        <option disabled selected>Select a section</option>
-                    {% endif %}
-                    {% for section in sections %}
-                    <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
-                    {% endfor %}
-                </select>
-            </div></div>
-            
-            <div style="clear:both"></div>
-        
+            </div><!-- end div.row -->
+    
             <label for="url">URL</label>
             <input type="text" id="url" name="url" placeholder="http://" value="{{ post.story_url }}" />
-        
+    
             <label for="tweet">Tweet</label>
             <textarea type="text" id="tweet" name="tweet" placeholder="tweet" rows="3">{{ post.post_twitter }}</textarea>
             <div id="tweet-count">{{ twitter_limit }}</div>
-        
+    
             <label for="fb">Facebook post</label>
             <textarea type="text" id="fb" name="fb" placeholder="post" rows="5">{{ post.post_facebook }}</textarea>
-        </div></div>
-        
-        <div class="col40"><div class="left-pad">
+        </div>
+    
+        <div class="large-5 columns">
             <fieldset id="prepublish-checks">
                 <div class="prepublish-inside">
                     <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %} {% if not perms.scheduler.approve_copy %}disabled{% endif %} />
                     <label for="approve-copy">Copy-edited</label>
+                    {% if post.pub_ready_copy_user %}<span class="approval-by">by {{ post.pub_ready_copy_user.first_name }} {{ post.pub_ready_copy_user.last_name }}</span>{% endif %}
                 </div>
                 <div class="prepublish-inside">
                     <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %} {% if not perms.scheduler.approve_online %}disabled{% endif %} /> 
                     <label for="approve-online">Ready to publish</label>
+                    {% if post.pub_ready_online_user %}<span class="approval-by">by {{ post.pub_ready_online_user.first_name }} {{ post.pub_ready_online_user.last_name }}</span>{% endif %}
                 </div>
             </fieldset>
-            
+        
             <label for="pub_date">Publish date</label>
             <a href="#" class="pub_date_quick" id="pub_date_tomorrow">Tomorrow</a>
             <a href="#" class="pub_date_quick" id="pub_date_today">Today</a>
             <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" />
-            
+        
             <label for="pub_time">Publish time</label>
             <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}"></input>
-            <input type="submit" value="Save" name="submit" />
-        </div></div>
-            
+            <input type="submit" value="Save" name="submit" class="button" />
+            {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
+        </div>
+        
     </form>
-    
-    {% if post.id %}
-    <form id="post-delete" method="post" action="/">
+</div><!-- end div.row -->
+
+{% if post.id and not post.sent %}
+<div class="row">
+    <form id="post-delete" method="post" action="/" class="large-12 columns">
         {% csrf_token %}
         <input type="hidden" value="{{ post.id }}" name="post_id_to_delete" />
         <input type="submit" value="Delete post"></a>
     </form>
-    {% endif %}
-</div><!-- end div.container -->
+</div>
+{% endif %}
 
 
 {% endblock %}
