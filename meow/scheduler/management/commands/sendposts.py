@@ -142,37 +142,50 @@ class Command(BaseCommand):
             )
         
         for post in posts:
-            # Make sure nothing else is trying to send this post right now
-            # This is not atomic; if meow ever scales a lot more, this will need to be re-written
-            if post.sending:
-                continue
-            else:
-                post.sending = True
-                post.save()
+            try:
+                # Make sure nothing else is trying to send this post right now
+                # This is not atomic; if meow ever scales a lot more, this will need to be re-written
+                if post.sending:
+                    continue
+                else:
+                    post.sending = True
+                    post.save()
             
-            # This is just Bitly -- it won't throw any exceptions
-            send_url = post.get_send_url()
+                # This is just Bitly -- it won't throw any exceptions
+                # send_url[0] is canonical. send_url[1] is short url.
+                send_url = post.get_send_url()
                 
-            # Post to facebook
-            if post.post_facebook:
-                # Section's account
-                if (post.section.facebook_page_id and post.section.facebook_key):
-                    self.sendFacebookPost(post, post.section, link)
-                # Also post to account
-                if (post.section.also_post_to and 
-                    post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
-                    self.sendFacebookPost(post, post.section.also_post_to, link)
-            # Post to twitter
-            if post.post_twitter:
-                # Section's account
-                if (post.section.twitter_access_key and post.section.twitter_access_secret):
-                    self.sendTweet(post, post.section, link)
-                # Also post to account
-                if (post.section.also_post_to and 
-                    post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
-                    self.sendTweet(post, post.section.also_post_to, link)
+                # Post to facebook
+                if post.post_facebook:
+                    # Section's account
+                    if (post.section.facebook_page_id and post.section.facebook_key):
+                        self.sendFacebookPost(post, post.section, link)
+                    # Also post to account
+                    if (post.section.also_post_to and 
+                        post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
+                        self.sendFacebookPost(post, post.section.also_post_to, link)
+                # Post to twitter
+                if post.post_twitter:
+                    # Section's account
+                    if (post.section.twitter_access_key and post.section.twitter_access_secret):
+                        self.sendTweet(post, post.section, link)
+                    # Also post to account
+                    if (post.section.also_post_to and 
+                        post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
+                        self.sendTweet(post, post.section.also_post_to, link)
+            # These are the only cases we'll retry (4xx, 5xx)
+            except urllib2.HTTPError as e:
+                # We'll only get here for a non-3xx error. Don't send the post out.
+                post.log_error(e, section, True)
+            except:
+                pass
             
-            post.sending = False;        
-            post.sent = True
-            post.sent_time = timezone.now()
-            post.save()
+            # Now save whatever we changed to the post
+            try:    
+                post.sending = False;        
+                post.sent = True
+                post.sent_time = timezone.now()
+                post.save()
+            except:
+                print "Something is very wrong"
+                pass # But we can still try the rest of the posts that are going to be sent

@@ -3,6 +3,9 @@ from datetime import datetime
 from django.contrib.auth.models import User
 import sys
 import bitly_api
+import urllib2
+from bs4 import BeautifulSoup
+import HTMLParser
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)
@@ -10,6 +13,7 @@ class SMPost(models.Model):
     pub_time = models.TimeField(null=True, blank=True)
     story_url = models.URLField(max_length=500, null=True, blank=True)
     story_short_url = models.URLField(max_length=500, null=True, blank=True)
+    featured_image_url = models.URLField(max_length=500, null=True, blank=True)
     post_twitter = models.TextField(null=True, blank=True)
     post_facebook = models.TextField(null=True, blank=True)
     section = models.ForeignKey('Section', blank=True, null=True)
@@ -25,7 +29,7 @@ class SMPost(models.Model):
     sent_time = models.DateTimeField(null=True, blank=True, help_text="What time was it actually sent out?")
     sent_error = models.BooleanField(default=False, blank=False, null=False, help_text="Did the send generate an error?")
     sent_error_text = models.TextField(null=True, blank=True)
-    
+        
     def __unicode__(self):
         return self.slug
     
@@ -116,6 +120,39 @@ class SMPost(models.Model):
         else:
             return (self.story_url, self.story_url)
         
+    # Returns either the photo's URL or None
+    # In this process it checks whether or not the URL is valid. An exception will be thrown
+    #  if it is not valid
+    def get_post_photo_url(self):
+        if not self.story_url:
+            return None
+        if self.featured_image_url:
+            return self.featured_image_url
+        # Get the post HTML
+        try:
+            usock = urllib2.urlopen(self.story_url)
+            post_html = usock.read()
+            usock.close()
+        except urllib2.HTTPError as e:
+            # Not ideal, but if there's a redirect, let's not handle it and show the default image
+            if e.code >= 300 and e.code < 400:
+                return None
+        
+        post_dom = BeautifulSoup(post_html)
+        post_image_tag = post_dom.find('img', "wp-post-image")
+    
+        # Detect if the post has an actual image/src we can use (why not be too careful)
+        post_image_url = None
+        if post_image_tag is not None:
+            post_image_url = post_image_tag.attrs['data-lazy-src']
+            if post_image_url is None:
+                post_image_tag.attrs['src']
+        
+        if post_image_url:
+            self.featured_image_url = post_image_url
+            self.save()
+                
+        return post_image_url
         
     
 class Section(models.Model):
