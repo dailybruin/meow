@@ -7,6 +7,7 @@ import urllib2
 from bs4 import BeautifulSoup
 import HTMLParser
 import urllib
+from django.core.mail import send_mail
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)
@@ -45,7 +46,36 @@ class SMPost(models.Model):
         self.sent_error = True
         self.sent_error_text = str(self.sent_error_text) + "Error: " + str(section.name) + " " + str(datetime.now()) + " -- " + str(e) + "\n"
         self.save()
-        #TODO implement send_email
+        
+        if not send_email:
+            return
+        
+        addresses_to_notify = EmailNotification.objects.all()
+        for email in addresses_to_notify:
+            try:
+                email_message = """
+{name},
+
+A post on meow did not send. Log in at {site_url} to check out the posts from today to see what went wrong.
+
+Here is the error message:
+
+Time: {time}
+Section: {section}
+{error}
+
+--
+Thanks,
+{organization_name}
+                """
+                site_url = MeowSetting.objects.get(setting_key='site_url').setting_value
+                organization_name = MeowSetting.objects.get(setting_key='organization_name').setting_value
+                from_email = MeowSetting.objects.get(setting_key='from_email').setting_value
+        
+                email_message = email_message.format(name=email.name, error=str(e), time=str(datetime.now()), section=str(section.name), site_url=site_url, organization_name=organization_name)
+                send_mail('['+organization_name+'] Meow send error', email_message, from_email, [email.email_address], fail_silently=False)
+            except:
+                pass
         
     # This whole thing is to be able to change the dashboard message without messing with application logic
     #  and to enumerate statuses. Maybe I just like C a little too much.
@@ -178,3 +208,10 @@ class MeowSetting(models.Model):
     
     def __unicode__(self):
         return self.setting_key
+
+class EmailNotification(models.Model):
+    name = models.CharField(max_length=100, blank=False)
+    email_address = models.EmailField(blank=False, unique=True)
+    
+    def __unicode__(self):
+        return self.name + " <" + self.email_address + ">"

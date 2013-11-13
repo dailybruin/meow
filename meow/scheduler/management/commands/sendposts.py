@@ -35,7 +35,7 @@ class Command(BaseCommand):
             api.update_status(tweet)
         
         except tweepy.TweepError as e:
-            smpost.log_error(e, section)
+            smpost.log_error(e, section, True)
         
 
     def sendFacebookPost(self, smpost, section, url, photo_url):
