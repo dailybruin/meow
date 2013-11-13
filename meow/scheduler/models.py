@@ -75,6 +75,8 @@ Thanks,
                 email_message = email_message.format(name=email.name, error=str(e), time=str(datetime.now()), section=str(section.name), site_url=site_url, organization_name=organization_name)
                 send_mail('['+organization_name+'] Meow send error', email_message, from_email, [email.email_address], fail_silently=False)
             except:
+                # We never want a failed email to cause any other errors
+                # So stop exceptions from bubbling here
                 pass
         
     # This whole thing is to be able to change the dashboard message without messing with application logic
