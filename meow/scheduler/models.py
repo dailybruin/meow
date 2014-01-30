@@ -173,6 +173,8 @@ Thanks,
             # Not ideal, but if there's a redirect, let's not handle it and show the default image
             if e.code >= 300 and e.code < 400:
                 return None
+            elif e.code == 404:
+                raise e;
         
         post_dom = BeautifulSoup(post_html)
         post_image_tag = post_dom.find('img', "wp-post-image")
