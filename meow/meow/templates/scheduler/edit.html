@@ -12,6 +12,38 @@
 var TWITTER_LIMIT = {{ twitter_limit }};
 
 $(document).ready(function(){
+    var ready_to_publish = $('#approve-online').prop('checked');
+    // If enable is true, the ready to publish checkbox will be unchecked and disabled
+    // but the user will still be able to save.
+    function publish_status(enable)
+    {
+        if(!$('#approve-online').prop('disabled'))
+            ready_to_publish = $('#approve-online').prop('checked');
+        if(enable)
+        {
+            $('#approve-online').prop('disabled',false);
+            $('#approve-online').prop('checked', ready_to_publish);
+        }
+        else
+        {
+            $('#approve-online').prop('disabled',true);
+            $('#approve-online').prop('checked',false);
+        }
+    }
+    $('#url').keyup(function(){
+        var this_url = $(this).val();
+        if(this_url.trim().indexOf(" ") >= 0 || this_url.trim().indexOf('"') >= 0)
+        {
+            $(this).addClass('bad');
+            publish_status(false);
+        }
+        else
+        {
+            $(this).removeClass('bad');
+            publish_status(true);
+        }
+    });
+    $('#url').keyup();
     $('#pub_date_today').click(function(e){
         e.preventDefault();
         $('#pub_date').val('Today')
