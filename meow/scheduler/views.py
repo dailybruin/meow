@@ -141,7 +141,14 @@ def edit(request, post_id, post=None):
     
     message = {}
     if request.method == "POST" and can_edit_post(request.user, post):
-        post.story_url = request.POST.get('url',None).encode('ascii', 'ignore')
+        post.story_url = request.POST.get('url',None).encode('ascii', 'ignore').strip(" \t\n\r")
+        if len(post.story_url) > 4 and post.story_url[0:4] != "http":
+            try:
+                index_of_protocol = post.story_url.index("://")
+                if index_of_protocol <= 5:
+                    post.story_url = "http" + post.story_url[post.story_url.index("://"):]
+            except:
+                post.story_url = "http://" + post.story_url
         post.slug = request.POST.get('slug',None)
         try:
             post.section = Section.objects.get(pk=request.POST.get('section',None))
