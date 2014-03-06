@@ -4,7 +4,7 @@ import tweepy
 from facepy import GraphAPI
 from facepy.exceptions import *
 from scheduler.models import *
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
 import urllib2
 from bs4 import BeautifulSoup
@@ -122,6 +122,25 @@ class Command(BaseCommand):
                 else:
                     post.sending = True
                     post.save()
+
+                # Make sure this post should actually be sent out. If it's more than
+                # 20 minutes late, we're gonna mark it as an error and send an error
+                # message.
+                send_date = datetime.combine(post.pub_date, post.pub_time)
+                send_grace_period = timedelta(minutes=20)
+                if (datetime.now() - send_date) > send_grace_period:
+                    try: 
+                        post.sending = False
+                        post.log_error("Would have sent more than 20 minutes late.", post.section, True)
+                        post.sending = False;        
+                        post.sent = True
+                        post.sent_time = timezone.now()
+                        post.save()
+                    except:
+                        print "Something is very wrong2"
+                        pass # But we can still try the rest of the posts that are going to be sent
+                    continue
+
             
                 # This is just Bitly -- it won't throw any exceptions
                 # send_url[0] is canonical. send_url[1] is short url.
