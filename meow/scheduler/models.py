@@ -210,6 +210,7 @@ class Section(models.Model):
     facebook_key = models.CharField(max_length=500, null=True, blank=True, help_text="<a target='_blank' href='http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page'>Instructions here</a>")
     facebook_page_id = models.CharField(max_length=200, null=True, blank=True)
     image_selector = models.CharField(max_length=200, null=True, blank=True)
+    facebook_default_photo = models.CharField(max_length=500, null=True, blank=True)
     
     def __unicode__(self):
         return self.name

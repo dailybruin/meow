@@ -38,7 +38,7 @@ class Command(BaseCommand):
             smpost.log_error(e, section, True)
         
 
-    def sendFacebookPost(self, smpost, section, url, photo_url):
+    def sendFacebookPost(self, smpost, section, url, photo_url, fb_default_photo):
         try:
             print smpost.post_facebook.encode('ascii','ignore')
             #follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
@@ -57,7 +57,7 @@ class Command(BaseCommand):
             PAGE_ID = section.facebook_page_id
 
             ### Now actually post to Facebook
-        
+            
             if photo_url and url:
                 graph.post(
                     path = PAGE_ID+'/photos',
@@ -73,19 +73,17 @@ class Command(BaseCommand):
                     source = urllib2.urlopen(photo_url),
                 )
             elif url:
-                DEFAULT_PHOTO = MeowSetting.objects.get(setting_key='fb_default_photo').setting_value
                 graph.post(
                     path = PAGE_ID+'/feed',
                     message = smpost.post_facebook,
                     link = url,
-                    picture = DEFAULT_PHOTO,
+                    picture = fb_default_photo,
                 )
             else:
-                DEFAULT_PHOTO = MeowSetting.objects.get(setting_key='fb_default_photo').setting_value
                 graph.post(
                     path = PAGE_ID+'/feed',
                     message = smpost.post_facebook,
-                    picture = DEFAULT_PHOTO,
+                    picture = fb_default_photo,
                 )
         
         except (FacepyError, FacebookError, OAuthError, SignedRequestError, urllib2.URLError, urllib2.HTTPError) as e:
@@ -148,16 +146,25 @@ class Command(BaseCommand):
                 
                 # This will throw an error if the page cannot be reached
                 photo_url = post.get_post_photo_url()
+
+                # Get the default fb photo and pass it to the send function
+                # so the same default photo gets posted everywhere
+                fb_default_photo = None
+                if post.section.facebook_default_photo:
+                    fb_default_photo = post.section.facebook_default_photo
+                else:
+                    fb_default_photo = MeowSetting.objects.get(setting_key='fb_default_photo').setting_value
+                
                 
                 # Post to facebook
                 if post.post_facebook:
                     # Section's account
                     if (post.section.facebook_page_id and post.section.facebook_key):
-                        self.sendFacebookPost(post, post.section, send_url[1], photo_url)
+                        self.sendFacebookPost(post, post.section, send_url[1], photo_url, fb_default_photo)
                     # Also post to account
                     if (post.section.also_post_to and 
                         post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
-                        self.sendFacebookPost(post, post.section.also_post_to, send_url[1], photo_url)
+                        self.sendFacebookPost(post, post.section.also_post_to, send_url[1], photo_url, fb_default_photo)
                 # Post to twitter
                 if post.post_twitter:
                     # Section's account
