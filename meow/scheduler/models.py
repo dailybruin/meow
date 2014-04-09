@@ -177,14 +177,21 @@ Thanks,
                 raise e;
         
         post_dom = BeautifulSoup(post_html)
-        post_image_tag = post_dom.find('img', "wp-post-image")
+        if self.section.image_selector:
+            image_selector = self.section.image_selector
+        else:
+            image_selector = MeowSetting.objects.get(setting_key='default_image_selector').setting_value
+        
+        post_image_tags = post_dom.select(image_selector)
     
         # Detect if the post has an actual image/src we can use (why not be too careful)
         post_image_url = None
-        if post_image_tag is not None:
-            post_image_url = post_image_tag.attrs['data-lazy-src']
-            if post_image_url is None:
-                post_image_tag.attrs['src']
+        if post_image_tags:
+            post_image_attrs = post_image_tags[0].attrs
+            if 'data-lazy-src' in post_image_attrs:
+                post_image_url = post_image_attrs['data-lazy-src']
+            else:
+                post_image_url = post_image_attrs['src']
         
         if post_image_url:
             self.featured_image_url = post_image_url
@@ -202,6 +209,7 @@ class Section(models.Model):
     twitter_access_secret = models.CharField(max_length=500, null=True, blank=True)
     facebook_key = models.CharField(max_length=500, null=True, blank=True, help_text="<a target='_blank' href='http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page'>Instructions here</a>")
     facebook_page_id = models.CharField(max_length=200, null=True, blank=True)
+    image_selector = models.CharField(max_length=200, null=True, blank=True)
     
     def __unicode__(self):
         return self.name

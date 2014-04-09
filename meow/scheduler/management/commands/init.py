@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group, Permission
 
 
 class Command(BaseCommand):
-    help = "Sends the appropriate social media posts"
+    help = "Sets default database settings"
     
     def set_preference(self, machine_name, human_name, default=""):
         if MeowSetting.objects.filter(setting_key=machine_name).count() > 0:
@@ -29,9 +29,10 @@ class Command(BaseCommand):
         self.set_preference("bitly_access_token", "Bit.ly access token")
         self.set_preference("site_url", "Meow URL", "http://meow.dailybruin.com")
         self.set_preference("organization_name", "Organization Name", "Daily Bruin Online")
-        self.set_preference("from_email", "Email (from):", "noreply@dailybruin.com")
+        self.set_preference("from_email", "Email (from)", "noreply@dailybruin.com")
         self.set_preference("send_posts","Send posts","Yes")
         self.set_preference("site_message","Site message (blank)")
+        self.set_preference("default_image_selector", "Default featured image selector", "img.wp-post-image")
         
         # Configure gruops
         if Group.objects.filter(name='Editors').count() == 0:
