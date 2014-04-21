@@ -96,6 +96,13 @@ If you want to run it on a different port, the fabric command takes an argument.
 
 will listen on port 2000.
 
+### 6. Configure sections
+Use the default Django admin (http://[YOUR_URL]/admin) to add a Section object. To find Twitter access keys/tokens, use the instructions at
+
+    python manage.py twitter_auth
+
+and to find the Facebook tokens, [use these instructions](http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page).
+
 ## Sending tweets
 Tweets are sent through a management command. In `meow/`, execute:
 
