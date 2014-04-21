@@ -1,6 +1,6 @@
 Django==1.5.2
 psycopg2==2.5.1
-tweepy==2.1
+tweepy==2.2
 facepy==0.8.4
 beautifulsoup4==4.3.1
 South==0.8.2
