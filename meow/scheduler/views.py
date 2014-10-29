@@ -241,6 +241,7 @@ def add(request):
     return render(request, 'scheduler/edit.html', context)
     
     
+# TODO: Can add_user is not a proper permission for this lol
 def can_manage(user):
     return user.has_perm('add_user')    
 @user_passes_test(can_manage)
