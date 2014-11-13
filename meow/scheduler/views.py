@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.contrib.auth.models import User, Group
+import tweepy
 import sys
 
 
@@ -67,6 +68,7 @@ def user_settings(request):
 
 @login_required
 def dashboard(request):
+    messages = []
     message = {}
     has_delete_permission = request.user.has_perm('scheduler.add_edit_post')
     if request.method == "POST" and has_delete_permission:
@@ -99,11 +101,18 @@ def dashboard(request):
     lost_posts = SMPost.objects.filter(pub_date=None)
 
     site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+    if request.session.get("message", None):
+        temp_message = request.session.pop("message")
+        messages.append({
+            "mtype" : "success",
+            "mtext" : temp_message,
+        })
+    messages.append(message)
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
         "smposts" : list(chain(tomorrow_posts, lost_posts)),
-        "message" : message,
+        "messages" : messages,
         "view_date" : view_date,
         "site_settings" : get_settings(),
     }
@@ -344,15 +353,84 @@ Thanks,
     
     send_posts = MeowSetting.objects.get(setting_key='send_posts').setting_value
     site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+
+    TWITTER_CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
+    TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
+
+    twitter_auth = tweepy.OAuthHandler(
+        TWITTER_CONSUMER_KEY, 
+        TWITTER_CONSUMER_SECRET,
+        MeowSetting.objects.get(setting_key="site_url").setting_value + "/manage/twitter-connect/"
+    )
+    twitter_auth.secure = True
+    twitter_auth_url = twitter_auth.get_authorization_url()
+    request.session["twitter_auth_token"] = (twitter_auth.request_token.key, 
+        twitter_auth.request_token.secret)
+    request.session.save()
+
     context = {
         "user" : request.user,
         "message" : message,
         "old_fields" : old_fields,
         "send_posts" : send_posts,
         "site_settings" : get_settings(),
+        "twitter_auth_url" : twitter_auth_url,
     }
     return render(request, 'scheduler/manage.html', context)
     
+
+@user_passes_test(can_manage)
+def twitter_connect(request):
+    context = {
+        "user" : request.user,
+        "site_settings" : get_settings(),
+        "sections" : Section.objects.all(),
+    }
+    if request.method == "POST" and request.POST.get("action", None) == "connect":
+        try:
+            TWITTER_CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
+            TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
+            twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+            twitter_auth.secure = True
+            token = request.session['twitter_auth_token']
+            twitter_auth.set_request_token(token[0], token[1])
+            twitter_auth.get_access_token(request.POST.get("verifier", None))
+            section = Section.objects.get(pk=request.POST.get("section_id", None))
+        except:
+            errMessage = sys.exc_info()[0]
+            context["message"] = {
+                "mtype": "alert",
+                "mtext": "Error: Couldn't connect to your account. Try again.",
+            }
+            return render(request, 'scheduler/twitter_connect.html', context)
+
+        section.twitter_access_key = twitter_auth.access_token.key
+        section.twitter_access_secret = twitter_auth.access_token.secret
+        section.twitter_account_handle = None
+        section.save()
+        try:
+            # If this fails it doesn't matter; it's just a screen name
+            api = tweepy.API(twitter_auth)
+            screen_name = api.me().screen_name
+            section.twitter_account_handle = screen_name
+            section.save()
+        except:
+            pass
+        request.session["message"] = "Twitter account, @" + screen_name + ", successfully added."
+        request.session.save()
+        return redirect("/")
+
+    else:
+        token = request.GET.get("oauth_token", None)
+        verifier = request.GET.get("oauth_verifier", None)
+        message = {}
+        if not (token and verifier):
+            message["mtype"] = "alert"
+            message["mtext"] = "Connection to Twitter failed; try again and be sure to authorize the application."
+        context["message"] = message
+        context["token"] = token
+        context["verifier"] = verifier
+        return render(request, 'scheduler/twitter_connect.html', context)
 
 def logout(request):
     return logout(request)

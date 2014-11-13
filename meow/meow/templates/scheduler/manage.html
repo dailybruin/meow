@@ -120,6 +120,17 @@
                 </form>
             </div>
         </section>
+        <section>
+            <p class="title" data-section-title><a href="#panel3">Twitter/Facebook accounts</a></p>
+            <div class="content" data-section-content>
+                <form id="site-message-form" method="post" data-abide>
+                    <h3>Twitter/Facebook accounts</h3>
+                    <p>Use the buttons below to connect a new Twitter or Facebook account to meow.</p>
+                    {% csrf_token %}
+                    <a href="{{ twitter_auth_url }}">Connect with Twitter</a>
+                </form>
+            </div>
+        </section>
     </div>
 </div></div>
 
