@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^add/$', views.add, name="add"),
     url(r'^settings/$', views.user_settings, name="settings"),
     url(r'^manage/twitter-connect/$', views.twitter_connect, name="twitter_connect"),
+    url(r'^manage/fb-connect/$', views.fb_connect, name="fb_connect"),
     url(r'^manage/$', views.manage, name="manage"),
     url(r'^$', views.dashboard, name='dashboard'),
 )

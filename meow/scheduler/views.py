@@ -11,6 +11,8 @@ from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.contrib.auth.models import User, Group
 import tweepy
+import facepy
+import re
 import sys
 
 
@@ -368,6 +370,9 @@ Thanks,
         twitter_auth.request_token.secret)
     request.session.save()
 
+    fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
+    url = MeowSetting.objects.get(setting_key="site_url").setting_value
+
     context = {
         "user" : request.user,
         "message" : message,
@@ -375,6 +380,8 @@ Thanks,
         "send_posts" : send_posts,
         "site_settings" : get_settings(),
         "twitter_auth_url" : twitter_auth_url,
+        "fb_app_id" : fb_app_id,
+        "url" : url,
     }
     return render(request, 'scheduler/manage.html', context)
     
@@ -432,5 +439,72 @@ def twitter_connect(request):
         context["verifier"] = verifier
         return render(request, 'scheduler/twitter_connect.html', context)
 
+@user_passes_test(can_manage)
+def fb_connect(request):
+    context = {
+        "user" : request.user,
+        "site_settings" : get_settings(),
+        "sections" : Section.objects.all(),
+    }
+    # Process after selecting section/page
+    if request.method == "POST" and request.POST.get("action", None) == "connect":
+        try:
+            pages_info = request.session.pop("fb_pages_info")
+            page_id = request.POST.get("page_id")
+            for page_info in pages_info:
+                if page_info["id"] == page_id:
+                    page_token = page_info["access_token"]
+                    page_name = page_info["name"]
+            section = Section.objects.get(pk=request.POST.get("section_id", None))
+            section.facebook_page_id = page_id
+            section.facebook_account_handle = page_name
+            section.facebook_key = page_token
+            section.save()
+        except:
+            # TODO: make this have a red color
+            request.session["message"] = "ERROR: Could not connect. Try again"
+        
+        request.session["message"] = "Successfully linked Facebook page " + page_name + " to section " + section.name
+        request.session.save()
+        return redirect("/")
+
+    # Print an error or print the form
+    else:
+        token = ""
+        pages_info = {}
+
+        try:
+            code = request.GET.get("code", None)
+            fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
+            site_url = MeowSetting.objects.get(setting_key="site_url").setting_value
+            fb_app_secret = MeowSetting.objects.get(setting_key="fb_app_secret").setting_value
+            request_endpoint = "https://graph.facebook.com/oauth/access_token?client_id="+fb_app_id+"&redirect_uri="+site_url+"/manage/fb-connect/&client_secret="+fb_app_secret+"&code="+code
+            response = urllib2.urlopen(request_endpoint).read()
+            regex = re.search("access_token=([^&]*)($|&$|&.+)$", response)
+            token = regex.group(1)
+            extended_token = facepy.utils.get_extended_access_token(token, fb_app_id, fb_app_secret)
+            api = facepy.GraphAPI(oauth_token=extended_token[0])
+            raw_pages_info = api.get("/me/accounts/")
+            pages_info = []
+            for page in raw_pages_info[u'data']:
+                page_info = {
+                    'access_token': page[u'access_token'],
+                    'name': page[u'name'],
+                    'id': page[u'id'],
+                }
+                pages_info.append(page_info)
+            request.session["fb_pages_info"] = pages_info
+            request.session.save()
+        except:
+            pass
+
+
+        message = {}
+        if not (pages_info):
+            message["mtype"] = "alert"
+            message["mtext"] = "Connection to Facebook failed; try again and be sure to authorize the application and all its permissions and be sure your account is an administrator on the page."
+        context["message"] = message
+        context["pages"] = pages_info
+        return render(request, 'scheduler/fb_connect.html', context)
 def logout(request):
     return logout(request)
