@@ -13,6 +13,18 @@ $(document).ready(function(){
 {% block content %}
 {% include "scheduler/include_header.html" %}
 
+{% for message in messages %}
+{% if message %}
+<div class="row">
+    <div class="large-12 columns">
+        <div class="alert-box {{ message.mtype }}">
+            {{ message.mtext }}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
 <div class="row">
     <form id="posts-date" class="large-6 columns large-centered">
         <div class="row collapse">

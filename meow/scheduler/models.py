@@ -133,6 +133,8 @@ Thanks,
             return (None,None)
         elif self.story_short_url:
             return (self.story_url, self.story_short_url)
+        elif self.section.shorten_links == False:
+            return(self.story_url, self.story_url)
         
         # Set up for Bitly Goodness
         BITLY_ACCESS_TOKEN = MeowSetting.objects.get(setting_key='bitly_access_token').setting_value
@@ -211,6 +213,7 @@ class Section(models.Model):
     facebook_page_id = models.CharField(max_length=200, null=True, blank=True)
     image_selector = models.CharField(max_length=200, null=True, blank=True)
     facebook_default_photo = models.CharField(max_length=500, null=True, blank=True)
+    shorten_links = models.BooleanField(default=False, null=False, blank=False, help_text="Shorten links using bit.ly?")
     
     def __unicode__(self):
         return self.name

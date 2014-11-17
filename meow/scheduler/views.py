@@ -10,6 +10,9 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.contrib.auth.models import User, Group
+import tweepy
+import facepy
+import re
 import sys
 
 
@@ -67,6 +70,7 @@ def user_settings(request):
 
 @login_required
 def dashboard(request):
+    messages = []
     message = {}
     has_delete_permission = request.user.has_perm('scheduler.add_edit_post')
     if request.method == "POST" and has_delete_permission:
@@ -99,11 +103,18 @@ def dashboard(request):
     lost_posts = SMPost.objects.filter(pub_date=None)
 
     site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+    if request.session.get("message", None):
+        temp_message = request.session.pop("message")
+        messages.append({
+            "mtype" : "success",
+            "mtext" : temp_message,
+        })
+    messages.append(message)
     context = {
         "user" : request.user,
         "sections" : Section.objects.all(),
         "smposts" : list(chain(tomorrow_posts, lost_posts)),
-        "message" : message,
+        "messages" : messages,
         "view_date" : view_date,
         "site_settings" : get_settings(),
     }
@@ -241,6 +252,7 @@ def add(request):
     return render(request, 'scheduler/edit.html', context)
     
     
+# TODO: Can add_user is not a proper permission for this lol
 def can_manage(user):
     return user.has_perm('add_user')    
 @user_passes_test(can_manage)
@@ -343,15 +355,156 @@ Thanks,
     
     send_posts = MeowSetting.objects.get(setting_key='send_posts').setting_value
     site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+
+    TWITTER_CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
+    TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
+
+    twitter_auth = tweepy.OAuthHandler(
+        TWITTER_CONSUMER_KEY, 
+        TWITTER_CONSUMER_SECRET,
+        MeowSetting.objects.get(setting_key="site_url").setting_value + "/manage/twitter-connect/"
+    )
+    twitter_auth.secure = True
+    twitter_auth_url = twitter_auth.get_authorization_url()
+    request.session["twitter_auth_token"] = (twitter_auth.request_token.key, 
+        twitter_auth.request_token.secret)
+    request.session.save()
+
+    fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
+    url = MeowSetting.objects.get(setting_key="site_url").setting_value
+
     context = {
         "user" : request.user,
         "message" : message,
         "old_fields" : old_fields,
         "send_posts" : send_posts,
         "site_settings" : get_settings(),
+        "twitter_auth_url" : twitter_auth_url,
+        "fb_app_id" : fb_app_id,
+        "url" : url,
     }
     return render(request, 'scheduler/manage.html', context)
     
 
+@user_passes_test(can_manage)
+def twitter_connect(request):
+    context = {
+        "user" : request.user,
+        "site_settings" : get_settings(),
+        "sections" : Section.objects.all(),
+    }
+    if request.method == "POST" and request.POST.get("action", None) == "connect":
+        try:
+            TWITTER_CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
+            TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
+            twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+            twitter_auth.secure = True
+            token = request.session['twitter_auth_token']
+            twitter_auth.set_request_token(token[0], token[1])
+            twitter_auth.get_access_token(request.POST.get("verifier", None))
+            section = Section.objects.get(pk=request.POST.get("section_id", None))
+        except:
+            errMessage = sys.exc_info()[0]
+            context["message"] = {
+                "mtype": "alert",
+                "mtext": "Error: Couldn't connect to your account. Try again.",
+            }
+            return render(request, 'scheduler/twitter_connect.html', context)
+
+        section.twitter_access_key = twitter_auth.access_token.key
+        section.twitter_access_secret = twitter_auth.access_token.secret
+        section.twitter_account_handle = None
+        section.save()
+        try:
+            # If this fails it doesn't matter; it's just a screen name
+            api = tweepy.API(twitter_auth)
+            screen_name = api.me().screen_name
+            section.twitter_account_handle = screen_name
+            section.save()
+        except:
+            pass
+        request.session["message"] = "Twitter account, @" + screen_name + ", successfully added."
+        request.session.save()
+        return redirect("/")
+
+    else:
+        token = request.GET.get("oauth_token", None)
+        verifier = request.GET.get("oauth_verifier", None)
+        message = {}
+        if not (token and verifier):
+            message["mtype"] = "alert"
+            message["mtext"] = "Connection to Twitter failed; try again and be sure to authorize the application."
+        context["message"] = message
+        context["token"] = token
+        context["verifier"] = verifier
+        return render(request, 'scheduler/twitter_connect.html', context)
+
+@user_passes_test(can_manage)
+def fb_connect(request):
+    context = {
+        "user" : request.user,
+        "site_settings" : get_settings(),
+        "sections" : Section.objects.all(),
+    }
+    # Process after selecting section/page
+    if request.method == "POST" and request.POST.get("action", None) == "connect":
+        try:
+            pages_info = request.session.pop("fb_pages_info")
+            page_id = request.POST.get("page_id")
+            for page_info in pages_info:
+                if page_info["id"] == page_id:
+                    page_token = page_info["access_token"]
+                    page_name = page_info["name"]
+            section = Section.objects.get(pk=request.POST.get("section_id", None))
+            section.facebook_page_id = page_id
+            section.facebook_account_handle = page_name
+            section.facebook_key = page_token
+            section.save()
+        except:
+            # TODO: make this have a red color
+            request.session["message"] = "ERROR: Could not connect. Try again"
+        
+        request.session["message"] = "Successfully linked Facebook page " + page_name + " to section " + section.name
+        request.session.save()
+        return redirect("/")
+
+    # Print an error or print the form
+    else:
+        token = ""
+        pages_info = {}
+
+        try:
+            code = request.GET.get("code", None)
+            fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
+            site_url = MeowSetting.objects.get(setting_key="site_url").setting_value
+            fb_app_secret = MeowSetting.objects.get(setting_key="fb_app_secret").setting_value
+            request_endpoint = "https://graph.facebook.com/oauth/access_token?client_id="+fb_app_id+"&redirect_uri="+site_url+"/manage/fb-connect/&client_secret="+fb_app_secret+"&code="+code
+            response = urllib2.urlopen(request_endpoint).read()
+            regex = re.search("access_token=([^&]*)($|&$|&.+)$", response)
+            token = regex.group(1)
+            extended_token = facepy.utils.get_extended_access_token(token, fb_app_id, fb_app_secret)
+            api = facepy.GraphAPI(oauth_token=extended_token[0])
+            raw_pages_info = api.get("/me/accounts/")
+            pages_info = []
+            for page in raw_pages_info[u'data']:
+                page_info = {
+                    'access_token': page[u'access_token'],
+                    'name': page[u'name'],
+                    'id': page[u'id'],
+                }
+                pages_info.append(page_info)
+            request.session["fb_pages_info"] = pages_info
+            request.session.save()
+        except:
+            pass
+
+
+        message = {}
+        if not (pages_info):
+            message["mtype"] = "alert"
+            message["mtext"] = "Connection to Facebook failed; try again and be sure to authorize the application and all its permissions and be sure your account is an administrator on the page."
+        context["message"] = message
+        context["pages"] = pages_info
+        return render(request, 'scheduler/fb_connect.html', context)
 def logout(request):
     return logout(request)

@@ -120,6 +120,24 @@
                 </form>
             </div>
         </section>
+        <section>
+            <p class="title" data-section-title><a href="#panel3">Twitter/Facebook accounts</a></p>
+            <div class="content" data-section-content>
+                <form id="site-message-form" method="post" data-abide>
+                    <h3>Twitter/Facebook accounts</h3>
+                    <p>Use the buttons below to connect a new Twitter or Facebook account to meow.</p>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="large-6 columns">
+                            <a href="{{ twitter_auth_url }}" class="button">Connect with Twitter</a>
+                        </div>
+                        <div class="large-6 columns">
+                            <a class="button" href="https://www.facebook.com/dialog/oauth?client_id={{ fb_app_id }}&redirect_uri={{url}}/manage/fb-connect/&scope=manage_pages,publish_actions&response_type=code">Connect with Facebook</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
     </div>
 </div></div>
 

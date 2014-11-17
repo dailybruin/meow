@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "scheduler/include_header.html" %}
+
+{% if message %}
+<div class="row">
+    <div class="large-12 columns">
+        <div class="alert-box {{ message.mtype }}">
+            {{ message.mtext }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    {# Choose section #}
+    {% if token and verifier %}
+    <div class="large-4 large-offset-4 columns">
+        <h3>Connect with Twitter</h3>
+        <p>Which section would you like to connect this Twitter account to?</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="token" value="{{ token }}" />
+            <input type="hidden" name="verifier" value="{{ verifier }}" />
+            <input type="hidden" name="action" value="connect" />
+            <select name="section_id">
+                <option selected disabled>Choose a section</option>
+                {% for section in sections %}
+                <option value="{{ section.id }}">{{ section.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Connect" name="connect" class="button" />
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
