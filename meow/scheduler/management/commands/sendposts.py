@@ -93,7 +93,6 @@ class Command(BaseCommand):
                 graph.post(
                     path = PAGE_ID+'/feed',
                     message = smpost.post_facebook,
-                    picture = fb_default_photo,
                 )
         
         except (FacepyError, FacebookError, OAuthError, SignedRequestError, requests.exceptions.RequestException) as e:
