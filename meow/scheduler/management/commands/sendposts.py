@@ -8,7 +8,7 @@ from facepy.exceptions import *
 from scheduler.models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
-import urllib2
+import requests
 from bs4 import BeautifulSoup
 import HTMLParser
 
@@ -35,11 +35,11 @@ class Command(BaseCommand):
                 tweet = tweet + " " + url
 
             if photo_url is not None:
-                photo_source = urllib2.urlopen(photo_url)
+                photo_source = requests.get(photo_url)
                 filename = re.search("/([^/]*)$", photo_url).group(1)
                 # io is needed to make an actual file object (tweepy requires
                 # the seek method on the file object)
-                photo_fd = io.BytesIO(photo_source.read())
+                photo_fd = io.BytesIO(photo_source.content)
                 api.update_with_media(filename, tweet, file=photo_fd)
             else:
                 api.update_status(status=tweet)
@@ -73,14 +73,14 @@ class Command(BaseCommand):
                     path = PAGE_ID+'/photos',
                     message = smpost.post_facebook + "\n\nRead more: " + url,
                     type= "photo",
-                    source = urllib2.urlopen(photo_url),
+                    source = io.BytesIO(requests.get(photo_url).content),
                 )
             elif photo_url:
                 graph.post(
                     path = PAGE_ID+'/photos',
                     message = smpost.post_facebook,
                     type= "photo",
-                    source = urllib2.urlopen(photo_url),
+                    source = io.BytesIO(requests.get(photo_url).content),
                 )
             elif url:
                 graph.post(
@@ -96,7 +96,7 @@ class Command(BaseCommand):
                     picture = fb_default_photo,
                 )
         
-        except (FacepyError, FacebookError, OAuthError, SignedRequestError, urllib2.URLError, urllib2.HTTPError) as e:
+        except (FacepyError, FacebookError, OAuthError, SignedRequestError, requests.exceptions.RequestException) as e:
             smpost.log_error(e, section, True)
 
     def handle(self, *args, **options):
@@ -184,10 +184,6 @@ class Command(BaseCommand):
                     if (post.section.also_post_to and 
                         post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
                         self.sendTweet(post, post.section.also_post_to, send_url[1], photo_url)
-            # These are the only cases we'll retry (4xx, 5xx)
-            except urllib2.HTTPError as e:
-                # We'll only get here for a non-3xx error. Don't send the post out.
-                post.log_error(e, post.section, True)
             except:
                 # Something wrong happened. Don't send this post.
                 e = sys.exc_info()[0]

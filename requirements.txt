@@ -6,3 +6,4 @@ beautifulsoup4==4.3.1
 South==0.8.2
 parsedatetime==1.1.2
 bitly_api==0.3
+requests>=2.5.3

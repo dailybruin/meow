@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 import sys
 import bitly_api
-import urllib2
+import requests
 from bs4 import BeautifulSoup
 import HTMLParser
 import urllib
@@ -167,18 +167,18 @@ Thanks,
         if self.featured_image_url:
             return self.featured_image_url
         # Get the post HTML
-        try:
-            usock = urllib2.urlopen(self.story_url)
-            post_html = usock.read()
-            usock.close()
-        except urllib2.HTTPError as e:
-            # Not ideal, but if there's a redirect, let's not handle it and show the default image
-            if e.code >= 300 and e.code < 400:
-                return None
-            elif e.code == 404:
-                raise e;
+        post_request = requests.get(self.story_url)
+        if post_request.status_code != 200:
+            # We only want to continue if we actually got a 200 status code.
+            # (Requests takes care of redirects and sets the final status_code
+            # to 200 if everying went swimmingly.)
+            error = ("HTTP Error: Got status code " + str(post_request.status_code) +
+                     " while requesting URL: " + str(self.story_url))
+            self.log_error(error, self.section, True)
+            raise BaseException(error)
+            return None
         
-        post_dom = BeautifulSoup(post_html)
+        post_dom = BeautifulSoup(post_request.text)
         if self.section.image_selector:
             image_selector = self.section.image_selector
         else:
