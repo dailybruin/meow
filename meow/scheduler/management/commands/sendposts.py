@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
             if photo_url is not None:
                 photo_source = requests.get(photo_url)
-                filename = re.search("/([^/]*)$", photo_url).group(1)
+                filename = re.search("/([^/]*)$", photo_source.url).group(1)
                 # io is needed to make an actual file object (tweepy requires
                 # the seek method on the file object)
                 photo_fd = io.BytesIO(photo_source.content)
