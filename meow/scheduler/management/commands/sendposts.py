@@ -1,19 +1,21 @@
 from django.core.management.base import BaseCommand, CommandError
 from scheduler.models import *
 import tweepy
+import re
+import io
 from facepy import GraphAPI
 from facepy.exceptions import *
 from scheduler.models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
-import urllib2
+import requests
 from bs4 import BeautifulSoup
 import HTMLParser
 
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
 
-    def sendTweet(self, smpost, section, url):
+    def sendTweet(self, smpost, section, url, photo_url):
         try:
             print smpost.post_twitter.encode('ascii','ignore')
             CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
@@ -31,8 +33,16 @@ class Command(BaseCommand):
 
             if url is not None:
                 tweet = tweet + " " + url
-        
-            api.update_status(tweet)
+
+            if photo_url is not None:
+                photo_source = requests.get(photo_url)
+                filename = re.search("/([^/]*)$", photo_source.url).group(1)
+                # io is needed to make an actual file object (tweepy requires
+                # the seek method on the file object)
+                photo_fd = io.BytesIO(photo_source.content)
+                api.update_with_media(filename, tweet, file=photo_fd)
+            else:
+                api.update_status(status=tweet)
         
         except tweepy.TweepError as e:
             smpost.log_error(e, section, True)
@@ -63,14 +73,14 @@ class Command(BaseCommand):
                     path = PAGE_ID+'/photos',
                     message = smpost.post_facebook + "\n\nRead more: " + url,
                     type= "photo",
-                    source = urllib2.urlopen(photo_url),
+                    source = io.BytesIO(requests.get(photo_url).content),
                 )
             elif photo_url:
                 graph.post(
                     path = PAGE_ID+'/photos',
                     message = smpost.post_facebook,
                     type= "photo",
-                    source = urllib2.urlopen(photo_url),
+                    source = io.BytesIO(requests.get(photo_url).content),
                 )
             elif url:
                 graph.post(
@@ -83,10 +93,9 @@ class Command(BaseCommand):
                 graph.post(
                     path = PAGE_ID+'/feed',
                     message = smpost.post_facebook,
-                    picture = fb_default_photo,
                 )
         
-        except (FacepyError, FacebookError, OAuthError, SignedRequestError, urllib2.URLError, urllib2.HTTPError) as e:
+        except (FacepyError, FacebookError, OAuthError, SignedRequestError, requests.exceptions.RequestException) as e:
             smpost.log_error(e, section, True)
 
     def handle(self, *args, **options):
@@ -169,15 +178,11 @@ class Command(BaseCommand):
                 if post.post_twitter:
                     # Section's account
                     if (post.section.twitter_access_key and post.section.twitter_access_secret):
-                        self.sendTweet(post, post.section, send_url[1])
+                        self.sendTweet(post, post.section, send_url[1], photo_url)
                     # Also post to account
                     if (post.section.also_post_to and 
                         post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
-                        self.sendTweet(post, post.section.also_post_to, send_url[1])
-            # These are the only cases we'll retry (4xx, 5xx)
-            except urllib2.HTTPError as e:
-                # We'll only get here for a non-3xx error. Don't send the post out.
-                post.log_error(e, post.section, True)
+                        self.sendTweet(post, post.section.also_post_to, send_url[1], photo_url)
             except:
                 # Something wrong happened. Don't send this post.
                 e = sys.exc_info()[0]
