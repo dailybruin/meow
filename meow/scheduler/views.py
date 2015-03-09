@@ -366,8 +366,7 @@ Thanks,
     )
     twitter_auth.secure = True
     twitter_auth_url = twitter_auth.get_authorization_url()
-    request.session["twitter_auth_token"] = (twitter_auth.request_token.key, 
-        twitter_auth.request_token.secret)
+    request.session["twitter_auth_token"] = twitter_auth.request_token
     request.session.save()
 
     fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
@@ -400,7 +399,7 @@ def twitter_connect(request):
             twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
             twitter_auth.secure = True
             token = request.session['twitter_auth_token']
-            twitter_auth.set_request_token(token[0], token[1])
+            twitter_auth.request_token = token
             twitter_auth.get_access_token(request.POST.get("verifier", None))
             section = Section.objects.get(pk=request.POST.get("section_id", None))
         except:
@@ -411,8 +410,8 @@ def twitter_connect(request):
             }
             return render(request, 'scheduler/twitter_connect.html', context)
 
-        section.twitter_access_key = twitter_auth.access_token.key
-        section.twitter_access_secret = twitter_auth.access_token.secret
+        section.twitter_access_key = twitter_auth.access_token
+        section.twitter_access_secret = twitter_auth.access_token_secret
         section.twitter_account_handle = None
         section.save()
         try:

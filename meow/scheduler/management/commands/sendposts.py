@@ -22,7 +22,7 @@ class Command(BaseCommand):
             CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
             ACCESS_KEY = section.twitter_access_key
             ACCESS_SECRET = section.twitter_access_secret
-        
+
             auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
             auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
         
