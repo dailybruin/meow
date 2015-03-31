@@ -478,7 +478,7 @@ def fb_connect(request):
             site_url = MeowSetting.objects.get(setting_key="site_url").setting_value
             fb_app_secret = MeowSetting.objects.get(setting_key="fb_app_secret").setting_value
             request_endpoint = "https://graph.facebook.com/oauth/access_token?client_id="+fb_app_id+"&redirect_uri="+site_url+"/manage/fb-connect/&client_secret="+fb_app_secret+"&code="+code
-            response = urllib2.urlopen(request_endpoint).read()
+            response = requests.get(request_endpoint).text
             regex = re.search("access_token=([^&]*)($|&$|&.+)$", response)
             token = regex.group(1)
             extended_token = facepy.utils.get_extended_access_token(token, fb_app_id, fb_app_secret)
