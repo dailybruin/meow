@@ -70,10 +70,12 @@ class Command(BaseCommand):
             
             if photo_url and url:
                 graph.post(
-                    path = PAGE_ID+'/photos',
-                    message = smpost.post_facebook + "\n\nRead more: " + url,
-                    type= "photo",
-                    source = io.BytesIO(requests.get(photo_url).content),
+                    path = PAGE_ID+'/feed',
+                    message = smpost.post_facebook,# + "\n\nRead more: " + url,
+                    link = url,
+                    #type= "photo",
+                    picture = photo_url,
+                    #source = io.BytesIO(requests.get(photo_url).content),
                 )
             elif photo_url:
                 graph.post(
