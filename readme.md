@@ -16,7 +16,7 @@ Install the required packages:
 ### 2. Create a virtual environment (optional)
 I prefer virtualenvwrapper since virtualenv depends on symlinks and VirtualBox shared folders don't support symlinks.
 
-Install it like this: 
+Install it like this:
 
     sudo easy_install virtualenv
     sudo pip install virtualenvwrapper
@@ -59,6 +59,9 @@ local   all             postgres                                trust
 # "local" is for Unix domain socket connections only
 local   all             all                                     trust
 ```
+reload the database:
+
+    /etc/init.d/postgresql reload
 
 Create a database (this makes a database with the name "meow"):
 
@@ -81,6 +84,11 @@ Sync the databases through django and create your own superuser:
 
 ### 5. Configure meow
 Run `python manage.py init` to configure all settings.
+
+For this part of the set up you will need
+twitter consumer key and consumer secret: https://apps.twitter.com/app/new
+facebook app ID and app secret: https://developers.facebook.com/docs/apps/register
+bitly access token: https://bitly.com/a/oauth_apps
 
 ### 6. Configure sections
 Use the default Django admin (http://[YOUR_URL]/admin) to add a Section object. To find Twitter access keys/tokens, use the instructions at
@@ -147,6 +155,6 @@ Page ID: `1415944791959246`
 ***
 
 ## License
-Meow is released under GNU AGPLv3. See `LICENSE` for more details. 
+Meow is released under GNU AGPLv3. See `LICENSE` for more details.
 
 Though not required, if you use this software or would like to contribute to its development, please let us know by emailing us at online@media.ucla.edu. We'd love to know what it's being used for, especially if it's at another college newspaper.

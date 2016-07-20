@@ -5,6 +5,13 @@
 # Update apt-get
 sudo apt-get update
 
+#if you want to use te atom text editor, you can install by uncommenting these lines
+# sudo apt-get -y install software-properties-common
+# sudo apt-get -y install python-software-properties
+# sudo add-apt-repository ppa:webupd8team/atom
+# sudo apt-get update
+# sudo apt-get install atom
+
 # Install basic requirements
 sudo apt-get -y install ntp
 sudo apt-get -y install vim
