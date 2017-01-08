@@ -134,7 +134,7 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     -ms-user-select:none;
     -webkit-user-select:none;
     cursor:pointer;
-    
+
     color:#0f5a6a;
     font-weight:400;
     font-size: 20px;
@@ -323,6 +323,15 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     font-size: 15px;
 }
 
+#post-guidance-text{
+  font-size: 10px;
+  color: gray;
+}
+
+#cats{
+  height: 52px;
+  margin-right: 5px;
+}
 
 #tweet.tooLong, input.bad, #tweet.tooLong:focus, input.bad:focus {
     border-color:red;
@@ -419,11 +428,11 @@ body {
 @media only screen and (min-width: 1441px) {  }
 
 /* Medium screens */
-@media only screen and (max-width: 1279px) and (min-width: 768px) { 
+@media only screen and (max-width: 1279px) and (min-width: 768px) {
 }
 
 /* Small screens */
-@media only screen and (max-width: 767px) { 
+@media only screen and (max-width: 767px) {
     #poststable .twitter-column, #poststable .facebook-column {
         display:none;
     }
@@ -436,7 +445,7 @@ body {
 @media screen and (orientation: landscape) {  }
 
 /* Portrait Orientation */
-@media screen and (orientation: portrait) { 
+@media screen and (orientation: portrait) {
     #poststable .section-column {
         display:none;
     }

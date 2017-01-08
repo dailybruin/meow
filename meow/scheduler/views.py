@@ -35,13 +35,13 @@ def can_edit_post(user, post):
 def user_settings(request):
     user = request.user
     message = {}
-    
+
     if request.method == "POST":
         message = {
             "mtype":"success",
             "mtext":"Your information has been updated",
         }
-        
+
         first_name = request.POST.get('first_name',None)
         last_name = request.POST.get('last_name',None)
         password1 = request.POST.get('password1',None)
@@ -59,7 +59,7 @@ def user_settings(request):
         if email:
             user.email = email
         user.save()
-            
+
     site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
     context = {
         "user" : request.user,
@@ -81,7 +81,7 @@ def dashboard(request):
             "mtype":"success",
             "mtext":"Your post was deleted",
         }
-        
+
     alt_date = None
     if request.method == "GET":
         date_change_str = request.GET.get('date',None)
@@ -124,21 +124,21 @@ def dashboard(request):
 def edit(request, post_id, post=None):
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
-    
+
     if post.sent or not can_edit_post(request.user, post) or post.sending:
         message = {
             "mtype":"status",
         }
-        
+
         if post.sent:
             message['mtext'] = "This post has already been sent and cannot be edited"
-        
+
         elif not can_edit_post(request.user, post):
             message['mtext'] = "You do not have permission to edit this post"
-                
+
         elif post.sending:
             message['mtext'] = "This post is currently sending and cannot be edited"
-        
+
         site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
         context = {
             "user" : request.user,
@@ -148,8 +148,8 @@ def edit(request, post_id, post=None):
             "site_settings" : get_settings(),
         }
         return render(request, 'scheduler/view.html', context)
-    
-    
+
+
     message = {}
     if request.method == "POST" and can_edit_post(request.user, post):
         post.story_url = request.POST.get('url',None).encode('ascii', 'ignore').strip(" \t\n\r")
@@ -169,7 +169,7 @@ def edit(request, post_id, post=None):
         post.post_facebook = request.POST.get('fb',None)
         date_str = request.POST.get('pub_date',None)
         time_str = request.POST.get('pub_time',None)
-        
+
         # Date
         cal = pdt.Calendar()
         date_parsed = cal.parse(date_str)
@@ -177,14 +177,14 @@ def edit(request, post_id, post=None):
             post.pub_date = datetime.date(date_parsed[0][0], date_parsed[0][1], date_parsed[0][2])
         else:
             post.pub_date = None
-            
+
         # Time
         time_parsed = cal.parse(time_str)
         if time_parsed[1] == 2 or time_parsed[1] == 3:
             post.pub_time = datetime.time(time_parsed[0][3], time_parsed[0][4])
         else:
             post.pub_time = None
-        
+
         # Checkboxes
         if request.user.has_perm('scheduler.approve_copy'):
             if request.POST.get('approve-copy',False) == 'on':
@@ -194,7 +194,7 @@ def edit(request, post_id, post=None):
             else:
                 post.pub_ready_copy = False
                 post.pub_ready_copy_user = None
-        
+
         if request.user.has_perm('scheduler.approve_online'):
             if request.POST.get('approve-online',False) == 'on':
                 if post.pub_ready_online == False:
@@ -203,9 +203,9 @@ def edit(request, post_id, post=None):
             else:
                 post.pub_ready_online = False
                 post.pub_ready_online_user = None
-            
+
         post.last_edit_user = request.user
-        
+
         post.save()
         message = {
             "mtype":"success",
@@ -229,7 +229,7 @@ def edit(request, post_id, post=None):
         "site_settings" : get_settings(),
     }
     return render(request, 'scheduler/edit.html', context)
-    
+
 @login_required
 def add(request):
     if not request.user.has_perm('scheduler.add_edit_post'):
@@ -240,7 +240,7 @@ def add(request):
         edit(request, -1, post)
         post_id = post.id
         return redirect("/edit/"+str(post.id)+"/?add=true")
-        
+
     site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
     context = {
         "user" : request.user,
@@ -250,11 +250,10 @@ def add(request):
         "site_settings" : get_settings(),
     }
     return render(request, 'scheduler/edit.html', context)
-    
-    
+
 # TODO: Can add_user is not a proper permission for this lol
 def can_manage(user):
-    return user.has_perm('add_user')    
+    return user.has_perm('add_user')
 @user_passes_test(can_manage)
 def manage(request):
     message = {}
@@ -263,7 +262,7 @@ def manage(request):
     action = None
     if request.method == "POST":
         action = request.POST.get('action',None)
-    
+
     if request.method == "POST" and action == "meow-switch":
         send_posts = request.POST.get('switch-x', None)
         if send_posts:
@@ -276,7 +275,7 @@ def manage(request):
                     "mtype":"success",
                     "mtext":"Meow status successfully changed. Be careful out there.",
                 }
-                
+
     if request.method == "POST" and action == "post-site-message":
         site_message = request.POST.get('site-message', None)
         s = MeowSetting.objects.get(setting_key="site_message")
@@ -288,7 +287,7 @@ def manage(request):
                 "mtype":"success",
                 "mtext":"Site message successfully changed",
             }
-    
+
     if request.method == "POST" and action == "add-user":
         try:
             old_fields['first_name'] = request.POST['first_name']
@@ -297,13 +296,13 @@ def manage(request):
             old_fields['username'] = request.POST['username']
             old_fields['permission'] = request.POST['permission']
             password = User.objects.make_random_password()
-            
+
             u = User(username=old_fields['username'], first_name=old_fields['first_name'], last_name=old_fields['last_name'], email=old_fields['email'], password="bruin")
             u.save()
             u.set_password(password)
             u.groups.add(Group.objects.get(name=old_fields['permission']))
             u.save()
-            
+
             message = {
                 "mtype":"success",
                 "mtext":"User added successfully!",
@@ -320,7 +319,7 @@ def manage(request):
                 "mtext":"Username "+ old_fields['username'] +" already exists",
             }
             error=True;
-            
+
         # Now send them an email with the username/pass
         if not error:
             try:
@@ -340,7 +339,7 @@ Thanks,
                 site_url = MeowSetting.objects.get(setting_key='site_url').setting_value
                 organization_name = MeowSetting.objects.get(setting_key='organization_name').setting_value
                 from_email = MeowSetting.objects.get(setting_key='from_email').setting_value
-                
+
                 email_message = email_message.format(first_name=old_fields['first_name'], username=old_fields['username'], password=password, site_url=site_url, organization_name=organization_name)
                 send_mail('['+organization_name+'] Your new meow account', email_message, from_email, [old_fields['email']], fail_silently=False)
                 old_fields={}
@@ -352,7 +351,7 @@ Thanks,
                 }
                 old_fields={}
                 error = True
-    
+
     send_posts = MeowSetting.objects.get(setting_key='send_posts').setting_value
     site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
 
@@ -360,7 +359,7 @@ Thanks,
     TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
 
     twitter_auth = tweepy.OAuthHandler(
-        TWITTER_CONSUMER_KEY, 
+        TWITTER_CONSUMER_KEY,
         TWITTER_CONSUMER_SECRET,
         MeowSetting.objects.get(setting_key="site_url").setting_value + "/manage/twitter-connect/"
     )
@@ -383,7 +382,7 @@ Thanks,
         "url" : url,
     }
     return render(request, 'scheduler/manage.html', context)
-    
+
 
 @user_passes_test(can_manage)
 def twitter_connect(request):
@@ -462,7 +461,7 @@ def fb_connect(request):
         except:
             # TODO: make this have a red color
             request.session["message"] = "ERROR: Could not connect. Try again"
-        
+
         request.session["message"] = "Successfully linked Facebook page " + page_name + " to section " + section.name
         request.session.save()
         return redirect("/")
@@ -471,7 +470,6 @@ def fb_connect(request):
     else:
         token = ""
         pages_info = {}
-
         try:
             code = request.GET.get("code", None)
             fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value

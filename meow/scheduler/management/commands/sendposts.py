@@ -25,9 +25,9 @@ class Command(BaseCommand):
 
             auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
             auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
-        
+
             api = tweepy.API(auth)
-        
+
             # Make the tweet follow DB social media standards
             tweet = smpost.post_twitter
 
@@ -43,10 +43,10 @@ class Command(BaseCommand):
                 api.update_with_media(filename, tweet, file=photo_fd)
             else:
                 api.update_status(status=tweet)
-        
+
         except tweepy.TweepError as e:
             smpost.log_error(e, section, True)
-        
+
 
     def sendFacebookPost(self, smpost, section, url, photo_url, fb_default_photo):
         try:
@@ -54,11 +54,11 @@ class Command(BaseCommand):
             #follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
             #Facebook needs the following permissions:
             # status_update, manage_pages
-        
-        
+
+
             # Initialize the Graph API with a valid access token (optional,
             # but will allow you to do all sorts of fun stuff).
-        
+
             # Get token from here: https://developers.facebook.com/docs/opengraph/howtos/publishing-with-app-token/
             # appGraph = GraphAPI('72296391616|_vtz8ShgOfzLSgKeDw2quIS1pCc')
             GRAPH_KEY = section.facebook_key
@@ -67,7 +67,7 @@ class Command(BaseCommand):
             PAGE_ID = section.facebook_page_id
 
             ### Now actually post to Facebook
-            
+
             if photo_url and url:
                 graph.post(
                     path = PAGE_ID+'/feed',
@@ -96,7 +96,7 @@ class Command(BaseCommand):
                     path = PAGE_ID+'/feed',
                     message = smpost.post_facebook,
                 )
-        
+
         except (FacepyError, FacebookError, OAuthError, SignedRequestError, requests.exceptions.RequestException) as e:
             smpost.log_error(e, section, True)
 
@@ -105,7 +105,7 @@ class Command(BaseCommand):
         if send_posts == "No" or send_posts == "no":
             print "Post sending is currently off!"
             return
-            
+
 
         # Get posts from the database that are ready to send
         posts = SMPost.objects.filter(
@@ -121,7 +121,7 @@ class Command(BaseCommand):
             ).exclude(
                 section=None
             )
-        
+
         for post in posts:
             try:
                 # Make sure nothing else is trying to send this post right now
@@ -138,10 +138,10 @@ class Command(BaseCommand):
                 send_date = datetime.combine(post.pub_date, post.pub_time)
                 send_grace_period = timedelta(minutes=20)
                 if (datetime.now() - send_date) > send_grace_period:
-                    try: 
+                    try:
                         post.sending = False
                         post.log_error("Would have sent more than 20 minutes late.", post.section, True)
-                        post.sending = False;        
+                        post.sending = False;
                         post.sent = True
                         post.sent_time = timezone.now()
                         post.save()
@@ -150,11 +150,11 @@ class Command(BaseCommand):
                         pass # But we can still try the rest of the posts that are going to be sent
                     continue
 
-            
+
                 # This is just Bitly -- it won't throw any exceptions
                 # send_url[0] is canonical. send_url[1] is short url.
                 send_url = post.get_send_url()
-                
+
                 # This will throw an error if the page cannot be reached
                 photo_url = post.get_post_photo_url()
 
@@ -165,15 +165,15 @@ class Command(BaseCommand):
                     fb_default_photo = post.section.facebook_default_photo
                 else:
                     fb_default_photo = MeowSetting.objects.get(setting_key='fb_default_photo').setting_value
-                
-                
+
+
                 # Post to facebook
                 if post.post_facebook:
                     # Section's account
                     if (post.section.facebook_page_id and post.section.facebook_key):
                         self.sendFacebookPost(post, post.section, send_url[1], photo_url, fb_default_photo)
                     # Also post to account
-                    if (post.section.also_post_to and 
+                    if (post.section.also_post_to and
                         post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
                         self.sendFacebookPost(post, post.section.also_post_to, send_url[1], photo_url, fb_default_photo)
                 # Post to twitter
@@ -182,17 +182,17 @@ class Command(BaseCommand):
                     if (post.section.twitter_access_key and post.section.twitter_access_secret):
                         self.sendTweet(post, post.section, send_url[1], photo_url)
                     # Also post to account
-                    if (post.section.also_post_to and 
+                    if (post.section.also_post_to and
                         post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
                         self.sendTweet(post, post.section.also_post_to, send_url[1], photo_url)
             except:
                 # Something wrong happened. Don't send this post.
                 e = sys.exc_info()[0]
                 post.log_error(e, post.section, True)
-            
+
             # Now save whatever we changed to the post
-            try:    
-                post.sending = False;        
+            try:
+                post.sending = False;
                 post.sent = True
                 post.sent_time = timezone.now()
                 post.save()
