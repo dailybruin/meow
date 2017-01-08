@@ -251,7 +251,6 @@ def add(request):
     }
     return render(request, 'scheduler/edit.html', context)
 
-
 # TODO: Can add_user is not a proper permission for this lol
 def can_manage(user):
     return user.has_perm('add_user')
@@ -471,7 +470,6 @@ def fb_connect(request):
     else:
         token = ""
         pages_info = {}
-
         try:
             code = request.GET.get("code", None)
             fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value

@@ -1,3 +1,5 @@
+{% load static %}
+
 {% if site_settings.send_posts == "No" or siet_settings.send_posts == "no" %}
 <div class="site-message alert">
     Sending is currently turned off. Nothing will send until an administrator turns it back on.
@@ -10,7 +12,7 @@
 {% endif %}
 <div class="header row">
     <div class="large-12 columns">
-        <a class="page-title" href="/">meow</a>
+        <a class="page-title" href="/"><img id="cats" src="{% static "img/cat-icon.png" %}" alt="cat-icon"/>meow</a>
         {% if perms.add_user %}
         <a class="meow-manage" href="/manage">
             <i class="foundicon-settings"></i>
@@ -21,6 +23,6 @@
         <div class="header-right">
             {% if perms.scheduler.add_edit_post %}<a href="/add" class="button small" id="new-button">+ New</a>{% endif %}
         </div>
-        
+
     </div>
 </div><!-- end div.header -->

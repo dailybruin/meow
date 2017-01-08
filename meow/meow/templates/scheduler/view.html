@@ -20,14 +20,14 @@ $(document).ready(function(){
         e.preventDefault();
         $('#pub_date').val('Tomorrow')
     });
-    
+
     $('#pub_time').timepicker({
         template: false,
         showInputs: false,
         minuteStep: 5,
         defaultTime: false,
     });
-    
+
     $('#post-delete').submit(function(){
         var r = confirm("Are you sure you want to delete this post?")
         if (r != true)
@@ -35,7 +35,7 @@ $(document).ready(function(){
             return false;
         }
     });
-    
+
     function checkTweet() {
         var curLength = $('#tweet').val().length;
         if(curLength > TWITTER_LIMIT)
@@ -78,13 +78,13 @@ $(document).ready(function(){
         </div>
     </div>
     {% endif %}
-    
+
     <form id="post-edit" method="post">
         {% csrf_token %}
         {% if post.id %}
             <input type="hidden" name="post_id" value="{{ post.id }}" />
         {% endif %}
-    
+
         <div class="large-7 columns">
             <div class="row">
                 <div class="large-8 columns">
@@ -102,20 +102,22 @@ $(document).ready(function(){
                         {% endfor %}
                     </select>
                 </div>
-        
+
             </div><!-- end div.row -->
-    
+
             <label for="url">URL</label>
             <input type="text" id="url" name="url" placeholder="http://" value="{{ post.story_url }}" disabled />
-    
+
             <label for="tweet">Tweet</label>
             <textarea type="text" id="tweet" name="tweet" placeholder="tweet" rows="3" disabled>{{ post.post_twitter }}</textarea>
             <div id="tweet-count">{{ twitter_limit }}</div>
-    
+
             <label for="fb">Facebook post</label>
             <textarea type="text" id="fb" name="fb" placeholder="post" rows="5" disabled>{{ post.post_facebook }}</textarea>
+
+            <p id="post-guidance-text"><b>Note:</b> Leaving the tweet text box empty will not post to Twitter. Similarly, leaving the facebook text box empty will not post to Facebook.</p>
         </div>
-    
+
         <div class="large-5 columns">
             <fieldset id="prepublish-checks">
                 <div class="prepublish-inside">
@@ -124,21 +126,21 @@ $(document).ready(function(){
                     {% if post.pub_ready_copy_user %}<span class="approval-by">by {{ post.pub_ready_copy_user.first_name }} {{ post.pub_ready_copy_user.last_name }}</span>{% endif %}
                 </div>
                 <div class="prepublish-inside">
-                    <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %} {% if not perms.scheduler.approve_online %}disabled{% endif %} disabled /> 
+                    <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %} {% if not perms.scheduler.approve_online %}disabled{% endif %} disabled />
                     <label for="approve-online">Ready to publish</label>
                     {% if post.pub_ready_online_user %}<span class="approval-by">by {{ post.pub_ready_online_user.first_name }} {{ post.pub_ready_online_user.last_name }}</span>{% endif %}
                 </div>
             </fieldset>
-        
+
             <label for="pub_date">Publish date</label>
             <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" disabled />
-        
+
             <label for="pub_time">Publish time</label>
             <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}" disabled></input>
-            
+
             {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
         </div>
-        
+
     </form>
 </div><!-- end div.row -->
 

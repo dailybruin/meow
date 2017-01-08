@@ -86,8 +86,13 @@ Sync the databases through django and create your own superuser:
 Run `python manage.py init` to configure all settings.
 
 For this part of the set up you will need
+
 twitter consumer key and consumer secret: https://apps.twitter.com/app/new
+
+additionally for twitter, you will need to fill in the Callback URL
+
 facebook app ID and app secret: https://developers.facebook.com/docs/apps/register
+
 bitly access token: https://bitly.com/a/oauth_apps
 
 ### 6. Configure sections
