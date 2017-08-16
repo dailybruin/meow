@@ -15,21 +15,27 @@ import facepy
 import re
 import sys
 
+# Oauth stuff
+from requests_oauthlib import OAuth2Session
+from requests_oauthlib.compliance_fixes import facebook_compliance_fix
+
 
 def get_settings():
     return {
-        "site_message" : MeowSetting.objects.get(setting_key='site_message').setting_value,
-        "send_posts" : MeowSetting.objects.get(setting_key='send_posts').setting_value,
+        "site_message": MeowSetting.objects.get(setting_key='site_message').setting_value,
+        "send_posts": MeowSetting.objects.get(setting_key='send_posts').setting_value,
     }
+
 
 def can_edit_post(user, post):
     if (user.has_perm('scheduler.add_edit_post') and
         (((user.has_perm('scheduler.approve_copy') or not post.pub_ready_copy) and
-        (user.has_perm('scheduler.approve_online') or not post.pub_ready_online))
-        or (user.has_perm('scheduler.approve_online')))
-        and not post.sent):
+          (user.has_perm('scheduler.approve_online') or not post.pub_ready_online))
+         or (user.has_perm('scheduler.approve_online')))
+            and not post.sent):
         return True
     return False
+
 
 @login_required
 def user_settings(request):
@@ -38,15 +44,15 @@ def user_settings(request):
 
     if request.method == "POST":
         message = {
-            "mtype":"success",
-            "mtext":"Your information has been updated",
+            "mtype": "success",
+            "mtext": "Your information has been updated",
         }
 
-        first_name = request.POST.get('first_name',None)
-        last_name = request.POST.get('last_name',None)
-        password1 = request.POST.get('password1',None)
-        password2 = request.POST.get('password2',None)
-        email = request.POST.get('email',None)
+        first_name = request.POST.get('first_name', None)
+        last_name = request.POST.get('last_name', None)
+        password1 = request.POST.get('password1', None)
+        password2 = request.POST.get('password2', None)
+        email = request.POST.get('email', None)
         if first_name:
             user.first_name = first_name
         if last_name:
@@ -60,13 +66,15 @@ def user_settings(request):
             user.email = email
         user.save()
 
-    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+    site_message = MeowSetting.objects.get(
+        setting_key='site_message').setting_value
     context = {
-        "user" : request.user,
-        "message" : message,
-        "site_settings" : get_settings(),
+        "user": request.user,
+        "message": message,
+        "site_settings": get_settings(),
     }
     return render(request, 'scheduler/user_settings.html', context)
+
 
 @login_required
 def dashboard(request):
@@ -74,22 +82,23 @@ def dashboard(request):
     message = {}
     has_delete_permission = request.user.has_perm('scheduler.add_edit_post')
     if request.method == "POST" and has_delete_permission:
-        post_id = request.POST.get('post_id_to_delete',None)
+        post_id = request.POST.get('post_id_to_delete', None)
         post = get_object_or_404(SMPost, pk=post_id)
         post.delete()
         message = {
-            "mtype":"success",
-            "mtext":"Your post was deleted",
+            "mtype": "success",
+            "mtext": "Your post was deleted",
         }
 
     alt_date = None
     if request.method == "GET":
-        date_change_str = request.GET.get('date',None)
+        date_change_str = request.GET.get('date', None)
         if date_change_str:
             cal = pdt.Calendar()
             date_change = cal.parse(date_change_str)
             if date_change[1] == 1 or date_change[1] == 3:
-                alt_date = datetime.date(date_change[0][0], date_change[0][1], date_change[0][2])
+                alt_date = datetime.date(
+                    date_change[0][0], date_change[0][1], date_change[0][2])
 
     if alt_date:
         view_date = alt_date
@@ -102,23 +111,25 @@ def dashboard(request):
     tomorrow_posts = SMPost.objects.filter(pub_date=view_date)
     lost_posts = SMPost.objects.filter(pub_date=None)
 
-    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+    site_message = MeowSetting.objects.get(
+        setting_key='site_message').setting_value
     if request.session.get("message", None):
         temp_message = request.session.pop("message")
         messages.append({
-            "mtype" : "success",
-            "mtext" : temp_message,
+            "mtype": "success",
+            "mtext": temp_message,
         })
     messages.append(message)
     context = {
-        "user" : request.user,
-        "sections" : Section.objects.all(),
-        "smposts" : list(chain(tomorrow_posts, lost_posts)),
-        "messages" : messages,
-        "view_date" : view_date,
-        "site_settings" : get_settings(),
+        "user": request.user,
+        "sections": Section.objects.all(),
+        "smposts": list(chain(tomorrow_posts, lost_posts)),
+        "messages": messages,
+        "view_date": view_date,
+        "site_settings": get_settings(),
     }
     return render(request, 'scheduler/dashboard.html', context)
+
 
 @login_required
 def edit(request, post_id, post=None):
@@ -127,7 +138,7 @@ def edit(request, post_id, post=None):
 
     if post.sent or not can_edit_post(request.user, post) or post.sending:
         message = {
-            "mtype":"status",
+            "mtype": "status",
         }
 
         if post.sent:
@@ -139,42 +150,46 @@ def edit(request, post_id, post=None):
         elif post.sending:
             message['mtext'] = "This post is currently sending and cannot be edited"
 
-        site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+        site_message = MeowSetting.objects.get(
+            setting_key='site_message').setting_value
         context = {
-            "user" : request.user,
-            "sections" : Section.objects.all(),
-            "post" : post,
-            "message" : message,
-            "site_settings" : get_settings(),
+            "user": request.user,
+            "sections": Section.objects.all(),
+            "post": post,
+            "message": message,
+            "site_settings": get_settings(),
         }
         return render(request, 'scheduler/view.html', context)
 
-
     message = {}
     if request.method == "POST" and can_edit_post(request.user, post):
-        post.story_url = request.POST.get('url',None).encode('ascii', 'ignore').strip(" \t\n\r")
+        post.story_url = request.POST.get('url', None).encode(
+            'ascii', 'ignore').strip(" \t\n\r")
         if len(post.story_url) > 4 and post.story_url[0:4] != "http":
             try:
                 index_of_protocol = post.story_url.index("://")
                 if index_of_protocol <= 5:
-                    post.story_url = "http" + post.story_url[post.story_url.index("://"):]
+                    post.story_url = "http" + \
+                        post.story_url[post.story_url.index("://"):]
             except:
                 post.story_url = "http://" + post.story_url
-        post.slug = request.POST.get('slug',None)
+        post.slug = request.POST.get('slug', None)
         try:
-            post.section = Section.objects.get(pk=request.POST.get('section',None))
+            post.section = Section.objects.get(
+                pk=request.POST.get('section', None))
         except:
             post.section = None
-        post.post_twitter = request.POST.get('tweet',None)
-        post.post_facebook = request.POST.get('fb',None)
-        date_str = request.POST.get('pub_date',None)
-        time_str = request.POST.get('pub_time',None)
+        post.post_twitter = request.POST.get('tweet', None)
+        post.post_facebook = request.POST.get('fb', None)
+        date_str = request.POST.get('pub_date', None)
+        time_str = request.POST.get('pub_time', None)
 
         # Date
         cal = pdt.Calendar()
         date_parsed = cal.parse(date_str)
         if date_parsed[1] == 1 or date_parsed[1] == 3:
-            post.pub_date = datetime.date(date_parsed[0][0], date_parsed[0][1], date_parsed[0][2])
+            post.pub_date = datetime.date(
+                date_parsed[0][0], date_parsed[0][1], date_parsed[0][2])
         else:
             post.pub_date = None
 
@@ -187,7 +202,7 @@ def edit(request, post_id, post=None):
 
         # Checkboxes
         if request.user.has_perm('scheduler.approve_copy'):
-            if request.POST.get('approve-copy',False) == 'on':
+            if request.POST.get('approve-copy', False) == 'on':
                 if post.pub_ready_copy == False:
                     post.pub_ready_copy_user = request.user
                 post.pub_ready_copy = True
@@ -196,7 +211,7 @@ def edit(request, post_id, post=None):
                 post.pub_ready_copy_user = None
 
         if request.user.has_perm('scheduler.approve_online'):
-            if request.POST.get('approve-online',False) == 'on':
+            if request.POST.get('approve-online', False) == 'on':
                 if post.pub_ready_online == False:
                     post.pub_ready_online_user = request.user
                 post.pub_ready_online = True
@@ -208,27 +223,29 @@ def edit(request, post_id, post=None):
 
         post.save()
         message = {
-            "mtype":"success",
-            "mtext":"Your changes were saved!",
+            "mtype": "success",
+            "mtext": "Your changes were saved!",
         }
     if request.method == "GET" and request.user.has_perm('scheduler.add_edit_post'):
-        if request.GET.get('add',None) == "true":
+        if request.GET.get('add', None) == "true":
             message = {
-                "mtype":"success",
-                "mtext":"Your post was successfully created!",
+                "mtype": "success",
+                "mtext": "Your post was successfully created!",
             }
 
-    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+    site_message = MeowSetting.objects.get(
+        setting_key='site_message').setting_value
     context = {
-        "user" : request.user,
-        "sections" : Section.objects.all(),
-        "post" : post,
-        "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
-        "message" : message,
-        "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
-        "site_settings" : get_settings(),
+        "user": request.user,
+        "sections": Section.objects.all(),
+        "post": post,
+        "tomorrow": datetime.date.today() + datetime.timedelta(days=1),
+        "message": message,
+        "twitter_limit": MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
+        "site_settings": get_settings(),
     }
     return render(request, 'scheduler/edit.html', context)
+
 
 @login_required
 def add(request):
@@ -239,29 +256,34 @@ def add(request):
         post = SMPost()
         edit(request, -1, post)
         post_id = post.id
-        return redirect("/edit/"+str(post.id)+"/?add=true")
+        return redirect("/edit/" + str(post.id) + "/?add=true")
 
-    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+    site_message = MeowSetting.objects.get(
+        setting_key='site_message').setting_value
     context = {
-        "user" : request.user,
-        "sections" : Section.objects.all(),
-        "tomorrow" : datetime.date.today() + datetime.timedelta(days=1),
-        "twitter_limit" : MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
-        "site_settings" : get_settings(),
+        "user": request.user,
+        "sections": Section.objects.all(),
+        "tomorrow": datetime.date.today() + datetime.timedelta(days=1),
+        "twitter_limit": MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
+        "site_settings": get_settings(),
     }
     return render(request, 'scheduler/edit.html', context)
 
 # TODO: Can add_user is not a proper permission for this lol
+
+
 def can_manage(user):
     return user.has_perm('add_user')
+
+
 @user_passes_test(can_manage)
 def manage(request):
     message = {}
     old_fields = {}
-    error = False;
+    error = False
     action = None
     if request.method == "POST":
-        action = request.POST.get('action',None)
+        action = request.POST.get('action', None)
 
     if request.method == "POST" and action == "meow-switch":
         send_posts = request.POST.get('switch-x', None)
@@ -272,8 +294,8 @@ def manage(request):
             s.save()
             if send_posts != old:
                 message = {
-                    "mtype":"success",
-                    "mtext":"Meow status successfully changed. Be careful out there.",
+                    "mtype": "success",
+                    "mtext": "Meow status successfully changed. Be careful out there.",
                 }
 
     if request.method == "POST" and action == "post-site-message":
@@ -284,8 +306,8 @@ def manage(request):
         s.save()
         if site_message != old:
             message = {
-                "mtype":"success",
-                "mtext":"Site message successfully changed",
+                "mtype": "success",
+                "mtext": "Site message successfully changed",
             }
 
     if request.method == "POST" and action == "add-user":
@@ -297,28 +319,29 @@ def manage(request):
             old_fields['permission'] = request.POST['permission']
             password = User.objects.make_random_password()
 
-            u = User(username=old_fields['username'], first_name=old_fields['first_name'], last_name=old_fields['last_name'], email=old_fields['email'], password="bruin")
+            u = User(username=old_fields['username'], first_name=old_fields['first_name'],
+                     last_name=old_fields['last_name'], email=old_fields['email'], password="bruin")
             u.save()
             u.set_password(password)
             u.groups.add(Group.objects.get(name=old_fields['permission']))
             u.save()
 
             message = {
-                "mtype":"success",
-                "mtext":"User added successfully!",
+                "mtype": "success",
+                "mtext": "User added successfully!",
             }
         except KeyError as e:
             message = {
-                "mtype":"alert",
-                "mtext":"User not added; please fill out all fields!",
+                "mtype": "alert",
+                "mtext": "User not added; please fill out all fields!",
             }
-            error=True;
+            error = True
         except IntegrityError as e:
             message = {
-                "mtype":"alert",
-                "mtext":"Username "+ old_fields['username'] +" already exists",
+                "mtype": "alert",
+                "mtext": "Username " + old_fields['username'] + " already exists",
             }
-            error=True;
+            error = True
 
         # Now send them an email with the username/pass
         if not error:
@@ -336,32 +359,42 @@ at {site_url} and change your password.
 Thanks,
 {organization_name}
                 """
-                site_url = MeowSetting.objects.get(setting_key='site_url').setting_value
-                organization_name = MeowSetting.objects.get(setting_key='organization_name').setting_value
-                from_email = MeowSetting.objects.get(setting_key='from_email').setting_value
+                site_url = MeowSetting.objects.get(
+                    setting_key='site_url').setting_value
+                organization_name = MeowSetting.objects.get(
+                    setting_key='organization_name').setting_value
+                from_email = MeowSetting.objects.get(
+                    setting_key='from_email').setting_value
 
-                email_message = email_message.format(first_name=old_fields['first_name'], username=old_fields['username'], password=password, site_url=site_url, organization_name=organization_name)
-                send_mail('['+organization_name+'] Your new meow account', email_message, from_email, [old_fields['email']], fail_silently=False)
-                old_fields={}
+                email_message = email_message.format(
+                    first_name=old_fields['first_name'], username=old_fields['username'], password=password, site_url=site_url, organization_name=organization_name)
+                send_mail('[' + organization_name + '] Your new meow account',
+                          email_message, from_email, [old_fields['email']], fail_silently=False)
+                old_fields = {}
             except:
                 print sys.exc_info()[0]
                 message = {
-                    "mtype":"alert",
-                    "mtext":"Account created but couldn't send password to "+old_fields['email']+".",
+                    "mtype": "alert",
+                    "mtext": "Account created but couldn't send password to " + old_fields['email'] + ".",
                 }
-                old_fields={}
+                old_fields = {}
                 error = True
 
-    send_posts = MeowSetting.objects.get(setting_key='send_posts').setting_value
-    site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+    send_posts = MeowSetting.objects.get(
+        setting_key='send_posts').setting_value
+    site_message = MeowSetting.objects.get(
+        setting_key='site_message').setting_value
 
-    TWITTER_CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
-    TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
+    TWITTER_CONSUMER_KEY = MeowSetting.objects.get(
+        setting_key='twitter_consumer_key').setting_value
+    TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(
+        setting_key='twitter_consumer_secret').setting_value
 
     twitter_auth = tweepy.OAuthHandler(
         TWITTER_CONSUMER_KEY,
         TWITTER_CONSUMER_SECRET,
-        MeowSetting.objects.get(setting_key="site_url").setting_value + "/manage/twitter-connect/"
+        MeowSetting.objects.get(
+            setting_key="site_url").setting_value + "/manage/twitter-connect/"
     )
     twitter_auth.secure = True
     twitter_auth_url = twitter_auth.get_authorization_url()
@@ -369,17 +402,32 @@ Thanks,
     request.session.save()
 
     fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
-    url = MeowSetting.objects.get(setting_key="site_url").setting_value
+    fb_app_secret = MeowSetting.objects.get(
+        setting_key="fb_app_secret").setting_value
+
+    # TODO: find a better place for these constants
+    fb_authorization_base_url = 'https://www.facebook.com/v2.10/dialog/oauth'
+    fb_token_url = 'https://graph.facebook.com/oauth/access_token'
+    redirect_uri = MeowSetting.objects.get(
+        setting_key="site_url").setting_value + '/manage/fb-connect'
+    fb_permissions = ["manage_pages", ]
+
+    facebook = OAuth2Session(fb_app_id,
+                             redirect_uri=redirect_uri,
+                             scope=fb_permissions)
+    facebook = facebook_compliance_fix(facebook)
+    facebook_auth_url, state = facebook.authorization_url(
+        fb_authorization_base_url)
 
     context = {
-        "user" : request.user,
-        "message" : message,
-        "old_fields" : old_fields,
-        "send_posts" : send_posts,
-        "site_settings" : get_settings(),
-        "twitter_auth_url" : twitter_auth_url,
-        "fb_app_id" : fb_app_id,
-        "url" : url,
+        "user": request.user,
+        "message": message,
+        "old_fields": old_fields,
+        "send_posts": send_posts,
+        "site_settings": get_settings(),
+        "twitter_auth_url": twitter_auth_url,
+        "facebook_auth_url": facebook_auth_url,
+        "fb_app_id": fb_app_id
     }
     return render(request, 'scheduler/manage.html', context)
 
@@ -387,20 +435,24 @@ Thanks,
 @user_passes_test(can_manage)
 def twitter_connect(request):
     context = {
-        "user" : request.user,
-        "site_settings" : get_settings(),
-        "sections" : Section.objects.all(),
+        "user": request.user,
+        "site_settings": get_settings(),
+        "sections": Section.objects.all(),
     }
     if request.method == "POST" and request.POST.get("action", None) == "connect":
         try:
-            TWITTER_CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
-            TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
-            twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+            TWITTER_CONSUMER_KEY = MeowSetting.objects.get(
+                setting_key='twitter_consumer_key').setting_value
+            TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(
+                setting_key='twitter_consumer_secret').setting_value
+            twitter_auth = tweepy.OAuthHandler(
+                TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
             twitter_auth.secure = True
             token = request.session['twitter_auth_token']
             twitter_auth.request_token = token
             twitter_auth.get_access_token(request.POST.get("verifier", None))
-            section = Section.objects.get(pk=request.POST.get("section_id", None))
+            section = Section.objects.get(
+                pk=request.POST.get("section_id", None))
         except:
             errMessage = sys.exc_info()[0]
             context["message"] = {
@@ -421,7 +473,8 @@ def twitter_connect(request):
             section.save()
         except:
             pass
-        request.session["message"] = "Twitter account, @" + screen_name + ", successfully added."
+        request.session["message"] = "Twitter account, @" + \
+            screen_name + ", successfully added."
         request.session.save()
         return redirect("/")
 
@@ -437,12 +490,13 @@ def twitter_connect(request):
         context["verifier"] = verifier
         return render(request, 'scheduler/twitter_connect.html', context)
 
+
 @user_passes_test(can_manage)
 def fb_connect(request):
     context = {
-        "user" : request.user,
-        "site_settings" : get_settings(),
-        "sections" : Section.objects.all(),
+        "user": request.user,
+        "site_settings": get_settings(),
+        "sections": Section.objects.all(),
     }
     # Process after selecting section/page
     if request.method == "POST" and request.POST.get("action", None) == "connect":
@@ -453,7 +507,8 @@ def fb_connect(request):
                 if page_info["id"] == page_id:
                     page_token = page_info["access_token"]
                     page_name = page_info["name"]
-            section = Section.objects.get(pk=request.POST.get("section_id", None))
+            section = Section.objects.get(
+                pk=request.POST.get("section_id", None))
             section.facebook_page_id = page_id
             section.facebook_account_handle = page_name
             section.facebook_key = page_token
@@ -462,7 +517,8 @@ def fb_connect(request):
             # TODO: make this have a red color
             request.session["message"] = "ERROR: Could not connect. Try again"
 
-        request.session["message"] = "Successfully linked Facebook page " + page_name + " to section " + section.name
+        request.session["message"] = "Successfully linked Facebook page " + \
+            page_name + " to section " + section.name
         request.session.save()
         return redirect("/")
 
@@ -470,16 +526,44 @@ def fb_connect(request):
     else:
         token = ""
         pages_info = {}
+        fb_app_id = MeowSetting.objects.get(
+            setting_key="fb_app_id").setting_value
+        fb_app_secret = MeowSetting.objects.get(
+            setting_key="fb_app_secret").setting_value
+
+        fb_token_url = 'https://graph.facebook.com/oauth/access_token'
+        redirect_uri = MeowSetting.objects.get(
+            setting_key="site_url").setting_value + '/manage/fb-connect'
+
+        fb_code = request.GET.get('code', None)
+        fb_permissions = ["manage_pages", ]
+
+        facebook = OAuth2Session(fb_app_id,
+                                 redirect_uri=redirect_uri,
+                                 scope=fb_permissions)
+        facebook = facebook_compliance_fix(facebook)
+        fb_token = facebook.fetch_token(
+            fb_token_url,
+            client_secret=fb_app_secret,
+            code=fb_code)
+        print(fb_token)
         try:
-            code = request.GET.get("code", None)
-            fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
-            site_url = MeowSetting.objects.get(setting_key="site_url").setting_value
-            fb_app_secret = MeowSetting.objects.get(setting_key="fb_app_secret").setting_value
-            request_endpoint = "https://graph.facebook.com/oauth/access_token?client_id="+fb_app_id+"&redirect_uri="+site_url+"/manage/fb-connect/&client_secret="+fb_app_secret+"&code="+code
-            response = requests.get(request_endpoint).text
-            regex = re.search("access_token=([^&]*)($|&$|&.+)$", response)
-            token = regex.group(1)
-            extended_token = facepy.utils.get_extended_access_token(token, fb_app_id, fb_app_secret)
+            # code = request.GET.get("code", None)
+            # fb_app_id = MeowSetting.objects.get(
+            #     setting_key="fb_app_id").setting_value
+            # site_url = MeowSetting.objects.get(
+            #     setting_key="site_url").setting_value
+            # fb_app_secret = MeowSetting.objects.get(
+            #     setting_key="fb_app_secret").setting_value
+            # request_endpoint = "https://graph.facebook.com/oauth/access_token?client_id=" + fb_app_id + \
+            #     "&redirect_uri=" + site_url + "/manage/fb-connect/&client_secret=" + \
+            #     fb_app_secret + "&code=" + code
+            # response = requests.get(request_endpoint).text
+            # regex = re.search("access_token=([^&]*)($|&$|&.+)$", response)
+            # token = regex.group(1)
+
+            extended_token = facepy.utils.get_extended_access_token(
+                token, fb_app_id, fb_app_secret)
             api = facepy.GraphAPI(oauth_token=extended_token[0])
             raw_pages_info = api.get("/me/accounts/")
             pages_info = []
@@ -495,7 +579,6 @@ def fb_connect(request):
         except:
             pass
 
-
         message = {}
         if not (pages_info):
             message["mtype"] = "alert"
@@ -503,5 +586,7 @@ def fb_connect(request):
         context["message"] = message
         context["pages"] = pages_info
         return render(request, 'scheduler/fb_connect.html', context)
+
+
 def logout(request):
     return logout(request)
