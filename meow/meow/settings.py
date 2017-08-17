@@ -5,7 +5,10 @@ import dj_database_url
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = True
+if os.environ.get('DEBUG'):
+    DEBUG = os.environ.get('DEBUG')
+else:
+    DEBUG = True
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -85,7 +88,10 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'i%w$mm*w7mgw)q1hly1+c8z14en3$v#)3sf)u#xripu@rxjyw7'
+if os.environ.get('SECRET_KEY'):
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+else:
+    SECRET_KEY = 'i%w$mm*w7mgw)q1hly1+c8z14en3$v#)3sf)u#xripu@rxjyw7'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -171,6 +177,7 @@ LOGIN_REDIRECT_URL = '/'
 if os.environ.get('DATABASE_URL') is not None:
     DATABASES['default'] = dj_database_url.config()
 
-CELERY_BROKER_URL = 'redis://'
 if os.environ.get('REDIS_URL') is not None:
     CELERY_BROKER_URL = os.environ.get('REDIS_URL')
+else:
+    CELERY_BROKER_URL = 'redis://'

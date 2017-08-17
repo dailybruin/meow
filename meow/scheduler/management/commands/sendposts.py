@@ -9,8 +9,6 @@ from scheduler.models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
 import requests
-from bs4 import BeautifulSoup
-import HTMLParser
 
 
 class Command(BaseCommand):
@@ -18,7 +16,7 @@ class Command(BaseCommand):
 
     def sendTweet(self, smpost, section, url, photo_url):
         try:
-            print smpost.post_twitter.encode('ascii', 'ignore')
+            print(smpost.post_twitter.encode('ascii', 'ignore'))
             CONSUMER_KEY = MeowSetting.objects.get(
                 setting_key='twitter_consumer_key').setting_value
             CONSUMER_SECRET = MeowSetting.objects.get(
@@ -52,7 +50,7 @@ class Command(BaseCommand):
 
     def sendFacebookPost(self, smpost, section, url, photo_url, fb_default_photo):
         try:
-            print smpost.post_facebook.encode('ascii', 'ignore')
+            print(smpost.post_facebook.encode('ascii', 'ignore'))
             # follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
             # Facebook needs the following permissions:
             # status_update, manage_pages
@@ -105,7 +103,7 @@ class Command(BaseCommand):
         send_posts = MeowSetting.objects.get(
             setting_key="send_posts").setting_value
         if send_posts == "No" or send_posts == "no":
-            print "Post sending is currently off!"
+            print("Post sending is currently off!")
             return
 
         # Get posts from the database that are ready to send
@@ -124,7 +122,7 @@ class Command(BaseCommand):
         )
 
         if len(posts) == 0:
-            print "No posts to send!"
+            print("No posts to send!")
 
         for post in posts:
             try:
@@ -151,7 +149,7 @@ class Command(BaseCommand):
                         post.sent_time = timezone.now()
                         post.save()
                     except:
-                        print "Something is very wrong2"
+                        print("Something is very wrong2")
                         pass  # But we can still try the rest of the posts that are going to be sent
                     continue
 
@@ -205,5 +203,5 @@ class Command(BaseCommand):
                 post.sent_time = timezone.now()
                 post.save()
             except:
-                print "Something is very wrong"
+                print("Something is very wrong")
                 pass  # But we can still try the rest of the posts that are going to be sent

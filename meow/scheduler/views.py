@@ -372,7 +372,7 @@ Thanks,
                           email_message, from_email, [old_fields['email']], fail_silently=False)
                 old_fields = {}
             except:
-                print sys.exc_info()[0]
+                print(sys.exc_info()[0])
                 message = {
                     "mtype": "alert",
                     "mtext": "Account created but couldn't send password to " + old_fields['email'] + ".",
