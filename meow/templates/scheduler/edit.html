@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block extra-css %}
-<link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-timepicker.min.css" type="text/css">
+<link rel="stylesheet" href="/static/bootstrap-timepicker.min.css" type="text/css">
 
 {% endblock %}
 
 {% block extra-js %}
-<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-timepicker.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap-timepicker.min.js"></script>
 
 <script type="text/javascript">
 var TWITTER_LIMIT = {{ twitter_limit }};

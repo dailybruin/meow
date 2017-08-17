@@ -93,6 +93,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -132,6 +133,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'scheduler',
+    'django_celery_beat'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -168,3 +170,7 @@ LOGIN_REDIRECT_URL = '/'
 
 if os.environ.get('DATABASE_URL') is not None:
     DATABASES['default'] = dj_database_url.config()
+
+CELERY_BROKER_URL = 'redis://'
+if os.environ.get('REDIS_URL') is not None:
+    CELERY_BROKER_URL = os.environ.get('REDIS_URL')

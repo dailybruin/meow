@@ -410,7 +410,7 @@ Thanks,
     fb_token_url = 'https://graph.facebook.com/oauth/access_token'
     redirect_uri = MeowSetting.objects.get(
         setting_key="site_url").setting_value + '/manage/fb-connect'
-    fb_permissions = ["manage_pages", ]
+    fb_permissions = ["manage_pages", "publish_pages"]
 
     facebook = OAuth2Session(fb_app_id,
                              redirect_uri=redirect_uri,
@@ -524,8 +524,22 @@ def fb_connect(request):
 
     # Print an error or print the form
     else:
+        # code = request.GET.get("code", None)
+        # fb_app_id = MeowSetting.objects.get(
+        #     setting_key="fb_app_id").setting_value
+        # site_url = MeowSetting.objects.get(
+        #     setting_key="site_url").setting_value
+        # fb_app_secret = MeowSetting.objects.get(
+        #     setting_key="fb_app_secret").setting_value
+        # request_endpoint = "https://graph.facebook.com/oauth/access_token?client_id=" + fb_app_id + \
+        #     "&redirect_uri=" + site_url + "/manage/fb-connect/&client_secret=" + \
+        #     fb_app_secret + "&code=" + code
+        # response = requests.get(request_endpoint).text
+        # regex = re.search("access_token=([^&]*)($|&$|&.+)$", response)
+        # token = regex.group(1)
         token = ""
         pages_info = {}
+
         fb_app_id = MeowSetting.objects.get(
             setting_key="fb_app_id").setting_value
         fb_app_secret = MeowSetting.objects.get(
@@ -536,7 +550,7 @@ def fb_connect(request):
             setting_key="site_url").setting_value + '/manage/fb-connect'
 
         fb_code = request.GET.get('code', None)
-        fb_permissions = ["manage_pages", ]
+        fb_permissions = ["manage_pages", "publish_pages"]
 
         facebook = OAuth2Session(fb_app_id,
                                  redirect_uri=redirect_uri,
@@ -546,38 +560,23 @@ def fb_connect(request):
             fb_token_url,
             client_secret=fb_app_secret,
             code=fb_code)
-        print(fb_token)
-        try:
-            # code = request.GET.get("code", None)
-            # fb_app_id = MeowSetting.objects.get(
-            #     setting_key="fb_app_id").setting_value
-            # site_url = MeowSetting.objects.get(
-            #     setting_key="site_url").setting_value
-            # fb_app_secret = MeowSetting.objects.get(
-            #     setting_key="fb_app_secret").setting_value
-            # request_endpoint = "https://graph.facebook.com/oauth/access_token?client_id=" + fb_app_id + \
-            #     "&redirect_uri=" + site_url + "/manage/fb-connect/&client_secret=" + \
-            #     fb_app_secret + "&code=" + code
-            # response = requests.get(request_endpoint).text
-            # regex = re.search("access_token=([^&]*)($|&$|&.+)$", response)
-            # token = regex.group(1)
 
-            extended_token = facepy.utils.get_extended_access_token(
-                token, fb_app_id, fb_app_secret)
-            api = facepy.GraphAPI(oauth_token=extended_token[0])
-            raw_pages_info = api.get("/me/accounts/")
-            pages_info = []
-            for page in raw_pages_info[u'data']:
-                page_info = {
-                    'access_token': page[u'access_token'],
-                    'name': page[u'name'],
-                    'id': page[u'id'],
-                }
-                pages_info.append(page_info)
-            request.session["fb_pages_info"] = pages_info
-            request.session.save()
-        except:
-            pass
+        token = fb_token['access_token']
+
+        extended_token = facepy.utils.get_extended_access_token(
+            token, fb_app_id, fb_app_secret)
+        api = facepy.GraphAPI(oauth_token=extended_token[0])
+        raw_pages_info = api.get("/me/accounts/")
+        pages_info = []
+        for page in raw_pages_info[u'data']:
+            page_info = {
+                'access_token': page[u'access_token'],
+                'name': page[u'name'],
+                'id': page[u'id'],
+            }
+            pages_info.append(page_info)
+        request.session["fb_pages_info"] = pages_info
+        request.session.save()
 
         message = {}
         if not (pages_info):
