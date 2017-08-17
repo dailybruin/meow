@@ -3,3 +3,4 @@
 .vagrant
 .vscode
 .DS_Store
+staticfiles
