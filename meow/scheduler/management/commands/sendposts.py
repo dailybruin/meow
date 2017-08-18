@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
     def sendTweet(self, smpost, section, url, photo_url):
         try:
-            print(smpost.post_twitter.encode('ascii', 'ignore'))
+            print('Sending Tweet: {}'.format(smpost.post_twitter))
             CONSUMER_KEY = MeowSetting.objects.get(
                 setting_key='twitter_consumer_key').setting_value
             CONSUMER_SECRET = MeowSetting.objects.get(
@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
     def sendFacebookPost(self, smpost, section, url, photo_url, fb_default_photo):
         try:
-            print(smpost.post_facebook.encode('ascii', 'ignore'))
+            print('Sending FB: {}'.format(smpost.post_facebook))
             # follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
             # Facebook needs the following permissions:
             # status_update, manage_pages
@@ -128,6 +128,7 @@ class Command(BaseCommand):
             try:
                 # Make sure nothing else is trying to send this post right now
                 # This is not atomic; if meow ever scales a lot more, this will need to be re-written
+                # TODO: Yes this isn't.
                 if post.sending:
                     continue
                 else:
@@ -166,8 +167,12 @@ class Command(BaseCommand):
                 if post.section.facebook_default_photo:
                     fb_default_photo = post.section.facebook_default_photo
                 else:
-                    fb_default_photo = MeowSetting.objects.get(
-                        setting_key='fb_default_photo').setting_value
+                    try:
+                        fb_default_photo = MeowSetting.objects.get(
+                            setting_key='fb_default_photo').setting_value
+                    except:
+                        print(
+                            "[WARN] Facebook default photo setting is not set properly!")
 
                 # Post to facebook
                 if post.post_facebook:

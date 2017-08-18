@@ -163,8 +163,7 @@ def edit(request, post_id, post=None):
 
     message = {}
     if request.method == "POST" and can_edit_post(request.user, post):
-        post.story_url = request.POST.get('url', None).encode(
-            'ascii', 'ignore').strip(" \t\n\r")
+        post.story_url = request.POST.get('url', None).strip(" \t\n\r")
         if len(post.story_url) > 4 and post.story_url[0:4] != "http":
             try:
                 index_of_protocol = post.story_url.index("://")

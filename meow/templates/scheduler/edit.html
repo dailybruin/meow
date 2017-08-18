@@ -121,7 +121,7 @@ $(document).ready(function(){
                             <option disabled selected>Select a section</option>
                         {% endif %}
                         {% for section in sections %}
-                        <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
+                        <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section.name }}</option>
                         {% endfor %}
                     </select>
                 </div>

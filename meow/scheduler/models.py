@@ -6,6 +6,7 @@ from pyshorteners import Shortener
 import requests
 import urllib
 from django.core.mail import send_mail
+from bs4 import BeautifulSoup
 
 
 class SMPost(models.Model):
@@ -151,9 +152,13 @@ Thanks,
             return(self.story_url, self.story_url)
 
         # Set up for Bitly Goodness
-        BITLY_ACCESS_TOKEN = MeowSetting.objects.get(
-            setting_key='bitly_access_token').setting_value
-        shortener = Shortener('Bitly', bitly_token=BITLY_ACCESS_TOKEN)
+        try:
+            BITLY_ACCESS_TOKEN = MeowSetting.objects.get(
+                setting_key='bitly_access_token').setting_value
+            shortener = Shortener('Bitly', bitly_token=BITLY_ACCESS_TOKEN)
+        except:
+            print("[WARN] URL Shortener is not properly configured!")
+            return(self.story_url, self.story_url)
 
         # api=bitly_api.Connection(access_token=BITLY_ACCESS_TOKEN)
 
@@ -202,12 +207,16 @@ Thanks,
             raise BaseException(error)
             return None
 
-        post_dom = BeautifulSoup(post_request.text)
+        post_dom = BeautifulSoup(post_request.text, "html.parser")
         if self.section.image_selector:
             image_selector = self.section.image_selector
         else:
-            image_selector = MeowSetting.objects.get(
-                setting_key='default_image_selector').setting_value
+            try:
+                image_selector = MeowSetting.objects.get(
+                    setting_key='default_image_selector').setting_value
+            except:
+                print("[WARN] Default Image Selector not properly set up!")
+                return None
 
         post_image_tags = post_dom.select(image_selector)
 
