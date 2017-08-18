@@ -14,7 +14,7 @@ class Command(BaseCommand):
             input_string = input_string + " (" + default + ")"
         input_string = input_string + ": "
 
-        user_input = raw_input(input_string)
+        user_input = input(input_string)
         if user_input is "":
             user_input = default
         s = MeowSetting(setting_key=machine_name, setting_value=user_input)
