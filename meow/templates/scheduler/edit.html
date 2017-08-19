@@ -1,17 +1,49 @@
 {% extends "base.html" %}
 
 {% block extra-css %}
-<link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-timepicker.min.css" type="text/css">
+<link rel="stylesheet" href="/static/bootstrap-timepicker.min.css" type="text/css">
 
 {% endblock %}
 
 {% block extra-js %}
-<script type="text/javascript" src="{{ STATIC_URL }}bootstrap-timepicker.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap-timepicker.min.js"></script>
 
 <script type="text/javascript">
 var TWITTER_LIMIT = {{ twitter_limit }};
 
 $(document).ready(function(){
+    var ready_to_publish = $('#approve-online').prop('checked');
+    // If enable is true, the ready to publish checkbox will be unchecked and disabled
+    // but the user will still be able to save.
+    function publish_status(enable)
+    {
+        if(!$('#approve-online').prop('disabled'))
+            ready_to_publish = $('#approve-online').prop('checked');
+        if(enable)
+        {
+            $('#approve-online').prop('disabled',false);
+            $('#approve-online').prop('checked', ready_to_publish);
+        }
+        else
+        {
+            $('#approve-online').prop('disabled',true);
+            $('#approve-online').prop('checked',false);
+        }
+    }
+    $('#url').keyup(function(){
+        var this_url = $(this).val();
+        if(this_url.trim().indexOf(" ") >= 0 || this_url.trim().indexOf('"') >= 0)
+        {
+            $(this).addClass('bad');
+            publish_status(false);
+        }
+        else
+        {
+            $(this).removeClass('bad');
+            publish_status(true);
+        }
+    });
+    $('#url').keyup();
     $('#pub_date_today').click(function(e){
         e.preventDefault();
         $('#pub_date').val('Today')
@@ -70,15 +102,6 @@ $(document).ready(function(){
 {% endif %}
 
 <div class="row">
-    {% if post.sent_error %}
-    <div class="large-12 columns">
-        <div class="alert-box alert">
-            <p><strong>This post did not send correctly. Here's the error message:</strong></p>
-            {{ post.sent_error_text }}
-        </div>
-    </div>
-    {% endif %}
-
     <form id="post-edit" method="post">
         {% csrf_token %}
         {% if post.id %}
@@ -89,16 +112,16 @@ $(document).ready(function(){
             <div class="row">
                 <div class="large-8 columns">
                     <label for="slug">Slug</label>
-                    <input type="text" id="slug" name="slug" placeholder="slug" value="{{ post.slug }}" disabled />
+                    <input type="text" id="slug" name="slug" placeholder="slug" value="{{ post.slug }}" />
                 </div>
                 <div class="large-4 columns">
                     <label for="section">Section</label>
-                    <select id="section" name="section" disabled>
+                    <select id="section" name="section">
                         {% if not post.section %}
                             <option disabled selected>Select a section</option>
                         {% endif %}
                         {% for section in sections %}
-                        <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section }}</option>
+                        <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -106,14 +129,14 @@ $(document).ready(function(){
             </div><!-- end div.row -->
 
             <label for="url">URL</label>
-            <input type="text" id="url" name="url" placeholder="http://" value="{{ post.story_url }}" disabled />
+            <input type="text" id="url" name="url" placeholder="http://" value="{{ post.story_url }}" />
 
             <label for="tweet">Tweet</label>
-            <textarea type="text" id="tweet" name="tweet" placeholder="tweet" rows="3" disabled>{{ post.post_twitter }}</textarea>
+            <textarea type="text" id="tweet" name="tweet" placeholder="tweet" rows="3">{{ post.post_twitter }}</textarea>
             <div id="tweet-count">{{ twitter_limit }}</div>
 
             <label for="fb">Facebook post</label>
-            <textarea type="text" id="fb" name="fb" placeholder="post" rows="5" disabled>{{ post.post_facebook }}</textarea>
+            <textarea type="text" id="fb" name="fb" placeholder="post" rows="5">{{ post.post_facebook }}</textarea>
 
             <p id="post-guidance-text"><b>Note:</b> Leaving the tweet text box empty will not post to Twitter. Similarly, leaving the facebook text box empty will not post to Facebook.</p>
         </div>
@@ -121,23 +144,25 @@ $(document).ready(function(){
         <div class="large-5 columns">
             <fieldset id="prepublish-checks">
                 <div class="prepublish-inside">
-                    <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %} {% if not perms.scheduler.approve_copy %}disabled{% endif %} disabled />
+                    <input type="checkbox" id="approve-copy" name="approve-copy" {% if post.pub_ready_copy == True %}checked{% endif %} {% if not perms.scheduler.approve_copy %}disabled{% endif %} />
                     <label for="approve-copy">Copy-edited</label>
                     {% if post.pub_ready_copy_user %}<span class="approval-by">by {{ post.pub_ready_copy_user.first_name }} {{ post.pub_ready_copy_user.last_name }}</span>{% endif %}
                 </div>
                 <div class="prepublish-inside">
-                    <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %} {% if not perms.scheduler.approve_online %}disabled{% endif %} disabled />
+                    <input type="checkbox" id="approve-online" name="approve-online" {% if post.pub_ready_online == True %}checked{% endif %} {% if not perms.scheduler.approve_online %}disabled{% endif %} />
                     <label for="approve-online">Ready to publish</label>
                     {% if post.pub_ready_online_user %}<span class="approval-by">by {{ post.pub_ready_online_user.first_name }} {{ post.pub_ready_online_user.last_name }}</span>{% endif %}
                 </div>
             </fieldset>
 
             <label for="pub_date">Publish date</label>
-            <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" disabled />
+            <a href="#" class="pub_date_quick" id="pub_date_tomorrow">Tomorrow</a>
+            <a href="#" class="pub_date_quick" id="pub_date_today">Today</a>
+            <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" />
 
             <label for="pub_time">Publish time</label>
-            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}" disabled></input>
-
+            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}"></input>
+            <input type="submit" value="Save" name="submit" class="button" />
             {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
         </div>
 
