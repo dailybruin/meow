@@ -6,7 +6,7 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if os.environ.get('DEBUG'):
-    DEBUG = os.environ.get('DEBUG')
+    DEBUG = os.environ.get('DEBUG') == 'True'
 else:
     DEBUG = True
 
