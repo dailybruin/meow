@@ -4,3 +4,5 @@
 .vscode
 .DS_Store
 staticfiles
+.env
+*.pid
