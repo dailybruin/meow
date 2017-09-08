@@ -185,3 +185,5 @@ if os.environ.get('REDIS_URL') is not None:
     CELERY_BROKER_URL = os.environ.get('REDIS_URL')
 else:
     CELERY_BROKER_URL = 'redis://'
+
+SLACK_ENDPOINT = os.environ.get('SLACK_ENDPOINT')
