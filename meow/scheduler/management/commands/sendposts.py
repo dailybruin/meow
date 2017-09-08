@@ -8,7 +8,9 @@ from facepy.exceptions import *
 from scheduler.models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.conf import settings
 import requests
+import json
 
 
 class Command(BaseCommand):
@@ -41,12 +43,26 @@ class Command(BaseCommand):
                 # io is needed to make an actual file object (tweepy requires
                 # the seek method on the file object)
                 photo_fd = io.BytesIO(photo_source.content)
-                api.update_with_media(filename, tweet, file=photo_fd)
+                res = api.update_with_media(filename, tweet, file=photo_fd)
             else:
-                api.update_status(status=tweet)
+                res = api.update_status(status=tweet)
+
+            print("----------------------")
+            print(res.id)
+
+            return "https://twitter.com/statuses/{}".format(res.id)
 
         except tweepy.TweepError as e:
             smpost.log_error(e, section, True)
+            slack_data = {
+                "text": ":sadparrot: *{}* has errored at {}"
+                .format(post.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
+                "attachments": [{"color": "danger", "title": "Twitter Error", "text": str(e)}]
+            }
+
+            requests.post(settings.SLACK_ENDPOINT,
+                          data=json.dumps(slack_data),
+                          headers={'Content-Type': 'application/json'})
 
     def sendFacebookPost(self, smpost, section, url, photo_url, fb_default_photo):
         try:
@@ -68,7 +84,7 @@ class Command(BaseCommand):
             # Now actually post to Facebook
 
             if photo_url and url:
-                graph.post(
+                res = graph.post(
                     path=PAGE_ID + '/feed',
                     message=smpost.post_facebook,  # + "\n\nRead more: " + url,
                     link=url,
@@ -77,27 +93,41 @@ class Command(BaseCommand):
                     #source = io.BytesIO(requests.get(photo_url).content),
                 )
             elif photo_url:
-                graph.post(
+                res = graph.post(
                     path=PAGE_ID + '/photos',
                     message=smpost.post_facebook,
                     type="photo",
                     source=io.BytesIO(requests.get(photo_url).content),
                 )
             elif url:
-                graph.post(
+                res = graph.post(
                     path=PAGE_ID + '/feed',
                     message=smpost.post_facebook,
                     link=url,
                     picture=fb_default_photo,
                 )
             else:
-                graph.post(
+                res = graph.post(
                     path=PAGE_ID + '/feed',
                     message=smpost.post_facebook,
                 )
 
+            print("----------------------")
+            post_id = res['id'].split('_')[1]
+            print(post_id)
+            return "https://facebook.com/{}".format(post_id)
+
         except (FacepyError, FacebookError, OAuthError, SignedRequestError, requests.exceptions.RequestException) as e:
             smpost.log_error(e, section, True)
+            slack_data = {
+                "text": ":sadparrot: *{}* has errored at {}"
+                .format(post.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
+                "attachments": [{"color": "danger", "title": "FaceBook Error", "text": str(e)}]
+            }
+
+            requests.post(settings.SLACK_ENDPOINT,
+                          data=json.dumps(slack_data),
+                          headers={'Content-Type': 'application/json'})
 
     def handle(self, *args, **options):
         send_posts = MeowSetting.objects.get(
@@ -173,12 +203,13 @@ class Command(BaseCommand):
                     except:
                         print(
                             "[WARN] Facebook default photo setting is not set properly!")
-
+                fb_url = None
+                tweet_url = None
                 # Post to facebook
                 if post.post_facebook:
                     # Section's account
                     if (post.section.facebook_page_id and post.section.facebook_key):
-                        self.sendFacebookPost(
+                        fb_url = self.sendFacebookPost(
                             post, post.section, send_url[1], photo_url, fb_default_photo)
                     # Also post to account
                     if (post.section.also_post_to and
@@ -189,8 +220,8 @@ class Command(BaseCommand):
                 if post.post_twitter:
                     # Section's account
                     if (post.section.twitter_access_key and post.section.twitter_access_secret):
-                        self.sendTweet(post, post.section,
-                                       send_url[1], photo_url)
+                        tweet_url = self.sendTweet(post, post.section,
+                                                   send_url[1], photo_url)
                     # Also post to account
                     if (post.section.also_post_to and
                             post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
@@ -201,11 +232,40 @@ class Command(BaseCommand):
                 e = sys.exc_info()[0]
                 post.log_error(e, post.section, True)
 
+                slack_data = {
+                    "text": ":sadparrot: *{}* has errored at {}"
+                    .format(post.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
+                    "attachments": [{"color": "danger", "title": "Error", "text": str(e)}]
+                }
+
+                requests.post(settings.SLACK_ENDPOINT,
+                              data=json.dumps(slack_data),
+                              headers={'Content-Type': 'application/json'})
+                continue
+
             # Now save whatever we changed to the post
             try:
                 post.sending = False
                 post.sent = True
                 post.sent_time = timezone.now()
+
+                slack_data = {
+                    "text": ":partyparrot: *{}* has been meow'd to {} at {}"
+                    .format(post.slug, post.section.name, post.sent_time.strftime("%A, %d. %B %Y %I:%M%p")),
+                    "attachments": []
+                }
+
+                if fb_url:
+                    slack_data["attachments"].append(
+                        {"text": "Facebook: {}".format(fb_url)})
+
+                if tweet_url:
+                    slack_data["attachments"].append(
+                        {"text": "Twitter: {}".format(tweet_url)})
+
+                requests.post(settings.SLACK_ENDPOINT,
+                              data=json.dumps(slack_data),
+                              headers={'Content-Type': 'application/json'})
                 post.save()
             except:
                 print("Something is very wrong")
