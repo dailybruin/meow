@@ -1,4 +1,5 @@
-# Meow
+# Meow [![Updates](https://pyup.io/repos/github/daily-bruin/meow/shield.svg)](https://pyup.io/repos/github/daily-bruin/meow/)
+
 *Daily Bruin's Twitter and Facebook poster*
 
 ## [NEW] Dev environment using Docker Compose
