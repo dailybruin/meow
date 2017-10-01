@@ -14,7 +14,7 @@ We've switched over to a Procfile (Heroku/Flynn/Dokku) based system for configur
 `docker-compose build` - builds and pulls the relevant Docker images
 
 ### 2. Run migrations
-`docker-compose run web migrate` - run the migrations 
+`docker-compose run web meow/manage.py migrate` - run the migrations 
 
 ### 3. Initialize some variables
 `docker-compose run web meow/manage.py init` - initialize some of the runtime config necessary for meow to run
