@@ -17,7 +17,7 @@ There are some additional commands required for Windows users that will be menti
 `docker-compose build` - builds and pulls the relevant Docker images
 
 ### 2. Run migrations
-`docker-compose run web sh` - run the migrations    
+`docker-compose run web meow/manage.py migrate` - run the migrations    
 `dos2unix entrypoint-dev.sh` - for WINDOWS users only        
 `find ./ -type f -exec dos2unix {} \;` - for WINDOWS users only         
 
