@@ -5,16 +5,21 @@
 ## [NEW] Dev environment using Docker Compose
 We've switched over to a Procfile (Heroku/Flynn/Dokku) based system for configuring and deploying our system! In most scenarios, a `git push <server-remote> master` will be sufficient to deploy the service. We've also paired this with a newer, leaner and hopefully easier way to develop meow using a Docker Compose based workflow. Should our compute needs and resources grow in the future, we could also switch to a complete Docker deploy pipeline.
 
+There are some additional commands required for Windows users that will be mentioned in the comments.
+
 ### 0. Grab this repo, create an `.env`
 `git clone https://github.com/daily-bruin/meow.git` - clones the repo
 `cd meow` - enter the directory
-`echo "REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres" > .env` - bare minimum ENV variables, ensure that the newline character is implemented in the.env file 
+`echo "REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres" > .env` - bare minimum ENV variables, ensure that the newline character is implemented in the .env file 
+`dos2unix .env` - for WINDOWS users only, ensures that .env file will on run on Linux
 
 ### 1. Build images
 `docker-compose build` - builds and pulls the relevant Docker images
 
 ### 2. Run migrations
-`docker-compose run web meow/manage.py migrate` - run the migrations 
+`docker-compose run web sh` - run the migrations
+`dos2unix entrypoint-dev.sh` - for WINDOWS users only
+`find ./ -type f -exec dos2unix {} \;` - for WINDOWS users only
 
 ### 3. Initialize some variables
 `docker-compose run web meow/manage.py init` - initialize some of the runtime config necessary for meow to run
@@ -23,7 +28,8 @@ Most of these can be left blank for now.
 You can create your own Twitter/Facebook apps for this, or ask one of the PMs/editors for the keys to some test accounts.
 
 ### 4. Create a superuser
-`docker-compose run web meow/manage.py createsuperuser`
+`docker-compose run web meow/manage.py createsuperuser` 
+`winpty ./manage.py createsuperuser` - for WINDOWS users only
 
 ### 5. Use that to configure Celery beat for sending out our social media posts!
 Navigate to `0.0.0.0:5000/admin/django_celery_beat/periodictask/`. Login with your created superuser and create a periodic task
