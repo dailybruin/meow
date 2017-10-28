@@ -8,7 +8,7 @@ We've switched over to a Procfile (Heroku/Flynn/Dokku) based system for configur
 ### 0. Grab this repo, create an `.env`
 `git clone https://github.com/daily-bruin/meow.git` - clones the repo
 `cd meow` - enter the directory
-`echo "REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres" > .env` - bare minimum ENV variables
+`echo "REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres" > .env` - bare minimum ENV variables, ensure that the newline character is implemented in the.env file 
 
 ### 1. Build images
 `docker-compose build` - builds and pulls the relevant Docker images
