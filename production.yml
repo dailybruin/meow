@@ -4,7 +4,7 @@ services:
     build: .
     image: meow
     restart: always
-    command: honcho start -f Procfile.dev
+    command: honcho start -f Procfile
     ports:
       - "5000:5000"
     env_file: .env
@@ -20,16 +20,12 @@ services:
     volumes: 
       - /opt/meow/db:/var/lib/postgresql/
     restart: always
-    ports:
-      - "5432:5432"
     networks:
       - meow_svc
 
   redis:
     restart: always
     image: redis:alpine
-    ports:
-      - "6379:6379"
     networks:
       - meow_svc
 

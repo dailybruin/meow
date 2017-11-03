@@ -5,7 +5,7 @@ FROM python:3.6-alpine
 # Copy in your requirements file
 ADD requirements.txt /requirements.txt
 
-EXPOSE 8000
+EXPOSE 5000
 
 # Install build deps, then run `pip install`, then remove unneeded build deps all in a single step. Correct the path to your production requirements file, if needed.
 RUN set -ex \
@@ -34,5 +34,7 @@ RUN set -ex \
 RUN mkdir /meow/
 WORKDIR /meow/
 ADD . /meow/
+
+RUN /venv/bin/python /meow/meow/manage.py collectstatic --noinput
 
 ENTRYPOINT ["/meow/entrypoint-dev.sh"]
