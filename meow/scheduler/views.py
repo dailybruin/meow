@@ -35,6 +35,8 @@ def can_edit_post(user, post):
          or (user.has_perm('scheduler.approve_online')))
             and not post.sent):
         return True
+    elif post.sent_error:
+        return True
     return False
 
 
@@ -137,7 +139,7 @@ def edit(request, post_id, post=None):
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
 
-    if post.sent or not can_edit_post(request.user, post) or post.sending:
+    if (post.sent and not post.sent_error) or not can_edit_post(request.user, post) or post.sending:
         message = {
             "mtype": "status",
         }
@@ -217,6 +219,8 @@ def edit(request, post_id, post=None):
                 post.pub_ready_online = True
             else:
                 post.pub_ready_online = False
+                post.sent_error = False 
+                post.sent = False
                 post.pub_ready_online_user = None
 
         post.last_edit_user = request.user

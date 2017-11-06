@@ -267,6 +267,7 @@ class Command(BaseCommand):
                               data=json.dumps(slack_data),
                               headers={'Content-Type': 'application/json'})
                 post.save()
-            except:
+            except (Exception) as e:
                 print("Something is very wrong")
+                post.log_error(e, post.section, True)
                 pass  # But we can still try the rest of the posts that are going to be sent
