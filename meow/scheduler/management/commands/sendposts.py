@@ -56,7 +56,7 @@ class Command(BaseCommand):
             smpost.log_error(e, section, True)
             slack_data = {
                 "text": ":sadparrot: *{}* has errored at {}"
-                .format(post.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
+                .format(post.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
                 "attachments": [{"color": "danger", "title": "Twitter Error", "text": str(e)}]
             }
 
@@ -138,9 +138,9 @@ class Command(BaseCommand):
 
         # Get posts from the database that are ready to send
         posts = SMPost.objects.filter(
-            pub_date__lte=datetime.now().date()
+            pub_date__lte=timezone.localtime(timezone.now()).date()
         ).filter(
-            pub_time__lte=datetime.now().time()
+            pub_time__lte=timezone.localtime(timezone.now()).time()
         ).filter(
             pub_ready_copy=True
         ).filter(
@@ -170,14 +170,14 @@ class Command(BaseCommand):
                 # message.
                 send_date = datetime.combine(post.pub_date, post.pub_time)
                 send_grace_period = timedelta(minutes=20)
-                if (datetime.now() - send_date) > send_grace_period:
+                if (timezone.now() - timezone.make_aware(send_date)) > send_grace_period:
                     try:
                         post.sending = False
                         post.log_error(
                             "Would have sent more than 20 minutes late.", post.section, True)
                         post.sending = False
                         post.sent = True
-                        post.sent_time = timezone.now()
+                        post.sent_time = timezone.localtime(timezone.now())
                         post.save()
                     except:
                         print("Something is very wrong2")
@@ -234,7 +234,7 @@ class Command(BaseCommand):
 
                 slack_data = {
                     "text": ":sadparrot: *{}* has errored at {}"
-                    .format(post.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
+                    .format(post.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
                     "attachments": [{"color": "danger", "title": "Error", "text": str(e)}]
                 }
 
@@ -247,7 +247,7 @@ class Command(BaseCommand):
             try:
                 post.sending = False
                 post.sent = True
-                post.sent_time = timezone.now()
+                post.sent_time = timezone.localtime(timezone.now())
 
                 slack_data = {
                     "text": ":partyparrot: *{}* has been meow'd to {} at {}"
