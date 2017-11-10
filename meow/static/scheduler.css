@@ -61,9 +61,7 @@ input[type="text"], input[type="password"], textarea, input[type="email"] {
     -webkit-appearance: none;
     border: 1px solid #ddd;
     padding: 10px;
-    font-size: 20px;
     color: #333;
-    margin: 15px 0;
     box-sizing: border-box;
 }
 label+input[type="text"], label+input[type="password"], label+textarea, label+input[type="email"] {
@@ -356,6 +354,8 @@ label[for="date-change"] {
     font-size:0.875em;
     margin:0;
 }
+
+
 
 .user-edit .unbold {
     font-weight:normal;
