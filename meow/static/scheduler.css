@@ -168,8 +168,33 @@ input[type="button"]:hover, input[type="submit"]:hover, button:hover, .button:ho
     background-color:#F5EDEB;
 }
 
-#poststable .sorting-desc, #poststable .sorting-asc {
-    border-bottom: 2px solid #0f5a6a;
+/*#poststable .sorting-desc, #poststable .sorting-asc {
+    background-color: #E1EAEC;
+}*/
+
+#poststable .categories{
+    display: flex;
+}
+
+#poststable .sort-arrow-down{
+    width: 0;
+    top: 7px;
+    position: relative;
+    left: 3px;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 11px solid #00D9FF;
+}
+
+
+#poststable .sort-arrow-up{
+    width: 0;
+    bottom: 3px;
+    position: relative;
+    left: 3px;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 11px solid #00D9FF;
 }
 
 #poststable tbody {

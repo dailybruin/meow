@@ -13,6 +13,25 @@ $(document).ready(function(){
         defaultDate: "{{ view_date|date:'Y-m-d' }}"
     });
 
+    // Arrows for sorting 
+    $('#poststable th').on('click', function() {
+        if(!($(this).find('.category').hasClass('active-category'))){
+            $('.active-category').siblings('.sort-arrow-down').removeClass('sort-arrow-down');
+            $('.active-category').siblings('.sort-arrow-up').removeClass('sort-arrow-up');
+            $('.active-category').removeClass('active-category');
+            $(this).find('.category').addClass('active-category');
+        }
+        if($(this).find('.category').siblings('.sort-arrow').hasClass('sort-arrow-down')){
+            $(this).find('.category').siblings('.sort-arrow').removeClass('sort-arrow-down');
+            $(this).find('.category').siblings('.sort-arrow').addClass('sort-arrow-up');  
+        } else if($(this).find('.category').siblings('.sort-arrow').hasClass('sort-arrow-up')){
+            $(this).find('.category').siblings('.sort-arrow').removeClass('sort-arrow-up');
+            $(this).find('.category').siblings('.sort-arrow').addClass('sort-arrow-down');
+        } else{
+            $(this).find('.category').siblings('.sort-arrow').addClass('sort-arrow-down');
+        }
+    });
+
 });
 </script>
 {% endblock %}
@@ -62,12 +81,42 @@ $(document).ready(function(){
         <thead>
             <tr>
                 <th></th>
-                <th data-sort="string">Slug</th>
-                <th data-sort="string" class="section-column">Section</th>
-                <th data-sort="string" class="twitter-column">Tweet</th>
-                <th data-sort="string" class="facebook-column">Facebook post</th>
-                <th data-sort="int" class="time-column">Post time</th>
-                <th data-sort="string">Status</th>
+                <th data-sort="string">
+                    <div class="categories">
+                        <div class="category">Slug</div>
+                        <div class="sort-arrow"</div>
+                    </div>
+                </th>
+                <th data-sort="string" class="section-column">
+                    <div class="categories">
+                        <div class="category">Section</div>
+                        <div class="sort-arrow"</div>
+                    </div>
+                </th>
+                <th data-sort="string" class="twitter-column">
+                    <div class="categories">
+                        <div class="category">Twitter</div>
+                        <div class="sort-arrow"</div>
+                    </div>
+                </th>
+                <th data-sort="string" class="facebook-column">
+                    <div class="categories">
+                        <div class="category">Facebook Post</div>
+                        <div class="sort-arrow"</div>
+                    </div>
+                </th>
+                <th data-sort="int" class="time-column">
+                    <div class="categories">
+                        <div class="category">Post Time</div>
+                        <div class="sort-arrow"</div>
+                    </div>
+                </th>
+                <th data-sort="string">
+                    <div class="categories">
+                        <div class="category">Status</div>
+                        <div class="sort-arrow"</div>
+                    </div>
+                </th>
             </tr>
         </thead>
         <tbody>
