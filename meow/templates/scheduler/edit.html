@@ -50,13 +50,15 @@ $(document).ready(function(){
     if("{{post.pub_date}}" && "{{ post.pub_time }}"){
         // there is a pub_date (i.e. we are editing a post that has previously specified a date)
         postedDateTime = "{{ post.pub_date|date:'Y-m-d' }} {{ post.pub_time|time:'H:i A'}}";
+    } else{
+        postedDateTime = Date.now();
     }
 
     const dateAndTime = flatpickr("#pub_date_time", {
         altInput:true,
         defaultDate: postedDateTime,
         enableTime: true,
-        minDate: "today"
+        minDate: "today",
     });
 
 
@@ -167,10 +169,6 @@ $(document).ready(function(){
             
             <input type="text" id="pub_date_time" name="pub_date_time" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{{ post.pub_time|time:"h:i A" }}{% endif %}" placeholder="May 23, 1919 12:00 AM" />
 
-            <!-- <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" /> -->
-<!-- 
-            <label for="pub_time">Publish time</label>
-            <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}"></input> -->
             <input type="submit" value="Save" name="submit" class="button" />
             {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
         </div>
