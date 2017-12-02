@@ -41,7 +41,7 @@ class SMPost(models.Model):
         default=False, blank=False, null=False, help_text="Did the send generate an error?")
     sent_error_text = models.TextField(null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
     class Meta:
@@ -257,7 +257,7 @@ class Section(models.Model):
     shorten_links = models.BooleanField(
         default=False, null=False, blank=False, help_text="Shorten links using bit.ly?")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -265,7 +265,7 @@ class MeowSetting(models.Model):
     setting_key = models.CharField(max_length=100, blank=False, unique=True)
     setting_value = models.CharField(max_length=500)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.setting_key
 
 
@@ -273,5 +273,5 @@ class EmailNotification(models.Model):
     name = models.CharField(max_length=100, blank=False)
     email_address = models.EmailField(blank=False, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name + " <" + self.email_address + ">"
