@@ -40,6 +40,8 @@ class SMPost(models.Model):
     sent_error = models.BooleanField(
         default=False, blank=False, null=False, help_text="Did the send generate an error?")
     sent_error_text = models.TextField(null=True, blank=True)
+    send_now = models.BooleanField(
+        default=False, help_text="Do you want to send this post immediately?")
 
     def __unicode__(self):
         return self.slug
