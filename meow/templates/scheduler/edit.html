@@ -102,6 +102,14 @@ $(document).ready(function(){
 {% endif %}
 
 <div class="row">
+    {% if post.sent_error %}
+    <div class="large-12 columns">
+        <div class="alert-box alert">
+            <p><strong>This post did not send correctly. Here's the error message:</strong></p>
+            {{ post.sent_error_text }}
+        </div>
+    </div>
+    {% endif %}
     <form id="post-edit" method="post">
         {% csrf_token %}
         {% if post.id %}

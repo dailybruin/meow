@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.utils import timezone
 from scheduler.models import *
 import datetime
 import parsedatetime.parsedatetime as pdt
@@ -33,6 +34,8 @@ def can_edit_post(user, post):
           (user.has_perm('scheduler.approve_online') or not post.pub_ready_online))
          or (user.has_perm('scheduler.approve_online')))
             and not post.sent):
+        return True
+    elif post.sent_error:
         return True
     return False
 
@@ -103,10 +106,10 @@ def dashboard(request):
     if alt_date:
         view_date = alt_date
     else:
-        if datetime.datetime.now().hour <= 4:
-            view_date = datetime.date.today()
+        if timezone.now().hour <= 4:
+            view_date = timezone.localdate()
         else:
-            view_date = datetime.date.today() + datetime.timedelta(days=1)
+            view_date = timezone.localdate() + datetime.timedelta(days=1)
 
     tomorrow_posts = SMPost.objects.filter(pub_date=view_date)
     lost_posts = SMPost.objects.filter(pub_date=None)
@@ -136,7 +139,7 @@ def edit(request, post_id, post=None):
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
 
-    if post.sent or not can_edit_post(request.user, post) or post.sending:
+    if (post.sent and not post.sent_error) or not can_edit_post(request.user, post) or post.sending:
         message = {
             "mtype": "status",
         }
@@ -216,6 +219,8 @@ def edit(request, post_id, post=None):
                 post.pub_ready_online = True
             else:
                 post.pub_ready_online = False
+                post.sent_error = False 
+                post.sent = False
                 post.pub_ready_online_user = None
 
         post.last_edit_user = request.user
@@ -238,7 +243,7 @@ def edit(request, post_id, post=None):
         "user": request.user,
         "sections": Section.objects.all(),
         "post": post,
-        "tomorrow": datetime.date.today() + datetime.timedelta(days=1),
+        "tomorrow": timezone.localdate() + datetime.timedelta(days=1),
         "message": message,
         "twitter_limit": MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
         "site_settings": get_settings(),
@@ -262,7 +267,7 @@ def add(request):
     context = {
         "user": request.user,
         "sections": Section.objects.all(),
-        "tomorrow": datetime.date.today() + datetime.timedelta(days=1),
+        "tomorrow": timezone.localdate() + datetime.timedelta(days=1),
         "twitter_limit": MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
         "site_settings": get_settings(),
     }
