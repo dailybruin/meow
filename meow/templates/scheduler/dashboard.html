@@ -10,7 +10,11 @@ $(document).ready(function(){
     // New UI for DateTime
     const dateAndTime = flatpickr("#date-change", {
         altInput:true,
-        defaultDate: "{{ view_date|date:'Y-m-d' }}"
+        defaultDate: "{{ view_date|date:'Y-m-d' }}",
+        onChange: function(selectedDates, dateStr, instance) {
+            let selected = { date: selectedDates[0] };
+            window.location.href = "?" + $.param(selected);
+        }
     });
 
     // Arrows for sorting 
