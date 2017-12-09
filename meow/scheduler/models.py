@@ -55,6 +55,7 @@ class SMPost(models.Model):
         self.sent_error = True
         self.sent_error_text = str(self.sent_error_text) + "Error: " + str(
             section.name) + " " + str(datetime.now()) + " -- " + str(e) + "\n"
+        self.sending = False
         self.save()
 
         if not send_email:

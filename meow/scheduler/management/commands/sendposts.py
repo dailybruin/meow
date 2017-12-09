@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.conf import settings
 import requests
 import json
+import sys
 
 
 class Command(BaseCommand):
@@ -56,7 +57,7 @@ class Command(BaseCommand):
             smpost.log_error(e, section, True)
             slack_data = {
                 "text": ":sadparrot: *{}* has errored at {}"
-                .format(post.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
+                .format(smpost.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
                 "attachments": [{"color": "danger", "title": "Twitter Error", "text": str(e)}]
             }
 
@@ -90,6 +91,7 @@ class Command(BaseCommand):
                     link=url,
                     #type= "photo",
                     picture=photo_url,
+                    retry=2,
                     #source = io.BytesIO(requests.get(photo_url).content),
                 )
             elif photo_url:
@@ -98,6 +100,7 @@ class Command(BaseCommand):
                     message=smpost.post_facebook,
                     type="photo",
                     source=io.BytesIO(requests.get(photo_url).content),
+                    retry=2,
                 )
             elif url:
                 res = graph.post(
@@ -105,11 +108,13 @@ class Command(BaseCommand):
                     message=smpost.post_facebook,
                     link=url,
                     picture=fb_default_photo,
+                    retry=2,
                 )
             else:
                 res = graph.post(
                     path=PAGE_ID + '/feed',
                     message=smpost.post_facebook,
+                    retry=2,
                 )
 
             print("----------------------")
@@ -121,7 +126,7 @@ class Command(BaseCommand):
             smpost.log_error(e, section, True)
             slack_data = {
                 "text": ":sadparrot: *{}* has errored at {}"
-                .format(post.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
+                .format(smpost.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
                 "attachments": [{"color": "danger", "title": "FaceBook Error", "text": str(e)}]
             }
 
