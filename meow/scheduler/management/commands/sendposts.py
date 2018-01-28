@@ -147,6 +147,8 @@ class Command(BaseCommand):
             pub_ready_copy=True
         ).filter(
             pub_ready_online=True
+        ).filter(
+            send_now=True
         ).exclude(
             sent=True
         ).exclude(
