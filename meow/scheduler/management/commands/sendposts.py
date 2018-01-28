@@ -163,6 +163,13 @@ class Command(BaseCommand):
                 # Make sure nothing else is trying to send this post right now
                 # This is not atomic; if meow ever scales a lot more, this will need to be re-written
                 # TODO: Yes this isn't.
+                if post.send_now:
+                    post.sending = False
+                    post.sent = True
+                    post.sent_time = timezone.localtime(timezone.now())
+                    post.save()
+                    continue
+
                 if post.sending:
                     continue
                 else:
