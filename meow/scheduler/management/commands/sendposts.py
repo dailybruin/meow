@@ -99,6 +99,7 @@ class Command(BaseCommand):
                 data['link'] = url
 
             errors = 0
+            res = None
             while errors < 2:
                 try:
                     res = graph.post(**data)
