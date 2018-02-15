@@ -171,8 +171,9 @@ $(document).ready(function(){
 
             <input type="submit" value="Save" name="submit" class="button" />
             {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
-        </div>
 
+            <pre>{{post.meta}}</pre>
+        </div>
     </form>
 </div><!-- end div.row -->
 

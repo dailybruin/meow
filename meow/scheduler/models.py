@@ -7,6 +7,7 @@ import requests
 import urllib
 from django.core.mail import send_mail
 from bs4 import BeautifulSoup
+from django.contrib.postgres.fields import JSONField
 
 
 class SMPost(models.Model):
@@ -19,6 +20,7 @@ class SMPost(models.Model):
     post_twitter = models.TextField(null=True, blank=True)
     post_facebook = models.TextField(null=True, blank=True)
     section = models.ForeignKey('Section', blank=True, null=True)
+    meta = JSONField(null=True)
     pub_ready_copy = models.BooleanField(
         default=False, help_text="Is this copy-edited?")
     pub_ready_online = models.BooleanField(
@@ -50,6 +52,14 @@ class SMPost(models.Model):
             ("approve_copy", "Can mark the post as approved by copy"),
             ("approve_online", "Can mark the post as approved by online"),
         )
+
+    def save(self, *args, **kwargs):
+        try:
+            print(self.get_post_photo_url())
+        except BaseException as err:
+            raise ValueError("The URL is invalid!")
+        #print(self.get_post_photo_url())
+        super().save(*args, **kwargs)
 
     def log(self, msg):
         text = "\n[" + str(datetime.now()) + "] - "
@@ -203,7 +213,7 @@ Thanks,
     def get_post_photo_url(self):
         if not self.story_url:
             return None
-        if self.featured_image_url:
+        if self.meta and self.meta["images"]:
             return self.featured_image_url
         # Get the post HTML
         post_request = requests.get(self.story_url)
@@ -226,24 +236,26 @@ Thanks,
                     setting_key='default_image_selector').setting_value
             except:
                 print("[WARN] Default Image Selector not properly set up!")
-                return None
 
-        post_image_tags = post_dom.select(image_selector)
-
+        post_image_tags = [ tag['src'] for tag in post_dom.select(".wp-post-image") ]
+        self.meta = {
+            "images": post_image_tags
+        }
+        
         # Detect if the post has an actual image/src we can use (why not be too careful)
-        post_image_url = None
-        if post_image_tags:
-            post_image_attrs = post_image_tags[0].attrs
-            if 'data-lazy-src' in post_image_attrs:
-                post_image_url = post_image_attrs['data-lazy-src']
-            else:
-                post_image_url = post_image_attrs['src']
 
-        if post_image_url:
-            self.featured_image_url = post_image_url
-            self.save()
+        # if post_image_tags:
+        #     post_image_attrs = post_image_tags[0].attrs
+        #     if 'data-lazy-src' in post_image_attrs:
+        #         post_image_url = post_image_attrs['data-lazy-src']
+        #     else:
+        #         post_image_url = post_image_attrs['src']
 
-        return post_image_url
+        # if post_image_url:
+        #     self.featured_image_url = post_image_url
+        #     self.save()
+
+        return post_image_tags
 
 
 class Section(models.Model):
