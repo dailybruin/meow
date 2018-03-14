@@ -10,8 +10,8 @@ There are some additional commands required for Windows users that will be menti
 ### 0. Grab this repo, create an `.env`
 `git clone https://github.com/daily-bruin/meow.git` - clones the repo
 `cd meow` - enter the directory
-`echo REDIS_URL=redis://redis:6379/ > .env
-echo DATABASE_URL=postgres://postgres@db:5432/postgres >> .env` - bare minimum ENV variables, ensure that the newline character (\n) is implemented in the .env file        
+`echo REDIS_URL=redis://redis:6379/ > .env`
+`echo DATABASE_URL=postgres://postgres@db:5432/postgres >> .env` - bare minimum ENV variables, ensure that the newline character (\n) is implemented in the .env file        
 
 ### 1. Build images
 `docker-compose build` - builds and pulls the relevant Docker images
