@@ -170,6 +170,7 @@ $(document).ready(function(){
             <input type="text" id="pub_date_time" name="pub_date_time" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{{ post.pub_time|time:"h:i A" }}{% endif %}" placeholder="May 23, 1919 12:00 AM" />
 
             <input type="submit" value="Save" name="submit" class="button" />
+            <input type="submit" value="Send Now" name="send-now" class="button" />
             {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
         </div>
 
