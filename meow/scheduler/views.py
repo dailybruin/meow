@@ -120,12 +120,13 @@ def dashboard(request):
     if alt_date:
         view_date = alt_date
     else:
-        if timezone.now().hour <= 4:
-            view_date = timezone.localdate()
-        else:
-            view_date = timezone.localdate() + datetime.timedelta(days=1)
+        # if timezone.now().hour <= 4:
+        #     view_date = timezone.localdate()
+        # else:
+        #     view_date = timezone.localdate() + datetime.timedelta(days=1)
+        view_date = timezone.localdate()
 
-    tomorrow_posts = SMPost.objects.filter(pub_date=view_date)
+    today_posts = SMPost.objects.filter(pub_date=view_date)
     lost_posts = SMPost.objects.filter(pub_date=None)
 
     site_message = MeowSetting.objects.get(
@@ -140,7 +141,7 @@ def dashboard(request):
     context = {
         "user": request.user,
         "sections": Section.objects.all(),
-        "smposts": list(chain(tomorrow_posts, lost_posts)),
+        "smposts": list(chain(today_posts, lost_posts)),
         "messages": messages,
         "view_date": view_date,
         "site_settings": get_settings(),
@@ -237,7 +238,7 @@ def edit(request, post_id, post=None):
                 post.pub_ready_online = True
             else:
                 post.pub_ready_online = False
-                post.sent_error = False 
+                post.sent_error = False
                 post.sent = False
                 post.pub_ready_online_user = None
 
@@ -261,7 +262,8 @@ def edit(request, post_id, post=None):
         "user": request.user,
         "sections": Section.objects.all(),
         "post": post,
-        "tomorrow": timezone.localdate() + datetime.timedelta(days=1),
+        # "tomorrow": timezone.localdate() + datetime.timedelta(days=1),
+        "today": timezone.localdate(),
         "message": message,
         "twitter_limit": MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
         "site_settings": get_settings(),
@@ -285,7 +287,8 @@ def add(request):
     context = {
         "user": request.user,
         "sections": Section.objects.all(),
-        "tomorrow": timezone.localdate() + datetime.timedelta(days=1),
+        # "tomorrow": timezone.localdate() + datetime.timedelta(days=1),
+        "today": timezone.localdate(),
         "twitter_limit": MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
         "site_settings": get_settings(),
     }
