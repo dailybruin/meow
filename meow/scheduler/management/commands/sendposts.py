@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.conf import settings
 import requests
 import json
+from itertools import chain
 
 
 class Command(BaseCommand):
@@ -136,8 +137,13 @@ class Command(BaseCommand):
             print("Post sending is currently off!")
             return
 
+        print("here itme")
+        for e in SMPost.objects.all():
+            print(e)
+            print(e.send_now)
+
         # Get posts from the database that are ready to send
-        posts = SMPost.objects.filter(
+        regularPosts = SMPost.objects.filter(
             pub_date__lte=timezone.localtime(timezone.now()).date()
         ).filter(
             pub_time__lte=timezone.localtime(timezone.now()).time()
@@ -145,13 +151,21 @@ class Command(BaseCommand):
             pub_ready_copy=True
         ).filter(
             pub_ready_online=True
-        ).filter(
+        ).exclude(
+            sent=True
+        ).exclude(
+            section=None
+        )
+
+        posts = SMPost.objects.filter(
             send_now=True
         ).exclude(
             sent=True
         ).exclude(
             section=None
         )
+
+        #posts = list(chain(regularPosts, sendNowPosts))
 
         if len(posts) == 0:
             print("No posts to send!")
@@ -166,7 +180,6 @@ class Command(BaseCommand):
                     post.sent = True
                     post.sent_time = timezone.localtime(timezone.now())
                     post.save()
-                    continue
 
                 if post.sending:
                     continue
@@ -178,6 +191,7 @@ class Command(BaseCommand):
                 # 20 minutes late, we're gonna mark it as an error and send an error
                 # message.
                 send_date = datetime.combine(post.pub_date, post.pub_time)
+                print(send_date)
                 send_grace_period = timedelta(minutes=20)
                 if (timezone.now() - timezone.make_aware(send_date)) > send_grace_period:
                     try:
@@ -203,6 +217,7 @@ class Command(BaseCommand):
                 # Get the default fb photo and pass it to the send function
                 # so the same default photo gets posted everywhere
                 fb_default_photo = None
+                print(post.section)
                 if post.section.facebook_default_photo:
                     fb_default_photo = post.section.facebook_default_photo
                 else:
