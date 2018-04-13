@@ -16,10 +16,36 @@ import facepy
 import re
 import sys
 
+from meow.celery import sendposts
+
 # Oauth stuff
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
+
+@login_required
+def send_posts_now(request, post_id):
+    print("SEND_POSTS_NOW IN VIEWS.PY WAS CALLED")
+    print(request)
+    sendNowPost = SMPost.objects.get(id = post_id)
+    sendNowPost.send_now=True
+    sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
+    sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
+    sendNowPost.save()
+    # print("sendNowPost")
+    # print(sendNowPost)
+    # print(sendNowPost.send_now)
+    # edit(request, -1, post)
+    # post.send_now = True
+    # post_id = post.id
+    # post.save()
+    # print("post slug is ")
+    # print(post.slug)
+    # print("send_now is ")
+    # print(post.send_now)
+    sendposts.delay()
+    return HttpResponse(status=200)
+    
 
 def get_settings():
     return {
@@ -136,6 +162,8 @@ def dashboard(request):
 
 @login_required
 def edit(request, post_id, post=None):
+    print("EDIT IN VIEWS.PY was called")
+    print(request)
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
 
@@ -257,6 +285,7 @@ def edit(request, post_id, post=None):
 
 @login_required
 def add(request):
+    print("ADD IN VIEWS.PY WAS CALLED")
     if not request.user.has_perm('scheduler.add_edit_post'):
         return redirect('/')
     post_id = -1
