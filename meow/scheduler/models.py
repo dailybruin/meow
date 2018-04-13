@@ -53,10 +53,20 @@ class SMPost(models.Model):
             ("approve_online", "Can mark the post as approved by online"),
         )
 
+    def log(self, msg):
+        text = "\n[" + str(datetime.now()) + "] - "
+        text += msg + "\n"
+        if self.sent_error_text != None:
+            self.sent_error_text += text
+        else:
+            self.sent_error_text = text
+        self.save()
+
     def log_error(self, e, section, send_email=False):
         self.sent_error = True
         self.sent_error_text = str(self.sent_error_text) + "Error: " + str(
             section.name) + " " + str(datetime.now()) + " -- " + str(e) + "\n"
+        self.sending = False
         self.save()
 
         if not send_email:

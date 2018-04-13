@@ -1,17 +1,24 @@
 from django.core.management.base import BaseCommand, CommandError
-from scheduler.models import *
+from django.utils import timezone
+from django.conf import settings
+
+from datetime import datetime, timedelta
+from facepy import GraphAPI
+from facepy.exceptions import FacepyError
 import tweepy
 import re
 import io
-from facepy import GraphAPI
-from facepy.exceptions import *
-from scheduler.models import *
-from datetime import datetime, timedelta
-from django.utils import timezone
-from django.conf import settings
 import requests
 import json
+<<<<<<< HEAD
 from itertools import chain
+=======
+import sys
+import time
+import traceback
+
+from scheduler.models import MeowSetting, SMPost
+>>>>>>> master
 
 
 class Command(BaseCommand):
@@ -54,10 +61,11 @@ class Command(BaseCommand):
             return "https://twitter.com/statuses/{}".format(res.id)
 
         except tweepy.TweepError as e:
+            smpost.log(traceback.format_exc())
             smpost.log_error(e, section, True)
             slack_data = {
                 "text": ":sadparrot: *{}* has errored at {}"
-                .format(post.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
+                .format(smpost.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
                 "attachments": [{"color": "danger", "title": "Twitter Error", "text": str(e)}]
             }
 
@@ -82,48 +90,45 @@ class Command(BaseCommand):
 
             PAGE_ID = section.facebook_page_id
 
-            # Now actually post to Facebook
-
-            if photo_url and url:
-                res = graph.post(
-                    path=PAGE_ID + '/feed',
-                    message=smpost.post_facebook,  # + "\n\nRead more: " + url,
-                    link=url,
-                    #type= "photo",
-                    picture=photo_url,
-                    #source = io.BytesIO(requests.get(photo_url).content),
-                )
-            elif photo_url:
-                res = graph.post(
-                    path=PAGE_ID + '/photos',
-                    message=smpost.post_facebook,
-                    type="photo",
-                    source=io.BytesIO(requests.get(photo_url).content),
-                )
-            elif url:
-                res = graph.post(
-                    path=PAGE_ID + '/feed',
-                    message=smpost.post_facebook,
-                    link=url,
-                    picture=fb_default_photo,
-                )
+            data = {
+                "path": PAGE_ID + '/feed',
+                "message": smpost.post_facebook,
+            }
+            if photo_url:
+                data['picture'] = photo_url
             else:
-                res = graph.post(
-                    path=PAGE_ID + '/feed',
-                    message=smpost.post_facebook,
-                )
+                data['picture'] = fb_default_photo
+            
+            if url:
+                data['link'] = url
+
+            errors = 0
+            res = None
+            while errors < 2:
+                try:
+                    res = graph.post(**data)
+                    break
+                except Exception as e:
+                    smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
+                    if errors >= 2:
+                        raise Exception
+                        break
+                    else:
+                        time.sleep(0.5)
+                        errors += 1
 
             print("----------------------")
             post_id = res['id'].split('_')[1]
-            print(post_id)
+            print("Successfully posted to FB at ID: %s" % post_id)
             return "https://facebook.com/{}".format(post_id)
 
-        except (FacepyError, FacebookError, OAuthError, SignedRequestError, requests.exceptions.RequestException) as e:
+        except (FacepyError) as e:
+            smpost.log(traceback.format_exc())
             smpost.log_error(e, section, True)
             slack_data = {
                 "text": ":sadparrot: *{}* has errored at {}"
-                .format(post.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
-                "attachments": [{"color": "danger", "title": "FaceBook Error", "text": str(e)}]
+                .format(smpost.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
+                "attachments": [{"color": "danger", "title": "Facebook Error", "text": str(e)}]
             }
 
             requests.post(settings.SLACK_ENDPOINT,
@@ -203,6 +208,7 @@ class Command(BaseCommand):
                         post.sent_time = timezone.localtime(timezone.now())
                         post.save()
                     except:
+                        post.log(traceback.format_exc())
                         print("Something is very wrong2")
                         pass  # But we can still try the rest of the posts that are going to be sent
                     continue
@@ -254,6 +260,7 @@ class Command(BaseCommand):
             except:
                 # Something wrong happened. Don't send this post.
                 e = sys.exc_info()[0]
+                post.log(traceback.format_exc())
                 post.log_error(e, post.section, True)
 
                 slack_data = {
@@ -293,5 +300,6 @@ class Command(BaseCommand):
                 post.save()
             except (Exception) as e:
                 print("Something is very wrong")
+                post.log(traceback.format_exc())
                 post.log_error(e, post.section, True)
                 pass  # But we can still try the rest of the posts that are going to be sent

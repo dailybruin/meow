@@ -211,24 +211,28 @@ def edit(request, post_id, post=None):
             post.section = None
         post.post_twitter = request.POST.get('tweet', None)
         post.post_facebook = request.POST.get('fb', None)
-        date_str = request.POST.get('pub_date', None)
-        time_str = request.POST.get('pub_time', None)
+        # date_str = request.POST.get('pub_date', None)
+        # time_str = request.POST.get('pub_time', None)
+        date_time_str = request.POST.get('pub_date_time', None)
 
         # Date
         cal = pdt.Calendar()
-        date_parsed = cal.parse(date_str)
+        date_parsed = cal.parse(date_time_str)
+        time_parsed = cal.parse(date_time_str)
         if date_parsed[1] == 1 or date_parsed[1] == 3:
             post.pub_date = datetime.date(
                 date_parsed[0][0], date_parsed[0][1], date_parsed[0][2])
-        else:
-            post.pub_date = None
-
-        # Time
-        time_parsed = cal.parse(time_str)
-        if time_parsed[1] == 2 or time_parsed[1] == 3:
             post.pub_time = datetime.time(time_parsed[0][3], time_parsed[0][4])
         else:
+            post.pub_date = None
             post.pub_time = None
+
+        # Time
+        # time_parsed = cal.parse(time_str)
+        # if time_parsed[1] == 2 or time_parsed[1] == 3:
+        #     post.pub_time = datetime.time(time_parsed[0][3], time_parsed[0][4])
+        # else:
+        #     post.pub_time = None
 
         # Checkboxes
         if request.user.has_perm('scheduler.approve_copy'):

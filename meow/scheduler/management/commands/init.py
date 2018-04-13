@@ -40,7 +40,7 @@ class Command(BaseCommand):
         self.set_preference("send_posts", "Send posts", "Yes")
         self.set_preference("site_message", "Site message (blank)")
         self.set_preference("default_image_selector",
-                            "Default featured image selector", "img.wp-post-image")
+                            "Default featured image selector", "img.attachment-db-category-full")
 
         # Configure gruops
         if Group.objects.filter(name='Editors').count() == 0:
