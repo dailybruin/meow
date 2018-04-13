@@ -44,11 +44,10 @@ $(document).ready(function(){
     });
     $('#url').keyup();
 
-<<<<<<< HEAD
     $('#send_now').click(function(e) {
         e.preventDefault();
         console.log("send now button was clicked");
-        var postId = {{ post.id }};
+        var postId = "{{ post.id }}";
         console.log({{ post.id }});
         $.ajax({
             url: "/api/send-now/" + postId + "/",
@@ -64,12 +63,6 @@ $(document).ready(function(){
         //window.location.href = '../api/send-now/';
     });
 
-    $('#pub_time').timepicker({
-        template: false,
-        showInputs: false,
-        minuteStep: 5,
-        defaultTime: false,
-=======
     // New UI for DateTime
     var postedDateTime = "today"; // default date is today
 
@@ -85,7 +78,6 @@ $(document).ready(function(){
         defaultDate: postedDateTime,
         enableTime: true,
         minDate: "today",
->>>>>>> master
     });
 
 
