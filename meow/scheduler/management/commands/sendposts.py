@@ -10,15 +10,12 @@ import re
 import io
 import requests
 import json
-<<<<<<< HEAD
 from itertools import chain
-=======
 import sys
 import time
 import traceback
 
 from scheduler.models import MeowSetting, SMPost
->>>>>>> master
 
 
 class Command(BaseCommand):
