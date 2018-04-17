@@ -141,6 +141,8 @@ class Command(BaseCommand):
         for e in SMPost.objects.all():
             print(e)
             print(e.send_now)
+            print(e.sent)
+            print(e.section)
 
         # Get posts from the database that are ready to send
         regularPosts = SMPost.objects.filter(
@@ -157,7 +159,11 @@ class Command(BaseCommand):
             section=None
         )
 
-        posts = SMPost.objects.filter(
+        print("len of regularPosts")
+        print(len(regularPosts))
+        print(type(regularPosts))
+
+        sendNowPosts = SMPost.objects.filter(
             send_now=True
         ).exclude(
             sent=True
@@ -165,7 +171,11 @@ class Command(BaseCommand):
             section=None
         )
 
-        #posts = list(chain(regularPosts, sendNowPosts))
+        print("len of posts pre-union")
+        print(len(sendNowPosts))
+        print(type(sendNowPosts))
+        
+        posts = regularPosts | sendNowPosts
 
         if len(posts) == 0:
             print("No posts to send!")
