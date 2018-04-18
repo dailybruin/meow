@@ -6,7 +6,6 @@ from django.utils import timezone
 from scheduler.models import *
 import datetime
 import parsedatetime.parsedatetime as pdt
-from itertools import chain
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.mail import send_mail
@@ -25,8 +24,6 @@ from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
 @login_required
 def send_posts_now(request, post_id):
-    print("SEND_POSTS_NOW IN VIEWS.PY WAS CALLED")
-    print(request)
     sendNowPost = SMPost.objects.get(id = post_id)
     sendNowPost.send_now=True
     sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
@@ -162,8 +159,6 @@ def dashboard(request):
 
 @login_required
 def edit(request, post_id, post=None):
-    print("EDIT IN VIEWS.PY was called")
-    print(request)
     if not post:
         post = get_object_or_404(SMPost, pk=post_id)
 
@@ -285,7 +280,6 @@ def edit(request, post_id, post=None):
 
 @login_required
 def add(request):
-    print("ADD IN VIEWS.PY WAS CALLED")
     if not request.user.has_perm('scheduler.add_edit_post'):
         return redirect('/')
     post_id = -1
