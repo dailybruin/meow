@@ -6,6 +6,7 @@ from django.utils import timezone
 from scheduler.models import *
 import datetime
 import parsedatetime.parsedatetime as pdt
+from itertools import chain
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.mail import send_mail
