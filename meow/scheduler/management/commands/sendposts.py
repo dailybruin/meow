@@ -10,7 +10,6 @@ import re
 import io
 import requests
 import json
-from itertools import chain
 import sys
 import time
 import traceback
