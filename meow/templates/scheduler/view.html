@@ -87,7 +87,7 @@
             </fieldset>
 
             <label for="pub_date">Publish date</label>
-            <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ tomorrow|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" disabled />
+            <input type="text" id="pub_date" name="pub_date" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{% else %}{{ today|date:"F j, Y" }}{% endif %}" placeholder="May 23, 1919" disabled />
 
             <label for="pub_time">Publish time</label>
             <input type="text" id="pub_time" name="pub_time" autocomplete="off" value="{% if post.pub_time %}{{ post.pub_time|time:"h:i A" }}{% endif %}" disabled></input>
