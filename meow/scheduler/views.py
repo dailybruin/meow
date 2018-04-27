@@ -22,29 +22,6 @@ from meow.celery import sendposts
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
-
-@login_required
-def send_posts_now(request, post_id):
-    sendNowPost = SMPost.objects.get(id = post_id)
-    sendNowPost.send_now=True
-    sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
-    sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
-    sendNowPost.save()
-    # print("sendNowPost")
-    # print(sendNowPost)
-    # print(sendNowPost.send_now)
-    # edit(request, -1, post)
-    # post.send_now = True
-    # post_id = post.id
-    # post.save()
-    # print("post slug is ")
-    # print(post.slug)
-    # print("send_now is ")
-    # print(post.send_now)
-    sendposts.delay()
-    return HttpResponse(status=200)
-    
-
 def get_settings():
     return {
         "site_message": MeowSetting.objects.get(setting_key='site_message').setting_value,
