@@ -18,18 +18,18 @@ class SMPost(models.Model):
     featured_image_url = models.URLField(max_length=500, null=True, blank=True)
     post_twitter = models.TextField(null=True, blank=True)
     post_facebook = models.TextField(null=True, blank=True)
-    section = models.ForeignKey('Section', blank=True, null=True)
+    section = models.ForeignKey('Section', blank=True, null=True, on_delete=models.SET_NULL)
     pub_ready_copy = models.BooleanField(
         default=False, help_text="Is this copy-edited?")
     pub_ready_online = models.BooleanField(
         default=False, help_text="Is this ready to send out?")
 
     pub_ready_copy_user = models.ForeignKey(
-        User, blank=True, null=True, related_name='+')
+        User, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
     pub_ready_online_user = models.ForeignKey(
-        User, blank=True, null=True, related_name='+')
+        User, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
     last_edit_user = models.ForeignKey(
-        User, blank=True, null=True, related_name='+')
+        User, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
 
     sent = models.BooleanField(
         default=False, help_text="Sent out? This should never be set manually.")
@@ -40,6 +40,8 @@ class SMPost(models.Model):
     sent_error = models.BooleanField(
         default=False, blank=False, null=False, help_text="Did the send generate an error?")
     sent_error_text = models.TextField(null=True, blank=True)
+    send_now = models.BooleanField(
+        default=False, help_text="Do you want to send this post immediately?")
 
     def __str__(self):
         return self.slug
@@ -253,7 +255,7 @@ class Section(models.Model):
     facebook_account_handle = models.CharField(
         max_length=100, null=True, blank=True)
     also_post_to = models.ForeignKey(
-        'Section', blank=True, help_text="This only goes down one level (i.e. no recursion)", null=True)
+        'Section', blank=True, help_text="This only goes down one level (i.e. no recursion)", null=True, on_delete=models.SET_NULL)
     twitter_access_key = models.CharField(
         max_length=500, null=True, blank=True)
     twitter_access_secret = models.CharField(

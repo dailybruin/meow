@@ -97,7 +97,7 @@ if os.environ.get('SECRET_KEY'):
 else:
     SECRET_KEY = 'i%w$mm*w7mgw)q1hly1+c8z14en3$v#)3sf)u#xripu@rxjyw7'
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

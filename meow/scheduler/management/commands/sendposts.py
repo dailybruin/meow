@@ -139,7 +139,7 @@ class Command(BaseCommand):
             return
 
         # Get posts from the database that are ready to send
-        posts = SMPost.objects.filter(
+        regularPosts = SMPost.objects.filter(
             pub_date__lte=timezone.localtime(timezone.now()).date()
         ).filter(
             pub_time__lte=timezone.localtime(timezone.now()).time()
@@ -153,6 +153,16 @@ class Command(BaseCommand):
             section=None
         )
 
+        sendNowPosts = SMPost.objects.filter(
+            send_now=True
+        ).exclude(
+            sent=True
+        ).exclude(
+            section=None
+        )
+        
+        posts = regularPosts | sendNowPosts
+
         if len(posts) == 0:
             print("No posts to send!")
 
@@ -161,6 +171,12 @@ class Command(BaseCommand):
                 # Make sure nothing else is trying to send this post right now
                 # This is not atomic; if meow ever scales a lot more, this will need to be re-written
                 # TODO: Yes this isn't.
+                if post.send_now:
+                    post.sending = False
+                    post.sent = True
+                    post.sent_time = timezone.localtime(timezone.now())
+                    post.save()
+
                 if post.sending:
                     continue
                 else:

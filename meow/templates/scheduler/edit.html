@@ -44,6 +44,25 @@ $(document).ready(function(){
     });
     $('#url').keyup();
 
+    $('#send_now').click(function(e) {
+        e.preventDefault();
+        console.log("send now button was clicked");
+        var postId = "{{ post.id }}";
+        console.log({{ post.id }});
+        $.ajax({
+            url: "/api/send-now/" + postId + "/",
+            method: "POST",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: postId,
+            dataType: "json"
+        }).done(function(response) {
+            console.log(response.id + " " + response.name);
+        }).fail(function (error) {
+            console.log(error);
+        });
+        //window.location.href = '../api/send-now/';
+    });
+
     // New UI for DateTime
     var postedDateTime = "today"; // default date is today
 
@@ -170,6 +189,9 @@ $(document).ready(function(){
             <input type="text" id="pub_date_time" name="pub_date_time" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{{ post.pub_time|time:"h:i A" }}{% endif %}" placeholder="May 23, 1919 12:00 AM" />
 
             <input type="submit" value="Save" name="submit" class="button" />
+            {% if post.id and not post.sent %}
+            <input type="submit" value="Send Now" name="submit_now" id="send_now" class="button" />
+            {% endif %}
             {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
         </div>
 
