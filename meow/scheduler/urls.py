@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^edit/(?P<post_id>\d+)/$', views.edit, name="edit"),
     url(r'^add/$', views.add, name="add"),
     url(r'^settings/$', views.user_settings, name="settings"),
+    url(r'^api/send-now/(?P<post_id>\d+)/$', views.send_posts_now, name="send_posts_now"),
     url(r'^manage/twitter-connect/$',
         views.twitter_connect, name="twitter_connect"),
     url(r'^manage/fb-connect/$', views.fb_connect, name="fb_connect"),

@@ -16,10 +16,24 @@ import facepy
 import re
 import sys
 
+from meow.celery import sendposts
+
 # Oauth stuff
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
+
+@login_required
+def send_posts_now(request, post_id):
+	if request.method == "POST":
+		sendNowPost = SMPost.objects.get(id = post_id)
+		sendNowPost.send_now=True
+		sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
+		sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
+		sendNowPost.save()
+		sendposts.delay()
+		return HttpResponse(status=200)
+    
 
 def get_settings():
     return {
