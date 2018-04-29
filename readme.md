@@ -164,7 +164,7 @@ python meow/manage.py sendposts
 
 `sendposts` will output the facebook post or tweet when it tries to send to `stdout` (in ASCII) so feel free to implement logging. Almost all sending errors, however, are saved within meow's database for easy access.
 
-## Running migrations in meow
+## Testing migrations in meow 
 Run migrations in the docker environment with `docker-compose run web sh`.
 
 ***
