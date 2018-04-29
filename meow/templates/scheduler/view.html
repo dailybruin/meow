@@ -8,52 +8,6 @@
 {% block extra-js %}
 <script type="text/javascript" src="/static/bootstrap-timepicker.min.js"></script>
 
-<script type="text/javascript">
-var TWITTER_LIMIT = {{ twitter_limit }};
-
-$(document).ready(function(){
-    $('#pub_date_today').click(function(e){
-        e.preventDefault();
-        $('#pub_date').val('Today')
-    });
-    $('#pub_date_tomorrow').click(function(e) {
-        e.preventDefault();
-        $('#pub_date').val('Tomorrow')
-    });
-
-    $('#pub_time').timepicker({
-        template: false,
-        showInputs: false,
-        minuteStep: 5,
-        defaultTime: false,
-    });
-
-    $('#post-delete').submit(function(){
-        var r = confirm("Are you sure you want to delete this post?")
-        if (r != true)
-        {
-            return false;
-        }
-    });
-
-    function checkTweet() {
-        var curLength = $('#tweet').val().length;
-        if(curLength > TWITTER_LIMIT)
-        {
-            $('#tweet').addClass('tooLong')
-            $('#tweet-count').addClass('tooLong')
-        }
-        else
-        {
-            $('#tweet').removeClass('tooLong')
-            $('#tweet-count').removeClass('tooLong')
-        }
-        $('#tweet-count').text(TWITTER_LIMIT - curLength)
-    }
-    $('#tweet').bind('paste keyup blur', checkTweet);
-    checkTweet();
-});
-</script>
 {% endblock %}
 
 {% block content %}
