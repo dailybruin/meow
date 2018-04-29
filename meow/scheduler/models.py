@@ -52,6 +52,7 @@ class SMPost(models.Model):
             ("approve_copy", "Can mark the post as approved by copy"),
             ("approve_online", "Can mark the post as approved by online"),
         )
+        ordering = ['-pub_time',]
 
     def log(self, msg):
         text = "\n[" + str(datetime.now()) + "] - "
