@@ -53,6 +53,10 @@ class Command(BaseCommand):
             print("----------------------")
             print(res.id)
 
+            # Add the id for the post to the database
+            smpost.id_twitter = res.id
+            smpost.save()
+
             return "https://twitter.com/statuses/{}".format(res.id)
 
         except tweepy.TweepError as e:
@@ -115,6 +119,11 @@ class Command(BaseCommand):
             print("----------------------")
             post_id = res['id'].split('_')[1]
             print("Successfully posted to FB at ID: %s" % post_id)
+
+            # Add the id for the post to the database
+            smpost.id_facebook = post_id
+            smpost.save()
+
             return "https://facebook.com/{}".format(post_id)
 
         except (FacepyError) as e:
