@@ -18,6 +18,7 @@ class SMPost(models.Model):
     featured_image_url = models.URLField(max_length=500, null=True, blank=True)
     post_twitter = models.TextField(null=True, blank=True)
     post_facebook = models.TextField(null=True, blank=True)
+    post_notes = models.TextField(null=True, blank=True, default="")
     section = models.ForeignKey('Section', blank=True, null=True, on_delete=models.SET_NULL)
     pub_ready_copy = models.BooleanField(
         default=False, help_text="Is this copy-edited?")
