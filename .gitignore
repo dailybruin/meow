@@ -1,7 +1,6 @@
 *.pyc
 *.swp
 .vagrant
-.vscode
 .DS_Store
 staticfiles
 .env
