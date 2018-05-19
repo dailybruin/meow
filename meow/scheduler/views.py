@@ -25,24 +25,14 @@ from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
 @login_required
 def send_posts_now(request, post_id):
-    sendNowPost = SMPost.objects.get(id = post_id)
-    sendNowPost.send_now=True
-    sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
-    sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
-    sendNowPost.save()
-    # print("sendNowPost")
-    # print(sendNowPost)
-    # print(sendNowPost.send_now)
-    # edit(request, -1, post)
-    # post.send_now = True
-    # post_id = post.id
-    # post.save()
-    # print("post slug is ")
-    # print(post.slug)
-    # print("send_now is ")
-    # print(post.send_now)
-    sendposts.delay()
-    return HttpResponse(status=200)
+	if request.method == "POST":
+		sendNowPost = SMPost.objects.get(id = post_id)
+		sendNowPost.send_now=True
+		sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
+		sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
+		sendNowPost.save()
+		sendposts.delay()
+		return HttpResponse(status=200)
     
 
 def get_settings():
@@ -130,12 +120,9 @@ def dashboard(request):
     if alt_date:
         view_date = alt_date
     else:
-        if timezone.now().hour <= 4:
-            view_date = timezone.localdate()
-        else:
-            view_date = timezone.localdate() + datetime.timedelta(days=1)
+        view_date = timezone.localdate()
 
-    tomorrow_posts = SMPost.objects.filter(pub_date=view_date)
+    today_posts = SMPost.objects.filter(pub_date=view_date)
     lost_posts = SMPost.objects.filter(pub_date=None)
 
     site_message = MeowSetting.objects.get(
@@ -150,7 +137,7 @@ def dashboard(request):
     context = {
         "user": request.user,
         "sections": Section.objects.all(),
-        "smposts": list(chain(tomorrow_posts, lost_posts)),
+        "smposts": list(chain(today_posts, lost_posts)),
         "messages": messages,
         "view_date": view_date,
         "site_settings": get_settings(),
@@ -271,7 +258,7 @@ def edit(request, post_id, post=None):
         "user": request.user,
         "sections": Section.objects.all(),
         "post": post,
-        "tomorrow": timezone.localdate() + datetime.timedelta(days=1),
+        "today": timezone.localdate(),
         "message": message,
         "twitter_limit": MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
         "site_settings": get_settings(),
@@ -295,7 +282,7 @@ def add(request):
     context = {
         "user": request.user,
         "sections": Section.objects.all(),
-        "tomorrow": timezone.localdate() + datetime.timedelta(days=1),
+        "today": timezone.localdate(),
         "twitter_limit": MeowSetting.objects.get(setting_key='twitter_character_limit').setting_value,
         "site_settings": get_settings(),
     }
