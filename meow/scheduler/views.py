@@ -17,7 +17,7 @@ import re
 import sys
 
 from meow.celery import sendposts
-from .analytics import *
+from .analytics import get_analytics
 
 # Oauth stuff
 from requests_oauthlib import OAuth2Session

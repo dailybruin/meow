@@ -53,6 +53,3 @@ def get_analytics(smposts):
         posts_data.append(post_data)
 
     return posts_data
-
-
-
