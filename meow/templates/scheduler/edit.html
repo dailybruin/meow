@@ -198,7 +198,14 @@ $(document).ready(function(){
 
             <input type="submit" value="Save" name="submit" class="button" />
             {% if post.id and not post.sent %}
-            <input type="submit" value="Send Now" name="submit_now" id="send_now" class="button alert" />
+            <input type="submit" data-reveal-id="sendNowModal" value="Send Now" class="button alert" />
+            <div id="sendNowModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+                <h2 id="modalTitle">WARNING!</h2>
+                <p class="lead">You are about to send this meow instantly.</p>
+                <p>If you are sure this is what you want to do, please click the button below.</p>
+                <input type="submit" value="Send Now" name="submit_now" id="send_now" class="button alert" />
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+              </div>
             {% endif %}
             {% if post.last_edit_user %}<span class="approval-by">Last saved by {{ post.last_edit_user.first_name }} {{ post.last_edit_user.last_name }}</span>{% endif %}
         </div>
