@@ -16,7 +16,6 @@ import traceback
 
 from scheduler.models import MeowSetting, SMPost
 
-
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
 

@@ -79,7 +79,7 @@ $(document).ready(function(){
         enableTime: true,
         minDate: "today",
     });
-
+   
 
     $('#post-delete').submit(function(){
         var r = confirm("Are you sure you want to delete this post?")
@@ -147,7 +147,7 @@ $(document).ready(function(){
                     <label for="section">Section</label>
                     <select id="section" name="section">
                         {% if not post.section %}
-                            <option disabled selected>Select a section</option>
+                            <option disabled selected>Select Section</option>
                         {% endif %}
                         {% for section in sections %}
                         <option value="{{ section.id }}" {% if section.id == post.section.id %}selected{% endif %}>{{ section.name }}</option>
@@ -168,6 +168,14 @@ $(document).ready(function(){
             <textarea type="text" id="fb" name="fb" placeholder="post" rows="5">{{ post.post_facebook }}</textarea>
 
             <p id="post-guidance-text"><b>Note:</b> Leaving the tweet text box empty will not post to Twitter. Similarly, leaving the facebook text box empty will not post to Facebook.</p>
+
+            <label for="ig">Instagram caption</label>
+            <textarea type="text" id="ig" name="ig" rows="5" placeholder="caption">{{ post.post_instagram }}</textarea>
+
+            <p id="post-guidance-text"><b>Note:</b> This Instagram caption will not be posted to Instagram, but it will be saved for reference. </p>
+
+            <label for="notes">Notes</label>
+            <textarea type="text" id="notes" name="notes" placeholder="add notes...">{{ post.post_notes }}</textarea>
         </div>
 
         <div class="large-5 columns">
