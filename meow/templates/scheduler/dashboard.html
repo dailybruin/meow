@@ -129,8 +129,8 @@ $(document).ready(function(){
                     <td><a href="/edit/{{ post.id }}/"><i class="foundicon-edit"></i></a></td>
                     <td><a href="/edit/{{ post.id }}/">{{ post.slug }}</a></td>
                     <td class="section-column">{{ post.section.name }}</td>
-                    <td class="twitter-column">{{ post.post_twitter }}<br/>Retweets: {{ data.retweet_count }}<br/>Favorites: {{ data.favorite_count }}</td>
-                    <td class="facebook-column">{{ post.post_facebook }}<br/>Reactions: {{ data.reactions_count }}</td>
+                    <td class="twitter-column">{{ post.post_twitter }} {% if post.id_twitter != 0 %} <br/><i class="fi-loop" title="Retweets"></i> {{ data.retweet_count }} <i class="fi-heart" title="Likes"></i> {{ data.favorite_count }} {% endif %}</td>
+                    <td class="facebook-column">{{ post.post_facebook }} {% if post.id_facebook != 0 %} <br/><i class="fi-like" title="Reactions"></i> {{ data.reactions_count }} {% endif %}</td>
                     <td {% if post.pub_time %}data-sort-value="{{ post.pub_time|time:'Hi' }}"{% endif %}>{% if post.pub_time %}{{ post.pub_time }}{% endif %}</td>
                     <td>{{ post.post_status_string }}</td>
                 </tr>
