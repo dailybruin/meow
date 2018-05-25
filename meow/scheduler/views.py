@@ -194,6 +194,7 @@ def edit(request, post_id, post=None):
             post.section = None
         post.post_twitter = request.POST.get('tweet', None)
         post.post_facebook = request.POST.get('fb', None)
+        post.post_instagram = request.POST.get('ig', None)
         post.post_notes = request.POST.get('notes', None)
         # date_str = request.POST.get('pub_date', None)
         # time_str = request.POST.get('pub_time', None)
