@@ -69,6 +69,14 @@
             <textarea type="text" id="fb" name="fb" placeholder="post" rows="5" disabled>{{ post.post_facebook }}</textarea>
 
             <p id="post-guidance-text"><b>Note:</b> Leaving the tweet text box empty will not post to Twitter. Similarly, leaving the facebook text box empty will not post to Facebook.</p>
+
+            <label for="ig">Instagram caption</label>
+            <textarea type="text" id="ig" name="ig" rows="5" placeholder="no instagram caption for this post..." disabled>{{ post.post_instagram }}</textarea>
+
+            <p id="post-guidance-text"><b>Note:</b> This Instagram caption will not be posted to Instagram, but it will be saved for reference. </p>
+
+            <label for="notes">Notes</label>
+            <textarea type="text" id="notes" name="notes" placeholder="no notes for this post..." disabled>{{ post.post_notes }}</textarea>
         </div>
 
         <div class="large-5 columns">
