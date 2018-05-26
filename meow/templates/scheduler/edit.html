@@ -55,6 +55,9 @@ $(document).ready(function(){
             dataType: "text" 
         }).success(function(response) {
             window.location.href = '/';
+        }).fail(function (err) {
+            alert("ERROR: meow could not be sent now! :(")
+            console.log(err);
         })
     });
 
