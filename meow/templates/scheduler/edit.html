@@ -195,7 +195,7 @@ $(document).ready(function(){
             <input type="text" id="pub_date_time" name="pub_date_time" value="{% if post.pub_date %}{{ post.pub_date|date:"F j, Y" }}{{ post.pub_time|time:"h:i A" }}{% endif %}" placeholder="May 23, 1919 12:00 AM" />
 
             <input type="submit" value="Save" name="submit" class="button" />
-            {% if post.id and not post.sent %}
+            {% if post.id and post.section and not post.sent %}
             <input type="submit" data-reveal-id="sendNowModal" value="Send Now" class="button alert" />
             <div id="sendNowModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
                 <h2 id="modalTitle">WARNING!</h2>
