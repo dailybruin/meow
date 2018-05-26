@@ -47,13 +47,11 @@ $(document).ready(function(){
     $('#send_now').click(function(e) {
         e.preventDefault();
         console.log("send now button was clicked");
-        var postId = "{{ post.id }}";
-        console.log({{ post.id }});
         $.ajax({
-            url: "/api/send-now/" + postId + "/",
+            url: "/api/send-now/" + {{ post.id }} + "/",
             method: "POST",
             headers: {'X-CSRFToken': '{{ csrf_token }}'},
-            data: postId,
+            data: "{{ post.id }}",
             dataType: "json"
         }).done(function(response) {
             console.log(response.id + " " + response.name);
@@ -203,7 +201,9 @@ $(document).ready(function(){
                 <h2 id="modalTitle">WARNING!</h2>
                 <p class="lead">You are about to send this meow instantly.</p>
                 <p>If you are sure this is what you want to do, please click the button below.</p>
-                <input type="submit" value="Send Now" name="submit_now" id="send_now" class="button alert" />
+                <form method="post" action="/">
+                    <input method="post" action="/" type="submit" value="Send Now" name="submit_now" id="send_now" class="button alert" />
+                </form>
                 <a class="close-reveal-modal" aria-label="Close">&#215;</a>
               </div>
             {% endif %}
