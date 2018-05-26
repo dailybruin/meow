@@ -52,13 +52,10 @@ $(document).ready(function(){
             method: "POST",
             headers: {'X-CSRFToken': '{{ csrf_token }}'},
             data: "{{ post.id }}",
-            dataType: "json"
-        }).done(function(response) {
-            console.log(response.id + " " + response.name);
-        }).fail(function (error) {
-            console.log(error);
-        });
-        window.location.href = '/';
+            dataType: "text" 
+        }).success(function(response) {
+            window.location.href = '/';
+        })
     });
 
     // New UI for DateTime
