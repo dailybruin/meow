@@ -1,4 +1,4 @@
-amqp==2.2.1
+amqp==2.2.2
 astroid==1.5.3
 backports.functools-lru-cache==1.4
 beautifulsoup4==4.6.0
