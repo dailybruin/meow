@@ -214,8 +214,15 @@ the following command to access the postgreSQL container.
 
 ```bash
 docker ps
-docker exec -it c2bd3a5f4968 psql -U postgres
+*c2bd3a5f4968*        postgres:latest         "docker-entrypoint..."   2 months ago        Up 3 hours          0.0.0.0:5432->5432/tcp           meow_db_1
 ```
+container ID = bolded above though yours may be different (c2bd3a5f4968)
+
+``` bash
+docker exec -it <container ID> psql -U postgres
+```
+
+Now you add rows to the database using postgreSQL commands.
 
 ## License
 
