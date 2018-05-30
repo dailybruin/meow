@@ -2,6 +2,14 @@
 
 _Daily Bruin's Twitter and Facebook poster_
 
+## Table of Contents
+
+* [Technologies Used](#)
+* [Services Used](#)
+* [Structure](#)
+* [Getting Started](#)
+* [Adding A Database Field](#)
+
 ## Technologies Used
 
 * [Docker](https://www.docker.com/what-docker) is our way of putting the code
@@ -47,7 +55,7 @@ _Daily Bruin's Twitter and Facebook poster_
 └── requirements.txt
 ```
 
-## Development
+## Getting Started
 
 ### 0. Grab this repo, create an `.env`
 
@@ -188,11 +196,32 @@ Click "New" in the top right, and fill in the fields. A slug is a relatively
 unique string used in the newsroom to identify stories in production (e.g., a
 story about cats could be called `news.catattack`).
 
+## Adding A Database Field
+
+In Django, if you want to add fields to your database (postgreSQL in our case),
+you would add a line to a class (each of which represents a table) in models.py.
+Once you finish adding your attributes, you will need to re-make migrations and
+re-build before you use those additional attributes.
+
+```bash
+docker-compose run web meow/manage.py makemigrations
+docker-compose run web meow/manage.py migrate
+docker-compose --build
+```
+
+If you want to artificially insert rows into any of your local databases, use
+the following command to access the postgreSQL container.
+
+```bash
+docker ps
+docker exec -it c2bd3a5f4968 psql -U postgres
+```
+
 ## License
 
 Meow is released under GNU AGPLv3. See [`LICENSE`](/LICENSE) for more details.
 
 Though not required, if you use this software or would like to contribute to its
-development, please let us know by emailing us at online@media.ucla.edu. We'd
-love to know what it's being used for, especially if it's at another college
-newspaper.
+development, please let us know by emailing us at
+[online@media.ucla.edu](mailto:online@media.ucla.edu). We'd love to know what
+it's being used for, especially if it's at another college newspaper.
