@@ -2,18 +2,26 @@
 
 _Daily Bruin's Twitter and Facebook poster_
 
-## [NEW] Dev environment using Docker Compose
+## Technologies Used
 
-We've switched over to a Procfile (Heroku/Flynn/Dokku) based system for
-configuring and deploying our system! In most scenarios, a
-`git push <server-remote> master` will be sufficient to deploy the service.
-We've also paired this with a newer, leaner and hopefully easier way to develop
-meow using a Docker Compose based workflow. Should our compute needs and
-resources grow in the future, we could also switch to a complete Docker deploy
-pipeline.
+* yapf
 
-There are some additional commands required for Windows users that will be
-mentioned in the comments.
+### Frontend
+
+* React
+
+### Backend
+
+* Django
+* Celery
+
+## Services Used
+
+* Pyup
+
+## Structure
+
+## Development
 
 ### 0. Grab this repo, create an `.env`
 
