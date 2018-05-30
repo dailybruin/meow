@@ -1,25 +1,51 @@
-# Meow [![Updates](https://pyup.io/repos/github/daily-bruin/meow/shield.svg)](https://pyup.io/repos/github/daily-bruin/meow/)
+# meow [![Updates](https://pyup.io/repos/github/daily-bruin/meow/shield.svg)](https://pyup.io/repos/github/daily-bruin/meow/)
 
 _Daily Bruin's Twitter and Facebook poster_
 
 ## Technologies Used
 
-* yapf
+* [Docker](https://www.docker.com/what-docker) is our way of putting the code
+  for meow in "containers" so you can run it the same on any machine.
 
 ### Frontend
 
-* React
+* [React](https://reactjs.org) is a popular JavaScript library for building user
+  interfaces.
 
 ### Backend
 
-* Django
-* Celery
+* [Django](https://www.djangoproject.com/) is a Web framework that makes working
+  with databases easier!
+* [Celery](http://www.celeryproject.org/) is a task scheduler that runs certain
+  "tasks" at certain intervals.
 
 ## Services Used
 
-* Pyup
+* [Pyup](https://pyup.io/) is something you'll become very familiar with, as it
+  checks all the dependencies for meow and tells you when it's time to update!
 
 ## Structure
+
+```
+.
+├── Dockerfile
+├── LICENSE
+├── Procfile
+├── Procfile.dev
+├── docker-compose.yml
+├── entrypoint-dev.sh
+├── entrypoint.sh
+├── meow
+│   ├── manage.py
+│   ├── meow
+│   ├── scheduler
+│   ├── static
+│   └── templates
+├── production.yml
+├── rancher.yml
+├── readme.md
+└── requirements.txt
+```
 
 ## Development
 
@@ -30,12 +56,16 @@ Clone the repository, then create a `.env` file at the top level.
 ```bash
 git clone https://github.com/daily-bruin/meow.git
 cd meow
-echo -e REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres > meow/.env
+echo -e REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres\n > meow/.env
 ```
+
+Be sure to also add a `SLACK_ENDPOINT` variable. You can get the value of it
+[here](https://dailybruin.slack.com/archives/CA5HGUUV7/p1526607201000113).
 
 ### 1. Build images
 
-Next, pull and build the relevant Docker images.
+Next, pull and build the relevant Docker images. Make sure you have Docker
+running! (Mac users: there should be a whale icon in your status bar.)
 
 ```bash
 docker-compose build
@@ -43,7 +73,9 @@ docker-compose build
 
 ### 2. Run migrations
 
-We then need run some migrations to set up the database.
+We then need run some
+[migrations](https://docs.djangoproject.com/en/2.0/topics/migrations/) to set up
+the database.
 
 ```bash
 docker-compose run web meow/manage.py migrate
@@ -58,64 +90,107 @@ run.
 docker-compose run web meow/manage.py init
 ```
 
-When prompted for input, you can leave the fields blank for now.
-
-You can create your own Twitter/Facebook apps for this, or ask one of the
-PMs/editors for the keys to some test accounts.
-
 ### 4. Create a superuser
 
-```
+```bash
 docker-compose run web meow/manage.py createsuperuser
 ```
 
-### 5. Use that to configure Celery beat for sending out our social media posts!
+The `Username` should be your name and `Email Address` should be your media
+email. Make sure you remember your password for later!
 
-Navigate to
-[`0.0.0.0:5000/admin/django_celery_beat/periodictask/`](0.0.0.0:5000/admin/django_celery_beat/periodictask/).
-Login with your created superuser and create a periodic task to send out the
-posts!
+### 5. Start meow
 
-## Testing migrations in meow
+Now we need to start meow! You'll be doing this a lot, so be sure to remember
+this command:
 
-Run migrations in the docker environment with `docker-compose run web sh`.
+```bash
+docker-compose up
+```
 
----
+If you ever get an error about `ERROR: Pidfile (celerybeat.pid) already exists.`
+or something similar, you need to remove the `celerybeat.pid` file that has been
+created. A simple `rm celerybeat.pid` and you're good to go! Speaking of
+Celery...
 
-## Test accounts
+### 6. Check it out!
 
-These are only used for testing and are set as private. When testing is over,
-these accounts should be deleted and removed from this page.
+Point your browser to [`localhost:5000`](http://localhost:5000). Login with that
+superuser account you created (you remember your password, right?).
 
-### General
+### 7. Use that to configure Celery beat for sending out our social media posts!
 
-#### Connect dev environment to Daily Bruin social media accounts
+Now that meow is up and running, head to
+[`localhost:5000/admin/django_celery_beat/periodictask`](http://localhost:5000/admin/django_celery_beat/periodictask).
+A bit of terminology first, though! Celery is our Python program to
+automatically run certain "tasks" or jobs, like sending out social media posts
+in this case. Celery works by calling these "tasks" every interval that you tell
+it to. To actually get meow to work on your local machine, you'll need to create
+a task so Celery has something to actually do basically.
 
-Click the wiki tab on the repository and navigate to the "meow setup" page.
+Once you're on the "Periodic Tasks" page, click that "Add Periodic Task" button
+in the top right. Name that task "My Periodic Task". Below that, in the "Task
+(registered)" row, make sure `sendposts` is selected.
 
-#### Twitter
+Below, in the "Schedule" section, we need to create an interval. Hit the plus
+button in the "Interval" row and add an interval for every minute. Once you
+create that interval, select it from the dropdown.
 
-**DailyBruinTest** `bruin111` online+fakedb@media.ucla.edu
+All other options you can leave alone! Hit that "Save" button when you're done!
 
-#### Facebook
+### 8. Time to set some variables
 
-**FakeDBthatCalvinCreated** Page ID: `160988910774531`
+Make your way to
+[`http://localhost:5000/admin/scheduler/meowsetting/`](http://localhost:5000/admin/scheduler/meowsetting/)
+and go to `site_url`. By default, it'll probably be something like
+`http://meow.dailybruin.com`, in which case you'll want to change it to
+`http://localhost:5000`.
 
-#### Facebook
+You'll also need to go to the Slack channel `#meow-dev` and look at
+[this message](https://dailybruin.slack.com/archives/C7KPPH80K/p1527652524000087)
+(it's pinned) and use that to set the following fields:
 
-**FakeDB** Page ID: `1416676115217881`
+* `fb_app_secret`
+* `fb_app_id`
+* `twitter_consumer_secret`
+* `twitter_consumer_key`
 
-### A&E
+### 9. Add a Section
 
-#### Facebook
+The last thing you have to do before you can connect meow to your social media
+is create a section at
+[`localhost:5000/admin/scheduler/section/`](http://localhost:5000/admin/scheduler/section/)
+Click "Add Section" in the top right, and in the "Name" row, add your name in
+the field.
 
-**FakeDB A&E** Page ID: `1415944791959246`
+### 10. Connect Social Media Accounts
 
----
+Navigate to [`localhost:5000/manage/`](http://localhost:5000/manage/), and click
+on "Twitter/Facebook accounts". Make sure you're an admin for the Facebook page
+you want to connect to and click "Connect with Facebook"! Follow the steps on
+when you're redirected to Facebook. At the end, you will be prompted to choose a
+section and a page. Click on the dropdown for "Choose a section" and click on
+the section you created in step 9. Then click on the dropdown for "Choose a
+page" and click on the Facebook page you want to connect to. Once you click
+"Connect," you can send posts to Facebook with meow!
+
+The next step is to connect your Twitter account to meow. Head back to
+[`localhost:5000/manage/`](http://localhost:5000/manage/). Ensure that you're
+logged in to the Twitter account you wish to post to or else you might end up
+posting to your personal Twitter! Click "Connect with Twitter" and then
+"Authorize app." When prompted to "Choose a section," select the one you created
+in step 9. After clicking "Connect," you can begin sending meow posts Twitter.
+
+### 11. Send a Post!
+
+At [`localhost:5000`](http://localhost:5000/), you can begin sending meows.
+Click "New" in the top right, and fill in the fields. A slug is a relatively
+unique string used in the newsroom to identify stories in production (e.g., a
+story about cats could be called `news.catattack`).
 
 ## License
 
-Meow is released under GNU AGPLv3. See `LICENSE` for more details.
+Meow is released under GNU AGPLv3. See [`LICENSE`](/LICENSE) for more details.
 
 Though not required, if you use this software or would like to contribute to its
 development, please let us know by emailing us at online@media.ucla.edu. We'd
