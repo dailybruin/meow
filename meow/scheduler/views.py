@@ -17,6 +17,7 @@ import re
 import sys
 
 from meow.celery import sendposts
+from .analytics import get_analytics
 
 # Oauth stuff
 from requests_oauthlib import OAuth2Session
@@ -92,7 +93,6 @@ def user_settings(request):
     }
     return render(request, 'scheduler/user_settings.html', context)
 
-
 @login_required
 def dashboard(request):
     messages = []
@@ -137,10 +137,10 @@ def dashboard(request):
     context = {
         "user": request.user,
         "sections": Section.objects.all(),
-        "smposts": list(chain(today_posts, lost_posts)),
+        "smposts": zip(list(chain(today_posts, lost_posts)), get_analytics(list(chain(today_posts, lost_posts)))),
         "messages": messages,
         "view_date": view_date,
-        "site_settings": get_settings(),
+        "site_settings": get_settings()
     }
     return render(request, 'scheduler/dashboard.html', context)
 
