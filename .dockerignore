@@ -1,2 +1,12 @@
 celerybeat.pid
 .env
+*.pyc
+*.swp
+.vagrant
+.DS_Store
+staticfiles
+*.pid
+.git
+.vscode
+__pycache__
+.envrc

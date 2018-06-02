@@ -5,3 +5,4 @@
 staticfiles
 .env
 *.pid
+__pycache__
