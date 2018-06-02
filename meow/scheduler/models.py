@@ -17,9 +17,11 @@ class SMPost(models.Model):
     story_short_url = models.URLField(max_length=500, null=True, blank=True)
     featured_image_url = models.URLField(max_length=500, null=True, blank=True)
     post_twitter = models.TextField(null=True, blank=True)
+    id_twitter = models.DecimalField(default=0, max_digits=25, decimal_places=0) # change to decimal(38, 0) if not big enough
     post_facebook = models.TextField(null=True, blank=True)
     post_instagram = models.TextField(null=True, blank=True, default="")
     post_notes = models.TextField(null=True, blank=True, default="")
+    id_facebook = models.DecimalField(default=0, max_digits=25, decimal_places=0) # change to decimal(38, 0) if not big enough
     section = models.ForeignKey('Section', blank=True, null=True, on_delete=models.SET_NULL)
     pub_ready_copy = models.BooleanField(
         default=False, help_text="Is this copy-edited?")
