@@ -137,7 +137,9 @@ def dashboard(request):
     context = {
         "user": request.user,
         "sections": Section.objects.all(),
-        "smposts": zip(list(chain(today_posts, lost_posts)), get_analytics(list(chain(today_posts, lost_posts)))),
+        # Turning this feature off for now
+        #"smposts": zip(list(chain(today_posts, lost_posts)), get_analytics(list(chain(today_posts, lost_posts)))),
+        "smposts": list(chain(today_posts, lost_posts)),
         "messages": messages,
         "view_date": view_date,
         "site_settings": get_settings()
