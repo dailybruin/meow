@@ -64,7 +64,7 @@ Clone the repository, then create a `.env` file at the top level.
 ```bash
 git clone https://github.com/daily-bruin/meow.git
 cd meow
-echo -e REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres\n > meow/.env
+echo -e "REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres\n" > meow/.env
 ```
 
 Be sure to also add a `SLACK_ENDPOINT` variable. You can get the value of it
