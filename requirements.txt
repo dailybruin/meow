@@ -21,7 +21,7 @@ lazy-object-proxy==1.3.1
 mccabe==0.6.1
 oauthlib==2.0.3
 parsedatetime==2.4
-psycopg2==2.7.3.1
+psycopg2==2.7.5
 pylint==1.7.2
 pyshorteners==0.6.1
 pytz==2017.2
