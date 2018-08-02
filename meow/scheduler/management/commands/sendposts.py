@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.core.management import call_command
 from django.utils import timezone
 from django.conf import settings
 
@@ -18,126 +19,6 @@ from scheduler.models import MeowSetting, SMPost
 
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
-
-    def sendTweet(self, smpost, section, url, photo_url):
-        try:
-            print('Sending Tweet: {}'.format(smpost.post_twitter))
-            CONSUMER_KEY = MeowSetting.objects.get(
-                setting_key='twitter_consumer_key').setting_value
-            CONSUMER_SECRET = MeowSetting.objects.get(
-                setting_key='twitter_consumer_secret').setting_value
-            ACCESS_KEY = section.twitter_access_key
-            ACCESS_SECRET = section.twitter_access_secret
-
-            auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-            auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
-
-            api = tweepy.API(auth)
-
-            # Make the tweet follow DB social media standards
-            tweet = smpost.post_twitter
-
-            if url is not None:
-                tweet = tweet + " " + url
-
-            if photo_url is not None:
-                photo_source = requests.get(photo_url)
-                filename = re.search("/([^/]*)$", photo_source.url).group(1)
-                # io is needed to make an actual file object (tweepy requires
-                # the seek method on the file object)
-                photo_fd = io.BytesIO(photo_source.content)
-                res = api.update_with_media(filename, tweet, file=photo_fd)
-            else:
-                res = api.update_status(status=tweet)
-
-            print("----------------------")
-            print(res.id)
-
-            # Add the id for the post to the database
-            smpost.id_twitter = res.id
-            smpost.save()
-
-            return "https://twitter.com/statuses/{}".format(res.id)
-
-        except tweepy.TweepError as e:
-            smpost.log(traceback.format_exc())
-            smpost.log_error(e, section, True)
-            slack_data = {
-                "text": ":sadparrot: *{}* has errored at {}"
-                .format(smpost.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
-                "attachments": [{"color": "danger", "title": "Twitter Error", "text": str(e)}]
-            }
-
-            requests.post(settings.SLACK_ENDPOINT,
-                          data=json.dumps(slack_data),
-                          headers={'Content-Type': 'application/json'})
-
-    def sendFacebookPost(self, smpost, section, url, photo_url, fb_default_photo):
-        try:
-            print('Sending FB: {}'.format(smpost.post_facebook))
-            # follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
-            # Facebook needs the following permissions:
-            # status_update, manage_pages
-
-            # Initialize the Graph API with a valid access token (optional,
-            # but will allow you to do all sorts of fun stuff).
-
-            # Get token from here: https://developers.facebook.com/docs/opengraph/howtos/publishing-with-app-token/
-            # appGraph = GraphAPI('72296391616|_vtz8ShgOfzLSgKeDw2quIS1pCc')
-            GRAPH_KEY = section.facebook_key
-            graph = GraphAPI(GRAPH_KEY)  # This should not expire
-
-            PAGE_ID = section.facebook_page_id
-
-            data = {
-                "path": PAGE_ID + '/feed',
-                "message": smpost.post_facebook,
-            }
-            if photo_url:
-                data['picture'] = photo_url
-            else:
-                data['picture'] = fb_default_photo
-            
-            if url:
-                data['link'] = url
-
-            errors = 0
-            res = None
-            while errors < 2:
-                try:
-                    res = graph.post(**data)
-                    break
-                except Exception as e:
-                    smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
-                    if errors >= 2:
-                        raise Exception
-                        break
-                    else:
-                        time.sleep(0.5)
-                        errors += 1
-
-            print("----------------------")
-            post_id = res['id'].split('_')[1]
-            print("Successfully posted to FB at ID: %s" % post_id)
-
-            # Add the id for the post to the database
-            smpost.id_facebook = post_id
-            smpost.save()
-
-            return "https://facebook.com/{}".format(post_id)
-
-        except (FacepyError) as e:
-            smpost.log(traceback.format_exc())
-            smpost.log_error(e, section, True)
-            slack_data = {
-                "text": ":sadparrot: *{}* has errored at {}"
-                .format(smpost.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
-                "attachments": [{"color": "danger", "title": "Facebook Error", "text": str(e)}]
-            }
-
-            requests.post(settings.SLACK_ENDPOINT,
-                          data=json.dumps(slack_data),
-                          headers={'Content-Type': 'application/json'})
 
     def handle(self, *args, **options):
         send_posts = MeowSetting.objects.get(
@@ -236,24 +117,20 @@ class Command(BaseCommand):
                 if post.post_facebook:
                     # Section's account
                     if (post.section.facebook_page_id and post.section.facebook_key):
-                        fb_url = self.sendFacebookPost(
-                            post, post.section, send_url[1], photo_url, fb_default_photo)
+                        fb_url = call_command('sendfacebook', smpost=post, section=post.section, url=send_url[1], photo_url=photo_url, fb_default_photo=fb_default_photo)
                     # Also post to account
                     if (post.section.also_post_to and
                             post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
-                        self.sendFacebookPost(
-                            post, post.section.also_post_to, send_url[1], photo_url, fb_default_photo)
+                        call_command('sendfacebook', smpost=post, section=post.section.also_post_to, url=send_url[1], photo_url=photo_url, fb_default_photo=fb_default_photo)
                 # Post to twitter
                 if post.post_twitter:
                     # Section's account
                     if (post.section.twitter_access_key and post.section.twitter_access_secret):
-                        tweet_url = self.sendTweet(post, post.section,
-                                                   send_url[1], photo_url)
+                        tweet_url = call_command('sendtweet', smpost=post, section=post.section, url=send_url[1], photo_url=photo_url)
                     # Also post to account
                     if (post.section.also_post_to and
                             post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
-                        self.sendTweet(
-                            post, post.section.also_post_to, send_url[1], photo_url)
+                        call_command('sendtweet', smpost=post, section=post.section.also_post_to, url=send_url[1], photo_url=photo_url)
             except:
                 # Something wrong happened. Don't send this post.
                 e = sys.exc_info()[0]
