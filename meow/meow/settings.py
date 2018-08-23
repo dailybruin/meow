@@ -33,7 +33,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["0.0.0.0", "localhost" ]
+ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
 if os.environ.get('HOSTS'):
     ALLOWED_HOSTS.append(os.environ.get('HOSTS'))
 
@@ -143,6 +143,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'scheduler',
+    'frontend',
     'django_celery_beat'
 )
 
