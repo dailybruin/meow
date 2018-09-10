@@ -1,7 +1,11 @@
 version: '3'
 
 services:
-  web:
+  node:
+    build:
+      context: .
+      dockerfile: ./docker_compose/node/development/Dockerfile
+  django:
     build: .
     image: meow
     command: honcho start -f Procfile.dev
