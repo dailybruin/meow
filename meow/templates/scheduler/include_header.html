@@ -13,7 +13,7 @@
 <div class="header row">
     <div class="large-12 columns">
         <a class="page-title" href="/"><img id="cats" src="{% static "img/cat-icon.png" %}" alt="cat-icon"/>meow</a>
-        {% if perms.add_user %}
+        {% if perms.auth.add_user %}
         <a class="meow-manage" href="/manage">
             <i class="foundicon-settings"></i>
         </a>
