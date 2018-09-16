@@ -1,12 +1,10 @@
 FROM node:8
 
-WORKDIR /usr/src/app
+WORKDIR /app/frontend
 
-COPY package*.json ./
+COPY ./meow/frontend/package*.json /app/frontend/
 
 RUN npm install
-
-COPY . .
 
 EXPOSE 8080
 
