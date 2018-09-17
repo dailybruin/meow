@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: ./meow/frontend/Dockerfile
+    volumes:
+      - .:/meow
   django:
     build: .
     image: meow

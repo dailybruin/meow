@@ -4,5 +4,6 @@
 .DS_Store
 staticfiles
 .env
+node_modules/
 *.pid
 __pycache__
