@@ -1,9 +1,10 @@
 import React from 'react';
+import Sidebar from './Sidebar';
 
 class App extends React.Component {
     render() {
         return (
-            <p> Working! </p>
+            <Sidebar />
         );
     }
 }
