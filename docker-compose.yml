@@ -13,11 +13,6 @@ services:
       - redis
     volumes:
       - .:/meow
-  db:
-    image: postgres:latest
-    ports:
-      - "5432:5432"
-      - "138.68.24.59:5432:5432"
   redis:
     image: redis:alpine
     ports:
