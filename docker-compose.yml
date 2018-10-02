@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   web:
@@ -13,7 +13,7 @@ services:
       - redis
     volumes:
       - .:/meow
+  db:
+    image: postgres:latest
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
