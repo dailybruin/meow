@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 from scheduler.models import *
+from scheduler.serializers import SMPostSerializer
+from rest_framework import generics
 import datetime
 import parsedatetime.parsedatetime as pdt
 from itertools import chain
@@ -22,6 +24,10 @@ from .analytics import get_analytics
 # Oauth stuff
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
+
+class SMPostListCreate(generics.ListCreateAPIView):
+    queryset = SMPost.objects.all()
+    serializer_class = SMPostSerializer
 
 
 @login_required

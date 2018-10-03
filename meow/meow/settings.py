@@ -144,7 +144,8 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'scheduler',
     'frontend',
-    'django_celery_beat'
+    'django_celery_beat',
+    'rest_framework'
 )
 
 # A sample logging configuration. The only tangible logging

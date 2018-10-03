@@ -7,3 +7,4 @@ staticfiles
 node_modules
 *.pid
 __pycache__
+*/package-lock.json
