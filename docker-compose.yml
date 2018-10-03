@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   frontend:
@@ -21,9 +21,5 @@ services:
       - .:/meow
   db:
     image: postgres:latest
-    ports:
-      - "5432:5432"
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
