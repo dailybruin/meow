@@ -10,3 +10,4 @@ staticfiles
 .vscode
 __pycache__
 .envrc
+node_modules

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+{% load render_bundle from webpack_loader %}
 
 <head>
   <meta charset="utf-8">
@@ -8,11 +9,11 @@
 </head>
 
 <body>
-  <div id="app" class="columns">
-    <!-- React -->
+  {% block content %}
+  <div id="app">
+    {% render_bundle 'main' %}
   </div>
-  {% load static %}
-<script src="{% static "frontend/main.js" %}"></script>
+  {% endblock %}
 </body>
 
 </html>

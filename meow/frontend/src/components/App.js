@@ -1,12 +1,11 @@
-import React from 'react';
-import Sidebar from './Sidebar';
+import React from "react";
+import Sidebar from "./Sidebar";
+import PostGetter from "./examples/PostGetter";
 
 class App extends React.Component {
-    render() {
-        return (
-            <Sidebar />
-        );
-    }
+  render() {
+    return <PostGetter />;
+  }
 }
 
 export default App;

@@ -1,15 +1,19 @@
 version: "3"
 
+volumes:
+  meow_volume: {}
+
 services:
   frontend:
     build:
       context: .
       dockerfile: ./meow/frontend/Dockerfile
     volumes:
-      - .:/meow
+      - meow_volume:/frontend
   django:
-    build: .
-    image: meow
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     command: honcho start -f Procfile.dev
     ports:
       - "5000:5000"
@@ -17,8 +21,9 @@ services:
     depends_on:
       - db
       - redis
+      - frontend
     volumes:
-      - .:/meow
+      - meow_volume:/django
   db:
     image: postgres:latest
   redis:

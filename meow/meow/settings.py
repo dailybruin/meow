@@ -145,7 +145,8 @@ INSTALLED_APPS = (
     'scheduler',
     'frontend',
     'django_celery_beat',
-    'rest_framework'
+    'rest_framework',
+    'webpack_loader'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -174,6 +175,15 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+    }
+}
+
+# Webpack
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'frontend/',
+        'STATS_FILE': os.path.join(os.path.dirname(BASE_DIR), '/meow/frontend/webpack-stats.json'),
     }
 }
 
