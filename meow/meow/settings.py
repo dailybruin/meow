@@ -74,13 +74,13 @@ MEDIA_URL = ''
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'frontend'),
 )
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # List of finder classes that know how to find static files in
@@ -143,7 +143,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'scheduler',
-    'frontend',
     'django_celery_beat',
     'rest_framework',
     'webpack_loader'
@@ -182,8 +181,8 @@ LOGGING = {
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'frontend/',
-        'STATS_FILE': os.path.join(os.path.dirname(BASE_DIR), '/meow/frontend/webpack-stats.json'),
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(os.path.dirname(BASE_DIR), 'webpack-stats.json'),
     }
 }
 

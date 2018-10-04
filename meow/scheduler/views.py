@@ -1,11 +1,16 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
+
 from scheduler.models import *
 from scheduler.serializers import SMPostSerializer
-from rest_framework import generics
+
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 import datetime
 import parsedatetime.parsedatetime as pdt
 from itertools import chain
@@ -25,22 +30,66 @@ from .analytics import get_analytics
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
-class SMPostListCreate(generics.ListCreateAPIView):
-    queryset = SMPost.objects.all()
-    serializer_class = SMPostSerializer
+
+class SMPostList(APIView):
+    """
+    List all SMPosts, or create a new SMPost.
+    """
+
+    def get(self, request, format=None):
+        posts = SMPost.objects.all()
+        serializer = SMPostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SMPostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SMPostDetail(APIView):
+    """
+    Retrieve, update or delete a SMPost.
+    """
+
+    def get_object(self, post_id):
+        try:
+            return SMPost.objects.get(id=post_id)
+        except SMPost.DoesNotExist:
+            raise Http404
+
+    def get(self, request, post_id, format=None):
+        post = self.get_object(post_id)
+        serializer = SMPostSerializer(post)
+        return Response(serializer.data)
+
+    def put(self, request, post_id, format=None):
+        post = self.get_object(post_id)
+        serializer = SMPostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, post_id, format=None):
+        post = self.get_object(post_id)
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @login_required
 def send_posts_now(request, post_id):
-	if request.method == "POST":
-		sendNowPost = SMPost.objects.get(id = post_id)
-		sendNowPost.send_now=True
-		sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
-		sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
-		sendNowPost.save()
-		sendposts.delay()
-		return HttpResponse(status=200)
-    
+    if request.method == "POST":
+        sendNowPost = SMPost.objects.get(id=post_id)
+        sendNowPost.send_now = True
+        sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
+        sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
+        sendNowPost.save()
+        sendposts.delay()
+        return HttpResponse(status=200)
+
 
 def get_settings():
     return {
@@ -99,6 +148,7 @@ def user_settings(request):
     }
     return render(request, 'scheduler/user_settings.html', context)
 
+
 @login_required
 def dashboard(request):
     messages = []
@@ -144,7 +194,7 @@ def dashboard(request):
         "user": request.user,
         "sections": Section.objects.all(),
         # Turning this feature off for now
-        #"smposts": zip(list(chain(today_posts, lost_posts)), get_analytics(list(chain(today_posts, lost_posts)))),
+        # "smposts": zip(list(chain(today_posts, lost_posts)), get_analytics(list(chain(today_posts, lost_posts)))),
         "smposts": list(chain(today_posts, lost_posts)),
         "messages": messages,
         "view_date": view_date,
@@ -244,7 +294,7 @@ def edit(request, post_id, post=None):
                 post.pub_ready_online = True
             else:
                 post.pub_ready_online = False
-                post.sent_error = False 
+                post.sent_error = False
                 post.sent = False
                 post.pub_ready_online_user = None
 

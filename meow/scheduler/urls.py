@@ -17,19 +17,23 @@
 
 
 from django.conf.urls import url
+from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
 
 urlpatterns = [
-    url(r'^post/', views.SMPostListCreate.as_view()),
-    url(r'^edit/(?P<post_id>\d+)/$', views.edit, name="edit"),
-    url(r'^add/$', views.add, name="add"),
+    url(r'^post/$',
+        views.SMPostList.as_view(),
+        name='post-list'),
+    url(r'^post/(?P<post_id>[0-9]+)$',
+        views.SMPostDetail.as_view(),
+        name='post-detail'),
     url(r'^settings/$', views.user_settings, name="settings"),
-    url(r'^api/send-now/(?P<post_id>\d+)/$',
-        views.send_posts_now, name="send_posts_now"),
     url(r'^manage/twitter-connect/$',
         views.twitter_connect, name="twitter_connect"),
     url(r'^manage/fb-connect/$', views.fb_connect, name="fb_connect"),
     url(r'^manage/$', views.manage, name="manage"),
     url(r'^$', views.dashboard, name='dashboard'),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

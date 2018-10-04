@@ -1,5 +1,9 @@
 celerybeat.pid
+
 .env
+.gitignore
+.editorconfig
+
 *.pyc
 *.swp
 .vagrant
@@ -10,4 +14,14 @@ staticfiles
 .vscode
 __pycache__
 .envrc
-node_modules
+
+node_modules/
+.git/
+coverage/
+
+meow/frontend/bundles/
+static/
+
+stats.json
+webpack-stats.json
+npm-debug.log

@@ -1,10 +1,9 @@
 import React from "react";
-import Sidebar from "./Sidebar";
-import PostGetter from "./examples/PostGetter";
+import PostMaker from "./examples/PostMaker";
 
 class App extends React.Component {
   render() {
-    return <PostGetter />;
+    return <PostMaker />;
   }
 }
 
