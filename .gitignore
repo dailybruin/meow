@@ -3,7 +3,7 @@
 .vagrant
 .DS_Store
 staticfiles
-meow/static/**/*
+meow/frontend/**/*
 .env
 node_modules
 *.pid
