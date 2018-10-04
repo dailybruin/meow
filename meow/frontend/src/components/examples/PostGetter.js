@@ -69,13 +69,13 @@ export default class PostGetter extends React.Component {
           <div style={{ flex: "1" }} onClick={() => this.sortBy("id")}>
             id
           </div>
-          <div style={{ flex: "1" }} onClick={() => this.sortBy("title")}>
+          <div style={{ flex: "1" }} onClick={() => this.sortBy("slug")}>
             slug
           </div>
-          <div style={{ flex: "1" }} onClick={() => this.sortBy("priority")}>
+          <div style={{ flex: "1" }} onClick={() => this.sortBy("story_url")}>
             story_url
           </div>
-          <div style={{ flex: "1" }} onClick={() => this.sortBy("type")}>
+          <div style={{ flex: "1" }} onClick={() => this.sortBy("pub_time")}>
             pub_date
           </div>
         </div>
