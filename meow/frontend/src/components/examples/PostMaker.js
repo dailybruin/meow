@@ -23,7 +23,7 @@ export default class PostMaker extends React.Component {
     e.preventDefault();
     let date = {
       pub_date: "2018-07-24",
-      pub_time: "08:43"
+      pub_time: "13:43"
     };
 
     const state = Object.assign(this.state, date);
@@ -62,19 +62,6 @@ export default class PostMaker extends React.Component {
                 name="story_url"
                 onChange={this.handleChange}
                 value={story_url}
-                required
-              />
-            </div>
-          </div>
-          <div className="field">
-            <label className="label">tweet</label>
-            <div className="control">
-              <textarea
-                className="textarea"
-                type="text"
-                name="post_twitter"
-                onChange={this.handleChange}
-                value={post_twitter}
                 required
               />
             </div>
