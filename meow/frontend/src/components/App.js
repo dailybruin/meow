@@ -8,7 +8,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <PostGetter />
+        <PostGetter bigPostsOnly={false} />
         <SingleLineBox type="slug" />
         <SingleLineBox type="url" />
         <CaptionBox type="fb" />

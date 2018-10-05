@@ -1,85 +1,50 @@
 import React from "react";
 import axios from "axios";
+import PostTable from "./PostTable";
 
-const ENDPOINT = "api/post";
-
-const Row = ({ id, slug, story_url, pub_date }) => (
-  <div
-    className="row"
-    style={{
-      display: "flex"
-    }}
-  >
-    <div style={{ flex: "1" }}>{id}</div>
-    <div style={{ flex: "1" }}>{slug}</div>
-    <div style={{ flex: "1" }}>{story_url}</div>
-    <div style={{ flex: "1" }}>{pub_date}</div>
-  </div>
-);
+const ENDPOINT = "/api/post/";
 
 export default class PostGetter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: []
+      posts: [],
+      filteredPosts: [],
+      bigPostsOnly: this.props.bigPostsOnly
     };
-    this.compareBy = this.compareBy.bind(this);
-    this.sortBy = this.sortBy.bind(this);
   }
 
   componentWillMount() {
     axios.get(ENDPOINT).then(res => {
-      console.log("postGetter response:");
-      console.log(res.data);
-      this.setState({ posts: res.data });
+      this.setState({ posts: res.data, filteredPosts: res.data });
     });
   }
 
-  compareBy(key) {
-    return function(a, b) {
-      if (a[key] < b[key]) return -1;
-      if (a[key] > b[key]) return 1;
-      return 0;
-    };
-  }
-
-  sortBy(key) {
-    let arrayCopy = [...this.state.posts];
-    arrayCopy.sort(this.compareBy(key));
-    this.setState({ posts: arrayCopy });
-  }
+  handleBigPostChange = e => {
+    let filteredPosts = this.state.bigPostsOnly
+      ? this.state.posts
+      : this.state.posts.filter(post => {
+          return post.id > 2;
+        });
+    console.log(filteredPosts);
+    this.setState({
+      bigPostsOnly: !this.state.bigPostsOnly,
+      filteredPosts: filteredPosts
+    });
+  };
 
   render() {
-    const rows = this.state.posts.map(rowData => <Row {...rowData} />);
-
     return (
-      <div
-        className="table"
-        style={{
-          display: "flex",
-          flexDirection: "column"
-        }}
-      >
-        <div
-          className="header"
-          style={{
-            display: "flex"
-          }}
-        >
-          <div style={{ flex: "1" }} onClick={() => this.sortBy("id")}>
-            id
-          </div>
-          <div style={{ flex: "1" }} onClick={() => this.sortBy("slug")}>
-            slug
-          </div>
-          <div style={{ flex: "1" }} onClick={() => this.sortBy("story_url")}>
-            story_url
-          </div>
-          <div style={{ flex: "1" }} onClick={() => this.sortBy("pub_time")}>
-            pub_date
-          </div>
-        </div>
-        <div className="body">{rows}</div>
+      <div>
+        <p>
+          <input
+            type="checkbox"
+            checked={this.state.bigPostsOnly}
+            onChange={this.handleBigPostChange}
+          />{" "}
+          Only show posts with id > 2
+        </p>
+        <PostTable posts={this.state.filteredPosts} />
       </div>
     );
   }
