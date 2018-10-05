@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import FilterableTable from "react-filterable-table";
+import ReactTable from "react-table";
 
 const ENDPOINT = "/api/post/";
 
@@ -12,50 +12,22 @@ export default class PostGetter extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     axios.get(ENDPOINT).then(res => {
       this.setState({ posts: res.data });
     });
   }
 
   render() {
-    const fields = [
-      {
-        name: "id",
-        displayName: "Post ID",
-        inputFilterable: true,
-        sortable: true
-      },
-      {
-        name: "slug",
-        displayName: "Slug",
-        inputFilterable: true,
-        exactFilterable: true,
-        sortable: true
-      },
-      {
-        name: "story_url",
-        displayName: "Link",
-        inputFilterable: true,
-        exactFilterable: true,
-        sortable: true
-      },
-      {
-        name: "pub_time",
-        displayName: "Time",
-        inputFilterable: true,
-        exactFilterable: true,
-        sortable: true
-      }
+    const cols = [
+      { Header: "Post ID", accessor: "id" },
+      { Header: "Slug", accessor: "slug" },
+      { Header: "Link", accessor: "story_url" },
+      { Header: "Pub Time", accessor: "pub_time" }
     ];
 
-    return (
-      <FilterableTable
-        namespace="smposts"
-        initialSort="id"
-        data={this.state.posts}
-        fields={fields}
-      />
-    );
+    const posts = this.state.posts;
+
+    return <ReactTable data={posts} columns={cols} />;
   }
 }

@@ -25,9 +25,9 @@
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-filterable-table": "^0.3.431",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
+    "react-table": "^6.8.6",
     "webpack": "^4.17.1",
     "webpack-bundle-tracker": "^0.3.0",
     "webpack-cli": "^3.1.0"
