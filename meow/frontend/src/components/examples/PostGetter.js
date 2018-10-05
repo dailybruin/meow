@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import PostTable from "./PostTable";
+import FilterableTable from "react-filterable-table";
 
 const ENDPOINT = "/api/post/";
 
@@ -8,44 +8,54 @@ export default class PostGetter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: [],
-      filteredPosts: [],
-      bigPostsOnly: this.props.bigPostsOnly
+      posts: []
     };
   }
 
   componentWillMount() {
     axios.get(ENDPOINT).then(res => {
-      this.setState({ posts: res.data, filteredPosts: res.data });
+      this.setState({ posts: res.data });
     });
   }
 
-  handleBigPostChange = e => {
-    let filteredPosts = this.state.bigPostsOnly
-      ? this.state.posts
-      : this.state.posts.filter(post => {
-          return post.id > 2;
-        });
-    console.log(filteredPosts);
-    this.setState({
-      bigPostsOnly: !this.state.bigPostsOnly,
-      filteredPosts: filteredPosts
-    });
-  };
-
   render() {
+    const fields = [
+      {
+        name: "id",
+        displayName: "Post ID",
+        inputFilterable: true,
+        sortable: true
+      },
+      {
+        name: "slug",
+        displayName: "Slug",
+        inputFilterable: true,
+        exactFilterable: true,
+        sortable: true
+      },
+      {
+        name: "story_url",
+        displayName: "Link",
+        inputFilterable: true,
+        exactFilterable: true,
+        sortable: true
+      },
+      {
+        name: "pub_time",
+        displayName: "Time",
+        inputFilterable: true,
+        exactFilterable: true,
+        sortable: true
+      }
+    ];
+
     return (
-      <div>
-        <p>
-          <input
-            type="checkbox"
-            checked={this.state.bigPostsOnly}
-            onChange={this.handleBigPostChange}
-          />{" "}
-          Only show posts with id > 2
-        </p>
-        <PostTable posts={this.state.filteredPosts} />
-      </div>
+      <FilterableTable
+        namespace="smposts"
+        initialSort="id"
+        data={this.state.posts}
+        fields={fields}
+      />
     );
   }
 }
