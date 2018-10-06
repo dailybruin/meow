@@ -6,5 +6,6 @@ from . import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('scheduler.urls')),
+    url(r'^api/', include('user_profile.urls')),
     url(r'^$', views.base, name='base')
 ]
