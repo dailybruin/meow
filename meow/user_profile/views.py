@@ -14,6 +14,19 @@ from user_profile.serializers import UserProfileSerializer
 # Create your views here.
 
 
+class UserProfileList(APIView):
+    """
+    List all User Profile, or create a new User Profile.
+    """
+
+    def post(self, request, format=None):
+        serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserProfileDetail(APIView):
     """
     Retrieve, update or delete a user profile.

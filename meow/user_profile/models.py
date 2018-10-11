@@ -17,6 +17,9 @@ class UserProfile(models.Model):
     theme = models.ForeignKey(
         'Theme', blank=True, null=True, on_delete=models.SET_NULL)
 
+    def __str__(self):
+        return self.user.username
+
     class Meta:
         default_related_name = 'profile'
 
