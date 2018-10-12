@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from django.shortcuts import render
 
-from user_profile.models import UserProfile
+from user_profile.models import User
 from user_profile.serializers import UserProfileSerializer
 
 # Create your views here.
@@ -34,8 +34,8 @@ class UserProfileDetail(APIView):
 
     def get_object(self, user_id):
         try:
-            return UserProfile.objects.get(user_id=user_id)
-        except UserProfile.DoesNotExist:
+            return User.objects.get(user_id=user_id)
+        except User.DoesNotExist:
             raise Http404
 
     def get(self, request, user_id, format=None):

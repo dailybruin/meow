@@ -1,17 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # Create your models here.
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
-                                primary_key=True)
-    first_name = models.CharField(max_length=100, blank=True, default="")
-    last_name = models.CharField(max_length=100, blank=True, default="")
-    email = models.EmailField()
+class User(AbstractUser):
+    bio = models.CharField(max_length=512, blank=True, default="")
     profile_img = models.ImageField(upload_to='profile/imgs/',
                                     null=True)
     theme = models.ForeignKey(
@@ -21,16 +17,8 @@ class UserProfile(models.Model):
         return self.user.username
 
     class Meta:
+        db_table = 'auth_user'
         default_related_name = 'profile'
-
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            UserProfile.objects.create(user=instance)
-
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.profile.save()
 
 
 class Theme(models.Model):
