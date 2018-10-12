@@ -5,11 +5,13 @@ import CaptionBox from "./SMPost/CaptionBox";
 import SingleLineBox from "./SMPost/SingleLineBox";
 import FilterableWrapper from "./examples/FilterableWrapper";
 import UserMaker from "./examples/UserMaker";
+import Header from "./Header/Header";
 
 class App extends React.Component {
   render() {
     return (
       <div>
+        <Header />
         <nav>
           <Link to="/posts">Posts</Link>
           <Link to="/add">Add</Link>
