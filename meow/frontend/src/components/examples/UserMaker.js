@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 
-const ENDPOINT = "/api/profile/";
+const ENDPOINT = "/api/rest-auth/registration/";
 
 export default class UserMaker extends React.Component {
   constructor(props) {
@@ -9,7 +9,8 @@ export default class UserMaker extends React.Component {
     this.state = {
       username: "",
       email: "",
-      password: ""
+      password1: "",
+      bio: ""
     };
   }
 
@@ -21,7 +22,8 @@ export default class UserMaker extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-
+    Object.assign(this.state, { password2: this.state.password1 });
+    console.log(this.state);
     axios.post(ENDPOINT, this.state).then(res => {
       console.log("axious post");
       console.log(res);
@@ -29,7 +31,7 @@ export default class UserMaker extends React.Component {
   };
 
   render() {
-    const { username, email, password } = this.state;
+    const { username, email, password1, bio } = this.state;
 
     return (
       <div className="column">
@@ -66,16 +68,29 @@ export default class UserMaker extends React.Component {
               <input
                 className="input"
                 type="text"
-                name="password"
+                name="password1"
                 onChange={this.handleChange}
-                value={password}
+                value={password1}
+                required
+              />
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Bio</label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                name="bio"
+                onChange={this.handleChange}
+                value={bio}
                 required
               />
             </div>
           </div>
           <div className="control">
             <button type="submit" className="button is-info">
-              Create Post
+              Create User
             </button>
           </div>
         </form>

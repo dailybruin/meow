@@ -146,10 +146,13 @@ INSTALLED_APPS = (
     'user_profile',
     'django_celery_beat',
     'rest_framework',
-    'webpack_loader'
+    'webpack_loader',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
 )
-
-AUTH_USER_MODEL = 'user_profile.User'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -179,6 +182,14 @@ LOGGING = {
         },
     }
 }
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'user_profile.serializers.UserSerializer',
+}
+
+REST_SESSION_LOGIN = False
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Webpack
 WEBPACK_LOADER = {

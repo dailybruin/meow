@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from django.shortcuts import render
 
 from user_profile.models import User
-from user_profile.serializers import UserProfileSerializer
+from user_profile.serializers import UserSerializer
 
 # Create your views here.
 
@@ -20,7 +20,7 @@ class UserProfileList(APIView):
     """
 
     def post(self, request, format=None):
-        serializer = UserProfileSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -40,12 +40,12 @@ class UserProfileDetail(APIView):
 
     def get(self, request, user_id, format=None):
         profile = self.get_object(user_id)
-        serializer = UserProfileSerializer(profile)
+        serializer = UserSerializer(profile)
         return Response(serializer.data)
 
     def put(self, request, user_id, format=None):
         profile = self.get_object(user_id)
-        serializer = UserProfileSerializer(profile, data=request.data)
+        serializer = UserSerializer(profile, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
