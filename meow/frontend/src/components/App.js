@@ -7,12 +7,14 @@ import FilterableWrapper from "./examples/FilterableWrapper";
 import UserMaker from "./examples/UserMaker";
 import Header from "./Header/Header";
 import SMPost from "./SMPost/SMPost";
+import Datepicker from "./Sidebar/Datepicker"
 
 class App extends React.Component {
   render() {
     return (
       <div>
         <Header />
+        <Datepicker />
         <nav>
           <Link to="/posts">Posts</Link>
           <Link to="/add">Add</Link>
