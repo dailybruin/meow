@@ -4,32 +4,32 @@ _Daily Bruin's Twitter and Facebook poster_
 
 ## Table of Contents
 
-* [Technologies Used](#)
-* [Services Used](#)
-* [Structure](#)
-* [Getting Started](#)
-* [Adding A Database Field](#)
+- [Technologies Used](#)
+- [Services Used](#)
+- [Structure](#)
+- [Getting Started](#)
+- [Adding A Database Field](#)
 
 ## Technologies Used
 
-* [Docker](https://www.docker.com/what-docker) is our way of putting the code
+- [Docker](https://www.docker.com/what-docker) is our way of putting the code
   for meow in "containers" so you can run it the same on any machine.
 
 ### Frontend
 
-* [React](https://reactjs.org) is a popular JavaScript library for building user
+- [React](https://reactjs.org) is a popular JavaScript library for building user
   interfaces.
 
 ### Backend
 
-* [Django](https://www.djangoproject.com/) is a Web framework that makes working
+- [Django](https://www.djangoproject.com/) is a Web framework that makes working
   with databases easier!
-* [Celery](http://www.celeryproject.org/) is a task scheduler that runs certain
+- [Celery](http://www.celeryproject.org/) is a task scheduler that runs certain
   "tasks" at certain intervals.
 
 ## Services Used
 
-* [Pyup](https://pyup.io/) is something you'll become very familiar with, as it
+- [Pyup](https://pyup.io/) is something you'll become very familiar with, as it
   checks all the dependencies for meow and tells you when it's time to update!
 
 ## Structure
@@ -158,10 +158,10 @@ You'll also need to go to the Slack channel `#meow-dev` and look at
 [this message](https://dailybruin.slack.com/archives/C7KPPH80K/p1527652524000087)
 (it's pinned) and use that to set the following fields:
 
-* `fb_app_secret`
-* `fb_app_id`
-* `twitter_consumer_secret`
-* `twitter_consumer_key`
+- `fb_app_secret`
+- `fb_app_id`
+- `twitter_consumer_secret`
+- `twitter_consumer_key`
 
 ### 9. Add a Section
 
@@ -216,9 +216,10 @@ the following command to access the postgreSQL container.
 docker ps
 *c2bd3a5f4968*        postgres:latest         "docker-entrypoint..."   2 months ago        Up 3 hours          0.0.0.0:5432->5432/tcp           meow_db_1
 ```
+
 container ID = bolded above though yours may be different (c2bd3a5f4968)
 
-``` bash
+```bash
 docker exec -it <container ID> psql -U postgres
 ```
 

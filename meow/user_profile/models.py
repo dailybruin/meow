@@ -6,7 +6,7 @@ from django.dispatch import receiver
 # Create your models here.
 
 
-class UserProfile(models.Model):
+class User(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
     bio = models.CharField(max_length=512, null=True)
