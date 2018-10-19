@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
 export default class Datepicker extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       startDate: moment()
@@ -20,12 +20,6 @@ export default class Datepicker extends React.Component {
   }
 
   render() {
-    return (
-      <DatePicker
-        inline
-        selected={this.state.startDate}
-        onChange={this.handleChange}
-      />
-    );
+    return <DatePicker inline selected={this.state.startDate} onChange={this.handleChange} />;
   }
 }
