@@ -37,6 +37,8 @@
     "style-loader": "^0.23.0",
     "webpack": "^4.17.1",
     "webpack-bundle-tracker": "^0.3.0",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.1.0",
+    "moment": "^2.22.2",
+    "react-datepicker": "^1.6.0"
   }
 }
