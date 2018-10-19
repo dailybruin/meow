@@ -1,20 +1,20 @@
-import React from "react";
-import { Switch, Route, Link } from "react-router-dom";
-import PostMaker from "./examples/PostMaker";
-import CaptionBox from "./SMPost/CaptionBox";
-import SingleLineBox from "./SMPost/SingleLineBox";
-import FilterableWrapper from "./examples/FilterableWrapper";
-import UserMaker from "./examples/UserMaker";
-import Header from "./Header/Header";
-import SMPost from "./SMPost/SMPost";
-import Datepicker from "./Sidebar/Datepicker"
+import React from 'react';
+import { Switch, Route, Link } from 'react-router-dom';
+import PostMaker from './examples/PostMaker';
+import CaptionBox from './SMPost/CaptionBox';
+import SingleLineBox from './SMPost/SingleLineBox';
+import FilterableWrapper from './examples/FilterableWrapper';
+import UserMaker from './examples/UserMaker';
+import Header from './Header/Header';
+import SMPost from './SMPost/SMPost';
+import Sidebar from './Sidebar/Sidebar';
 
 class App extends React.Component {
   render() {
     return (
       <div>
         <Header />
-        <Datepicker />
+        <Sidebar />
         <nav>
           <Link to="/posts">Posts</Link>
           <Link to="/add">Add</Link>

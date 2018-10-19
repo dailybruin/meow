@@ -250,6 +250,55 @@ docker exec -it <container ID> psql -U postgres
 
 Now you add rows to the database using postgreSQL commands.
 
+## Linting FAQ
+
+We use a combination of [eslint](https://eslint.org/docs/about/) and
+[prettier](https://prettier.io/) for our linting and code formatting.
+
+With a few exceptions, we follow the [Airbnb JavaScript guide](https://github.com/airbnb/javascript).
+
+### `Useless constructor`
+
+If the constructor for any class does not do anything except call
+`super(props)`, then this is deemed a "useless constructor" because it does not
+do anything meaningful for that class.
+
+If you bind a function or set the state to a default value, then this error
+will disappear.
+
+### `Component should be written as a pure function`
+
+If you have a component that does not keep its own state (i.e. does not have
+any variables or values in its state), then you can more accurately and
+succinctly write the component as a function! See
+[here](https://stackoverflow.com/a/40853268) for an example!
+
+### `Unexpected block statement surrounding arrow body; move the returned value immediately after the =>.`
+
+If you have a function defined like this:
+
+```javascript
+const myComponent = () => {
+  return (
+    <div>
+      <p />
+    </div>
+  );
+};
+
+export default myComponent;
+```
+
+Then change it to this:
+
+```javascript
+const myComponent = () => (
+  <div>
+    <p />
+  </div>
+);
+```
+
 ## License
 
 Meow is released under GNU AGPLv3. See [`LICENSE`](/LICENSE) for more details.
