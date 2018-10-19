@@ -79,7 +79,16 @@ running! (Mac users: there should be a whale icon in your status bar.)
 docker-compose build
 ```
 
-### 2. Run migrations
+### 2. Install dependencies
+
+Time to install all the required packages that make meow run on your machine!
+Run:
+
+```bash
+npm install
+```
+
+### 3. Run migrations
 
 We then need run some
 [migrations](https://docs.djangoproject.com/en/2.0/topics/migrations/) to set up
@@ -89,7 +98,7 @@ the database.
 docker-compose run web meow/manage.py migrate
 ```
 
-### 3. Initialize some variables
+### 4. Initialize some variables
 
 Now let's initialize some of the runtime configuration necessary for meow to
 run.
@@ -98,7 +107,7 @@ run.
 docker-compose run web meow/manage.py init
 ```
 
-### 4. Create a superuser
+### 5. Create a superuser
 
 ```bash
 docker-compose run web meow/manage.py createsuperuser
@@ -107,7 +116,7 @@ docker-compose run web meow/manage.py createsuperuser
 The `Username` should be your name and `Email Address` should be your media
 email. Make sure you remember your password for later!
 
-### 5. Start meow
+### 6. Start meow
 
 Now we need to start meow! You'll be doing this a lot, so be sure to remember
 this command:
@@ -121,12 +130,28 @@ or something similar, you need to remove the `celerybeat.pid` file that has been
 created. A simple `rm celerybeat.pid` and you're good to go! Speaking of
 Celery...
 
-### 6. Check it out!
+### 7. Compiling the frontend
+
+Since the redesign for meow is done with React, we need a way to compiled all
+that code into something that Django can recognize and (more importantly)
+serve to our user!
+
+To do this, open up a **separate** Terminal tab by pressing Ctrl+T on Mac and
+run the command:
+
+```bash
+npm run watch
+```
+
+This tells webpack to compile and watch for any changes in the frontend so it
+can recompile!
+
+### 8. Check it out!
 
 Point your browser to [`localhost:5000`](http://localhost:5000). Login with that
 superuser account you created (you remember your password, right?).
 
-### 7. Use that to configure Celery beat for sending out our social media posts!
+### 9. Use that to configure Celery beat for sending out our social media posts!
 
 Now that meow is up and running, head to
 [`localhost:5000/admin/django_celery_beat/periodictask`](http://localhost:5000/admin/django_celery_beat/periodictask).
@@ -146,7 +171,7 @@ create that interval, select it from the dropdown.
 
 All other options you can leave alone! Hit that "Save" button when you're done!
 
-### 8. Time to set some variables
+### 10. Time to set some variables
 
 Make your way to
 [`http://localhost:5000/admin/scheduler/meowsetting/`](http://localhost:5000/admin/scheduler/meowsetting/)
@@ -163,7 +188,7 @@ You'll also need to go to the Slack channel `#meow-dev` and look at
 - `twitter_consumer_secret`
 - `twitter_consumer_key`
 
-### 9. Add a Section
+### 11. Add a Section
 
 The last thing you have to do before you can connect meow to your social media
 is create a section at
@@ -171,7 +196,7 @@ is create a section at
 Click "Add Section" in the top right, and in the "Name" row, add your name in
 the field.
 
-### 10. Connect Social Media Accounts
+### 12. Connect Social Media Accounts
 
 Navigate to [`localhost:5000/manage/`](http://localhost:5000/manage/), and click
 on "Twitter/Facebook accounts". Make sure you're an admin for the Facebook page
@@ -189,7 +214,7 @@ posting to your personal Twitter! Click "Connect with Twitter" and then
 "Authorize app." When prompted to "Choose a section," select the one you created
 in step 9. After clicking "Connect," you can begin sending meow posts Twitter.
 
-### 11. Send a Post!
+### 13. Send a Post!
 
 At [`localhost:5000`](http://localhost:5000/), you can begin sending meows.
 Click "New" in the top right, and fill in the fields. A slug is a relatively
