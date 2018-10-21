@@ -10,3 +10,6 @@ node_modules
 __pycache__
 */package-lock.json
 .vscode/*
+package.json
+package-lock.json
+webpack-stat.json
