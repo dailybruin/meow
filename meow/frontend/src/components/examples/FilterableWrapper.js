@@ -1,8 +1,8 @@
-import React from "react";
-import axios from "axios";
-import PostGetter from "./PostGetter";
+import React from 'react';
+import axios from 'axios';
+import PostGetter from './PostGetter';
 
-const ENDPOINT = "/api/post/";
+const ENDPOINT = '/api/post/';
 
 export default class FilterableWrapper extends React.Component {
   constructor(props) {
@@ -38,12 +38,7 @@ export default class FilterableWrapper extends React.Component {
       <div>
         <label>
           Greater than 2
-          <input
-            name="gt2"
-            type="checkbox"
-            checked={this.state.gt2}
-            onChange={this.handleToggle}
-          />
+          <input name="gt2" type="checkbox" checked={this.state.gt2} onChange={this.handleToggle} />
         </label>
         <PostGetter posts={posts} />
       </div>
