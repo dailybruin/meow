@@ -3,16 +3,15 @@ import { Switch, Route, Link } from "react-router-dom";
 import PostMaker from "./examples/PostMaker";
 import CaptionBox from "./SMPost/CaptionBox";
 import SingleLineBox from "./SMPost/SingleLineBox";
-import FilterableWrapper from "./examples/FilterableWrapper";
-import UserMaker from "./examples/UserMaker";
-import Header from "./Header/Header";
-import SMPost from "./SMPost/SMPost";
+import Filterable from "./examples/Filterable";
+import Sidebar from './Sidebar/Sidebar';
 
 class App extends React.Component {
   render() {
     return (
       <div>
         <Header />
+        <Sidebar />
         <nav>
           <Link to="/posts">Posts</Link>
           <Link to="/add">Add</Link>
@@ -25,6 +24,7 @@ class App extends React.Component {
             <Route path="/posts/:post_id" component={SMPost} />
             <Route path="/add" component={PostMaker} />
             <Route path="/signup" component={UserMaker} />
+            <Route path="/" component={Filterable} />
           </Switch>
         </div>
       </div>
