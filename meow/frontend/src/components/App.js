@@ -3,6 +3,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import PostMaker from "./examples/PostMaker";
 import CaptionBox from "./SMPost/CaptionBox";
 import SingleLineBox from "./SMPost/SingleLineBox";
+import Filterable from "./examples/Filterable";
 import FilterableWrapper from "./examples/FilterableWrapper";
 import UserMaker from "./examples/UserMaker";
 import Header from "./Header/Header";
@@ -25,6 +26,7 @@ class App extends React.Component {
             <Route path="/posts/:post_id" component={SMPost} />
             <Route path="/add" component={PostMaker} />
             <Route path="/signup" component={UserMaker} />
+            <Route path="/" component={Filterable} />
           </Switch>
         </div>
       </div>
