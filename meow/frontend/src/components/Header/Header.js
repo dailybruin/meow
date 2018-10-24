@@ -1,15 +1,9 @@
-import React from "react";
+import React from 'react';
 
-export default class Header extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div>
-        <h1>meow</h1>
-      </div>
-    );
-  }
+export default function Header() {
+  return (
+    <div>
+      <h1>meow</h1>
+    </div>
+  );
 }
