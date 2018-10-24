@@ -4,16 +4,14 @@ import PostMaker from "./examples/PostMaker";
 import CaptionBox from "./SMPost/CaptionBox";
 import SingleLineBox from "./SMPost/SingleLineBox";
 import Filterable from "./examples/Filterable";
-import FilterableWrapper from "./examples/FilterableWrapper";
-import UserMaker from "./examples/UserMaker";
-import Header from "./Header/Header";
-import SMPost from "./SMPost/SMPost";
+import Sidebar from './Sidebar/Sidebar';
 
 class App extends React.Component {
   render() {
     return (
       <div>
         <Header />
+        <Sidebar />
         <nav>
           <Link to="/posts">Posts</Link>
           <Link to="/add">Add</Link>
