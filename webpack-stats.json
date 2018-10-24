@@ -1,10 +1,12 @@
 {
   "status": "done",
+  "error": "ModuleBuildError",
+  "message": "Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/dustinnewman/Desktop/meow/meow/frontend/src/components/examples/Filterable.js'",
   "chunks": {
     "main": [
       {
-        "name": "main-e32169b24915fc035b73.js",
-        "path": "/Users/dustinnewman/Desktop/meow/meow/frontend/bundles/main-e32169b24915fc035b73.js"
+        "name": "main-9247909f0dba05f82616.js",
+        "path": "/Users/dustinnewman/Desktop/meow/meow/frontend/bundles/main-9247909f0dba05f82616.js"
       }
     ]
   }

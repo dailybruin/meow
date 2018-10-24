@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import PostGetter from './PostGetter';
+import Sidebar from '../Sidebar/Sidebar';
 
 const ENDPOINT = '/api/post/';
 
@@ -36,10 +37,7 @@ export default class FilterableWrapper extends React.Component {
 
     return (
       <div>
-        <label>
-          Greater than 2
-          <input name="gt2" type="checkbox" checked={this.state.gt2} onChange={this.handleToggle} />
-        </label>
+        <Sidebar />
         <PostGetter posts={posts} />
       </div>
     );
