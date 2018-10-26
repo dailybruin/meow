@@ -1,34 +1,27 @@
 # Django settings for meow project.
 import os
-import dj_database_url
+import environ
 
-PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
+env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
+environ.Env.read_env()  # reading .env file
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
-if os.environ.get('DEBUG'):
-    DEBUG = os.environ.get('DEBUG') == 'True'
+SECRET_KEY = env('SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env('DEBUG')
+
+if not DEBUG:
+    ALLOWED_HOSTS = [env('SITE_HOST'), ]
 else:
-    DEBUG = True
-
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
-
-MANAGERS = ADMINS
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 DATABASES = {
-    'default': {
-        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # Or path to database file if using sqlite3.
-        'NAME': 'meow',
-        # The following settings are not used with sqlite3:
-        'USER': 'postgres',
-        'PASSWORD': '',
-        # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'HOST': '',
-        'PORT': '',                      # Set to empty string for default.
-    }
+    'default': env.db()
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -46,8 +39,6 @@ TIME_ZONE = 'America/Los_Angeles'
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
-
-SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -106,6 +97,7 @@ MIDDLEWARE = (
     'whitenoise.middleware.WhiteNoiseMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 )
 
 ROOT_URLCONF = 'meow.urls'
@@ -126,6 +118,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -142,16 +137,26 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'webpack_loader',
+    # 'django_slack_oauth',
+    'social_django',
+
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.google',
+
     'scheduler',
     'user_profile',
     'django_celery_beat',
+
     'rest_framework',
-    'webpack_loader',
     'rest_framework.authtoken',
-    'rest_auth',
-    'allauth',
-    'allauth.account',
-    'rest_auth.registration',
+
+    # 'rest_auth',
+    # 'rest_auth.registration',
+
+    # 'oauth2_provider',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -183,13 +188,41 @@ LOGGING = {
     }
 }
 
+AUTH_USER_MODEL = 'user_profile.User'
+
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'user_profile.serializers.UserSerializer',
 }
 
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.slack.SlackOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 REST_SESSION_LOGIN = False
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+SITE_ID = 1
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#             'https://www.googleapis.com/auth/drive',
+#             'https://www.googleapis.com/auth/drive.file'
+#         ],
+#         'AUTH_PARAMS': {
+#             'access_type': 'offline',
+#             'hd': 'media.ucla.edu',
+#             'approval_prompt': 'force'
+#         }
+#     }
+# }
 
 # Webpack
 WEBPACK_LOADER = {
@@ -203,12 +236,32 @@ WEBPACK_LOADER = {
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
-if os.environ.get('DATABASE_URL') is not None:
-    DATABASES['default'] = dj_database_url.config()
-
 if os.environ.get('REDIS_URL') is not None:
     CELERY_BROKER_URL = os.environ.get('REDIS_URL')
 else:
     CELERY_BROKER_URL = 'redis://'
 
 SLACK_ENDPOINT = os.environ.get('SLACK_ENDPOINT')
+
+SOCIAL_AUTH_SLACK_KEY = os.environ.get('SLACK_CLIENT_ID')
+SOCIAL_AUTH_SLACK_SECRET = os.environ.get('SLACK_CLIENT_SECRET')
+SOCIAL_AUTH_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_SLACK_SCOPE = [
+    'channels:read, groups:history, groups:read, users:read, users:read.email']
+
+SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
+
+SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
+
+# SOCIAL_AUTH_PIPELINE = (
+#     'social_core.pipeline.social_auth.social_details',
+#     'social_core.pipeline.social_auth.social_uid',
+#     'social_core.pipeline.social_auth.auth_allowed',
+#     'social_core.pipeline.social_auth.social_user',
+#     'user_profile.pipelines.slackid_as_username',
+#     'social_core.pipeline.user.get_username',
+#     'social_core.pipeline.user.create_user',
+#     'social_core.pipeline.social_auth.associate_user',
+#     'social_core.pipeline.social_auth.load_extra_data',
+#     'social_core.pipeline.user.user_details',
+# )

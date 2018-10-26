@@ -1,35 +1,91 @@
-import React from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
-import PostMaker from './examples/PostMaker';
-import UserMaker from './examples/UserMaker';
-import Header from './Header/Header';
-import FilterableWrapper from './examples/FilterableWrapper';
-import Sidebar from './Sidebar/Sidebar';
-import SMPost from './SMPost/SMPost';
+import React, { Component } from 'react';
+import { Provider, connect } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
-class App extends React.Component {
-  render() {
+import meow from '../reducers';
+import { auth } from '../actions';
+
+import Login from './Login/Login';
+import Home from './Home/Home';
+
+const store = createStore(meow, applyMiddleware(thunk));
+
+class RootContainerComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.PrivateRoute = this.PrivateRoute.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchUser();
+  }
+
+  PrivateRoute({ component: ChildComponent, ...rest }) {
     return (
-      <div>
-        <Header />
-        <Sidebar />
-        <nav>
-          <Link to="/posts">Posts</Link>
-          <Link to="/add">Add</Link>
-          <Link to="/posts/2">Post #2</Link>
-          <Link to="/signup">SignUP</Link>
-        </nav>
-        <div>
-          <Switch>
-            <Route exact path="/posts" component={FilterableWrapper} />
-            <Route path="/posts/:post_id" component={SMPost} />
-            <Route path="/add" component={PostMaker} />
-            <Route path="/signup" component={UserMaker} />
-          </Switch>
-        </div>
-      </div>
+      <Route
+        {...rest}
+        render={props => {
+          if (this.props.auth.isLoading) {
+            return <em>Loading...</em>;
+          }
+
+          if (!this.props.auth.isAuthenticated) {
+            return (
+              <Redirect
+                to={{
+                  pathname: '/login',
+                  state: {
+                    from: props.location
+                  }
+                }}
+              />
+            );
+          }
+
+          return <ChildComponent {...props} />;
+        }}
+      />
+    );
+  }
+
+  render() {
+    const { PrivateRoute } = this;
+    return (
+      <BrowserRouter>
+        <Switch>
+          <PrivateRoute exact path="/" component={Home} />
+          <Route exact path="/login" component={Login} />
+        </Switch>
+      </BrowserRouter>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    auth: state.auth
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchUser: () => {
+      dispatch(auth.fetchUser());
+    }
+  };
+};
+
+const RootContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RootContainerComponent);
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <RootContainer />
+    </Provider>
+  );
+}

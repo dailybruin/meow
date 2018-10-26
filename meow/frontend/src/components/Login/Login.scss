@@ -1,0 +1,39 @@
+.login {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  h1 {
+    font: 72px 'Varela Round', sans-serif;
+
+    span {
+      font-size: 36px;
+    }
+  }
+
+  .login-form {
+    label {
+      font: 42px 'Varela Round', sans-serif;
+
+      input {
+        background-color: transparent;
+        border: none;
+        border-bottom: 2px solid black;
+        border-radius: 0;
+        font: 42px 'Varela Round', sans-serif;
+        outline: none;
+        box-shadow: none;
+      }
+    }
+
+    #submit_button {
+      background-color: dodgerblue;
+      font: 42px 'Varela Round', sans-serif;
+      border-radius: 20px;
+      padding: 0.2em 1.5em;
+    }
+  }
+}
