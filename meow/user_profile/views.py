@@ -11,7 +11,7 @@ from django.shortcuts import render
 
 from user_profile.models import User
 from user_profile.serializers import UserSerializer, SocialUserSerializer
-from social_django.models import AbstractUserSocialAuth
+from social_django.models import UserSocialAuth
 
 # Create your views here.
 
@@ -23,9 +23,14 @@ class SocialUserDetail(APIView):
 
     def get_object(self, user_id):
         try:
-            return AbstractUserSocialAuth.objects.get(user_id=user_id)
+            return UserSocialAuth.objects.get(user_id=user_id)
         except User.DoesNotExist:
             raise Http404
+
+    def get(self, request, user_id, format=None):
+        profile = self.get_object(user_id)
+        serializer = SocialUserSerializer(profile)
+        return Response(serializer.data)
 
 
 class SocialUserProfileList(APIView):
