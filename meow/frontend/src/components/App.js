@@ -63,19 +63,13 @@ class RootContainerComponent extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    auth: state.auth
-  };
-};
+const mapStateToProps = state => ({
+  auth: state.auth
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchUser: () => {
-      dispatch(auth.fetchUser());
-    }
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  fetchUser: () => dispatch(auth.fetchUser())
+});
 
 const RootContainer = connect(
   mapStateToProps,

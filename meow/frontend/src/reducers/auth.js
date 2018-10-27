@@ -7,6 +7,7 @@ const initialState = {
 };
 
 export default function auth(state = initialState, action) {
+  console.log(initialState);
   switch (action.type) {
     case 'USER_LOADING':
       return { ...state, isLoading: true };

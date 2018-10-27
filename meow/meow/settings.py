@@ -141,22 +141,12 @@ INSTALLED_APPS = (
     # 'django_slack_oauth',
     'social_django',
 
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.google',
-
     'scheduler',
     'user_profile',
     'django_celery_beat',
 
     'rest_framework',
     'rest_framework.authtoken',
-
-    # 'rest_auth',
-    # 'rest_auth.registration',
-
-    # 'oauth2_provider',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -195,7 +185,7 @@ REST_AUTH_SERIALIZERS = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'social_core.backends.slack.SlackOAuth2',
+    'user_profile.backend.CustomSlackAuth',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -207,22 +197,6 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 SITE_ID = 1
-
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         'SCOPE': [
-#             'profile',
-#             'email',
-#             'https://www.googleapis.com/auth/drive',
-#             'https://www.googleapis.com/auth/drive.file'
-#         ],
-#         'AUTH_PARAMS': {
-#             'access_type': 'offline',
-#             'hd': 'media.ucla.edu',
-#             'approval_prompt': 'force'
-#         }
-#     }
-# }
 
 # Webpack
 WEBPACK_LOADER = {
@@ -253,15 +227,14 @@ SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
 
 SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
 
-# SOCIAL_AUTH_PIPELINE = (
-#     'social_core.pipeline.social_auth.social_details',
-#     'social_core.pipeline.social_auth.social_uid',
-#     'social_core.pipeline.social_auth.auth_allowed',
-#     'social_core.pipeline.social_auth.social_user',
-#     'user_profile.pipelines.slackid_as_username',
-#     'social_core.pipeline.user.get_username',
-#     'social_core.pipeline.user.create_user',
-#     'social_core.pipeline.social_auth.associate_user',
-#     'social_core.pipeline.social_auth.load_extra_data',
-#     'social_core.pipeline.user.user_details',
-# )
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'user_profile.pipeline.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)

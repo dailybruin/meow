@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.http import HttpResponse, Http404
+from django.views import View
 
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -9,9 +10,29 @@ from rest_framework.views import APIView
 from django.shortcuts import render
 
 from user_profile.models import User
-from user_profile.serializers import UserSerializer
+from user_profile.serializers import UserSerializer, SocialUserSerializer
+from social_django.models import AbstractUserSocialAuth
 
 # Create your views here.
+
+
+class SocialUserDetail(APIView):
+    """
+    Retrieve, update or delete a user profile.
+    """
+
+    def get_object(self, user_id):
+        try:
+            return AbstractUserSocialAuth.objects.get(user_id=user_id)
+        except User.DoesNotExist:
+            raise Http404
+
+
+class SocialUserProfileList(APIView):
+    def get(self, request, user_id, format=None):
+        profile = self.get_object(user_id)
+        serializer = SocialUserSerializer(profile)
+        return Response(serializer.data)
 
 
 class UserProfileList(APIView):
@@ -34,7 +55,7 @@ class UserProfileDetail(APIView):
 
     def get_object(self, user_id):
         try:
-            return User.objects.get(user_id=user_id)
+            return User.objects.get(id=user_id)
         except User.DoesNotExist:
             raise Http404
 

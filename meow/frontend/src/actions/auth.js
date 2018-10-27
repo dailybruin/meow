@@ -7,8 +7,13 @@ export const login = () => {
   return (dispatch, getState) => {
     const headers = { 'Content-Type': 'application/json' };
 
-    return fetch(LOGIN, { headers })
+    return fetch(
+      'https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=4526132454.463841426112',
+      { headers }
+    )
       .then(res => {
+        console.log('here!');
+        console.log(res);
         if (res.status < 500) {
           return res.json().then(data => {
             return { status: res.status, data };
@@ -108,7 +113,8 @@ export const fetchUser = () => {
       type: 'USER_LOADING'
     });
 
-    const { token } = getState().auth;
+    const token = getState().auth.token;
+    console.log(token);
 
     const headers = { 'Content-Type': 'application/json' };
 
