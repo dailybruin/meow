@@ -1,6 +1,7 @@
-var path = require('path');
-var webpack = require('webpack');
-var BundleTracker = require('webpack-bundle-tracker');
+const path = require('path');
+const webpack = require('webpack');
+const BundleTracker = require('webpack-bundle-tracker');
+const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
 
 module.exports = {
   context: __dirname,

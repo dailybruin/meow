@@ -10,11 +10,13 @@ import 'react-table/react-table.css';
 import configureStore from './store';
 
 const initialState = {
-  token: null,
-  isAuthenticated: null,
-  isLoading: null,
-  user: null,
-  errors: {}
+  auth: {
+    token: null,
+    isAuthenticated: null,
+    isLoading: null,
+    user: null,
+    errors: {}
+  }
 };
 
 const history = createHistory();
