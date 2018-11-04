@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Redirect, Route, withRouter } from 'react-router-dom';
 
-import { auth } from '../actions';
 import Login from './Login/Login';
 import Home from './Home/Home';
 import OAuth from './OAuth/OAuth';
@@ -31,14 +30,12 @@ const mapStateToProps = state => ({
 
 const PrivateRoute = withRouter(connect(mapStateToProps)(PrivateRouteComponent));
 
-const RootContainerComponent = props => {
-  return (
-    <Switch>
-      <PrivateRoute auth={props.isAuthenticated} path="/" component={Home} exact />
-      <Route path="/login" component={Login} />
-      <Route path="/slack" component={OAuth} />
-    </Switch>
-  );
-};
+const RootContainerComponent = props => (
+  <Switch>
+    <PrivateRoute auth={props.isAuthenticated} path="/" component={Home} exact />
+    <Route path="/login" component={Login} />
+    <Route path="/slack" component={OAuth} />
+  </Switch>
+);
 
 export default withRouter(connect(mapStateToProps)(RootContainerComponent));
