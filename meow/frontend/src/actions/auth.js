@@ -12,7 +12,6 @@ export const login = e => {
 
 export const logout = () => {
   return (dispatch, getState) => {
-    console.log('logout action');
     dispatch({
       type: types.LOGOUT
     });
@@ -26,7 +25,6 @@ export const register = code => {
       headers,
       code
     };
-    console.log(body);
 
     return axios.post(REGISTER, body).then(res => {
       if (res.status === 200) {
