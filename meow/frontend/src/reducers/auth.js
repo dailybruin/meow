@@ -16,15 +16,8 @@ export default function auth(state = {}, action) {
       };
 
     case 'LOGIN_FAILED':
-    case 'LOGOUT_SUCCESSFUL':
-      return {
-        ...state,
-        errors: action.data.key,
-        token: null,
-        user: null,
-        isAuthenticated: false,
-        isLoading: false
-      };
+    case 'LOGOUT':
+      return {};
 
     default:
       return state;

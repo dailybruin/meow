@@ -1,75 +1,41 @@
-// import routes from '../../routes';
-const USER = '/login/';
-const LOGIN = '/login/slack/';
-const REGISTER = '/rest-auth/slack/';
+import axios from 'axios';
 
-export const login = () => {
+import { LOGIN, REGISTER } from './constants';
+import * as types from './types';
+
+export const login = e => {
   return (dispatch, getState) => {
-    const headers = { 'Content-Type': 'application/json' };
+    e.preventDefault();
+    window.location.replace(LOGIN);
+  };
+};
 
-    return fetch('/accounts/', { headers })
-      .then(res => {
-        console.log('here!');
-        console.log(res);
-        if (res.status < 500) {
-          return res.json().then(data => {
-            return { status: res.status, data };
-          });
-        }
-        console.log('Server error during login.');
-        throw res;
-      })
-      .then(res => {
-        if (res.status === 200) {
-          dispatch({ type: 'LOGIN_SUCCESSFUL', data: res.data });
-          return res.data;
-        }
-
-        if (res.status === 403 || res.status === 401) {
-          dispatch({ type: 'AUTHENTICATION_ERROR', data: res.data });
-          throw res.data;
-        }
-
-        dispatch({ type: 'LOGIN_FAILED', data: res.data });
-        throw res.data;
-      });
+export const logout = () => {
+  return (dispatch, getState) => {
+    console.log('logout action');
+    dispatch({
+      type: types.LOGOUT
+    });
   };
 };
 
 export const register = code => {
-  console.log('inside register and code is');
-  console.log(code);
   return (dispatch, getState) => {
     const headers = { 'Content-Type': 'application/json' };
-    const body = JSON.stringify({
+    const body = {
+      headers,
       code
+    };
+    console.log(body);
+
+    return axios.post(REGISTER, body).then(res => {
+      if (res.status === 200) {
+        dispatch({ type: types.LOGIN_SUCCESSFUL, data: res.data });
+        return res.data;
+      }
+
+      dispatch({ type: types.LOGIN_FAILED, data: res.data });
+      throw res.data;
     });
-
-    return fetch(REGISTER, { headers, body, method: 'POST' })
-      .then(res => {
-        if (res.status < 500) {
-          return res.json().then(data => {
-            return { status: res.status, data };
-          });
-        }
-        console.log('Server error during register!');
-        throw res;
-      })
-      .then(res => {
-        console.log('in register res is:');
-        console.log(res);
-        if (res.status === 200) {
-          dispatch({ type: 'REGISTRATION_SUCCESSFUL', data: res.data });
-          return res.data;
-        }
-
-        if (res.status === 403 || res.status === 401) {
-          dispatch({ type: 'LOGIN_FAILED', data: res.data });
-          throw res.data;
-        }
-
-        dispatch({ type: 'REGISTRATION_FAILED', data: res.data });
-        throw res.data;
-      });
   };
 };

@@ -8,13 +8,9 @@ import { auth } from '../../actions';
 
 class OAuth extends Component {
   componentWillMount() {
-    console.log('OAUTH WILL MOUNT');
-    console.log(this.props);
-    console.log(this.props.register);
     const slackCode = queryString.parse(this.props.location.search, {
       ignoreQueryPrefix: true
     }).code;
-    console.log(slackCode);
     this.props.register(slackCode).then(res => {
       this.props.history.replace('/');
     });
