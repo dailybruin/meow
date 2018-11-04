@@ -1,85 +1,44 @@
 import React, { Component } from 'react';
-import { Provider, connect } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Switch, Redirect, Route, withRouter } from 'react-router-dom';
 
-import meow from '../reducers';
 import { auth } from '../actions';
-
 import Login from './Login/Login';
 import Home from './Home/Home';
+import OAuth from './OAuth/OAuth';
 
-const store = createStore(meow, applyMiddleware(thunk));
-
-class RootContainerComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.PrivateRoute = this.PrivateRoute.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.fetchUser();
-  }
-
-  PrivateRoute({ component: ChildComponent, ...rest }) {
-    return (
-      <Route
-        {...rest}
-        render={props => {
-          if (this.props.auth.isLoading) {
-            return <em>Loading...</em>;
-          }
-
-          if (!this.props.auth.isAuthenticated) {
-            return (
-              <Redirect
-                to={{
-                  pathname: '/login',
-                  state: {
-                    from: props.location
-                  }
-                }}
-              />
-            );
-          }
-
-          return <ChildComponent {...props} />;
-        }}
-      />
-    );
-  }
-
-  render() {
-    const { PrivateRoute } = this;
-    return (
-      <BrowserRouter>
-        <Switch>
-          <PrivateRoute exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-        </Switch>
-      </BrowserRouter>
-    );
-  }
-}
+const PrivateRouteComponent = ({ component: Component, auth, ...rest }) => (
+  <Route
+    {...rest}
+    render={props => {
+      return auth === true ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/login',
+            state: { from: props.location }
+          }}
+        />
+      );
+    }}
+  />
+);
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  isAuthenticated: state.auth.isAuthenticated
 });
 
-const mapDispatchToProps = dispatch => ({
-  fetchUser: () => dispatch(auth.fetchUser())
-});
+const PrivateRoute = withRouter(connect(mapStateToProps)(PrivateRouteComponent));
 
-const RootContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RootContainerComponent);
-
-export default function App() {
+const RootContainerComponent = props => {
   return (
-    <Provider store={store}>
-      <RootContainer />
-    </Provider>
+    <Switch>
+      <PrivateRoute auth={props.isAuthenticated} path="/" component={Home} exact />
+      <Route path="/login" component={Login} />
+      <Route path="/slack" component={OAuth} />
+    </Switch>
   );
-}
+};
+
+export default withRouter(connect(mapStateToProps)(RootContainerComponent));

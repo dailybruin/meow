@@ -10,8 +10,6 @@ environ.Env.read_env()  # reading .env file
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
-SECRET_KEY = env('SECRET_KEY')
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
@@ -88,17 +86,17 @@ if os.environ.get('SECRET_KEY'):
 else:
     SECRET_KEY = 'i%w$mm*w7mgw)q1hly1+c8z14en3$v#)3sf)u#xripu@rxjyw7'
 
-MIDDLEWARE = (
-    'django.middleware.common.CommonMiddleware',
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware'
-)
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+]
 
 ROOT_URLCONF = 'meow.urls'
 
@@ -118,9 +116,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -138,8 +133,12 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'webpack_loader',
-    # 'django_slack_oauth',
-    'social_django',
+    'corsheaders',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.slack',
 
     'scheduler',
     'user_profile',
@@ -147,7 +146,12 @@ INSTALLED_APPS = (
 
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_auth',
+    'rest_auth.registration',
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -180,13 +184,33 @@ LOGGING = {
 
 AUTH_USER_MODEL = 'user_profile.User'
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+#     ),
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAuthenticated',
+#     )
+# }
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'user_profile.serializers.UserSerializer',
 }
 
 AUTHENTICATION_BACKENDS = [
-    'user_profile.backend.CustomSlackAuth',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 REST_SESSION_LOGIN = False
@@ -196,7 +220,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
-SITE_ID = 1
+
+SITE_ID = 2
 
 # Webpack
 WEBPACK_LOADER = {
@@ -207,7 +232,6 @@ WEBPACK_LOADER = {
     }
 }
 
-LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 if os.environ.get('REDIS_URL') is not None:
@@ -217,24 +241,37 @@ else:
 
 SLACK_ENDPOINT = os.environ.get('SLACK_ENDPOINT')
 
-SOCIAL_AUTH_SLACK_KEY = os.environ.get('SLACK_CLIENT_ID')
-SOCIAL_AUTH_SLACK_SECRET = os.environ.get('SLACK_CLIENT_SECRET')
-SOCIAL_AUTH_IGNORE_DEFAULT_SCOPE = True
-SOCIAL_AUTH_SLACK_SCOPE = [
-    'channels:read, groups:history, groups:read, users:read, users:read.email']
+SOCIALACCOUNT_PROVIDERS = {
+    'slack': {
+        'SCOPE': [
+            'channels:read',
+            'groups:history',
+            'groups:read',
+            'users:read',
+            'users:read.email'
+        ]
+    }
+}
 
-SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
+# SOCIAL_AUTH_SLACK_KEY = os.environ.get('SLACK_CLIENT_ID')
+# SOCIAL_AUTH_SLACK_SECRET = os.environ.get('SLACK_CLIENT_SECRET')
+# SOCIAL_AUTH_IGNORE_DEFAULT_SCOPE = True
+# SOCIAL_AUTH_SLACK_SCOPE = [
+#     'channels:read, groups:history, groups:read, users:read, users:read.email']
 
-SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
+# SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
 
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'user_profile.pipeline.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
-)
+# SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
+
+# SOCIAL_AUTH_PIPELINE = (
+#     'social_core.pipeline.social_auth.social_details',
+#     'social_core.pipeline.social_auth.social_uid',
+#     'social_core.pipeline.social_auth.auth_allowed',
+#     'social_core.pipeline.social_auth.social_user',
+#     'social_core.pipeline.user.get_username',
+#     'social_core.pipeline.social_auth.associate_by_email',
+#     'social_core.pipeline.user.create_user',
+#     'social_core.pipeline.social_auth.associate_user',
+#     'social_core.pipeline.social_auth.load_extra_data',
+#     'social_core.pipeline.user.user_details',
+# )
