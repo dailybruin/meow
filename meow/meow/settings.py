@@ -221,7 +221,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 
-SITE_ID = 2
+SITE_ID = 4
 
 # Webpack
 WEBPACK_LOADER = {
@@ -244,11 +244,10 @@ SLACK_ENDPOINT = os.environ.get('SLACK_ENDPOINT')
 SOCIALACCOUNT_PROVIDERS = {
     'slack': {
         'SCOPE': [
-            'channels:read',
-            'groups:history',
-            'groups:read',
-            'users:read',
-            'users:read.email'
+            'identity.basic',
+            'identity.avatar',
+            'identity.email',
+            'identity.team'
         ]
     }
 }

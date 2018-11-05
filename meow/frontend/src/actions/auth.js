@@ -27,6 +27,7 @@ export const register = code => {
     };
 
     return axios.post(REGISTER, body).then(res => {
+      console.log(res.data);
       if (res.status === 200) {
         dispatch({ type: types.LOGIN_SUCCESSFUL, data: res.data });
         return res.data;

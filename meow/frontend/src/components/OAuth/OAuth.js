@@ -8,6 +8,7 @@ import { auth } from '../../actions';
 
 class OAuth extends Component {
   componentWillMount() {
+    // TODO: add support for /slack/?error=access_denied&state=
     const slackCode = queryString.parse(this.props.location.search, {
       ignoreQueryPrefix: true
     }).code;
@@ -25,7 +26,9 @@ const mapDispatchToProps = dispatch => ({
   register: code => dispatch(auth.register(code))
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(OAuth);
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(OAuth)
+);
