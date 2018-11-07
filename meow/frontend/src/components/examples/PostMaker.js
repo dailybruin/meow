@@ -1,15 +1,16 @@
-import React from "react";
-import axios from "axios";
+import React from 'react';
+import axios from 'axios';
+import '../scss/PostMaker.scss';
 
-const ENDPOINT = "/api/post/";
+const ENDPOINT = '/api/post/';
 
 export default class PostMaker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      slug: "",
-      story_url: "",
-      post_twitter: ""
+      slug: '',
+      story_url: '',
+      post_twitter: ''
     };
   }
 
@@ -22,14 +23,14 @@ export default class PostMaker extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     let date = {
-      pub_date: "2018-07-24",
-      pub_time: "13:43"
+      pub_date: '2018-07-24',
+      pub_time: '13:43'
     };
 
     const state = Object.assign(this.state, date);
 
     axios.post(ENDPOINT, state).then(res => {
-      console.log("axious post");
+      console.log('axious post');
       console.log(res);
     });
   };
@@ -38,8 +39,8 @@ export default class PostMaker extends React.Component {
     const { slug, story_url, post_twitter } = this.state;
 
     return (
-      <div className="column">
-        <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.handleSubmit}>
+        <div className="column">
           <div className="field">
             <label className="label">Slug</label>
             <div className="control">
@@ -53,6 +54,13 @@ export default class PostMaker extends React.Component {
               />
             </div>
           </div>
+          <div className="control">
+            <button type="submit" className="button is-info">
+              Create Post
+            </button>
+          </div>
+        </div>
+        <div className="column">
           <div className="field">
             <label className="label">story_url</label>
             <div className="control">
@@ -66,13 +74,8 @@ export default class PostMaker extends React.Component {
               />
             </div>
           </div>
-          <div className="control">
-            <button type="submit" className="button is-info">
-              Create Post
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     );
   }
 }

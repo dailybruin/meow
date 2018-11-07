@@ -1,13 +1,13 @@
 {
   "status": "done",
-  "error": "ModuleBuildError",
-  "message": "Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/dustinnewman/Desktop/meow/meow/frontend/src/components/examples/Filterable.js'",
   "chunks": {
     "main": [
       {
-        "name": "main-9247909f0dba05f82616.js",
-        "path": "/Users/dustinnewman/Desktop/meow/meow/frontend/bundles/main-9247909f0dba05f82616.js"
+        "name": "main-5ebe210a04d0937f5677.js",
+        "path": "/Users/jeffreyzhu/Desktop/DBOnline/meow/meow/frontend/bundles/main-5ebe210a04d0937f5677.js"
       }
     ]
-  }
+  },
+  "error": "ModuleBuildError",
+  "message": "Module build failed (from ./node_modules/sass-loader/lib/loader.js):\nError: ENOENT: no such file or directory, open '/Users/jeffreyzhu/Desktop/DBOnline/meow/meow/frontend/src/components/scss/styling.scss'"
 }
