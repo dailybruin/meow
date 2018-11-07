@@ -38,3 +38,27 @@ export const register = code => {
     });
   };
 };
+
+// edit this function
+// given a token (which will be in local storage/redux state)
+// return a username
+export const fetchUser = token => {
+  return (dispatch, getState) => {
+    const headers = { 'Content-Type': 'application/json' };
+    const body = {
+      headers,
+      code
+    };
+
+    return axios.post(REGISTER, body).then(res => {
+      console.log(res.data);
+      if (res.status === 200) {
+        dispatch({ type: types.LOGIN_SUCCESSFUL, data: res.data });
+        return res.data;
+      }
+
+      dispatch({ type: types.LOGIN_FAILED, data: res.data });
+      throw res.data;
+    });
+  };
+};

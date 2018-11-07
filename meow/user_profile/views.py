@@ -15,19 +15,6 @@ from user_profile.serializers import UserSerializer
 
 import urllib.parse
 
-# Create your views here.
-GOOGLE_LOGIN_URL_PREFIX = '/accounts/slack/login/'
-
-
-def redirectToSlack(request):
-    coming_from = request.GET.get("next", "/")
-    url_params = {
-        "process": "login",
-        "next": coming_from
-    }
-    suffix = urllib.parse.urlencode(url_params)
-    return redirect(GOOGLE_LOGIN_URL_PREFIX + suffix)
-
 
 # class SocialUserDetail(APIView):
 #     """

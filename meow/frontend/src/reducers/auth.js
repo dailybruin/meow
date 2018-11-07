@@ -6,6 +6,12 @@ export default function auth(state = {}, action) {
         isLoading: true
       };
 
+    case 'USER_LOADED':
+      return {
+        ...state,
+        user: action.data.user
+      };
+
     case 'LOGIN_SUCCESSFUL':
       return {
         ...state,
