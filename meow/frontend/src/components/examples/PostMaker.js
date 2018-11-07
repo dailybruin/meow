@@ -74,6 +74,21 @@ export default class PostMaker extends React.Component {
               />
             </div>
           </div>
+          <div className="column">
+            <div className="field">
+              <label className="label">story_url</label>
+              <div className="control">
+                <input
+                  className="input"
+                  type="url"
+                  name="story_url"
+                  onChange={this.handleChange}
+                  value={story_url}
+                  required
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </form>
     );
