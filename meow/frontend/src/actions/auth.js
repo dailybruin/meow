@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { LOGIN, REGISTER } from './constants';
+import { LOGIN, REGISTER, FETCH_USER_URL } from './constants';
 import * as types from './types';
 
 export const login = e => {
@@ -39,25 +39,26 @@ export const register = code => {
   };
 };
 
-// edit this function
-// given a token (which will be in local storage/redux state)
-// return a username
-export const fetchUser = token => {
+export const fetch_user = token => {
   return (dispatch, getState) => {
-    const headers = { 'Content-Type': 'application/json' };
     const body = {
-      headers,
-      code
+      headers: {
+        Authorization: 'Token ' + token
+      }
     };
 
-    return axios.post(REGISTER, body).then(res => {
-      console.log(res.data);
+    return axios.get(FETCH_USER_URL + '' + token, body).then(res => {
+      console.log('Res.data: ' + res.data.user);
       if (res.status === 200) {
-        dispatch({ type: types.LOGIN_SUCCESSFUL, data: res.data });
+        dispatch({
+          type: types.FETCH_USER,
+          data: {
+            user: res.data.user
+          }
+        });
+        //TODO: what does the return do? (other than preventing it from reaching throw res.data)
         return res.data;
       }
-
-      dispatch({ type: types.LOGIN_FAILED, data: res.data });
       throw res.data;
     });
   };

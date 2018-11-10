@@ -3,3 +3,4 @@ export const USER_LOADED = '';
 export const LOGIN_SUCCESSFUL = 'LOGIN_SUCCESSFUL';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const LOGOUT = 'LOGOUT';
+export const FETCH_USER = 'FETCH_USER';

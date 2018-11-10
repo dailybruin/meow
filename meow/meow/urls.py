@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^rest-auth/slack/$', views.SlackLogin.as_view(), name='fb_login'),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include('scheduler.urls')),
+    url(r'^api/', include('user_profile.urls')), # it looks like schedulers and user profile's urls live at the same place. Might conflict later..
     url(r'^redirectToSlack/', views.redirectToSlack, name="redirect-to-slack"),
     url(r'', views.base, name='base')
 ]

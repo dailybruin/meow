@@ -1,3 +1,5 @@
+import * as types from '../actions/types';
+
 export default function auth(state = {}, action) {
   switch (action.type) {
     case 'USER_LOADING':
@@ -5,8 +7,8 @@ export default function auth(state = {}, action) {
         ...state,
         isLoading: true
       };
-
-    case 'USER_LOADED':
+    //should it just be a string or is it better to import types?
+    case types.FETCH_USER:
       return {
         ...state,
         user: action.data.user
