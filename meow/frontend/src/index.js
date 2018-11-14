@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
+import { ThemeProvider } from 'styled-components';
 import { PersistGate } from 'redux-persist/integration/react';
 import createHistory from 'history/createBrowserHistory';
 import App from './components/App';
 import 'react-table/react-table.css';
-
 import configureStore from './store';
+import Background from './components/Sidebar/Background';
 
 const initialState = {
   auth: {
@@ -27,7 +28,11 @@ ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <ConnectedRouter history={history}>
-        <App />
+        <ThemeProvider theme={{ mode: 'dark' }}>
+          <Background>
+            <App />
+          </Background>
+        </ThemeProvider>
       </ConnectedRouter>
     </PersistGate>
   </Provider>,
