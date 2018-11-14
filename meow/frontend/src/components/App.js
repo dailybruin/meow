@@ -1,35 +1,49 @@
-import React from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
-import PostMaker from './examples/PostMaker';
-import UserMaker from './examples/UserMaker';
-import Header from './Header/Header';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Switch, Redirect, Route, withRouter } from 'react-router-dom';
+
+import Login from './Login/Login';
+import Home from './Home/Home';
+import OAuth from './OAuth/OAuth';
 import FilterableWrapper from './examples/FilterableWrapper';
-import Sidebar from './Sidebar/Sidebar';
 import SMPost from './SMPost/SMPost';
+import PostMaker from './examples/PostMaker';
+import Logout from './examples/Logout';
 
-class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <Header />
-        <Sidebar />
-        <nav>
-          <Link to="/posts">Posts</Link>
-          <Link to="/add">Add</Link>
-          <Link to="/posts/2">Post #2</Link>
-          <Link to="/signup">SignUP</Link>
-        </nav>
-        <div>
-          <Switch>
-            <Route exact path="/posts" component={FilterableWrapper} />
-            <Route path="/posts/:post_id" component={SMPost} />
-            <Route path="/add" component={PostMaker} />
-            <Route path="/signup" component={UserMaker} />
-          </Switch>
-        </div>
-      </div>
-    );
-  }
-}
+const PrivateRouteComponent = ({ component: Component, auth, ...rest }) => (
+  <Route
+    {...rest}
+    render={props => {
+      return auth === true ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/login',
+            state: { from: props.location }
+          }}
+        />
+      );
+    }}
+  />
+);
 
-export default App;
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+const PrivateRoute = withRouter(connect(mapStateToProps)(PrivateRouteComponent));
+
+const RootContainerComponent = props => (
+  <Switch>
+    <PrivateRoute auth={props.isAuthenticated} path="/" component={Home} exact />
+    <Route path="/login" component={Login} />
+    <Route path="/slack" component={OAuth} />
+    <PrivateRoute auth={props.isAuthenticated} exact path="/posts" component={FilterableWrapper} />
+    <PrivateRoute auth={props.isAuthenticated} path="/posts/:post_id" component={SMPost} />
+    <PrivateRoute auth={props.isAuthenticated} path="/add" component={PostMaker} />
+    <PrivateRoute auth={props.isAuthenticated} path="/logout" component={Logout} />
+  </Switch>
+);
+
+export default withRouter(connect(mapStateToProps)(RootContainerComponent));

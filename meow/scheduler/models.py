@@ -1,6 +1,6 @@
 from django.db import models
+from django.conf import settings
 from datetime import datetime
-from django.contrib.auth.models import User
 import sys
 from pyshorteners import Shortener
 import requests
@@ -17,23 +17,28 @@ class SMPost(models.Model):
     story_short_url = models.URLField(max_length=500, null=True, blank=True)
     featured_image_url = models.URLField(max_length=500, null=True, blank=True)
     post_twitter = models.TextField(null=True, blank=True)
-    id_twitter = models.DecimalField(default=0, max_digits=25, decimal_places=0) # change to decimal(38, 0) if not big enough
+    # change to decimal(38, 0) if not big enough
+    id_twitter = models.DecimalField(
+        default=0, max_digits=25, decimal_places=0)
     post_facebook = models.TextField(null=True, blank=True)
     post_instagram = models.TextField(null=True, blank=True, default="")
     post_notes = models.TextField(null=True, blank=True, default="")
-    id_facebook = models.DecimalField(default=0, max_digits=25, decimal_places=0) # change to decimal(38, 0) if not big enough
-    section = models.ForeignKey('Section', blank=True, null=True, on_delete=models.SET_NULL)
+    # change to decimal(38, 0) if not big enough
+    id_facebook = models.DecimalField(
+        default=0, max_digits=25, decimal_places=0)
+    section = models.ForeignKey(
+        'Section', blank=True, null=True, on_delete=models.SET_NULL)
     pub_ready_copy = models.BooleanField(
         default=False, help_text="Is this copy-edited?")
     pub_ready_online = models.BooleanField(
         default=False, help_text="Is this ready to send out?")
 
     pub_ready_copy_user = models.ForeignKey(
-        User, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
+        settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
     pub_ready_online_user = models.ForeignKey(
-        User, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
+        settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
     last_edit_user = models.ForeignKey(
-        User, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
+        settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
 
     sent = models.BooleanField(
         default=False, help_text="Sent out? This should never be set manually.")
@@ -56,7 +61,7 @@ class SMPost(models.Model):
             ("approve_copy", "Can mark the post as approved by copy"),
             ("approve_online", "Can mark the post as approved by online"),
         )
-        ordering = ['-pub_time',]
+        ordering = ['-pub_time', ]
 
     def log(self, msg):
         text = "\n[" + str(datetime.now()) + "] - "

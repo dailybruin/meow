@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   web:
@@ -7,7 +7,7 @@ services:
     command: honcho start -f Procfile.dev
     entrypoint: ./entrypoint-dev.sh
     ports:
-      - "5000:5000"
+      - '5000:5000'
     env_file: .env
     depends_on:
       - db
