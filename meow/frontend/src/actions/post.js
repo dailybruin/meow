@@ -1,4 +1,4 @@
-const ENDPOINT = '/api/post';
+import { POST } from './constants';
 
 export const getPost = postId => {
   return (dispatch, getState) => {};

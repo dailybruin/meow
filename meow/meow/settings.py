@@ -5,12 +5,19 @@ import environ
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
 environ.Env.read_env()  # reading .env file
+<< << << < HEAD
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 SECRET_KEY = env('SECRET_KEY')
+== == == =
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+>>>>>> > 1ccead222c5162c259a0042c82c4b98c8790ce9a
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
@@ -88,24 +95,32 @@ if os.environ.get('SECRET_KEY'):
 else:
     SECRET_KEY = 'i%w$mm*w7mgw)q1hly1+c8z14en3$v#)3sf)u#xripu@rxjyw7'
 
-MIDDLEWARE = (
-    'django.middleware.common.CommonMiddleware',
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+<< << << < HEAD
     'whitenoise.middleware.WhiteNoiseMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware'
 )
+== == == =
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+]
+>> >>>> > 1ccead222c5162c259a0042c82c4b98c8790ce9a
 
-ROOT_URLCONF = 'meow.urls'
+ROOT_URLCONF= 'meow.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'meow.wsgi.application'
+WSGI_APPLICATION= 'meow.wsgi.application'
 
-TEMPLATES = [
+TEMPLATES= [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
@@ -126,7 +141,7 @@ TEMPLATES = [
     },
 ]
 
-INSTALLED_APPS = (
+INSTALLED_APPS= (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -138,8 +153,12 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'webpack_loader',
-    # 'django_slack_oauth',
-    'social_django',
+    'corsheaders',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.slack',
 
     'scheduler',
     'user_profile',
@@ -147,14 +166,19 @@ INSTALLED_APPS = (
 
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_auth',
+    'rest_auth.registration',
 )
+
+CORS_ORIGIN_ALLOW_ALL=True
+CORS_URLS_REGEX=r'^/api/.*$'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOGGING = {
+LOGGING={
     'version': 1,
     'disable_existing_loggers': False,
     'filters': {
@@ -180,26 +204,59 @@ LOGGING = {
 
 AUTH_USER_MODEL = 'user_profile.User'
 
+<< << << < HEAD
+== == == =
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+#     ),
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAuthenticated',
+#     )
+# }
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
+>> >>>> > 1ccead222c5162c259a0042c82c4b98c8790ce9a
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'user_profile.serializers.UserSerializer',
 }
 
 AUTHENTICATION_BACKENDS = [
+<< << << < HEAD
     'user_profile.backend.CustomSlackAuth',
     'django.contrib.auth.backends.ModelBackend',
+== == == =
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+>>>>>> > 1ccead222c5162c259a0042c82c4b98c8790ce9a
 ]
 
-REST_SESSION_LOGIN = False
+REST_SESSION_LOGIN= False
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION= 'none'
 
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-SITE_ID = 1
+ACCOUNT_AUTHENTICATION_METHOD= 'email'
+ACCOUNT_EMAIL_REQUIRED= True
+ACCOUNT_USERNAME_REQUIRED= False
+<< << << < HEAD
+SITE_ID= 1
+== == == =
+
+SITE_ID= 4
+>> >>>> > 1ccead222c5162c259a0042c82c4b98c8790ce9a
 
 # Webpack
-WEBPACK_LOADER = {
+WEBPACK_LOADER= {
     'DEFAULT': {
         'CACHE': not DEBUG,
         'BUNDLE_DIR_NAME': 'bundles/',
@@ -207,7 +264,6 @@ WEBPACK_LOADER = {
     }
 }
 
-LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 if os.environ.get('REDIS_URL') is not None:
@@ -217,17 +273,18 @@ else:
 
 SLACK_ENDPOINT = os.environ.get('SLACK_ENDPOINT')
 
+<< << << < HEAD
 SOCIAL_AUTH_SLACK_KEY = os.environ.get('SLACK_CLIENT_ID')
 SOCIAL_AUTH_SLACK_SECRET = os.environ.get('SLACK_CLIENT_SECRET')
 SOCIAL_AUTH_IGNORE_DEFAULT_SCOPE = True
 SOCIAL_AUTH_SLACK_SCOPE = [
     'channels:read, groups:history, groups:read, users:read, users:read.email']
 
-SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
+SOCIAL_AUTH_SLACK_TEAM= 'dailybruin'
 
-SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
+SOCIAL_AUTH_USER_MODEL= 'user_profile.User'
 
-SOCIAL_AUTH_PIPELINE = (
+SOCIAL_AUTH_PIPELINE= (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
     'social_core.pipeline.social_auth.auth_allowed',
@@ -238,3 +295,38 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
+== == == =
+SOCIALACCOUNT_PROVIDERS={
+    'slack': {
+        'SCOPE': [
+            'identity.basic',
+            'identity.avatar',
+            'identity.email',
+            'identity.team'
+        ]
+    }
+}
+
+# SOCIAL_AUTH_SLACK_KEY = os.environ.get('SLACK_CLIENT_ID')
+# SOCIAL_AUTH_SLACK_SECRET = os.environ.get('SLACK_CLIENT_SECRET')
+# SOCIAL_AUTH_IGNORE_DEFAULT_SCOPE = True
+# SOCIAL_AUTH_SLACK_SCOPE = [
+#     'channels:read, groups:history, groups:read, users:read, users:read.email']
+
+# SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
+
+# SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
+
+# SOCIAL_AUTH_PIPELINE = (
+#     'social_core.pipeline.social_auth.social_details',
+#     'social_core.pipeline.social_auth.social_uid',
+#     'social_core.pipeline.social_auth.auth_allowed',
+#     'social_core.pipeline.social_auth.social_user',
+#     'social_core.pipeline.user.get_username',
+#     'social_core.pipeline.social_auth.associate_by_email',
+#     'social_core.pipeline.user.create_user',
+#     'social_core.pipeline.social_auth.associate_user',
+#     'social_core.pipeline.social_auth.load_extra_data',
+#     'social_core.pipeline.user.user_details',
+# )
+>> >>>> > 1ccead222c5162c259a0042c82c4b98c8790ce9a
