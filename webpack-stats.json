@@ -1,13 +1,1 @@
-{
-  "status": "done",
-  "error": "ModuleBuildError",
-  "message": "Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/dustinnewman/Desktop/meow/meow/frontend/src/components/examples/Filterable.js'",
-  "chunks": {
-    "main": [
-      {
-        "name": "main-9247909f0dba05f82616.js",
-        "path": "/Users/dustinnewman/Desktop/meow/meow/frontend/bundles/main-9247909f0dba05f82616.js"
-      }
-    ]
-  }
-}
+{"status":"done","error":"ModuleBuildError","message":"Module build failed (from ./node_modules/sass-loader/lib/loader.js):\n\n  border-left, border-top, border-bottom: 1px solid white;\n ^\n      Property \"border-left\" must be followed by a ':'\n      in /Users/nicklin/Documents/UCLA/DB/meow/meow/frontend/src/components/scss/components/_sidebar.scss (line 49, column 3)","chunks":{"main":[{"name":"main-1748e382eb90ce0e4019.js","path":"/Users/nicklin/Documents/UCLA/DB/meow/meow/frontend/bundles/main-1748e382eb90ce0e4019.js"}]}}

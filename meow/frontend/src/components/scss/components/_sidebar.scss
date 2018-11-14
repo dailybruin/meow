@@ -1,2 +1,73 @@
-.sidebar {
+
+$primary-color: #99badd;
+$secondary-color: #003366;
+$tertiary-color: white;
+$font-stack: Cambria, Serif;
+
+.sidebar{
+  width: 20%;
+  height: 100%;
+  position: fixed;
+  margin-top: 10%;
+  top: 0;
+  left: 0;
+  background-color: $primary-color;
+  color: $tertiary-color;
+  font-family: $font-stack;
+}
+
+// The main container element
+.Collapsible {
+  background-color: $primary-color;
+}
+
+
+//The content within the collaspable area
+.Collapsible__contentInner {
+  padding: 10px;
+  border: 1px solid white;
+  border-top: 0;
+
+  p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 20px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+//The link which when clicked opens the collapsable area
+.Collapsible__trigger {
+  display: block;
+  font-weight: 400;
+  text-decoration: none;
+  color: $tertiary-color;
+  position: relative;
+  border: 1px solid white;
+  border-top: 0;
+  border-right: 0;
+  padding: 10px;
+  background: $primary-color;
+  color: white;
+
+  //The font awesome is not working yet
+  &:after {
+    font-family: 'FontAwesome';
+    content: '\f107';
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: block;
+    transition: transform 300ms;
+  }
+
+  &.is-open {
+    background: $secondary-color;
+    &:after {
+      transform: rotateZ(90deg);
+    }
+  }
 }
