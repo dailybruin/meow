@@ -74,5 +74,13 @@ class PostGetterBase extends React.Component {
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  getPosts: token => dispatch(post.getPosts(token))
+});
+
+const mapStateToProps = state => ({
+  token: state.auth.token
+});
+
 const PostGetter = withRouter(PostGetterBase);
 export default PostGetter;
