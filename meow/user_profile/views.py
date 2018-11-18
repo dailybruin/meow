@@ -53,28 +53,38 @@ def redirectToSlack(request):
 #         return Response(serializer.data)
 
 
-class SocialUserDetail(APIView):
-    """
-    Retrieve, update or delete a user profile.
-    """
-
-    def get_object(self, user_id):
-        try:
-            return UserSocialAuth.objects.get(user_id=user_id)
-        except User.DoesNotExist:
-            raise Http404
-
-    def get(self, request, user_id, format=None):
-        profile = self.get_object(user_id)
-        serializer = SocialUserSerializer(profile)
-        return Response(serializer.data)
+def redirectToSlack(request):
+    coming_from = request.GET.get("next", "/")
+    url_params = {
+        "process": "login",
+        "next": coming_from
+    }
+    suffix = urllib.parse.urlencode(url_params)
+    return redirect(GOOGLE_LOGIN_URL_PREFIX + suffix)
 
 
-class SocialUserProfileList(APIView):
-    def get(self, request, user_id, format=None):
-        profile = self.get_object(user_id)
-        serializer = SocialUserSerializer(profile)
-        return Response(serializer.data)
+# class SocialUserDetail(APIView):
+#     """
+#     Retrieve, update or delete a user profile.
+#     """
+
+#     def get_object(self, user_id):
+#         try:
+#             return UserSocialAuth.objects.get(user_id=user_id)
+#         except User.DoesNotExist:
+#             raise Http404
+
+#     def get(self, request, user_id, format=None):
+#         profile = self.get_object(user_id)
+#         serializer = SocialUserSerializer(profile)
+#         return Response(serializer.data)
+
+
+# class SocialUserProfileList(APIView):
+#     def get(self, request, user_id, format=None):
+#         profile = self.get_object(user_id)
+#         serializer = SocialUserSerializer(profile)
+#         return Response(serializer.data)
 
 
 class UserProfileList(APIView):
