@@ -22,7 +22,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
 urlpatterns = [
-    url(r'^post/$',
+    url(r'^post/(?P<token_key>[0-9a-zA-Z]*)$',
         views.SMPostList.as_view(),
         name='post-list'),
     url(r'^post/(?P<post_id>[0-9]+)$',

@@ -10,6 +10,7 @@ from scheduler.serializers import SMPostSerializer
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 
 import datetime
 import parsedatetime.parsedatetime as pdt
@@ -30,13 +31,15 @@ from .analytics import get_analytics
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
+def myfunction():
+    print("Hello plz print")
 
 class SMPostList(APIView):
     """
     List all SMPosts, or create a new SMPost.
     """
-
     def get(self, request, format=None):
+        myfunction()
         posts = SMPost.objects.all()
         serializer = SMPostSerializer(posts, many=True)
         return Response(serializer.data)
