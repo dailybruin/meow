@@ -10,14 +10,6 @@ export const login = e => {
   };
 };
 
-export const logout = () => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: types.LOGOUT
-    });
-  };
-};
-
 export const register = code => {
   return (dispatch, getState) => {
     const headers = { 'Content-Type': 'application/json' };

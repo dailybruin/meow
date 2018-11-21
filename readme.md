@@ -250,6 +250,34 @@ docker exec -it <container ID> psql -U postgres
 
 Now you add rows to the database using postgreSQL commands.
 
+## Slack oAuth Guide
+
+1. `git fetch`
+2. `git checkout dustin/react`
+3. `git pull`
+4. Go to [this Slack message](https://dailybruin.slack.com/archives/C7KPPH80K/p1541557984004300) and copy the contents into your `.env` file in the root directory. (Overwrite the previous contents)
+5. `docker-compose down` (This will clear out any superusers you already have defined)
+6. `docker-compose build` (This will take awhile)
+7. `docker-compose run web meow/manage.py migrate`
+8. `docker-compose run web meow/manage.py createsuperuser` (Values can be anything as long as you remember them.)
+9. `docker-compose up`
+10. (In new Terminal window (open with `Cmd+T` on Mac)) `npm install`
+11. `npm run watch`
+12. Go to http://localhost:5000/admin/
+13. Login with superuser account you made
+14. Go to Social accounts > Social applications
+15. Add
+16. Provider: Slack; Name can be anything; Client id and secret [here](https://dailybruin.slack.com/archives/C7KPPH80K/p1541558728005100); key is null
+17. Click save
+18. Go to Sites
+19. Add `http://localhost:5000/`
+20. Go back to the slack provider you defined and add the site
+21. Go to Terminal
+22. `docker-compose run web meow/manage.py shell`
+23. `from django.contrib.sites.models import Site`
+24. `Site.objects.get(id=5)` until you get localhost:5000
+25. Change `SITE_ID` to 5 in `meow/settings.py`
+
 ## Linting FAQ
 
 We use a combination of [eslint](https://eslint.org/docs/about/) and

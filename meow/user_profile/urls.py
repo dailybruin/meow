@@ -4,6 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
 urlpatterns = [
+    url(r'', views.redirectToSlack),
     url(r'^profile/$',
         views.UserProfileList.as_view(),
         name='profile-list'),
