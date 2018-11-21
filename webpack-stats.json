@@ -3,11 +3,9 @@
   "chunks": {
     "main": [
       {
-        "name": "main-5ebe210a04d0937f5677.js",
-        "path": "/Users/jeffreyzhu/Desktop/DBOnline/meow/meow/frontend/bundles/main-5ebe210a04d0937f5677.js"
+        "name": "main-9e613329f7b76b25f388.js",
+        "path": "/Users/jeffreyzhu/Desktop/DBOnline/meow/meow/frontend/bundles/main-9e613329f7b76b25f388.js"
       }
     ]
-  },
-  "error": "ModuleBuildError",
-  "message": "Module build failed (from ./node_modules/sass-loader/lib/loader.js):\nError: ENOENT: no such file or directory, open '/Users/jeffreyzhu/Desktop/DBOnline/meow/meow/frontend/src/components/scss/styling.scss'"
+  }
 }
