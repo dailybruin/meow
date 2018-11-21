@@ -5,9 +5,11 @@ from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/rest-auth/', include('rest_auth.urls')),
-    url(r'^api/rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/slack/$', views.SlackLogin.as_view(), name='fb_login'),
+    url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include('scheduler.urls')),
-    url(r'^api/', include('user_profile.urls')),
-    url(r'^$', views.base, name='base')
+    url(r'^api/', include('user_profile.urls')), # it looks like schedulers and user profile's urls live at the same place. Might conflict later..
+    url(r'^redirectToSlack/', views.redirectToSlack, name="redirect-to-slack"),
+    url(r'', views.base, name='base')
 ]

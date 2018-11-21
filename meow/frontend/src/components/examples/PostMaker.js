@@ -1,15 +1,15 @@
-import React from "react";
-import axios from "axios";
+import React from 'react';
+import axios from 'axios';
 
-const ENDPOINT = "/api/post/";
+const ENDPOINT = '/api/post/';
 
 export default class PostMaker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      slug: "",
-      story_url: "",
-      post_twitter: ""
+      slug: '',
+      story_url: '',
+      post_twitter: ''
     };
   }
 
@@ -22,14 +22,13 @@ export default class PostMaker extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     let date = {
-      pub_date: "2018-07-24",
-      pub_time: "13:43"
+      pub_date: '2018-07-24',
+      pub_time: '13:43'
     };
 
     const state = Object.assign(this.state, date);
 
     axios.post(ENDPOINT, state).then(res => {
-      console.log("axious post");
       console.log(res);
     });
   };

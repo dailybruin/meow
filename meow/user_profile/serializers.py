@@ -1,31 +1,31 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from user_profile.models import User, Theme
-from rest_auth.serializers import UserDetailsSerializer
+# from social_django.models import UserSocialAuth
+from rest_framework.authtoken.models import Token
+
+
+# class SocialUserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserSocialAuth
+#         fields = ('uid',)
+
+# Originally I was using this serializer when sending tokens but
+# it was easier to just make a dictionary with key and username myself
+# see user_profile/views.py
+
+# class TokenSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Token
+#         fields = '__all__'
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
 
 
 class ThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme
         fields = '__all__'
-
-
-class UserSerializer(UserDetailsSerializer):
-
-    bio = serializers.CharField(source="userprofile.bio")
-
-    class Meta(UserDetailsSerializer.Meta):
-        fields = UserDetailsSerializer.Meta.fields + ('bio',)
-
-    def update(self, instance, validated_data):
-        profile_data = validated_data.pop('userprofile', {})
-        bio = profile_data.get('bio')
-
-        instance = super(UserSerializer, self).update(instance, validated_data)
-
-        # get and update user profile
-        profile = instance.userprofile
-        if profile_data and bio:
-            profile.bio = bio
-            profile.save()
-        return instance
