@@ -8,7 +8,7 @@ urlpatterns = [
     url(r'^profile/$',
         views.UserProfileList.as_view(),
         name='profile-list'),
-    url(r'^profile/(?P<user_id>[0-9]+)$',
+    url(r'^profile/(?P<token_key>[0-9a-zA-z]+)$',
         views.UserProfileDetail.as_view(),
         name='profile-detail'),
     # url(r'^social-user/(?P<user_id>[0-9]+)$',
