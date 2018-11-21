@@ -6,24 +6,28 @@ export const createPost = postData => {
   return (dispatch, getState) => {};
 };
 
-export const getPosts = token => {
+export const fetchPosts = () => {
   return (dispatch, getState) => {
-    const body = {
-      headers: {
-        Authorization: 'Token ' + token
-      }
-    };
-    return axios.get(POST + token, body).then(res => {
-      console.log('Res.data: ' + JSON.stringify(res));
-      if (res.status === 200) {
-        dispatch({
-          type: types.FETCH_POSTS,
-          data: {
-            posts: res.data.posts
-          }
-        });
-        return res.data;
-      }
-    });
+    const { token } = getState().auth;
+
+    return axios
+      .get(POST, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`
+        }
+      })
+      .then(res => {
+        console.log('Res.data: ' + JSON.stringify(res));
+        if (res.status === 200) {
+          dispatch({
+            type: types.FETCH_POSTS,
+            data: {
+              posts: res.data.posts
+            }
+          });
+          return res.data;
+        }
+      });
   };
 };

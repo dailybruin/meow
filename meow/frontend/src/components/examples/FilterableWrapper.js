@@ -1,12 +1,10 @@
 import React from 'react';
-import axios from 'axios';
-import PostGetter from './PostGetter';
-import Sidebar from '../Sidebar/Sidebar';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { post } from '../../actions';
 
-const ENDPOINT = '/api/post/';
+import PostGetter from './PostGetter';
+import Sidebar from '../Sidebar/Sidebar';
+import { post } from '../../actions';
 
 class FilterableWrapper extends React.Component {
   constructor(props) {
@@ -20,7 +18,7 @@ class FilterableWrapper extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getPosts(this.props.token);
+    this.props.fetchPosts();
   }
 
   handleToggle() {
@@ -46,16 +44,16 @@ class FilterableWrapper extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  getPosts: token => dispatch(post.getPosts(token))
+  fetchPosts: () => dispatch(post.fetchPosts())
 });
 
-const mapStateToProps = state => ({
-  token: state.auth.token
-});
+// const mapStateToProps = state => ({
+//   token: state.auth.token
+// });
 
 export default withRouter(
   connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
   )(FilterableWrapper)
 );
