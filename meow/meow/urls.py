@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include('scheduler.urls')),
     url(r'^redirectToSlack/', views.redirectToSlack, name="redirect-to-slack"),
-    url(r'', views.base, name='base')
+    url(r'^(?!static).+', views.base, name='base') #make sure we can still access static files
 ]

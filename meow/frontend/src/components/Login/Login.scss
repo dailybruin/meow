@@ -6,6 +6,18 @@
   align-items: center;
   flex-direction: column;
 
+  /*The body has 8px margin so this has to be a seperate component*/
+  .background-pic {
+    position: absolute;
+    z-index: -1000; //good enough
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    //the exact background pic will be determined by Login.js
+    //background: url("https://news.nationalgeographic.com/content/dam/news/2018/05/17/you-can-train-your-cat/02-cat-training-NationalGeographic_1484324.ngsversion.1526587209178.adapt.1900.1.jpg");
+  }
+
   h1 {
     font: 72px 'Varela Round', sans-serif;
 
