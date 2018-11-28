@@ -29,7 +29,7 @@ class PostMaker extends React.Component {
 
     const state = Object.assign(this.state, date);
 
-    this.props.createPosts(state);
+    this.props.addPost(state);
   };
 
   render() {
@@ -71,21 +71,6 @@ class PostMaker extends React.Component {
               />
             </div>
           </div>
-          <div className="column">
-            <div className="field">
-              <label className="label">story_url</label>
-              <div className="control">
-                <input
-                  className="input"
-                  type="url"
-                  name="story_url"
-                  onChange={this.handleChange}
-                  value={story_url}
-                  required
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </form>
     );
@@ -93,7 +78,7 @@ class PostMaker extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  createPosts: newPost => dispatch(post.createPosts(newPost))
+  addPost: e => dispatch(post.addPost(e))
 });
 
 export default withRouter(

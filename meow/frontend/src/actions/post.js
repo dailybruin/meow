@@ -32,38 +32,33 @@ export const fetchPosts = () => {
   };
 };
 
-export const createPosts = newPost => {
+export const addPost = newPost => {
   return (dispatch, getState) => {
     const { token } = getState().auth;
 
     console.log(newPost);
-    // return axios
-    //   .post(POST, {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Authorization: `Token ${token}`
-    //     },
-    //     // data: newPost,
-    //   })
-    return axios(POST, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`
-      },
-      params: {
-        code: newPost
-      }
-    }).then(res => {
-      console.log('Res.data: ' + res.data);
-      if (res.status === 200) {
-        dispatch({
-          type: types.FETCH_POSTS,
-          data: {
-            posts: res.data.posts
-          }
-        });
-        return res.data;
-      }
-    });
+    return axios
+      .post(POST, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`
+        },
+        data: {
+          code: newPost
+        }
+      })
+      .then(res => {
+        console.log('RESPONSE addPost:');
+        console.log(res);
+        if (res.status === 200) {
+          dispatch({
+            type: types.FETCH_POSTS,
+            data: {
+              posts: res.data.posts
+            }
+          });
+          return res.data;
+        }
+      });
   };
 };
