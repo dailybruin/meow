@@ -11,6 +11,9 @@ from django.shortcuts import render, redirect
 
 from user_profile.models import User
 from user_profile.serializers import UserSerializer
+
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 # from social_django.models import UserSocialAuth
 
 import urllib.parse
@@ -33,6 +36,16 @@ def redirectToSlack(request):
 #     """
 #     Retrieve, update or delete a user profile.
 #     """
+
+#     def get_object(self, user_id):
+#         try:
+#             return UserSocialAuth.objects.get(user_id=user_id)
+#         except User.DoesNotExist:
+#             raise Http404
+#     def get(self, request, user_id, format=None):
+#         profile = self.get_object(user_id)
+#         serializer = SocialUserSerializer(profile)
+#         return Response(serializer.data)
 
 #     def get_object(self, user_id):
 #         try:
@@ -71,26 +84,27 @@ class UserProfileDetail(APIView):
     Retrieve, update or delete a user profile.
     """
 
-    def get_object(self, user_id):
+    def get_object(self, token_key):
         try:
-            return User.objects.get(id=user_id)
-        except User.DoesNotExist:
+            return Token.objects.get(key=token_key)
+        except Token.DoesNotExist:
             raise Http404
 
-    def get(self, request, user_id, format=None):
-        profile = self.get_object(user_id)
-        serializer = UserSerializer(profile)
-        return Response(serializer.data)
 
-    def put(self, request, user_id, format=None):
-        profile = self.get_object(user_id)
-        serializer = UserSerializer(profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, token_key, format=None):
+        authtoken = self.get_object(token_key)
+        #should we use a serializer if its something this simple?
+        return Response({"key":token_key, "user":authtoken.user.username})
 
-    def delete(self, request, user_id, format=None):
-        profile = self.get_object(user_id)
-        profile.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    # def put(self, request, user_id, format=None):
+    #     profile = self.get_object(user_id)
+    #     serializer = UserSerializer(profile, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # def delete(self, request, user_id, format=None):
+    #     profile = self.get_object(user_id)
+    #     profile.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)

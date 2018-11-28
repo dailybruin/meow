@@ -2,9 +2,10 @@ import React from 'react';
 import Collapsible from 'react-collapsible';
 import Datepicker from './Datepicker';
 import CustomCheckbox from './CustomCheckbox';
+import '../scss/components/_sidebar.scss';
 
 const Sidebar = () => (
-  <div>
+  <div class="sidebar">
     <Collapsible transitionTime={300} trigger="post date">
       <Datepicker />
     </Collapsible>
