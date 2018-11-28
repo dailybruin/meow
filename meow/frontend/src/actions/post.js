@@ -32,24 +32,41 @@ export const fetchPosts = () => {
   };
 };
 
+export const fetchPost = postId => {
+  return (dispatch, getState) => {
+    const { token } = getState().auth;
+    const postURL = POST.concat(postId);
+
+    return axios
+      .get(postURL, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`
+        }
+      })
+      .then(res => {
+        console.log('Res.data');
+        console.log(res.data);
+        if (res.status === 200) {
+          dispatch({ type: types.FETCH_POST });
+          return res.data;
+        }
+      });
+  };
+};
+
 export const addPost = newPost => {
   return (dispatch, getState) => {
     const { token } = getState().auth;
 
-    console.log(newPost);
     return axios
-      .post(POST, {
+      .post(POST, newPost, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Token ${token}`
-        },
-        data: {
-          code: newPost
         }
       })
       .then(res => {
-        console.log('RESPONSE addPost:');
-        console.log(res);
         if (res.status === 200) {
           dispatch({
             type: types.FETCH_POSTS,
