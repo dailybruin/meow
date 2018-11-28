@@ -52,7 +52,6 @@ class PostGetterBase extends React.Component {
 
     const posts = this.props.posts;
     const newPosts = posts;
-    console.log(newPosts);
     convertTimestamps(newPosts);
 
     return (

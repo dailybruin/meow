@@ -18,7 +18,6 @@ export const fetchPosts = () => {
         }
       })
       .then(res => {
-        console.log('Res.data: ' + res.data);
         if (res.status === 200) {
           dispatch({
             type: types.FETCH_POSTS,
@@ -45,8 +44,6 @@ export const fetchPost = postId => {
         }
       })
       .then(res => {
-        console.log('Res.data');
-        console.log(res.data);
         if (res.status === 200) {
           dispatch({ type: types.FETCH_POST });
           return res.data;

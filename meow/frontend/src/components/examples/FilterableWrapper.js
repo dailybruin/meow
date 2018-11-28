@@ -18,7 +18,9 @@ class FilterableWrapper extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchPosts();
+    this.props.fetchPosts().then(res => {
+      this.setState({ posts: res });
+    });
   }
 
   handleToggle() {
@@ -37,6 +39,7 @@ class FilterableWrapper extends React.Component {
     return (
       <div>
         <Sidebar />
+        <p onClick={this.handleToggle}>CLICK ME TO FILTER</p>
         <PostGetter posts={posts} />
       </div>
     );
