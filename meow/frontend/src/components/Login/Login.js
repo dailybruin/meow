@@ -15,7 +15,7 @@ class Login extends Component {
 
   render() {
     let divBackgroundStyle = {
-      background: `url("/static/src/assets/cats/${this.state.catPicIndex}.${
+      'background-image': `url("/static/src/assets/cats/${this.state.catPicIndex}.${
         this.state.catPicIndex == 5 ? 'png' : 'jpg'
       }")`
     };
