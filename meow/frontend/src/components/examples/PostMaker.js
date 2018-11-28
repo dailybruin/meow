@@ -1,10 +1,10 @@
 import React from 'react';
-import axios from 'axios';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 import '../scss/PostMaker.scss';
+import { post } from '../../actions';
 
-const ENDPOINT = '/api/post/';
-
-export default class PostMaker extends React.Component {
+class PostMaker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,10 +29,7 @@ export default class PostMaker extends React.Component {
 
     const state = Object.assign(this.state, date);
 
-    axios.post(ENDPOINT, state).then(res => {
-      console.log('axious post');
-      console.log(res);
-    });
+    this.props.createPosts(state);
   };
 
   render() {
@@ -94,3 +91,14 @@ export default class PostMaker extends React.Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  createPosts: newPost => dispatch(post.createPosts(newPost))
+});
+
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(PostMaker)
+);
