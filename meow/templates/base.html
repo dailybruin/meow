@@ -19,11 +19,21 @@
     />
     <title>meow - Daily Bruin</title>
     {% block header %} {% endblock %}
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+    {% block header %}
+    {% endblock %}
   </head>
 
   <body>
     {% block content %}
     <div id="app"></div>
-    {% render_bundle 'main' %} {% endblock %}
+    {% render_bundle 'main' %}
+    {% endblock %}
   </body>
+  
 </html>

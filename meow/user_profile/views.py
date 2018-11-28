@@ -66,6 +66,7 @@ def redirectToSlack(request):
 #         return Response(serializer.data)
 
 
+
 class UserProfileList(APIView):
     """
     List all User Profile, or create a new User Profile.
