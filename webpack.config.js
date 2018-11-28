@@ -45,6 +45,9 @@ module.exports = {
             loader: 'sass-loader' // translates CSS into CommonJS
           }
         ]
+      },
+      {
+        test: /\.(jpe|jpg|woff|woff2|eot|ttf|svg)(\?.*$|$)/,
       }
     ]
   }
