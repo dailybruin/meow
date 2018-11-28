@@ -14,11 +14,11 @@ class SMPost extends React.Component {
     this.renderNull = this.renderNull.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const postId = this.props.match.params.post_id;
 
     this.props.fetchPost(postId).then(res => {
-      this.setState({ data: res.data });
+      this.setState({ data: res });
     });
   }
 
