@@ -26,15 +26,15 @@ from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
 @login_required
 def send_posts_now(request, post_id):
-	if request.method == "POST":
-		sendNowPost = SMPost.objects.get(id = post_id)
-		sendNowPost.send_now=True
-		sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
-		sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
-		sendNowPost.save()
-		sendposts.delay()
-		return HttpResponse(status=200)
-    
+    if request.method == "POST":
+        sendNowPost = SMPost.objects.get(id=post_id)
+        sendNowPost.send_now = True
+        sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
+        sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
+        sendNowPost.save()
+        sendposts.delay()
+        return HttpResponse(status=200)
+
 
 def get_settings():
     return {
@@ -93,6 +93,7 @@ def user_settings(request):
     }
     return render(request, 'scheduler/user_settings.html', context)
 
+
 @login_required
 def dashboard(request):
     messages = []
@@ -138,7 +139,7 @@ def dashboard(request):
         "user": request.user,
         "sections": Section.objects.all(),
         # Turning this feature off for now
-        #"smposts": zip(list(chain(today_posts, lost_posts)), get_analytics(list(chain(today_posts, lost_posts)))),
+        # "smposts": zip(list(chain(today_posts, lost_posts)), get_analytics(list(chain(today_posts, lost_posts)))),
         "smposts": list(chain(today_posts, lost_posts)),
         "messages": messages,
         "view_date": view_date,
@@ -238,7 +239,7 @@ def edit(request, post_id, post=None):
                 post.pub_ready_online = True
             else:
                 post.pub_ready_online = False
-                post.sent_error = False 
+                post.sent_error = False
                 post.sent = False
                 post.pub_ready_online_user = None
 
@@ -296,7 +297,7 @@ def add(request):
 
 
 def can_manage(user):
-    return user.has_perm('add_user')
+    return user.has_perm('auth.add_user')
 
 
 @user_passes_test(can_manage)
