@@ -1,35 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
-import { PersistGate } from 'redux-persist/integration/react';
-import createHistory from 'history/createBrowserHistory';
-import App from './components/App';
-import 'react-table/react-table.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { Router } from "react-router-dom";
 
-import configureStore from './store';
+import history from "./history";
+import { store, persistor } from "./store";
 
-const initialState = {
-  auth: {
-    token: null,
-    isAuthenticated: null,
-    isLoading: null,
-    user: null,
-    errors: {}
-  }
-};
+import "./index.css";
+import App from "./components/App";
 
-const history = createHistory();
-
-const { store, persistor } = configureStore(initialState, history);
+if (typeof Notification === "function") {
+  Notification.requestPermission().then(permission => {
+    if (permission === "denied") {
+    }
+  });
+}
 
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <ConnectedRouter history={history}>
+      <Router history={history}>
         <App />
-      </ConnectedRouter>
+      </Router>
     </PersistGate>
   </Provider>,
-  document.getElementById('app')
+  document.getElementById("app")
 );

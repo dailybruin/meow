@@ -1,31 +1,19 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from user_profile.models import User, Theme
-# from social_django.models import UserSocialAuth
-from rest_framework.authtoken.models import Token
+from user_profile.models import User
+from django.contrib.auth import get_user_model
 
-
-# class SocialUserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserSocialAuth
-#         fields = ('uid',)
-
-# Originally I was using this serializer when sending tokens but
-# it was easier to just make a dictionary with key and username myself
-# see user_profile/views.py
-
-# class TokenSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Token
-#         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
+    section = serializers.StringRelatedField()
+
     class Meta:
         model = User
         fields = '__all__'
 
 
-class ThemeSerializer(serializers.ModelSerializer):
+class SafeUserSerializer(serializers.ModelSerializer):
+    section = serializers.StringRelatedField()
+
     class Meta:
-        model = Theme
-        fields = '__all__'
+        model = User
+        exclude = ('password', 'user_permissions',)

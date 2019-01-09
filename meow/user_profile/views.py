@@ -1,100 +1,51 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from django.http import HttpResponse, Http404
-from django.views import View
-
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
 from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponseRedirect
+from django.contrib.auth import logout as django_logout
+from django.conf import settings
 
+from rest_framework.response import Response
+
+from meow.utils.decorators import api_login_required
 from user_profile.models import User
-from user_profile.serializers import UserSerializer
-
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-# from social_django.models import UserSocialAuth
-
-import urllib.parse
-
+from user_profile.serializers import SafeUserSerializer
+import json
 # Create your views here.
-GOOGLE_LOGIN_URL_PREFIX = '/accounts/slack/login/'
 
 
-def redirectToSlack(request):
-    coming_from = request.GET.get("next", "/")
-    url_params = {
-        "process": "login",
-        "next": coming_from
-    }
-    suffix = urllib.parse.urlencode(url_params)
-    return redirect(GOOGLE_LOGIN_URL_PREFIX + suffix)
+@api_login_required()
+def me(request):
+    user = request.user
+    return JsonResponse({
+        'username': user.username,
+        'first_name': user.first_name,
+        'isAuthenticated': True
+    })
 
 
-# class SocialUserDetail(APIView):
-#     """
-#     Retrieve, update or delete a user profile.
-#     """
-
-#     def get_object(self, user_id):
-#         try:
-#             return UserSocialAuth.objects.get(user_id=user_id)
-#         except User.DoesNotExist:
-#             raise Http404
-#     def get(self, request, user_id, format=None):
-#         profile = self.get_object(user_id)
-#         serializer = SocialUserSerializer(profile)
-#         return Response(serializer.data)
+@api_login_required()
+def logout(request):
+    django_logout(request)
+    return HttpResponseRedirect("http://localhost:5000")
 
 
-# class SocialUserProfileList(APIView):
-#     def get(self, request, user_id, format=None):
-#         profile = self.get_object(user_id)
-#         serializer = SocialUserSerializer(profile)
-#         return Response(serializer.data)
+@api_login_required()
+def userList(request):
+    if request.method == "GET":
+        users = User.objects.values('id', 'username', 'first_name', 'last_name',
+                                    'section', 'last_login', 'is_superuser', 'bio', 'role', 'email', 'theme', 'groups')
+        print(users)
+        usersRawData = SafeUserSerializer(users, many=True)
+        usersOrderedDict = usersRawData.data
+        print(usersOrderedDict)
+        return JsonResponse(usersOrderedDict, safe=False)
 
 
-
-class UserProfileList(APIView):
-    """
-    List all User Profile, or create a new User Profile.
-    """
-
-    def post(self, request, format=None):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UserProfileDetail(APIView):
-    """
-    Retrieve, update or delete a user profile.
-    """
-
-    def get_object(self, token_key):
-        try:
-            return Token.objects.get(key=token_key)
-        except Token.DoesNotExist:
-            raise Http404
-
-
-    def get(self, request, token_key, format=None):
-        authtoken = self.get_object(token_key)
-        #should we use a serializer if its something this simple?
-        return Response({"key":token_key, "user":authtoken.user.username})
-
-    # def put(self, request, user_id, format=None):
-    #     profile = self.get_object(user_id)
-    #     serializer = UserSerializer(profile, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # def delete(self, request, user_id, format=None):
-    #     profile = self.get_object(user_id)
-    #     profile.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+@api_login_required()
+def userDetail(request, username):
+    if request.method == "GET":
+        user = User.objects.get(username=username)
+        print(user)
+        userRawData = SafeUserSerializer(user)
+        userOrderedDict = userRawData.data
+        print(userOrderedDict)
+        return JsonResponse(userOrderedDict, safe=False)

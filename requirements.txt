@@ -39,8 +39,8 @@ requests==2.18.4
 requests-oauthlib==0.8.0
 singledispatch==3.4.0.3
 six==1.10.0
-# social-auth-core==1.7.0
-# social-auth-app-django==2.1.0
+social-auth-app-django==3.1.0
+social-auth-core==1.7.0
 tweepy==3.5.0
 urllib3==1.22
 vine==1.1.4
