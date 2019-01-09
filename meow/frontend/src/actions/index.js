@@ -1,4 +1,4 @@
-import * as auth from './auth';
-import * as post from './post';
+import * as user from "./user";
+import * as post from "./post";
 
-export { auth, post };
+export { user, post };
