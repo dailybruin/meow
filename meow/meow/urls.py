@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^api/', include('scheduler.urls')),
     url(r'^api/', include('user_profile.urls')), # it looks like schedulers and user profile's urls live at the same place. Might conflict later..
     url(r'^redirectToSlack/', views.redirectToSlack, name="redirect-to-slack"),
-    url(r'^(?!static).+', views.base, name='base') #make sure we can still access static files
+    url(r'', views.base, name='base')
+    # url(r'^(?!static).+', views.base, name='base') #make sure we can still access static files
 ]
