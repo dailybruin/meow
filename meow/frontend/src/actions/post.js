@@ -1,78 +1,86 @@
-import axios from 'axios';
-import { POST } from './constants';
-import * as types from './types';
+import { postPost, postList, postDetail } from "../services/api";
 
-// export const createPost = postData => {
-//   return (dispatch, getState) => {};
-// };
+const createPostRequest = () => ({
+  type: "CREATE_POST_REQUEST"
+});
 
-export const fetchPosts = () => {
-  return (dispatch, getState) => {
-    const { token } = getState().auth;
+const createPostSuccess = () => ({
+  type: "CREATE_POST_SUCCESS"
+});
 
-    return axios
-      .get(POST, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`
-        }
-      })
-      .then(res => {
-        if (res.status === 200) {
+export const createPost = name => {
+  return dispatch => {
+    dispatch(createPostRequest);
+
+    return postPost(name).then(
+      ({ data, status }) => {
+        if (status >= 400) {
           dispatch({
-            type: types.FETCH_POSTS,
-            data: {
-              posts: res.data.posts
-            }
+            type: "CREATE_SECTION_FAIL",
+            message: "Could not create section."
           });
-          return res.data;
+        } else {
+          console.log(data);
+          dispatch(createPostSuccess());
+          return data;
         }
-      });
+      },
+      err => {
+        dispatch({
+          type: "NETWORK_ERROR",
+          message: "Could not connect to server."
+        });
+      }
+    );
   };
 };
 
-export const fetchPost = postId => {
-  return (dispatch, getState) => {
-    const { token } = getState().auth;
-    const postURL = POST.concat(postId);
-
-    return axios
-      .get(postURL, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`
+export const loadPosts = () => {
+  return dispatch => {
+    return postList().then(
+      ({ data, status }) => {
+        if (status >= 400) {
+          dispatch({
+            type: "LOAD_POSTS_FAIL",
+            message: "Could not load posts."
+          });
+        } else {
+          dispatch({
+            type: "LOAD_POSTS_SUCCESS"
+          });
+          return data;
         }
-      })
-      .then(res => {
-        if (res.status === 200) {
-          dispatch({ type: types.FETCH_POST });
-          return res.data;
-        }
-      });
+      },
+      err => {
+        dispatch({
+          type: "NETWORK_ERROR",
+          message: "Could not connect to server."
+        });
+      }
+    );
   };
 };
 
-export const addPost = newPost => {
-  return (dispatch, getState) => {
-    const { token } = getState().auth;
-
-    return axios
-      .post(POST, newPost, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`
-        }
-      })
-      .then(res => {
-        if (res.status === 200) {
+export const getPost = postId => {
+  return dispatch => {
+    return postDetail(postId).then(
+      ({ data, status }) => {
+        if (status >= 400) {
           dispatch({
-            type: types.FETCH_POSTS,
-            data: {
-              posts: res.data.posts
-            }
+            type: "FETCH_POST_FAIL",
+            message: `Could not load section ${postId}.`
           });
-          return res.data;
+        } else {
+          dispatch({ type: "FETCH_POST_SUCCESS" });
+          return data;
         }
-      });
+      },
+      err => {
+        dispatch({
+          type: "NETWORK_ERROR",
+          message: "Could not connect to server."
+        });
+      }
+    );
   };
 };

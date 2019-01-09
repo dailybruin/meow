@@ -21,6 +21,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
 
+app_name = "scheduler"
+
 urlpatterns = [
     url(r'^post/$',
         views.SMPostList.as_view(),

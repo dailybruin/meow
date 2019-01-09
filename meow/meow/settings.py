@@ -86,18 +86,6 @@ if os.environ.get('SECRET_KEY'):
 else:
     SECRET_KEY = 'i%w$mm*w7mgw)q1hly1+c8z14en3$v#)3sf)u#xripu@rxjyw7'
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
-]
-
 ROOT_URLCONF = 'meow.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -122,36 +110,44 @@ TEMPLATES = [
 ]
 
 INSTALLED_APPS = (
+    # Django dep
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+
+    # External dep
     'webpack_loader',
+    'social_django',
     'corsheaders',
-
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.slack',
-
-    'scheduler',
-    'user_profile',
     'django_celery_beat',
 
-    'rest_framework',
-    'rest_framework.authtoken',
-    'rest_auth',
-    'rest_auth.registration',
+    # Internal dep
+    'urls',
+    'user_profile',
+    'scheduler',
 )
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r'^/api/.*$'
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+]
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000'
+# )
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -184,45 +180,6 @@ LOGGING = {
 
 AUTH_USER_MODEL = 'user_profile.User'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-#     ),
-#     'DEFAULT_PERMISSION_CLASSES': (
-#         'rest_framework.permissions.IsAuthenticated',
-#     )
-# }
-
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-}
-
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'user_profile.serializers.UserSerializer',
-}
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
-REST_SESSION_LOGIN = False
-
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-
-SITE_ID = 7
-
 # Webpack
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -232,45 +189,48 @@ WEBPACK_LOADER = {
     }
 }
 
-LOGIN_REDIRECT_URL = '/'
-
 if os.environ.get('REDIS_URL') is not None:
     CELERY_BROKER_URL = os.environ.get('REDIS_URL')
 else:
     CELERY_BROKER_URL = 'redis://'
 
-SLACK_ENDPOINT = os.environ.get('SLACK_ENDPOINT')
+# Authentication settings for python social auth
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
-SOCIALACCOUNT_PROVIDERS = {
-    'slack': {
-        'SCOPE': [
-            'identity.basic',
-            'identity.avatar',
-            'identity.email',
-            'identity.team'
-        ]
-    }
-}
+SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
-# SOCIAL_AUTH_SLACK_KEY = os.environ.get('SLACK_CLIENT_ID')
-# SOCIAL_AUTH_SLACK_SECRET = os.environ.get('SLACK_CLIENT_SECRET')
-# SOCIAL_AUTH_IGNORE_DEFAULT_SCOPE = True
-# SOCIAL_AUTH_SLACK_SCOPE = [
-#     'channels:read, groups:history, groups:read, users:read, users:read.email']
+# GOOGLE SOCIAL AUTH
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_CLIENT_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["email"]
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+    'access_type': 'offline', 'hd': 'media.ucla.edu'}
+SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['media.ucla.edu', ]
 
+# SOCIAL_AUTH_SLACK_KEY = env('SLACK_CLIENT_ID')
+# SOCIAL_AUTH_SLACK_SECRET = env('SLACK_CLIENT_SECRET')
+# SOCIAL_AUTH_SLACK_IGNORE_DEFAULT_SCOPE = True
+# SOCIAL_AUTH_SLACK_SCOPE = ['conversations:read', 'users:read']
 # SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
 
-# SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
 
-# SOCIAL_AUTH_PIPELINE = (
-#     'social_core.pipeline.social_auth.social_details',
-#     'social_core.pipeline.social_auth.social_uid',
-#     'social_core.pipeline.social_auth.auth_allowed',
-#     'social_core.pipeline.social_auth.social_user',
-#     'social_core.pipeline.user.get_username',
-#     'social_core.pipeline.social_auth.associate_by_email',
-#     'social_core.pipeline.user.create_user',
-#     'social_core.pipeline.social_auth.associate_user',
-#     'social_core.pipeline.social_auth.load_extra_data',
-#     'social_core.pipeline.user.user_details',
-# )
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5000/'
+SOCIAL_AUTH_URL_NAMESPACE = "urls:social"
+LOGIN_REDIRECT_URL = 'http://localhost:5000/'
+LOGOUT_REDIRECT_URL = 'http://localhost:5000/'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)

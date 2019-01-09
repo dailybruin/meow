@@ -1,19 +1,15 @@
-from django.conf.urls import url
+from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
 
+app_name = "user_profile"
+
 urlpatterns = [
-    url(r'', views.redirectToSlack),
-    url(r'^profile/$',
-        views.UserProfileList.as_view(),
-        name='profile-list'),
-    url(r'^profile/(?P<token_key>[0-9a-zA-z]+)$',
-        views.UserProfileDetail.as_view(),
-        name='profile-detail'),
-    # url(r'^social-user/(?P<user_id>[0-9]+)$',
-    #     views.SocialUserDetail.as_view(),
-    #     name='social-list'),
+    path('me/', views.me, name="me"),
+    path('logout/', views.logout, name="userLogout"),
+    path('<str:username>', views.userDetail, name="userDetail"),
+    path('', views.userList, name="userList"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
