@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
+import '../scss/components/_header.scss';
 import { auth } from '../../actions';
 
 class Header extends Component {
@@ -10,7 +10,7 @@ class Header extends Component {
   }
   render() {
     return (
-      <div>
+      <div className="header">
         <h1>meow</h1>
         <p>Hi there, {this.props.user ? this.props.user : 'null'}!</p>
         <p>Your token is: {this.props.token}</p>

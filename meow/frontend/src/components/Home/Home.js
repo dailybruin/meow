@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { auth } from '../../actions';
 import Header from '../Header/Header';
 import Sidebar from '../Sidebar/Sidebar';
+import '../scss/components/_body.scss';
 
 class Home extends Component {
   render() {
@@ -12,12 +13,14 @@ class Home extends Component {
       <div>
         <Header />
         <Sidebar />
-        <nav>
-          <Link to="/posts">Posts</Link>
-          <Link to="/add">Add</Link>
-          <Link to="/posts/2">Post #2</Link>
-          <Link to="/logout">Logout</Link>
-        </nav>
+        <div class="body">
+          <nav>
+            <Link to="/posts">Posts</Link>
+            <Link to="/add">Add</Link>
+            <Link to="/posts/2">Post #2</Link>
+            <Link to="/logout">Logout</Link>
+          </nav>
+        </div>
       </div>
     );
   }

@@ -1,0 +1,20 @@
+.ReactTable {
+  width: 80%;
+  margin-left: 20%;
+  margin-top: 10vh;
+  height: 86vh;
+}
+
+.ReactTable .rt-resizable-header-content {
+  text-align: left;
+  font-size: 24px;
+  color: rgb(61, 61, 61);
+}
+
+.ReactTable .rt-tbody .rt-td {
+  border-right: none !important;
+}
+
+.ReactTable .rt-tbody .rt-tr-group {
+  border-bottom: 1px solid darkgray !important;
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import PostGetter from './PostGetter';
 import Sidebar from '../Sidebar/Sidebar';
+import Header from '../Header/Header';
 
 const ENDPOINT = '/api/post/';
 
@@ -37,6 +38,7 @@ export default class FilterableWrapper extends React.Component {
 
     return (
       <div>
+        <Header />
         <Sidebar />
         <PostGetter posts={posts} />
       </div>

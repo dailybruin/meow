@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import axios from 'axios';
 import ReactTable from 'react-table';
-import '../scss/styling.scss';
+import '../scss/components/_reacttable.scss';
 
 function Td({ children, to }) {
   // Conditionally wrapping content into a link
@@ -25,7 +25,7 @@ class PostGetterBase extends React.Component {
   render() {
     const cols = [
       { Header: 'Post ID', accessor: 'id' },
-      { Header: 'section', accessor: 'section' },
+      { Header: 'Section', accessor: 'section' },
       { Header: 'Slug', accessor: 'slug' },
       { Header: 'Link', accessor: 'story_url' },
       { Header: 'Post Time', accessor: 'pub_time' }
@@ -39,6 +39,7 @@ class PostGetterBase extends React.Component {
         data={posts}
         columns={cols}
         className="react-table"
+        noDataText="No posts found!"
         getTdProps={(state, rowInfo) => {
           return {
             onClick: () => {
