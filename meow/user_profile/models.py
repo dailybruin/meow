@@ -28,6 +28,9 @@ class User(AbstractUser):
     theme = models.ForeignKey(
         'Theme', blank=True, null=True, on_delete=models.SET_NULL)
 
+    def __str__(self):
+        return self.username
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 

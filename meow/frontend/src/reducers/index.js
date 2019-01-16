@@ -1,18 +1,9 @@
-import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
+import { combineReducers } from "redux";
 
-import auth from './auth';
-import post from './post';
+import user from "./user";
 
-/**
- * Given a history object, create a root reducer from it
- * @param history result of createHistory() call
- */
-const createRootReducer = history =>
-  combineReducers({
-    router: connectRouter(history),
-    auth,
-    post
-  });
+const rootReducer = combineReducers({
+  user
+});
 
-export default createRootReducer;
+export default rootReducer;

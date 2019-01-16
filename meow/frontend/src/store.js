@@ -1,44 +1,22 @@
-import { compose, createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk';
-import { routerMiddleware } from 'connected-react-router';
-import { persistStore, persistReducer } from 'redux-persist';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-import storage from 'redux-persist/lib/storage';
-import { logger } from 'redux-logger';
+import { applyMiddleware, createStore, compose } from "redux";
+import thunkMiddleware from "redux-thunk";
+import { createLogger } from "redux-logger";
+import { persistStore, persistCombineReducers } from "redux-persist";
+import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
+import storage from "redux-persist/lib/storage";
 
-import rootReducer from './reducers';
+const middlewares = [thunkMiddleware, createLogger()];
+
+const enhancers = [applyMiddleware(...middlewares)];
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
   stateReconciler: autoMergeLevel2
 };
 
-/**
- * Given an initial state object, and a history object (
- * the result of createHistory()), return a configured
- * store
- * @param initialState an object specifying initial state
- * of the app
- * @param history result of createHistory() call
- */
-function configureStore(initialState = {}, history) {
-  const persistedReducer = persistReducer(persistConfig, rootReducer(history));
+const reducer = persistCombineReducers(persistConfig, require("./reducers"));
 
-  const middlewares = [routerMiddleware(history), thunkMiddleware];
+export const store = createStore(reducer, undefined, compose(...enhancers));
 
-  if (process.env.NODE_ENV === 'development') {
-    middlewares.push(logger);
-  }
-
-  const store = createStore(
-    persistedReducer,
-    initialState,
-    compose(applyMiddleware(...middlewares))
-  );
-
-  const persistor = persistStore(store);
-  return { store, persistor };
-}
-
-export default configureStore;
+export const persistor = persistStore(store, null);
