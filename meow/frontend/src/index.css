@@ -1,5 +1,7 @@
 @import "~antd/dist/antd.css";
 
+@import "./components/Posts/styles.css";
+
 body {
   margin: 0;
   padding: 0;
