@@ -13,6 +13,7 @@ class User(AbstractUser):
     )
     profile_img = models.ImageField(upload_to='profile/imgs/',
                                     null=True)
+    slack_username = models.CharField(max_length=100, null=True)
     theme = models.ForeignKey(
         'Theme', blank=True, null=True, on_delete=models.SET_NULL)
 
