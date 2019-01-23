@@ -1,0 +1,44 @@
+.ant-table-wrapper {
+  background-color: #fff;
+}
+
+.ant-table-thead > tr > th {
+  border-bottom: 1px solid #000;
+  font-family: "Varela Round", sans-serif;
+  font-size: 1.25em;
+  font-weight: 1000;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #000;
+}
+
+.ant-table-tbody tr.sent-error {
+  background-color: #ff7373;
+}
+
+.ant-table-tbody tr.sent-error:hover td {
+  background-color: #c93030;
+}
+
+.ant-table-thead .pub_time {
+  white-space: nowrap;
+}
+
+.ant-table-tbody .section,
+.ant-table-tbody .slug,
+.ant-table-tbody .status {
+  white-space: nowrap;
+}
+
+.ant-table-tbody .draft .status {
+  background-color: #ffff99;
+}
+
+.ant-table-tbody .ready-to-post .status {
+  background-color: #b2f7b2;
+}
+
+.ant-table-tbody .sending .status {
+  background-color: #b3e9ff;
+}

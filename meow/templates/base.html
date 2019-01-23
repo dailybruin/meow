@@ -27,9 +27,31 @@
     {% block header %} {% endblock %}
   </head>
 
-  <body>
-    {% block content %}
-    <div id="app"></div>
-    {% render_bundle 'main' %} {% endblock %}
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Social media scheduler.">
+  <meta name="author" content="The Daily Bruin">
+  <link rel="icon" type="image/png" href="{% static 'img/favicons/favicon-32x32.png' %}" sizes="32x32">
+  <link rel="icon" type="image/png" href="{% static 'img/favicons/favicon-96x96.png' %}" sizes="96x96">
+  <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+  <title>meow - Daily Bruin </title>
+  <style>
+    body{
+      margin: 0px;
+      padding: 0px;
+    }
+  </style>
+  {% block header %}
+  {% endblock %}
+</head>
+
+<body>
+  {% block content %}
+  <div id="app"></div>
+  {% render_bundle 'main' %}
+  {% endblock %}
+</body>
+
 </html>
