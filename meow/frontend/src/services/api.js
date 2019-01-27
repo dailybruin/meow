@@ -44,7 +44,20 @@ export const userDetail = username => {
 
 export const postList = () => {
   return axios
-    .get(`${SERVER_URL}/posts/`, {
+    .get(`${SERVER_URL}/post/`, {
+      withCredentials: true
+    })
+    .then(res => ({
+      data: res.data,
+      status: res.status
+    }));
+};
+
+export const postPost = data => {
+  console.log(data);
+  return axios
+    .post(`${SERVER_URL}/post/`, {
+      data,
       withCredentials: true
     })
     .then(res => ({
