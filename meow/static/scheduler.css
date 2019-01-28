@@ -449,6 +449,20 @@ body {
     text-decoration:underline;
 }
 
+.fb-button {
+  background-image: url("https://i.stack.imgur.com/oL5c2.png");
+  background-size: cover;
+  height: 50px;
+  border: none;
+}
+
+.twit-button {
+  background-image: url("https://i.imgur.com/8kGZAvb.png");
+  background-size: cover;
+  height: 50px;
+  border: none;
+}
+
 /* Very large screens */
 @media only screen and (min-width: 1441px) {  }
 
