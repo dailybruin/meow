@@ -1,0 +1,8 @@
+.ant-checkbox-wrapper {
+  display: block;
+  margin-left: 0px;
+}
+
+.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0px;
+}
