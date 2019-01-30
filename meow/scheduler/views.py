@@ -10,6 +10,8 @@ from scheduler.serializers import SMPostSerializer
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+from rest_framework.parsers import JSONParser
 
 import datetime
 import parsedatetime.parsedatetime as pdt
@@ -41,8 +43,8 @@ class SMPostList(APIView):
         serializer = SMPostSerializer(posts, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = SMPostSerializer(data=request.data)
+    def post(self, request, format=None):    
+        serializer = SMPostSerializer(data=request.data['data'])
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Table } from "antd";
+import "./styles.css";
 
 import { loadPosts } from "../../actions/post";
 

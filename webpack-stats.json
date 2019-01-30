@@ -1,0 +1,13 @@
+{
+  "status": "error",
+  "chunks": {
+    "main": [
+      {
+        "name": "main-35976eb393e1625f2473.js",
+        "path": "/Users/jeffreyzhu/Desktop/DBOnline/meow/meow/frontend/bundles/main-35976eb393e1625f2473.js"
+      }
+    ]
+  },
+  "error": "ModuleNotFoundError",
+  "message": "Module not found: Error: Can't resolve 'antd' in '/Users/jeffreyzhu/Desktop/DBOnline/meow/meow/frontend/src/components/Home'"
+}

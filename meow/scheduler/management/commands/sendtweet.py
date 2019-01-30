@@ -15,6 +15,7 @@ import traceback
 
 from scheduler.models import MeowSetting, SMPost
 
+
 class Command(BaseCommand):
     help = "Sends the appropriate tweet"
 
@@ -31,7 +32,6 @@ class Command(BaseCommand):
         parser.add_argument(
             '--photo_url', default=None,
             help="URL to accompanying photo.")
-
 
     def handle(self, *args, **options):
         smpost = options.get('smpost', None)
@@ -58,15 +58,7 @@ class Command(BaseCommand):
             if url is not None:
                 tweet = tweet + " " + url
 
-            if photo_url is not None:
-                photo_source = requests.get(photo_url)
-                filename = re.search("/([^/]*)$", photo_source.url).group(1)
-                # io is needed to make an actual file object (tweepy requires
-                # the seek method on the file object)
-                photo_fd = io.BytesIO(photo_source.content)
-                res = api.update_with_media(filename, tweet, file=photo_fd)
-            else:
-                res = api.update_status(status=tweet)
+            res = api.update_status(status=tweet)
 
             print("----------------------")
             print(res.id)

@@ -8,11 +8,11 @@ const createPostSuccess = () => ({
   type: "CREATE_POST_SUCCESS"
 });
 
-export const createPost = name => {
+export const createPost = data => {
   return dispatch => {
     dispatch(createPostRequest);
 
-    return postPost(name).then(
+    return postPost(data).then(
       ({ data, status }) => {
         if (status >= 400) {
           dispatch({
@@ -20,7 +20,6 @@ export const createPost = name => {
             message: "Could not create section."
           });
         } else {
-          console.log(data);
           dispatch(createPostSuccess());
           return data;
         }
