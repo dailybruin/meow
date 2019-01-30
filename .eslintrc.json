@@ -5,6 +5,8 @@
     "prettier/prettier": ["error"],
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "react/destructuring-assignment": ["react/destructuring-assignment", "always"]
+    "react/destructuring-assignment": ["react/destructuring-assignment", "always"],
+    "react/prefer-stateless-function": [0, { "ignorePureComponents": false }],
+    "react/prop-types": 0
   }
 }

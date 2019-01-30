@@ -1,0 +1,24 @@
+.login-form .ant-form-item-label label,
+.login-form input.ant-input {
+  font-size: 2em;
+  font-family: "Varela Round", sans-serif;
+}
+
+.login-form textarea.ant-input {
+  font-family: "Varela Round", sans-serif;
+  font-size: 1.1em;
+}
+
+.login-form .ant-form-item-label {
+  text-align: left;
+}
+
+.login-form .ant-checkbox + span {
+  font-size: 1.2em;
+}
+
+.login-form input.ant-input {
+  border-color: transparent;
+  outline: none;
+  border-bottom: 2px solid black;
+}
