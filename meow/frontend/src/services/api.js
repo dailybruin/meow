@@ -53,12 +53,23 @@ export const postList = () => {
     }));
 };
 
-export const postPost = data => {
-  console.log(data);
+export const postDetail = post_id => {
+  return axios
+    .get(`${SERVER_URL}/post/${post_id}`, {
+      withCredentials: true
+    })
+    .then(res => {
+      return res;
+    });
+};
+
+export const postPost = ({ slug, story_url, post_facebook, post_twitter }) => {
   return axios
     .post(`${SERVER_URL}/post/`, {
-      data,
-      withCredentials: true
+      slug,
+      story_url,
+      post_facebook,
+      post_twitter
     })
     .then(res => ({
       data: res.data,

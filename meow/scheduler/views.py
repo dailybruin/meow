@@ -43,8 +43,8 @@ class SMPostList(APIView):
         serializer = SMPostSerializer(posts, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):    
-        serializer = SMPostSerializer(data=request.data['data'])
+    def post(self, request, format=None):
+        serializer = SMPostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

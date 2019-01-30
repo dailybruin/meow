@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Table } from "antd";
+import { withRouter } from "react-router-dom";
+import { Table, Button } from "antd";
 import "./styles.css";
 
 import { loadPosts } from "../../actions/post";
@@ -79,77 +80,6 @@ const columns = [
   }
 ];
 
-/**
- * For testing only
- */
-const posts = [
-  {
-    id: 1,
-    section: "online",
-    slug: "1.1.1 is also really long",
-    post_twitter: "hi this is a really long message to see how it works",
-    post_facebook: "btw, this is also a really long message",
-    pub_time: "2011-12-30 01:00:00",
-    pub_ready_copy: 1,
-    pub_ready_online: 1,
-    sent: 1,
-    sending: 0,
-    sent_error: 1
-  },
-  {
-    id: 2,
-    section: "id: 2",
-    slug: "1.2.1",
-    post_twitter: "bi",
-    post_facebook: "zye",
-    pub_time: "2011-12-30 01:30:00",
-    pub_ready_copy: 1,
-    pub_ready_online: 0,
-    sent: 0,
-    sending: 0,
-    sent_error: 0
-  },
-  {
-    id: 3,
-    section: "id: 3",
-    slug: "1.2.1",
-    post_twitter: "bi",
-    post_facebook: "zye",
-    pub_time: "2011-12-30 00:30:00",
-    pub_ready_copy: 1,
-    pub_ready_online: 1,
-    sent: 0,
-    sending: 1,
-    sent_error: 0
-  },
-  {
-    id: 4,
-    section: "id: 4",
-    slug: "football.2018",
-    post_twitter: "twitter post",
-    post_facebook: "facebook post",
-    pub_time: "2011-12-30 00:03:30",
-    pub_ready_copy: 1,
-    pub_ready_online: 1,
-    sent: 0,
-    sending: 0,
-    sent_error: 0
-  },
-  {
-    id: 5,
-    section: "id: 5",
-    slug: "football.2018",
-    post_twitter: "twitter post",
-    post_facebook: "facebook post",
-    pub_time: "2011-12-30 00:00:10",
-    pub_ready_copy: 1,
-    pub_ready_online: 1,
-    sent: 1,
-    sending: 0,
-    sent_error: 0
-  }
-];
-
 let dataStore;
 class Posts extends React.Component {
   constructor(props) {
@@ -161,30 +91,26 @@ class Posts extends React.Component {
 
   componentDidMount() {
     this.props.loadPosts().then(res => {
-      console.log(res.data);
-      dataStore = res.data;
-      this.setState({ data: dataStore });
+      dataStore = res;
+      this.setState({ data: res });
     });
   }
 
   render() {
     return (
-      <div>
-        <h2>Posts</h2>
-        {/* <Table dataSource={this.state.data} columns={columns} /> */}
-        <Table
-          rowKey="id"
-          dataSource={posts}
-          columns={columns}
-          rowClassName={record => {
-            if (record.sent_error) return "sent-error";
-            if (record.sending) return "sending";
-            if (record.pub_ready_copy && record.pub_ready_online && record.sent) return "sent";
-            if (record.pub_ready_online) return "ready-to-post";
-            return "draft";
-          }}
-        />
-      </div>
+      <Table
+        className="post-table"
+        rowKey="id"
+        dataSource={this.state.data}
+        columns={columns}
+        rowClassName={record => {
+          if (record.sent_error) return "sent-error";
+          if (record.sending) return "sending";
+          if (record.pub_ready_copy && record.pub_ready_online && record.sent) return "sent";
+          if (record.pub_ready_online) return "ready-to-post";
+          return "draft";
+        }}
+      />
     );
   }
 }
@@ -193,7 +119,9 @@ const mapDispatchToProps = {
   loadPosts
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Posts);
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(Posts)
+);
