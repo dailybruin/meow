@@ -1,11 +1,9 @@
 .login-form .ant-form-item-label label,
 .login-form input.ant-input {
   font-size: 2em;
-  font-family: "Varela Round", sans-serif;
 }
 
 .login-form textarea.ant-input {
-  font-family: "Varela Round", sans-serif;
   font-size: 1.1em;
 }
 

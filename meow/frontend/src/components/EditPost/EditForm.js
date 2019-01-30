@@ -57,6 +57,29 @@ class EditForm extends React.Component {
             </Form.Item>
           </Col>
         </Row>
+        <Row type="flex" gutter={12}>
+          <Col span={12}>
+            <Form.Item label="instagram">
+              {getFieldDecorator("post_instagram", {
+                rules: []
+              })(<TextArea rows={6} />)}
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row type="flex" gutter={12}>
+          <Col span={12}>
+            <Form.Item>
+              {getFieldDecorator("copy_edited", {
+                rules: []
+              })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item>
+              <Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     );
   }
@@ -83,6 +106,10 @@ export default Form.create({
       post_twitter: Form.createFormField({
         ...props.post_twitter,
         value: props.post_twitter.value
+      }),
+      copy_edited: Form.createFormField({
+        ...props.copy_edited,
+        value: props.copy_edited.value
       })
     };
   },

@@ -1,53 +1,41 @@
 import React from "react";
-import { withRouter, NavLink } from "react-router-dom";
-
-import { Layout, Menu, Icon, Row, Col, Slider, Collapse, DatePicker, Checkbox } from "antd";
-import "../scss/components/_sidebar.scss";
-import Time from "./Time";
+import { withRouter } from "react-router-dom";
+import { Layout } from "antd";
+import LeftSidebarAdd from "./Add";
+import LeftSidebarPosts from "./Posts";
+import SidebarSettings from "./Settings";
 
 const { Sider } = Layout;
 
-function callback(key) {
-  console.log(key);
-}
-
-function pickDate(date, dateString) {
-  console.log(date, dateString);
-}
-
-function checkBox(e) {
-  console.log(`checked = ${e.target.checked}`);
-}
-
-const Panel = Collapse.Panel;
-
 class Sidebar extends React.Component {
-  render() {
+  renderContent() {
     const { location } = this.props;
+
+    if (location.pathname === "/add" || location.pathname.substring(0, 5) === "/edit") {
+      return <LeftSidebarAdd />;
+    }
+
+    if (location.pathname === "/") {
+      return <LeftSidebarPosts />;
+    }
+
+    if (location.pathname.substring(0, 9) === "/settings") {
+      return <SidebarSettings />;
+    }
+
+    return null;
+  }
+
+  render() {
     return (
-      <Sider theme="light" style={{ minHeight: "100vh" }}>
-        <div className="logo">
-          <h1>meow</h1>
-        </div>
-        <h2>Content here</h2>
-        <Collapse defaultActiveKey={["1"]} onChange={callback}>
-          <Panel header="posts from" key="1">
-            <DatePicker onChange={pickDate} />
-          </Panel>
-          <Panel header="section" key="2">
-            <Checkbox onChange={checkBox}>sports</Checkbox>
-            <Checkbox onChange={checkBox}>news</Checkbox>
-            <Checkbox onChange={checkBox}>opinion</Checkbox>
-          </Panel>
-          <Panel header="post time" key="3">
-            <Time />
-          </Panel>
-          <Panel header="status" key="4">
-            <Checkbox onChange={checkBox}>ready to post</Checkbox>
-            <Checkbox onChange={checkBox}>draft</Checkbox>
-            <Checkbox onChange={checkBox}>sent</Checkbox>
-          </Panel>
-        </Collapse>
+      <Sider
+        width="20vw"
+        theme="light"
+        style={{
+          backgroundColor: "#1A9AE0"
+        }}
+      >
+        {this.renderContent()}
       </Sider>
     );
   }

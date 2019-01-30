@@ -3,11 +3,11 @@ import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { Layout } from "antd";
 
-import LeftSidebar from "../Sidebars/Left";
-import RightSidebar from "../Sidebars/Right";
+import Sidebar from "../Sidebar";
 import Header from "../Header";
 import Posts from "../Posts";
 import EditPost from "../EditPost";
+import Sections from "../Settings/Sections";
 
 const { Content } = Layout;
 
@@ -25,7 +25,7 @@ class Home extends React.Component {
     const { location } = this.props;
 
     const contentStyles =
-      location.pathname === "/add"
+      location.pathname === "/add" || location.pathname.substring(0, 5) === "/edit"
         ? { position: "relative", transform: "translateY(-30px)" }
         : { backgroundColor: "white" };
 
@@ -37,11 +37,13 @@ class Home extends React.Component {
       >
         <Header />
         <Layout>
-          <LeftSidebar />
+          <Sidebar />
           <Content style={contentStyles}>
             <Switch>
               <Route exact path="/" component={PaddedPosts} />
-              <Route exact path="/add" component={EditPost} />
+              <Route path="/add" component={EditPost} />
+              <Route path="/edit/:postId" component={EditPost} />
+              <Route path="/settings/sections" component={Sections} />
             </Switch>
           </Content>
         </Layout>

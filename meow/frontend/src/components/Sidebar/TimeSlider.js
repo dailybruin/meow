@@ -1,8 +1,7 @@
 import React from "react";
-import { Row, Col, Slider, InputNumber } from "antd";
-import { strict } from "assert";
+import { Slider } from "antd";
 
-export default class Time extends React.Component {
+export default class TimeSlider extends React.Component {
   state = {
     inputValue: 24,
     time: "12:00 PM"
@@ -38,20 +37,16 @@ export default class Time extends React.Component {
 
   render() {
     return (
-      <Col>
-        <Row>
-          <h3>{this.state.time}</h3>
-        </Row>
-        <Row>
-          <Slider
-            min={0}
-            max={47}
-            defaultValue={24}
-            onChange={this.onChange}
-            tooltipVisible={false}
-          />
-        </Row>
-      </Col>
+      <React.Fragment>
+        <h3>{this.state.time}</h3>
+        <Slider
+          min={0}
+          max={47}
+          defaultValue={24}
+          onChange={this.onChange}
+          tooltipVisible={false}
+        />
+      </React.Fragment>
     );
   }
 }

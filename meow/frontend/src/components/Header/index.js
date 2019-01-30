@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Layout, Row, Col, Button } from "antd";
+import { Layout, Row, Col, Button, Icon } from "antd";
 import "./index.css";
 
 const { Header: AntdHeader } = Layout;
@@ -10,7 +10,11 @@ const options = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-dig
 
 class Header extends Component {
   state = {
-    time: new Date().toLocaleString("en-US", options)
+    time: new Date().toLocaleString("en-US", options),
+    showNewmeow: !(
+      this.props.location.pathname === "/add" ||
+      this.props.location.pathname.substring(0, 5) === "/edit"
+    )
   };
 
   componentDidMount() {
@@ -29,12 +33,22 @@ class Header extends Component {
     setInterval(this.getTime, 60000);
   };
 
+  toSettings = () => {
+    this.props.history.push("/settings/sections");
+  };
+
+  toHome = () => {
+    if (this.props.location.pathname !== "/") {
+      this.props.history.push("/");
+    }
+  };
+
   render() {
     return (
       <div
         className="meow-header"
         style={{
-          backgroundColor: "#0080C6",
+          backgroundColor: "#2a73b2",
           height: "13vh",
           display: "flex",
           justifyContent: "space-between",
@@ -43,19 +57,33 @@ class Header extends Component {
           paddingRight: "3em"
         }}
       >
-        <h1 style={{ fontSize: "3em" }}>meow</h1>
+        <h1 onClick={this.toHome} style={{ fontSize: "3em", cursor: "pointer" }}>
+          meow
+        </h1>
         <h2>today: {this.state.time}</h2>
-        {this.props.location.pathname !== "/add" ? (
+        {this.state.showNewmeow ? (
           <div>
             <span style={{ fontSize: "1.3em" }}>Hi there, {this.props.firstName}!</span>
+            <Button
+              shape="circle"
+              style={{
+                margin: "0 1.2em 0 0.6em",
+                backgroundColor: "transparent",
+                fontSize: "1.4em",
+                color: "white",
+                border: "transparent"
+              }}
+              onClick={this.toSettings}
+            >
+              <Icon theme="filled" type="setting" />
+            </Button>
             <Button
               style={{
                 backgroundColor: "white",
                 color: "black",
                 border: "2px solid black",
                 borderRadius: "20px",
-                fontSize: "1.4em",
-                marginLeft: "1.4em"
+                fontSize: "1.4em"
               }}
               type="primary"
               size="large"

@@ -1,10 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { Button } from "antd";
 
 import { createPost } from "../../actions/post";
 import EditForm from "./EditForm";
-import { Button } from "antd";
+
+import { getPost } from "../../actions/post";
 
 class EditPost extends React.Component {
   state = {
@@ -12,9 +14,39 @@ class EditPost extends React.Component {
       slug: "",
       url: "",
       post_facebook: "",
-      post_twitter: ""
+      post_twitter: "",
+      copy_edited: false
     }
   };
+
+  componentDidMount() {
+    const { postId } = this.props.match.params;
+
+    if (postId) {
+      this.props.getPost(postId).then(res => {
+        console.log(res);
+        this.setState({
+          fields: {
+            slug: {
+              value: res.slug
+            },
+            url: {
+              value: res.story_url
+            },
+            post_facebook: {
+              value: res.post_facebook
+            },
+            post_twitter: {
+              value: res.post_twitter
+            },
+            copy_edited: {
+              value: res.pub_ready_copy
+            }
+          }
+        });
+      });
+    }
+  }
 
   nevermind = () => {
     this.props.history.push("/");
@@ -31,7 +63,8 @@ class EditPost extends React.Component {
       slug: this.state.fields.slug.value,
       story_url: this.state.fields.url.value,
       post_facebook: this.state.fields.post_facebook.value,
-      post_twitter: this.state.fields.post_twitter.value
+      post_twitter: this.state.fields.post_twitter.value,
+      pub_ready_copy: this.state.fields.copy_edited.value
     };
 
     this.props.createPost(data).then(data => {
@@ -66,7 +99,6 @@ class EditPost extends React.Component {
               backgroundColor: "#CB0000",
               borderRadius: "20px",
               fontSize: "2em",
-              fontFamily: '"Varela Round", sans-serif',
               color: "white"
             }}
             size="large"
@@ -76,16 +108,15 @@ class EditPost extends React.Component {
           </Button>
           <Button
             style={{
-              backgroundColor: "#1A9AE0",
+              backgroundColor: "#3980bf",
               borderRadius: "20px",
-              fontSize: "2em",
-              fontFamily: '"Varela Round", sans-serif'
+              fontSize: "2em"
             }}
             type="primary"
             size="large"
             onClick={this.handleOk}
           >
-            create
+            save
           </Button>
         </div>
       </div>
@@ -94,7 +125,8 @@ class EditPost extends React.Component {
 }
 
 const mapDispatchToProps = {
-  createPost
+  createPost,
+  getPost: postId => getPost(postId)
 };
 
 export default withRouter(
