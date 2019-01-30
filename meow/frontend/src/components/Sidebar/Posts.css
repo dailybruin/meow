@@ -3,9 +3,9 @@
   border: none;
 }
 
-.meow-collapse span,
 .meow-collapse h3,
-.meow-collapse.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+.meow-collapse.ant-collapse > .ant-collapse-item > .ant-collapse-header,
+.meow-collapse .ant-checkbox-wrapper {
   color: white;
 }
 

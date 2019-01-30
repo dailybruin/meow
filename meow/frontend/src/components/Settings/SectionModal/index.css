@@ -1,0 +1,19 @@
+.meow-section-modal .ant-modal-content {
+  border-radius: 0;
+}
+
+.meow-section-modal .ant-modal-header {
+  border-radius: 0;
+  background-color: #1a9ae0;
+}
+
+.meow-section-modal .ant-modal-header .ant-modal-title {
+  color: white;
+  font-size: 1.4em;
+}
+
+.soc img {
+  height: 40px;
+  width: auto;
+  margin: 1em auto;
+}

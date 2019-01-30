@@ -76,3 +76,14 @@ export const postPost = ({ slug, story_url, post_facebook, post_twitter }) => {
       status: res.status
     }));
 };
+
+export const sectionList = () => {
+  return axios
+    .get(`${SERVER_URL}/section/`, {
+      withCredentials: true
+    })
+    .then(res => ({
+      data: res.data,
+      status: res.status
+    }));
+};

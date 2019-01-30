@@ -11,4 +11,5 @@ class SMPostSerializer(serializers.ModelSerializer):
 class SectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
-        fields = '__all__'
+        fields = ('name', 'id', 'facebook_account_handle',
+                  'twitter_account_handle',)

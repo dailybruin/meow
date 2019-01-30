@@ -6,45 +6,16 @@ import { Button } from "antd";
 import { createPost } from "../../actions/post";
 import EditForm from "./EditForm";
 
-import { getPost } from "../../actions/post";
+import { getPost, editPost } from "../../actions/post";
+import { loadSections } from "../../actions/section";
 
 class EditPost extends React.Component {
-  state = {
-    fields: {
-      slug: "",
-      url: "",
-      post_facebook: "",
-      post_twitter: "",
-      copy_edited: false
-    }
-  };
-
   componentDidMount() {
     const { postId } = this.props.match.params;
 
     if (postId) {
-      this.props.getPost(postId).then(res => {
-        console.log(res);
-        this.setState({
-          fields: {
-            slug: {
-              value: res.slug
-            },
-            url: {
-              value: res.story_url
-            },
-            post_facebook: {
-              value: res.post_facebook
-            },
-            post_twitter: {
-              value: res.post_twitter
-            },
-            copy_edited: {
-              value: res.pub_ready_copy
-            }
-          }
-        });
-      });
+      this.props.getPost(postId);
+      this.props.loadSections();
     }
   }
 
@@ -53,21 +24,11 @@ class EditPost extends React.Component {
   };
 
   handleFormChange = changedFields => {
-    this.setState(({ fields }) => ({
-      fields: { ...fields, ...changedFields }
-    }));
+    this.props.editPost(changedFields);
   };
 
   handleOk = () => {
-    const data = {
-      slug: this.state.fields.slug.value,
-      story_url: this.state.fields.url.value,
-      post_facebook: this.state.fields.post_facebook.value,
-      post_twitter: this.state.fields.post_twitter.value,
-      pub_ready_copy: this.state.fields.copy_edited.value
-    };
-
-    this.props.createPost(data).then(data => {
+    this.props.createPost().then(data => {
       if (data) {
         this.props.history.push("/");
       } else {
@@ -76,8 +37,6 @@ class EditPost extends React.Component {
   };
 
   render() {
-    const fields = this.state.fields;
-
     return (
       <div
         style={{
@@ -87,7 +46,7 @@ class EditPost extends React.Component {
           padding: "2.2em 2em"
         }}
       >
-        <EditForm {...fields} onChange={this.handleFormChange} />
+        <EditForm {...this.props} onChange={this.handleFormChange} />
         <div
           style={{
             display: "flex",
@@ -124,14 +83,24 @@ class EditPost extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  slug: state.default.post.slug,
+  story_url: state.default.post.story_url,
+  post_facebook: state.default.post.post_facebook,
+  post_twitter: state.default.post.post_twitter,
+  sections: state.default.section.sections
+});
+
 const mapDispatchToProps = {
   createPost,
-  getPost: postId => getPost(postId)
+  getPost: postId => getPost(postId),
+  loadSections,
+  editPost: data => editPost(data)
 };
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(EditPost)
 );

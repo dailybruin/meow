@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 
 from scheduler.models import *
-from scheduler.serializers import SMPostSerializer
+from scheduler.serializers import SMPostSerializer, SectionSerializer
 
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -33,6 +33,18 @@ from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
 
+class SectionList(APIView):
+    """
+    List all SMPosts, or create a new SMPost.
+    """
+
+    def get(self, request, format=None):
+        sections = Section.objects.all()
+        serializer = SectionSerializer(sections, many=True)
+        return Response(serializer.data)
+
+
+
 class SMPostList(APIView):
     """
     List all SMPosts, or create a new SMPost.
@@ -43,7 +55,7 @@ class SMPostList(APIView):
         serializer = SMPostSerializer(posts, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):    
+    def post(self, request, format=None):
         serializer = SMPostSerializer(data=request.data['data'])
         if serializer.is_valid():
             serializer.save()

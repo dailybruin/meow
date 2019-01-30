@@ -34,7 +34,7 @@ class EditForm extends React.Component {
           })(<Input placeholder="type slug here" />)}
         </Form.Item>
         <Form.Item {...formItemLayout} label="url">
-          {getFieldDecorator("url", {
+          {getFieldDecorator("story_url", {
             rules: []
           })(<Input placeholder="https://dailybruin.com/..." />)}
         </Form.Item>
@@ -93,23 +93,23 @@ export default Form.create({
     return {
       slug: Form.createFormField({
         ...props.slug,
-        value: props.slug.value
+        value: props.slug
       }),
-      url: Form.createFormField({
-        ...props.url,
-        value: props.url.value
+      story_url: Form.createFormField({
+        ...props.story_url,
+        value: props.story_url
       }),
       post_facebook: Form.createFormField({
         ...props.post_facebook,
-        value: props.post_facebook.value
+        value: props.post_facebook
       }),
       post_twitter: Form.createFormField({
         ...props.post_twitter,
-        value: props.post_twitter.value
+        value: props.post_twitter
       }),
       copy_edited: Form.createFormField({
         ...props.copy_edited,
-        value: props.copy_edited.value
+        value: props.copy_edited
       })
     };
   },

@@ -70,8 +70,7 @@ export const getPost = postId => {
             message: `Could not load section ${postId}.`
           });
         } else {
-          dispatch({ type: "FETCH_POST_SUCCESS" });
-          return data;
+          dispatch({ type: "FETCH_POST_SUCCESS", payload: data });
         }
       },
       err => {
@@ -83,3 +82,9 @@ export const getPost = postId => {
     );
   };
 };
+
+export const editPost = data => dispatch =>
+  dispatch({
+    type: "EDIT_POST_SLUG",
+    payload: data
+  });
