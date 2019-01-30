@@ -38,6 +38,7 @@ class FilterableWrapper extends React.Component {
 
     return (
       <div>
+        <Header />
         <Sidebar />
         <p onClick={this.handleToggle}>CLICK ME TO FILTER</p>
         <PostGetter posts={posts} />

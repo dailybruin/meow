@@ -61,6 +61,7 @@ class PostGetterBase extends React.Component {
         // minRows={posts.length}
         columns={cols}
         className="react-table"
+        noDataText="No posts found!"
         getTdProps={(state, rowInfo) => {
           return {
             onClick: () => {
