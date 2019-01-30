@@ -2,13 +2,24 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { Layout } from "antd";
 import LeftSidebarAdd from "./Add";
+import LeftSidebarPosts from "./Posts";
 
 const { Sider } = Layout;
 
 class LeftSidebar extends React.Component {
-  render() {
+  renderContent() {
     const { location } = this.props;
 
+    if (location.pathname === "/add") {
+      return <LeftSidebarAdd />;
+    }
+
+    if (location.pathname === "/") {
+      return <LeftSidebarPosts />;
+    }
+    return null;
+  }
+  render() {
     return (
       <Sider
         width="20vw"
@@ -19,7 +30,7 @@ class LeftSidebar extends React.Component {
         }}
       >
         <h2>You are at {location.pathname}</h2>
-        {location.pathname === "/add" ? <LeftSidebarAdd /> : null}
+        {this.renderContent()}
       </Sider>
     );
   }
