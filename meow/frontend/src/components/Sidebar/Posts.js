@@ -1,11 +1,22 @@
 import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { Collapse, Calendar, Checkbox } from "antd";
+
+import { logout } from "../../actions/user";
+
 import "./Posts.css";
 import TimeSlider from "./TimeSlider";
 
 const { Panel } = Collapse;
 
 class LeftSidebarPosts extends React.Component {
+  logout = () => {
+    this.props.logout().then(() => {
+      this.props.history.push("/");
+    });
+  };
+
   render() {
     return (
       <div
@@ -37,6 +48,7 @@ class LeftSidebarPosts extends React.Component {
           </Panel>
         </Collapse>
         <div
+          onClick={this.logout}
           style={{
             width: "100%",
             height: "8vh",
@@ -44,7 +56,8 @@ class LeftSidebarPosts extends React.Component {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            borderTop: "1px solid #d9d9d9"
+            borderTop: "1px solid #d9d9d9",
+            cursor: "pointer"
           }}
         >
           <h1
@@ -61,4 +74,13 @@ class LeftSidebarPosts extends React.Component {
   }
 }
 
-export default LeftSidebarPosts;
+const mapDispatchToProps = {
+  logout
+};
+
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(LeftSidebarPosts)
+);

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib.auth import logout as django_logout
 from django.conf import settings
+from django.core import serializers
 
 from rest_framework.response import Response
 
@@ -18,6 +19,7 @@ def me(request):
     return JsonResponse({
         'username': user.username,
         'first_name': user.first_name,
+        'groups': list(user.groups.all().values()),
         'isAuthenticated': True
     })
 

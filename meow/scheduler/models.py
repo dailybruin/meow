@@ -260,7 +260,6 @@ Thanks,
 
 class Section(models.Model):
     name = models.CharField(max_length=100, blank=False)
-    slack_channel = models.CharField(max_length=100, null=True, blank=True)
     twitter_account_handle = models.CharField(
         max_length=100, null=True, blank=True)
     facebook_account_handle = models.CharField(

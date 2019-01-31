@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Layout, Row, Col, Button, Icon } from "antd";
 import "./index.css";
+import { ED } from "../../services/auth";
+import SettingsButton from "./SettingsButton";
 
 const { Header: AntdHeader } = Layout;
 
@@ -33,10 +35,6 @@ class Header extends Component {
     setInterval(this.getTime, 60000);
   };
 
-  toSettings = () => {
-    this.props.history.push("/settings/sections");
-  };
-
   toHome = () => {
     if (this.props.location.pathname !== "/") {
       this.props.history.push("/");
@@ -64,19 +62,7 @@ class Header extends Component {
         {this.state.showNewmeow ? (
           <div>
             <span style={{ fontSize: "1.3em" }}>Hi there, {this.props.firstName}!</span>
-            <Button
-              shape="circle"
-              style={{
-                margin: "0 1.2em 0 0.6em",
-                backgroundColor: "transparent",
-                fontSize: "1.4em",
-                color: "white",
-                border: "transparent"
-              }}
-              onClick={this.toSettings}
-            >
-              <Icon theme="filled" type="setting" />
-            </Button>
+            <SettingsButton />
             <Button
               style={{
                 backgroundColor: "white",

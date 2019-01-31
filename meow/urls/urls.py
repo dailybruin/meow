@@ -16,8 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url, include
 
-app_name = "urls"
-
 urlpatterns = [
     url(r'^auth/', include('social_django.urls', namespace='social')),
     url(r'^users/', include('user_profile.urls', namespace='user_profile')),

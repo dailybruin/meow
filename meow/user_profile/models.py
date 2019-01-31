@@ -1,27 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
+from .roles import ROLE_CHOICES, CONTRIBUTOR
 
 
 class User(AbstractUser):
-    CONTRIBUTOR = 'CT'
-    PROJ_MANAGER = 'PM'
-    SENIOR_STAFF = 'ST'
-    ASST_EDITOR = 'AE'
-    EDITOR = 'ED'
-    ROLE_CHOICES = (
-        (CONTRIBUTOR, 'Contributor'),
-        (PROJ_MANAGER, 'Project Manager'),
-        (SENIOR_STAFF, 'Senior Staff'),
-        (ASST_EDITOR, 'Assistant Editor'),
-        (EDITOR, 'Editor')
-    )
-
     objects = UserManager()
     bio = models.CharField(max_length=512, null=True)
     role = models.CharField(
         max_length=2,
         choices=ROLE_CHOICES,
-        default=CONTRIBUTOR,
+        default=CONTRIBUTOR
     )
     profile_img = models.ImageField(upload_to='profile/imgs/',
                                     null=True)

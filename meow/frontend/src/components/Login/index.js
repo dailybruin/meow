@@ -5,7 +5,7 @@ import { Divider, Button } from "antd";
 
 import { login } from "../../actions/user";
 
-const AUTH_URL = "http://localhost:5000/api/v1/auth/login/google-oauth2/";
+const AUTH_URL = "http://localhost:5000/api/v1/auth/login/slack/";
 
 class Login extends React.Component {
   componentDidMount() {
@@ -44,10 +44,10 @@ class Login extends React.Component {
           }}
         >
           <Divider>
-            <h1>DDocs</h1>
+            <h1>meow</h1>
           </Divider>
-          <Button href={AUTH_URL} size="large" icon="google">
-            Sign in with Google
+          <Button href={AUTH_URL} size="large" icon="slack">
+            Sign in with Slack
           </Button>
         </div>
       </div>

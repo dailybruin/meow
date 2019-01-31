@@ -195,7 +195,8 @@ else:
 
 # Authentication settings for python social auth
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
+    # SLACK SOCIAL AUTH
+    'social_core.backends.slack.SlackOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -203,22 +204,27 @@ SOCIAL_AUTH_USER_MODEL = 'user_profile.User'
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 # GOOGLE SOCIAL AUTH
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_CLIENT_ID')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_CLIENT_SECRET')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["email"]
-SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
-    'access_type': 'offline', 'hd': 'media.ucla.edu'}
-SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['media.ucla.edu', ]
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_CLIENT_ID')
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_CLIENT_SECRET')
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["email"]
+# SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+#     'access_type': 'offline', 'hd': 'media.ucla.edu'}
+# SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['media.ucla.edu', ]
 
-# SOCIAL_AUTH_SLACK_KEY = env('SLACK_CLIENT_ID')
-# SOCIAL_AUTH_SLACK_SECRET = env('SLACK_CLIENT_SECRET')
-# SOCIAL_AUTH_SLACK_IGNORE_DEFAULT_SCOPE = True
-# SOCIAL_AUTH_SLACK_SCOPE = ['conversations:read', 'users:read']
-# SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
+# SLACK SOCIAL AUTH
+SOCIAL_AUTH_SLACK_KEY = env('SLACK_CLIENT_ID')
+SOCIAL_AUTH_SLACK_SECRET = env('SLACK_CLIENT_SECRET')
+
+# If you change this Slack will throw an error because by default Python Social
+# Auth requests the identity scope rather than the users scope and you cannot
+# mix identity and user scopes
+SOCIAL_AUTH_SLACK_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_SLACK_SCOPE = ['groups:read',
+                           'channels:read', 'users:read', 'users.profile:read']
+SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
 
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5000/'
-SOCIAL_AUTH_URL_NAMESPACE = "urls:social"
 LOGIN_REDIRECT_URL = 'http://localhost:5000/'
 LOGOUT_REDIRECT_URL = 'http://localhost:5000/'
 
@@ -231,5 +237,6 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
+    'meow.pipeline.set_roles',
     'social_core.pipeline.user.user_details',
 )
