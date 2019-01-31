@@ -8,6 +8,7 @@ import Header from "../Header";
 import Posts from "../Posts";
 import EditPost from "../EditPost";
 import Sections from "../Settings/Sections";
+import Permissions from "../Settings/Permissions";
 
 const { Content } = Layout;
 
@@ -17,6 +18,11 @@ const PrettyPadding = ({ children }) => (
 const PaddedPosts = () => (
   <PrettyPadding>
     <Posts />
+  </PrettyPadding>
+);
+const PrettyPermissions = () => (
+  <PrettyPadding>
+    <Permissions />
   </PrettyPadding>
 );
 
@@ -44,6 +50,7 @@ class Home extends React.Component {
               <Route path="/add" component={EditPost} />
               <Route path="/edit/:postId" component={EditPost} />
               <Route path="/settings/sections" component={Sections} />
+              <Route path="/settings/permissions" component={PrettyPermissions} />
             </Switch>
           </Content>
         </Layout>

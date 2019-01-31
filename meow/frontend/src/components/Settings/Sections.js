@@ -6,19 +6,6 @@ import "./Sections.css";
 import { loadSections } from "../../actions/section";
 import SectionModal from "./SectionModal";
 
-const listData = [
-  {
-    title: "daily bruin",
-    facebook: "https://www.facebook.com/dailybruin/",
-    twitter: "https://twitter.com/dailybruin"
-  },
-  {
-    title: "sports",
-    facebook: "https://www.facebook.com/dailybruin/",
-    twitter: "https://twitter.com/dailybruin"
-  }
-];
-
 class Sections extends React.Component {
   state = {
     showModal: false
@@ -42,7 +29,8 @@ class Sections extends React.Component {
       name: section.name,
       id: section.id,
       facebook_account_handle: section.facebook_account_handle,
-      twitter_account_handle: section.twitter_account_handle
+      twitter_account_handle: section.twitter_account_handle,
+      slack_channel: section.slack_channel
     });
   };
 

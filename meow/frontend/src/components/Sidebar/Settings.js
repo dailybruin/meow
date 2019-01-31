@@ -39,7 +39,7 @@ class SidebarSettings extends React.Component {
     },
     {
       name: "permissions",
-      link: "/perms"
+      link: "/permissions"
     }
   ];
 
