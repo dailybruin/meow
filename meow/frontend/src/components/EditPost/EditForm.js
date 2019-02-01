@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Row, Col, Input, Select, Checkbox, Divider } from "antd";
+import { ED, Copy, Online } from "../../services/auth";
 import "./EditForm.css";
 
 const CheckboxGroup = Checkbox.Group;
@@ -25,6 +26,18 @@ const formItemLayout = {
 class EditForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
+    const CopyEdited = Copy(() => (
+      <Form.Item className="checkable-items">
+        {getFieldDecorator("copy_edited", {
+          rules: []
+        })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
+      </Form.Item>
+    ));
+    const OnlineReady = Online(() => (
+      <Form.Item className="checkable-items">
+        <Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>
+      </Form.Item>
+    ));
 
     return (
       <Form layout="horizontal" className="login-form">
@@ -68,16 +81,10 @@ class EditForm extends React.Component {
         </Row>
         <Row type="flex" gutter={12}>
           <Col span={12}>
-            <Form.Item>
-              {getFieldDecorator("copy_edited", {
-                rules: []
-              })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
-            </Form.Item>
+            <CopyEdited />
           </Col>
           <Col span={12}>
-            <Form.Item>
-              <Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>
-            </Form.Item>
+            <OnlineReady />
           </Col>
         </Row>
       </Form>

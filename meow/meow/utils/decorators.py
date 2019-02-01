@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import List, Callable
 from django.contrib.auth import get_user_model, authenticate
-
+from meow.exceptions import AuthenticationRequired
 
 def api_login_required():
     """Enforces user authentication for a particular endpoint
@@ -26,7 +26,7 @@ def api_login_required():
             if not request.user.is_authenticated:
                 print("NOT AUTHENTICATED")
                 print(request.user)
-                raise Exception
+                raise AuthenticationRequired
             else:
                 return function(request, *args, **kwargs)
         return wrap

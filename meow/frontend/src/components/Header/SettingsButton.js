@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { Button, Icon } from "antd";
-import { ED, Copy } from "../../services/auth";
+import { Online } from "../../services/auth";
 
 class SettingsButton extends React.PureComponent {
   toSettings = () => {
@@ -13,7 +13,7 @@ class SettingsButton extends React.PureComponent {
       <Button
         shape="circle"
         style={{
-          margin: "0 1.2em 0 0.6em",
+          margin: "0 0.6em 0 0.6em",
           backgroundColor: "transparent",
           fontSize: "1.4em",
           color: "white",
@@ -27,4 +27,4 @@ class SettingsButton extends React.PureComponent {
   }
 }
 
-export default Copy(withRouter(SettingsButton));
+export default Online(withRouter(SettingsButton));

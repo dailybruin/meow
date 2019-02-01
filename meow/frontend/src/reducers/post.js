@@ -10,9 +10,11 @@ export default function post(state = initialState, action) {
         post_facebook: action.payload.post_facebook,
         post_twitter: action.payload.post_twitter,
         pub_date: action.payload.pub_time,
-        pub_time: action.payload.pub_time
+        pub_time: action.payload.pub_time,
+        pub_ready_copy_user: action.payload.pub_ready_copy_user,
+        pub_ready_online_user: action.payload.pub_ready_online_user
       };
-    case "EDIT_POST_SLUG":
+    case "EDIT_POST":
       const keys = Object.keys(action.payload);
       return {
         ...state,

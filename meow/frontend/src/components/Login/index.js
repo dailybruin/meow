@@ -5,7 +5,7 @@ import { Divider, Button } from "antd";
 
 import { login } from "../../actions/user";
 
-const AUTH_URL = "http://localhost:5000/api/v1/auth/login/slack/";
+const AUTH_URL = "http://localhost:5000/api/v1/auth/login/meow/";
 
 class Login extends React.Component {
   componentDidMount() {

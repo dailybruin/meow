@@ -65,6 +65,7 @@ class Header extends Component {
             <SettingsButton />
             <Button
               style={{
+                marginLeft: "0.6em",
                 backgroundColor: "white",
                 color: "black",
                 border: "2px solid black",

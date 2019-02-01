@@ -4,7 +4,7 @@ import { getMe } from "../api";
 // Authorization HOC
 // Courtesy of Ricardo Fearing
 // https://medium.com/@ricardo_42589/this-is-awesome-470fe9bb6f56
-export const RoleAuth = allowedRole => WrappedComponent => {
+export const RoleAuth = allowedRole => (WrappedComponent, FallbackComponent = null) => {
   return class AuthorizedComponent extends React.PureComponent {
     state = { groups: [] };
 
@@ -18,24 +18,24 @@ export const RoleAuth = allowedRole => WrappedComponent => {
       if (this.state.groups.some(x => x.name === allowedRole)) {
         return <WrappedComponent {...this.props} />;
       } else {
-        return false;
+        return FallbackComponent ? <FallbackComponent {...this.props} /> : null;
       }
     }
   };
 };
 
-export const RoleAuthJSXLiteral = allowedRoles => Literal => {
-  return class AuthorizedComponent extends React.Component {
-    state = { role: null };
+export const RoleAuthJSXLiteral = allowedRole => Literal => {
+  return class AuthorizedComponent extends React.PureComponent {
+    state = { groups: [] };
 
     componentDidMount() {
       getMe().then(res => {
-        this.setState({ role: res.data.role });
+        this.setState({ groups: res.data.groups });
       });
     }
 
     render() {
-      if (allowedRoles.includes(this.state.role)) {
+      if (this.state.groups.some(x => x.name === allowedRole)) {
         return React.createElement(Literal);
       } else {
         return false;

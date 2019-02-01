@@ -12,4 +12,4 @@ class SectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
         fields = ('name', 'id', 'facebook_account_handle',
-                  'twitter_account_handle', 'slack_channel',)
+                  'twitter_account_handle',)

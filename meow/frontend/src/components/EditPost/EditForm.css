@@ -20,3 +20,7 @@
   outline: none;
   border-bottom: 2px solid black;
 }
+
+.checkable-items.ant-form-item {
+  margin-bottom: 12px;
+}

@@ -196,7 +196,7 @@ else:
 # Authentication settings for python social auth
 AUTHENTICATION_BACKENDS = (
     # SLACK SOCIAL AUTH
-    'social_core.backends.slack.SlackOAuth2',
+    'meow.backend.MeowAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -212,16 +212,16 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 # SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['media.ucla.edu', ]
 
 # SLACK SOCIAL AUTH
-SOCIAL_AUTH_SLACK_KEY = env('SLACK_CLIENT_ID')
-SOCIAL_AUTH_SLACK_SECRET = env('SLACK_CLIENT_SECRET')
+SOCIAL_AUTH_MEOW_KEY = env('SLACK_CLIENT_ID')
+SOCIAL_AUTH_MEOW_SECRET = env('SLACK_CLIENT_SECRET')
 
 # If you change this Slack will throw an error because by default Python Social
 # Auth requests the identity scope rather than the users scope and you cannot
 # mix identity and user scopes
-SOCIAL_AUTH_SLACK_IGNORE_DEFAULT_SCOPE = True
-SOCIAL_AUTH_SLACK_SCOPE = ['groups:read',
+SOCIAL_AUTH_MEOW_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_MEOW_SCOPE = ['groups:read',
                            'channels:read', 'users:read', 'users.profile:read']
-SOCIAL_AUTH_SLACK_TEAM = 'dailybruin'
+SOCIAL_AUTH_MEOW_TEAM = 'dailybruin'
 
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5000/'

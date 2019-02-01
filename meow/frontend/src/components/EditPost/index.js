@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Row, Col } from "antd";
 
 import { createPost } from "../../actions/post";
 import EditForm from "./EditForm";
@@ -47,6 +47,22 @@ class EditPost extends React.Component {
         }}
       >
         <EditForm {...this.props} onChange={this.handleFormChange} />
+        <Row
+          style={{
+            marginBottom: "1.2em"
+          }}
+        >
+          <Col span={12}>
+            {this.props.pub_ready_copy_user !== null
+              ? `Copy-edited by: ${this.props.pub_ready_copy_user}`
+              : `Not copy-edited`}
+          </Col>
+          <Col span={12}>
+            {this.props.pub_ready_online_user !== null
+              ? `Marked ready by: ${this.props.pub_ready_online_user}`
+              : `Not ready to send`}
+          </Col>
+        </Row>
         <div
           style={{
             display: "flex",
@@ -88,6 +104,8 @@ const mapStateToProps = state => ({
   story_url: state.default.post.story_url,
   post_facebook: state.default.post.post_facebook,
   post_twitter: state.default.post.post_twitter,
+  pub_ready_copy_user: state.default.post.pub_ready_copy_user,
+  pub_ready_online_user: state.default.post.pub_ready_online_user,
   sections: state.default.section.sections
 });
 
