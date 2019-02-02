@@ -8,8 +8,6 @@ class MeowAuth(SlackOAuth2):
         """Return user details from Slack account"""
         # Build the username with the team $username@$team_url
         # Necessary to get unique names for all of slack
-        print("INSIDE USER DETAILS")
-        print(response)
         user = response['user']
         team = response.get('team')
         name = user['name']
@@ -19,8 +17,6 @@ class MeowAuth(SlackOAuth2):
         full_name_list = fullname.split(' ', 1)
         first_name = full_name_list[0]
         last_name = full_name_list[1]
-        print(first_name)
-        print(last_name)
 
         if self.setting('USERNAME_WITH_TEAM', True) and team and \
            'name' in team:
