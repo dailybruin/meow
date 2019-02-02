@@ -56,7 +56,7 @@ class SMPostList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = SMPostSerializer(data=request.data['data'])
+        serializer = SMPostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -583,9 +583,29 @@ def twitter_connect(request):
         context["verifier"] = verifier
         return render(request, 'scheduler/twitter_connect.html', context)
 
+def fb_redir(request):
+    fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
+    fb_app_secret = MeowSetting.objects.get(
+        setting_key="fb_app_secret").setting_value
+
+    # TODO: find a better place for these constants
+    fb_authorization_base_url = 'https://www.facebook.com/v2.10/dialog/oauth'
+    fb_token_url = 'https://graph.facebook.com/oauth/access_token'
+    redirect_uri = MeowSetting.objects.get(
+        setting_key="site_url").setting_value + '/api/v1/fb-connect/'
+    fb_permissions = ["manage_pages", "publish_pages"]
+
+    facebook = OAuth2Session(fb_app_id,
+                             redirect_uri=redirect_uri,
+                             scope=fb_permissions)
+    facebook = facebook_compliance_fix(facebook)
+    facebook_auth_url, state = facebook.authorization_url(
+        fb_authorization_base_url)
+    return redirect(facebook_auth_url)
 
 @user_passes_test(can_manage)
 def fb_connect(request):
+    print("INSIDE FB CONNECT")
     context = {
         "user": request.user,
         "site_settings": get_settings(),
@@ -640,7 +660,7 @@ def fb_connect(request):
 
         fb_token_url = 'https://graph.facebook.com/oauth/access_token'
         redirect_uri = MeowSetting.objects.get(
-            setting_key="site_url").setting_value + '/manage/fb-connect'
+            setting_key="site_url").setting_value + '/api/v1/fb-connect/'
 
         fb_code = request.GET.get('code', None)
         fb_permissions = ["manage_pages", "publish_pages"]
@@ -649,11 +669,12 @@ def fb_connect(request):
                                  redirect_uri=redirect_uri,
                                  scope=fb_permissions)
         facebook = facebook_compliance_fix(facebook)
+        print("gonna get token")
         fb_token = facebook.fetch_token(
             fb_token_url,
             client_secret=fb_app_secret,
             code=fb_code)
-
+        print(fb_token)
         token = fb_token['access_token']
 
         extended_token = facepy.utils.get_extended_access_token(

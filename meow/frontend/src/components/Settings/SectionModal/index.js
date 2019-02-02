@@ -5,6 +5,8 @@ import { Modal, Input, Form } from "antd";
 
 import "./index.css";
 
+const FB_URL = "http://localhost:5000/api/v1/fb-redir/";
+
 class SectionModal extends React.Component {
   state = {
     name: this.props.name,
@@ -29,7 +31,7 @@ class SectionModal extends React.Component {
           <span>facebook: </span>
           {facebook_account_handle}
           <div>
-            <a href="">
+            <a href={FB_URL}>
               <img src="https://i.stack.imgur.com/oL5c2.png" alt="Connect with Facebook" />
             </a>
           </div>

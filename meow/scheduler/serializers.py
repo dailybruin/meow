@@ -3,6 +3,8 @@ from scheduler.models import SMPost, Section
 
 
 class SMPostSerializer(serializers.ModelSerializer):
+    section = serializers.PrimaryKeyRelatedField
+
     class Meta:
         model = SMPost
         fields = '__all__'

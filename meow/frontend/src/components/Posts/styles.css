@@ -31,6 +31,10 @@
   white-space: nowrap;
 }
 
+.ant-table-tbody td {
+  word-break: break-word;
+}
+
 .ant-table-tbody .draft .status {
   background-color: #ffff99;
 }

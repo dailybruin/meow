@@ -9,8 +9,6 @@ export const loadSections = () => dispatch =>
           message: "Could not load sections."
         });
       } else {
-        console.log("load sections");
-        console.log(data);
         dispatch({
           type: "LOAD_SECTIONS_SUCCESS",
           payload: data

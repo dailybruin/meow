@@ -63,18 +63,18 @@ export const postDetail = post_id => {
     });
 };
 
-export const postPost = ({ slug, story_url, post_facebook, post_twitter }) => {
-  return axios
-    .post(`${SERVER_URL}/post/`, {
-      slug,
-      story_url,
-      post_facebook,
-      post_twitter
-    })
-    .then(res => ({
+export const postPost = (postId, postData) => {
+  if (postId) {
+    return axios.put(`${SERVER_URL}/post/${postId}`, postData).then(res => ({
       data: res.data,
       status: res.status
     }));
+  }
+
+  return axios.post(`${SERVER_URL}/post/`, postData).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
 };
 
 export const sectionList = () => {

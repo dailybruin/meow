@@ -1,37 +1,37 @@
 import { postPost, postList, postDetail } from "../services/api";
 
-const createPostRequest = () => ({
-  type: "CREATE_POST_REQUEST"
+const savePostRequest = () => ({
+  type: "SAVE_POST_REQUEST"
 });
 
-const createPostSuccess = () => ({
-  type: "CREATE_POST_SUCCESS"
+const savePostSuccess = () => ({
+  type: "SAVE_POST_SUCCESS"
 });
 
-export const createPost = data => {
-  return dispatch => {
-    dispatch(createPostRequest);
+export const savePost = postId => (dispatch, getState) => {
+  dispatch(savePostRequest);
 
-    return postPost(data).then(
-      ({ data, status }) => {
-        if (status >= 400) {
-          dispatch({
-            type: "CREATE_SECTION_FAIL",
-            message: "Could not create section."
-          });
-        } else {
-          dispatch(createPostSuccess());
-          return data;
-        }
-      },
-      err => {
+  const postData = getState().default.post;
+
+  return postPost(postId, postData).then(
+    ({ data, status }) => {
+      if (status >= 400) {
         dispatch({
-          type: "NETWORK_ERROR",
-          message: "Could not connect to server."
+          type: "SAVE_POST_FAIL",
+          message: "Could not save or create post."
         });
+      } else {
+        dispatch(savePostSuccess());
+        return data;
       }
-    );
-  };
+    },
+    err => {
+      dispatch({
+        type: "NETWORK_ERROR",
+        message: "Could not connect to server."
+      });
+    }
+  );
 };
 
 export const loadPosts = () => {
@@ -85,6 +85,6 @@ export const getPost = postId => {
 
 export const editPost = data => dispatch =>
   dispatch({
-    type: "EDIT_POST_SLUG",
+    type: "EDIT_POST",
     payload: data
   });

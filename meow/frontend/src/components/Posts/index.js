@@ -5,6 +5,7 @@ import { Table, Button } from "antd";
 import "./styles.css";
 
 import { loadPosts } from "../../actions/post";
+import { loadSections } from "../../actions/section";
 
 const utc = "UTC";
 
@@ -21,6 +22,7 @@ const columns = [
     dataIndex: "section",
     className: "section",
     sortDirections: ["ascend", "descend"],
+    render: text => (text ? sectionStore.find(x => x.id === text).name : "No Section"),
     sorter: (a, b) => a.section.localeCompare(b.section)
   },
   {
@@ -55,8 +57,8 @@ const columns = [
     sortDirections: ["ascend", "descend"],
     defaultSortOrder: "descend",
     sorter: (a, b) => new Date(a.pub_time) - new Date(b.pub_time),
-    render: (text, record) =>
-      new Date(`${record.pub_time} ${utc}`).toLocaleString("en-US", timeOptions)
+    render: text =>
+      text ? new Date(`${text} ${utc}`).toLocaleString("en-US", timeOptions) : "No Time"
   },
   {
     key: "status",
@@ -81,6 +83,7 @@ const columns = [
 ];
 
 let dataStore;
+let sectionStore;
 class Posts extends React.Component {
   constructor(props) {
     super(props);
@@ -94,6 +97,8 @@ class Posts extends React.Component {
       dataStore = res;
       this.setState({ data: res });
     });
+    this.props.loadSections();
+    sectionStore = this.props.sections;
   }
 
   render() {
@@ -116,13 +121,18 @@ class Posts extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  sections: state.default.section.sections
+});
+
 const mapDispatchToProps = {
-  loadPosts
+  loadPosts,
+  loadSections
 };
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(Posts)
 );

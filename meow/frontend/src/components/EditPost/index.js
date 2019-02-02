@@ -3,10 +3,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Button, Row, Col } from "antd";
 
-import { createPost } from "../../actions/post";
 import EditForm from "./EditForm";
 
-import { getPost, editPost } from "../../actions/post";
+import { getPost, editPost, savePost } from "../../actions/post";
 import { loadSections } from "../../actions/section";
 
 class EditPost extends React.Component {
@@ -28,7 +27,9 @@ class EditPost extends React.Component {
   };
 
   handleOk = () => {
-    this.props.createPost().then(data => {
+    const { postId } = this.props.match.params;
+
+    this.props.savePost(postId).then(data => {
       if (data) {
         this.props.history.push("/");
       } else {
@@ -106,14 +107,15 @@ const mapStateToProps = state => ({
   post_twitter: state.default.post.post_twitter,
   pub_ready_copy_user: state.default.post.pub_ready_copy_user,
   pub_ready_online_user: state.default.post.pub_ready_online_user,
+  section: state.default.post.section,
   sections: state.default.section.sections
 });
 
 const mapDispatchToProps = {
-  createPost,
   getPost: postId => getPost(postId),
   loadSections,
-  editPost: data => editPost(data)
+  editPost: data => editPost(data),
+  savePost: postId => savePost(postId)
 };
 
 export default withRouter(

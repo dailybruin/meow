@@ -1,9 +1,9 @@
 import React from "react";
-import { Form, Row, Col, Input, Select, Checkbox, Divider } from "antd";
+import { Form, Row, Col, Input, Select, Radio, Divider } from "antd";
 import { ED, Copy, Online } from "../../services/auth";
 import "./EditForm.css";
 
-const CheckboxGroup = Checkbox.Group;
+const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 
 const formItemLayout = {
@@ -52,7 +52,15 @@ class EditForm extends React.Component {
           })(<Input placeholder="https://dailybruin.com/..." />)}
         </Form.Item>
         <Form.Item {...formItemLayout} label="sections">
-          <CheckboxGroup options={["Daily Bruin", "Opinion", "Sports"]} />
+          {getFieldDecorator("section", {
+            rules: []
+          })(
+            <RadioGroup>
+              {this.props.sections.map(x => (
+                <Radio value={x.id}>{x.name}</Radio>
+              ))}
+            </RadioGroup>
+          )}
         </Form.Item>
         <Row type="flex" gutter={12}>
           <Col span={12}>
@@ -93,9 +101,9 @@ class EditForm extends React.Component {
 }
 
 export default Form.create({
-  onFieldsChange(props, changedFields) {
-    props.onChange(changedFields);
-  },
+  // onFieldsChange(props, changedFields) {
+  //   props.onChange(changedFields);
+  // },
   mapPropsToFields(props) {
     return {
       slug: Form.createFormField({
@@ -105,6 +113,10 @@ export default Form.create({
       story_url: Form.createFormField({
         ...props.story_url,
         value: props.story_url
+      }),
+      section: Form.createFormField({
+        ...props.section,
+        value: props.section
       }),
       post_facebook: Form.createFormField({
         ...props.post_facebook,
@@ -120,8 +132,7 @@ export default Form.create({
       })
     };
   },
-  onValuesChange(_, values) {
-    console.log("on values change");
-    console.log(values);
+  onValuesChange(props, values) {
+    props.onChange(values);
   }
 })(EditForm);

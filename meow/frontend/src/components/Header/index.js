@@ -31,10 +31,6 @@ class Header extends Component {
     this.props.history.push("/add");
   };
 
-  getTime = () => {
-    setInterval(this.getTime, 60000);
-  };
-
   toHome = () => {
     if (this.props.location.pathname !== "/") {
       this.props.history.push("/");

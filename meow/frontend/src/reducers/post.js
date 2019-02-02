@@ -15,10 +15,9 @@ export default function post(state = initialState, action) {
         pub_ready_online_user: action.payload.pub_ready_online_user
       };
     case "EDIT_POST":
-      const keys = Object.keys(action.payload);
       return {
         ...state,
-        ...{ [keys[0]]: action.payload[keys[0]].value }
+        ...action.payload
       };
     default:
       return state;
