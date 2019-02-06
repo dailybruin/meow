@@ -26,7 +26,7 @@ def me(request):
         'bio': user.bio,
         'profile_img': user.profile_img,
         'isAuthenticated': True,
-        'theme': user.theme.background_color;
+        'theme': user.theme.background_color,
     })
 
 
