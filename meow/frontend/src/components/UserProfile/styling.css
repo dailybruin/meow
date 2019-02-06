@@ -1,5 +1,9 @@
 /*  Move this into index.css when doen  */
 
+.user-profile-row {
+  display: flex;
+}
+
 .user-profile-container {
   display: flex;
   flex-direction: row;
@@ -28,6 +32,7 @@
 .user-profile-basic-info-container {
   width: 50%;
   height: 50%;
+  flex-grow: 1;
 }
 
 .user-profile-basic-info-table {
@@ -64,6 +69,7 @@
 .user-profile-bio-container {
   width: 50%;
   height: 50%;
+  margin-right: 40px;
 }
 
 .user-profile-bio-header {
@@ -79,6 +85,7 @@
 .user-profile-theme-container {
   width: 50%;
   height: 50%;
+  flex-grow: 1;
 }
 
 .user-profile-theme-header {
@@ -96,7 +103,6 @@
   width: 50px;
   border-radius: 50%;
   margin-right: 15%;
-  margin-left: 10px;
   margin-bottom: 10%;
 }
 
@@ -105,7 +111,6 @@
   width: 50px;
   border-radius: 50%;
   margin-right: 15%;
-  margin-left: 10px;
   margin-bottom: 10%;
   border: 3px black solid;
 }

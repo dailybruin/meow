@@ -9,6 +9,7 @@ import Posts from "../Posts";
 import EditPost from "../EditPost";
 import Sections from "../Settings/Sections";
 import Permissions from "../Settings/Permissions";
+import UserProfile from "../UserProfile/UserProfile";
 
 const { Content } = Layout;
 
@@ -23,6 +24,11 @@ const PaddedPosts = () => (
 const PrettyPermissions = () => (
   <PrettyPadding>
     <Permissions />
+  </PrettyPadding>
+);
+const PrettyUserProfile = () => (
+  <PrettyPadding>
+    <UserProfile />
   </PrettyPadding>
 );
 
@@ -51,6 +57,7 @@ class Home extends React.Component {
               <Route path="/edit/:postId" component={EditPost} />
               <Route path="/settings/sections" component={Sections} />
               <Route path="/settings/permissions" component={PrettyPermissions} />
+              <Route path="/profile/:username" component={PrettyUserProfile} />
             </Switch>
           </Content>
         </Layout>

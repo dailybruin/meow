@@ -9,13 +9,6 @@ export default function user(state = initialState, action) {
         ...state,
         username: action.payload.username === "" ? null : action.payload.username,
         firstName: action.payload.firstName === "" ? null : action.payload.firstName,
-        lastName: action.payload.lastName === "" ? null : action.payload.lastName,
-        slack_username: action.payload.slack_username === "" ? null : action.payload.slack_username,
-        email: action.payload.email,
-        role: action.payload.role,
-        bio: action.payload.bio,
-        profile_img: action.payload.profile_img,
-        theme: action.payload.theme,
         isAuthenticated: action.payload.isAuthenticated
       };
     }

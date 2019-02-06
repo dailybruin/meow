@@ -19,14 +19,8 @@ def me(request):
     return JsonResponse({
         'username': user.username,
         'first_name': user.first_name,
-        'last_name': user.last_name,
-        'slack_username': user.slack_username,
-        'email': user.email,
-        'role': user.role,
-        'bio': user.bio,
-        'profile_img': user.profile_img,
-        'isAuthenticated': True,
-        'theme': user.theme.background_color,
+        'groups': list(user.groups.all().values()),
+        'isAuthenticated': True
     })
 
 
@@ -40,7 +34,7 @@ def logout(request):
 def userList(request):
     if request.method == "GET":
         users = User.objects.values('id', 'username', 'first_name', 'last_name',
-                                    'section', 'last_login', 'is_superuser', 'bio', 'role', 'email', 'theme', 'groups', 'slack_username')
+                                    'section', 'last_login', 'is_superuser', 'bio', 'role', 'email', 'theme', 'groups')
         print(users)
         usersRawData = SafeUserSerializer(users, many=True)
         usersOrderedDict = usersRawData.data
