@@ -16,4 +16,4 @@ class SafeUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ('password', 'user_permissions',)
+        exclude = ('password', 'user_permissions', 'profile_img' )

@@ -1,27 +1,27 @@
 /*  Move this into index.css when doen  */
-.theme-color-dot {
-  height: 25px;
-  width: 25px;
-  border-radius: 50%;
-}
 
 .user-profile-container {
   display: flex;
   flex-direction: row;
-  wrap: wrap;
+  flex-wrap: wrap;
   align-items: start;
+  font-family: Varela Round;
+  color: black;
 }
 
 /* User Profile Image */
 .user-profile-image-container {
-  width: 50%;
+  width: 30%;
   height: 50%;
+  margin-right: 40px; /*should I try using % instead*/
 }
 
 .user-profile-image {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: 200px;
+  box-sizing: border-box;
+  border: 5px solid black;
 }
 
 /* User Profile Basic Information */
@@ -40,13 +40,81 @@
 }
 
 .user-profile-basic-info-title {
-  flex: 1 0 120px;
+  flex: 1 0 20%;
   max-width: 220px;
-  margin-bottom: 20px;
+  font-size: 48px;
+  margin-bottom: 0px;
 }
 
 .user-profile-basic-info-data {
-  width: 70%;
-  display: inline;
-  margin-bottom: 20px;
+  flex: 1 0 40%;
+  /* max-width: 220px; */
+  font-size: 36px;
+  margin-bottom: 0px;
+}
+
+.user-profile-basic-info-horizontal-line {
+  width: 90%;
+  margin-right: 10%;
+  /* margin-left: 30%; */
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+.user-profile-bio-container {
+  width: 50%;
+  height: 50%;
+}
+
+.user-profile-bio-header {
+  font-size: 48px;
+}
+
+.user-profile-bio-paragraph {
+  font-size: 24px;
+  max-width: 100%;
+}
+
+/* User Profile Theme */
+.user-profile-theme-container {
+  width: 50%;
+  height: 50%;
+}
+
+.user-profile-theme-header {
+  font-size: 48px;
+}
+
+.user-profile-theme-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.user-profile-theme-dot {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 15%;
+  margin-left: 10px;
+  margin-bottom: 10%;
+}
+
+.user-profile-theme-dot-active {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 15%;
+  margin-left: 10px;
+  margin-bottom: 10%;
+  border: 3px black solid;
+}
+
+.user-profile-social-media-bubble {
+  height: 50px;
+  width: 50px;
+  /* border-radius: 50%; */
+  margin-right: 30px;
+  margin-top: 15px;
+  margin-bottom: 10px;
 }
