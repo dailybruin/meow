@@ -51,9 +51,7 @@ class Home extends React.Component {
               <Route path="/add" component={EditPost} />
               <Route path="/edit/:postId" component={EditPost} />
               <Route path="/settings/sections" component={OnlineRedir(Sections)} />
-              {/* protect */}
-              <Route path="/settings/permissions" component={PrettyPermissions} />
-              {/* protect */}
+              <Route path="/settings/permissions" component={OnlineRedir(PrettyPermissions)} />
             </Switch>
           </Content>
         </Layout>
