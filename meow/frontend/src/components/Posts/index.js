@@ -103,20 +103,23 @@ class Posts extends React.Component {
 
   render() {
     return (
-      <Table
-        className="post-table"
-        rowKey="id"
-        dataSource={this.state.data}
-        columns={columns}
-        onRowClick={record => this.props.history.push("/edit/" + record.id)}
-        rowClassName={record => {
-          if (record.sent_error) return "sent-error";
-          if (record.sending) return "sending";
-          if (record.pub_ready_copy && record.pub_ready_online && record.sent) return "sent";
-          if (record.pub_ready_online) return "ready-to-post";
-          return "draft";
-        }}
-      />
+      <React.Fragment>
+        <p>{this.props.location.search}</p>
+        <Table
+          className="post-table"
+          rowKey="id"
+          dataSource={this.state.data}
+          columns={columns}
+          onRowClick={record => this.props.history.push("/edit/" + record.id)}
+          rowClassName={record => {
+            if (record.sent_error) return "sent-error";
+            if (record.sending) return "sending";
+            if (record.pub_ready_copy && record.pub_ready_online && record.sent) return "sent";
+            if (record.pub_ready_online) return "ready-to-post";
+            return "draft";
+          }}
+        />
+      </React.Fragment>
     );
   }
 }
