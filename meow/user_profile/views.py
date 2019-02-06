@@ -19,11 +19,14 @@ def me(request):
     return JsonResponse({
         'username': user.username,
         'first_name': user.first_name,
+        'last_name': user.last_name,
         'slack_username': user.slack_username,
         'email': user.email,
         'role': user.role,
+        'bio': user.bio,
         'profile_img': user.profile_img,
-        'isAuthenticated': True
+        'isAuthenticated': True,
+        'theme': user.theme.background_color;
     })
 
 
