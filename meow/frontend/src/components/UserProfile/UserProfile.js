@@ -90,8 +90,6 @@ class UserProfile extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  token: state.auth.token
-});
+const mapStateToProps = state => ({});
 
 export default withRouter(connect(mapStateToProps)(UserProfile));
