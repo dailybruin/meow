@@ -7,7 +7,10 @@ import storage from "redux-persist/lib/storage";
 
 const middlewares = [thunkMiddleware, createLogger()];
 
-const enhancers = [applyMiddleware(...middlewares)];
+const enhancers = [
+  applyMiddleware(...middlewares),
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+];
 
 const persistConfig = {
   key: "root",
