@@ -1,5 +1,6 @@
 import React from "react";
 import { getMe } from "../api";
+import { withRouter } from "react-router";
 
 // Authorization HOC
 // Courtesy of Ricardo Fearing
@@ -13,7 +14,6 @@ export const RoleAuth = allowedRole => (WrappedComponent, FallbackComponent = nu
         this.setState({ groups: res.data.groups });
       });
     }
-
     render() {
       if (this.state.groups.some(x => x.name === allowedRole)) {
         return <WrappedComponent {...this.props} />;
@@ -42,6 +42,36 @@ export const RoleAuthJSXLiteral = allowedRole => Literal => {
       }
     }
   };
+};
+
+export const RoleAuthRoute = allowedRole => (WrappedComponent, FallbackComponent = null) => {
+  const AuthComp = class AuthorizedComponent extends React.PureComponent {
+    state = { groups: [] };
+
+    isAllowedRole = roles => {
+      return roles.some(x => x.name === allowedRole);
+    };
+
+    componentDidMount() {
+      getMe().then(res => {
+        const { groups } = res.data;
+
+        if (!this.isAllowedRole(groups)) {
+          const redirectAfterLogin = this.props.location.pathname;
+          this.props.history.push(`/login?next=${redirectAfterLogin}`);
+        }
+        this.setState({ groups });
+      });
+    }
+    render() {
+      if (this.isAllowedRole(this.state.groups)) {
+        return <WrappedComponent {...this.props} />;
+      } else {
+        return FallbackComponent ? <FallbackComponent {...this.props} /> : null;
+      }
+    }
+  };
+  return withRouter(AuthComp);
 };
 
 // export const Any = Authorization(["any", "editor", "upper"]);
