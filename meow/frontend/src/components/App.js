@@ -8,8 +8,8 @@ import UserProfile from "./UserProfile/UserProfile";
 const App = () => (
   <Switch>
     <Route path="/login" component={Login} />
-    <Route path="/" component={Home} />
-    <Route path="/profile" component={UserProfile} />
+    <Route path="/" component={Authorization(Home)} />
+    <Route path="/profile" component={Authorization(UserProfile)} />
   </Switch>
 );
 
