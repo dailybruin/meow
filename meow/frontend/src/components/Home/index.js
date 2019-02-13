@@ -9,9 +9,8 @@ import Posts from "../Posts";
 import EditPost from "../EditPost";
 import Sections from "../Settings/Sections";
 import Permissions from "../Settings/Permissions";
-import UserProfile from "../UserProfile/UserProfile";
+import UserProfile from "../UserProfile";
 import { OnlineRedir } from "../../services/auth";
-
 
 const { Content } = Layout;
 
@@ -61,7 +60,6 @@ class Home extends React.Component {
               <Route path="/settings/sections" component={OnlineRedir(Sections)} />
               <Route path="/settings/permissions" component={OnlineRedir(PrettyPermissions)} />
               <Route path="/profile/:username" component={PrettyUserProfile} />
-
             </Switch>
           </Content>
         </Layout>
