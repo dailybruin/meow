@@ -12,4 +12,3 @@ package-lock.json
 webpack-stats.json
 .vscode/*
 *~
-.idea

@@ -62,7 +62,7 @@ class UserProfile extends React.Component {
         role: data.role,
         slack_username: data.username,
         email: data.username + "@media.ucla.edu",
-        bio: data.bio || "You have no bio. meow :(",
+        bio: data.bio,
         themes: [
           { themeColor: "#FF0000" },
           { themeColor: "#FFA500" },
