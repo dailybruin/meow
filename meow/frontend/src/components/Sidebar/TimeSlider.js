@@ -8,6 +8,9 @@ export default class TimeSlider extends React.Component {
   };
 
   getTime = value => {
+    if (value == 24) {
+      return "12:00 PM";
+    }
     let time = Math.floor(value / 2);
     time = time % 12;
     if (time == 0) {
