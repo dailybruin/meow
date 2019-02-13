@@ -1,9 +1,10 @@
 import React from "react";
-import axios from "axios";
+import { withRouter } from "react-router";
+import { connect } from "react-redux";
 
-const ENDPOINT = "/api/post/";
+import { post } from "../../actions";
 
-export default class SMPost extends React.Component {
+class SMPost extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,12 +14,11 @@ export default class SMPost extends React.Component {
     this.renderNull = this.renderNull.bind(this);
   }
 
-  componentWillMount() {
-    let post_id = this.props.match.params.post_id;
-    let post_endpoint = ENDPOINT.concat(String(post_id));
+  componentDidMount() {
+    const postId = this.props.match.params.post_id;
 
-    axios.get(post_endpoint).then(res => {
-      this.setState({ data: res.data });
+    this.props.fetchPost(postId).then(res => {
+      this.setState({ data: res });
     });
   }
 
@@ -39,3 +39,14 @@ export default class SMPost extends React.Component {
     return this.state.data ? this.renderPost() : this.renderNull();
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  fetchPost: postId => dispatch(post.fetchPost(postId))
+});
+
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(SMPost)
+);

@@ -1,0 +1,26 @@
+.login-form .ant-form-item-label label,
+.login-form input.ant-input {
+  font-size: 2em;
+}
+
+.login-form textarea.ant-input {
+  font-size: 1.1em;
+}
+
+.login-form .ant-form-item-label {
+  text-align: left;
+}
+
+.login-form .ant-checkbox + span {
+  font-size: 1.2em;
+}
+
+.login-form input.ant-input {
+  border-color: transparent;
+  outline: none;
+  border-bottom: 2px solid black;
+}
+
+.checkable-items.ant-form-item {
+  margin-bottom: 12px;
+}

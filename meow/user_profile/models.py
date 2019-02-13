@@ -1,25 +1,26 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-# Create your models here.
+from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
+from .roles import ROLE_CHOICES, CONTRIBUTOR
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
+class User(AbstractUser):
+    objects = UserManager()
     bio = models.CharField(max_length=512, null=True)
+    role = models.CharField(
+        max_length=2,
+        choices=ROLE_CHOICES,
+        default=CONTRIBUTOR
+    )
     profile_img = models.ImageField(upload_to='profile/imgs/',
                                     null=True)
     theme = models.ForeignKey(
         'Theme', blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.user.username
+        return self.username
 
-    class Meta:
-        default_related_name = 'userprofile'
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
 
 class Theme(models.Model):

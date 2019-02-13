@@ -1,11 +1,12 @@
-var path = require("path");
-var webpack = require("webpack");
-var BundleTracker = require("webpack-bundle-tracker");
+const path = require("path");
+const webpack = require("webpack");
+const BundleTracker = require("webpack-bundle-tracker");
+const dotenv = require("dotenv").config({ path: __dirname + "/.env" });
 
 module.exports = {
   context: __dirname,
 
-  mode: process.env.DEBUG == "True" ? "development" : "production",
+  mode: process.env.DEBUG === "True" ? "development" : "production",
 
   entry: {
     main: "./meow/frontend/src/index"
@@ -32,15 +33,21 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
+        test: /\.(css|sass|scss)$/,
         use: [
           {
             loader: "style-loader" // creates style nodes from JS strings
           },
           {
             loader: "css-loader" // translates CSS into CommonJS
+          },
+          {
+            loader: "sass-loader" // translates CSS into CommonJS
           }
         ]
+      },
+      {
+        test: /\.(jpe|jpg|woff|woff2|eot|ttf|svg)(\?.*$|$)/
       }
     ]
   }

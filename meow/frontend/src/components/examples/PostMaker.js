@@ -1,9 +1,10 @@
 import React from "react";
-import axios from "axios";
+import { withRouter } from "react-router";
+import { connect } from "react-redux";
+import "../scss/PostMaker.scss";
+import { post } from "../../actions";
 
-const ENDPOINT = "/api/post/";
-
-export default class PostMaker extends React.Component {
+class PostMaker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,18 +29,15 @@ export default class PostMaker extends React.Component {
 
     const state = Object.assign(this.state, date);
 
-    axios.post(ENDPOINT, state).then(res => {
-      console.log("axious post");
-      console.log(res);
-    });
+    this.props.addPost(state);
   };
 
   render() {
     const { slug, story_url, post_twitter } = this.state;
 
     return (
-      <div className="column">
-        <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.handleSubmit}>
+        <div className="column">
           <div className="field">
             <label className="label">Slug</label>
             <div className="control">
@@ -53,6 +51,13 @@ export default class PostMaker extends React.Component {
               />
             </div>
           </div>
+          <div className="control">
+            <button type="submit" className="button is-info">
+              Create Post
+            </button>
+          </div>
+        </div>
+        <div className="column">
           <div className="field">
             <label className="label">story_url</label>
             <div className="control">
@@ -66,13 +71,19 @@ export default class PostMaker extends React.Component {
               />
             </div>
           </div>
-          <div className="control">
-            <button type="submit" className="button is-info">
-              Create Post
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  addPost: e => dispatch(post.addPost(e))
+});
+
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(PostMaker)
+);

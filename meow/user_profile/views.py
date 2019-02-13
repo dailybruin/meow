@@ -1,57 +1,53 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from django.http import HttpResponse, Http404
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponseRedirect
+from django.contrib.auth import logout as django_logout
+from django.conf import settings
+from django.core import serializers
 
-from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from django.shortcuts import render
-
+from meow.utils.decorators import api_login_required
 from user_profile.models import User
-from user_profile.serializers import UserSerializer
-
+from user_profile.serializers import SafeUserSerializer
+import json
 # Create your views here.
 
 
-class UserProfileList(APIView):
-    """
-    List all User Profile, or create a new User Profile.
-    """
-
-    def post(self, request, format=None):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_login_required()
+def me(request):
+    user = request.user
+    return JsonResponse({
+        'username': user.username,
+        'first_name': user.first_name,
+        'groups': list(user.groups.all().values()),
+        'isAuthenticated': True
+    })
 
 
-class UserProfileDetail(APIView):
-    """
-    Retrieve, update or delete a user profile.
-    """
+@api_login_required()
+def logout(request):
+    django_logout(request)
+    return HttpResponseRedirect("http://localhost:5000")
 
-    def get_object(self, user_id):
-        try:
-            return User.objects.get(user_id=user_id)
-        except User.DoesNotExist:
-            raise Http404
 
-    def get(self, request, user_id, format=None):
-        profile = self.get_object(user_id)
-        serializer = UserSerializer(profile)
-        return Response(serializer.data)
+@api_login_required()
+def userList(request):
+    if request.method == "GET":
+        users = User.objects.values('id', 'username', 'first_name', 'last_name',
+                                    'section', 'last_login', 'is_superuser', 'bio', 'role', 'email', 'theme', 'groups')
+        print(users)
+        usersRawData = SafeUserSerializer(users, many=True)
+        usersOrderedDict = usersRawData.data
+        print(usersOrderedDict)
+        return JsonResponse(usersOrderedDict, safe=False)
 
-    def put(self, request, user_id, format=None):
-        profile = self.get_object(user_id)
-        serializer = UserSerializer(profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, user_id, format=None):
-        profile = self.get_object(user_id)
-        profile.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+@api_login_required()
+def userDetail(request, username):
+    if request.method == "GET":
+        user = User.objects.get(username=username)
+        print(user)
+        userRawData = SafeUserSerializer(user)
+        userOrderedDict = userRawData.data
+        print(userOrderedDict)
+        return JsonResponse(userOrderedDict, safe=False)

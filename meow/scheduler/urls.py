@@ -21,6 +21,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
 
+app_name = "scheduler"
+
 urlpatterns = [
     url(r'^post/$',
         views.SMPostList.as_view(),
@@ -28,10 +30,14 @@ urlpatterns = [
     url(r'^post/(?P<post_id>[0-9]+)$',
         views.SMPostDetail.as_view(),
         name='post-detail'),
+    url(r'^section/$',
+        views.SectionList.as_view(),
+        name='section-list'),
     url(r'^settings/$', views.user_settings, name="settings"),
-    url(r'^manage/twitter-connect/$',
+    url(r'^twitter-connect/$',
         views.twitter_connect, name="twitter_connect"),
-    url(r'^manage/fb-connect/$', views.fb_connect, name="fb_connect"),
+    url(r'^fb-redir/$', views.fb_redir, name="fb_redir"),
+    url(r'^fb-connect/$', views.fb_connect, name="fb_connect"),
     url(r'^manage/$', views.manage, name="manage"),
     url(r'^$', views.dashboard, name='dashboard'),
 ]
