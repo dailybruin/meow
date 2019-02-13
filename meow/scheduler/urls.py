@@ -34,6 +34,7 @@ urlpatterns = [
         views.SectionList.as_view(),
         name='section-list'),
     url(r'^settings/$', views.user_settings, name="settings"),
+    url(r'^twitter-redir/$', views.twitter_redir, name="fb_redir"),
     url(r'^twitter-connect/$',
         views.twitter_connect, name="twitter_connect"),
     url(r'^fb-redir/$', views.fb_redir, name="fb_redir"),

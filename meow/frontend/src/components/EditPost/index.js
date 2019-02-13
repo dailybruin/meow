@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Button, Row, Col } from "antd";
+import { Button, Row, Col, Checkbox } from "antd";
 
 import EditForm from "./EditForm";
 

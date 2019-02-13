@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Row, Col, Input, Select, Radio, Divider } from "antd";
+import { Form, Row, Col, Input, Checkbox, Radio, Divider } from "antd";
 import { ED, Copy, Online } from "../../services/auth";
 import "./EditForm.css";
 
