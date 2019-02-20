@@ -1,6 +1,6 @@
 import React from "react";
-import { Form, Row, Col, Input, Checkbox, Radio, Divider } from "antd";
-import { ED, Copy, Online } from "../../services/auth";
+import { Form, Row, Col, Input, Checkbox, Radio } from "antd";
+import { Copy, Online } from "../../services/auth";
 import "./EditForm.css";
 
 const RadioGroup = Radio.Group;
