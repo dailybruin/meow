@@ -101,6 +101,12 @@ class Posts extends React.Component {
     sectionStore = this.props.sections;
   }
 
+  onRow = (record, rowIndex) => {
+    return {
+      onClick: event => this.props.history.push("/edit/" + record.id)
+    };
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -110,7 +116,7 @@ class Posts extends React.Component {
           rowKey="id"
           dataSource={this.state.data}
           columns={columns}
-          onRowClick={record => this.props.history.push("/edit/" + record.id)}
+          onRow={this.onRow}
           rowClassName={record => {
             if (record.sent_error) return "sent-error";
             if (record.sending) return "sending";

@@ -39,4 +39,7 @@ const mapDispatchToProps = {
   editPost: data => editPost(data)
 };
 
-export default connect(mapDispatchToProps)(LeftSidebarAdd);
+export default connect(
+  null,
+  mapDispatchToProps
+)(LeftSidebarAdd);
