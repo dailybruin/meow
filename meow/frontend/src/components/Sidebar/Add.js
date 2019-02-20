@@ -1,8 +1,15 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Calendar, TimePicker, Button } from "antd";
 import "./Add.css";
 
+import { editPost } from "../../actions/post";
+
 class LeftSidebarAdd extends React.Component {
+  handleFormChange = changedFields => {
+    this.props.editPost(changedFields);
+  };
+
   render() {
     return (
       <div className="leftSidebarAdd">
@@ -28,4 +35,8 @@ class LeftSidebarAdd extends React.Component {
   }
 }
 
-export default LeftSidebarAdd;
+const mapDispatchToProps = {
+  editPost: data => editPost(data)
+};
+
+export default connect(mapDispatchToProps)(LeftSidebarAdd);
