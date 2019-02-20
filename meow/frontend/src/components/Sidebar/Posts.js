@@ -2,8 +2,16 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Collapse, Calendar, Checkbox } from "antd";
+import moment from "moment";
 
 import { logout } from "../../actions/user";
+import {
+  changeTime,
+  addSection,
+  addStatus,
+  removeSection,
+  removeStatus
+} from "../../actions/query";
 
 import "./Posts.css";
 import TimeSlider from "./TimeSlider";
@@ -15,6 +23,19 @@ class LeftSidebarPosts extends React.Component {
     this.props.logout().then(() => {
       this.props.history.push("/");
     });
+  };
+
+  getCurrentDate = () => {
+    const { search } = this.props.location;
+    if (search) return moment(search);
+    return moment(); // now
+  };
+
+  setStatus = statusName => {
+    return e => {
+      if (e.target.checked) this.props.addStatus(statusName);
+      else this.props.removeStatus(statusName);
+    };
   };
 
   render() {
@@ -38,7 +59,7 @@ class LeftSidebarPosts extends React.Component {
                   })
                 }
                 fullscreen={false}
-                defaultValue={this.props.location.search}
+                defaultValue={this.getCurrentDate()}
               />
             </div>
           </Panel>
@@ -51,9 +72,9 @@ class LeftSidebarPosts extends React.Component {
             <TimeSlider />
           </Panel>
           <Panel header="status" key="4">
-            <Checkbox>ready to post</Checkbox>
-            <Checkbox>draft</Checkbox>
-            <Checkbox>sent</Checkbox>
+            <Checkbox onChange={this.setStatus("READ_TO_POST")}>ready to post</Checkbox>
+            <Checkbox onChange={this.setStatus("DRAFT")}>draft</Checkbox>
+            <Checkbox onChange={this.setStatus("SENT")}>sent</Checkbox>
           </Panel>
         </Collapse>
         <div
@@ -84,7 +105,12 @@ class LeftSidebarPosts extends React.Component {
 }
 
 const mapDispatchToProps = {
-  logout
+  logout,
+  changeTime,
+  addSection,
+  addStatus,
+  removeSection,
+  removeStatus
 };
 
 export default withRouter(
