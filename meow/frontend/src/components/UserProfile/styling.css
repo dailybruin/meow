@@ -1,0 +1,126 @@
+/*  Move this into index.css when doen  */
+
+.user-profile-row {
+  display: flex;
+}
+
+.user-profile-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: start;
+  font-family: Varela Round;
+  color: black;
+}
+
+/* User Profile Image */
+.user-profile-image-container {
+  width: 30%;
+  height: 50%;
+  margin-right: 40px; /*should I try using % instead*/
+}
+
+.user-profile-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 200px;
+  box-sizing: border-box;
+  border: 5px solid black;
+}
+
+/* User Profile Basic Information */
+.user-profile-basic-info-container {
+  width: 50%;
+  height: 50%;
+  flex-grow: 1;
+}
+
+.user-profile-basic-info-table {
+}
+
+.user-profile-basic-info-form-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.user-profile-basic-info-title {
+  flex: 1 0 20%;
+  max-width: 220px;
+  font-size: 48px;
+  margin-bottom: 0px;
+}
+
+.user-profile-basic-info-data {
+  flex: 1 0 40%;
+  /* max-width: 220px; */
+  font-size: 36px;
+  margin-bottom: 0px;
+  border-bottom: 2px solid #000;
+}
+
+.user-profile-basic-info-horizontal-line {
+  width: 90%;
+  margin-right: 10%;
+  /* margin-left: 30%; */
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+.user-profile-bio-container {
+  width: 50%;
+  height: 50%;
+  margin-right: 40px;
+}
+
+.user-profile-bio-header {
+  font-size: 48px;
+}
+
+.user-profile-bio-paragraph {
+  font-size: 24px;
+  max-width: 100%;
+}
+
+/* User Profile Theme */
+.user-profile-theme-container {
+  width: 50%;
+  height: 50%;
+  flex-grow: 1;
+}
+
+.user-profile-theme-header {
+  font-size: 48px;
+}
+
+.user-profile-theme-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.user-profile-theme-dot {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 15%;
+  margin-bottom: 10%;
+}
+
+.user-profile-theme-dot-active {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 15%;
+  margin-bottom: 10%;
+  border: 3px black solid;
+}
+
+.user-profile-social-media-bubble {
+  height: 50px;
+  width: 50px;
+  /* border-radius: 50%; */
+  margin-right: 30px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}

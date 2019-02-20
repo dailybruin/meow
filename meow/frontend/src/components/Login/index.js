@@ -18,6 +18,10 @@ class Login extends React.Component {
   }
 
   render() {
+    let img_index = Math.floor(10 * Math.random() + 1);
+    let img_extension = img_index == 5 ? "png" : "jpg";
+    let img_url = `/static/src/assets/cats/${img_index}.${img_extension}`;
+
     return (
       <div
         style={{
@@ -25,9 +29,7 @@ class Login extends React.Component {
           height: "100vh",
           display: "flex",
           justifyContent: "center",
-          backgroundImage: `url("/static/src/assets/cats/${Math.floor(
-            10 * Math.random() + 1
-          )}.jpg")`,
+          backgroundImage: `url("${img_url}")`,
           backgroundSize: "cover"
         }}
       >
