@@ -38,6 +38,10 @@ export default class TimeSlider extends React.Component {
     });
   };
 
+  onChangeEnd = value => {
+    this.props.onSlideEnd(value / 2);
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -47,6 +51,7 @@ export default class TimeSlider extends React.Component {
           max={47}
           defaultValue={24}
           onChange={this.onChange}
+          onAfterChange={this.onChangeEnd}
           tooltipVisible={false}
         />
       </React.Fragment>

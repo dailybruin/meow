@@ -1,5 +1,5 @@
 /**
- * @param time should be a moment object
+ * @param time has range [0:24)
  */
 export const changeTime = time => {
   return dispatch => {

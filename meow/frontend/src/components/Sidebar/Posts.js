@@ -15,6 +15,7 @@ import {
 
 import "./Posts.css";
 import TimeSlider from "./TimeSlider";
+import section from "../../reducers/section";
 
 const { Panel } = Collapse;
 
@@ -36,6 +37,20 @@ class LeftSidebarPosts extends React.Component {
       if (e.target.checked) this.props.addStatus(statusName);
       else this.props.removeStatus(statusName);
     };
+  };
+
+  setSection = sectionName => {
+    return e => {
+      if (e.target.checked) this.props.addSection(sectionName);
+      else this.props.removeSection(sectionName);
+    };
+  };
+
+  /**
+   * @param hour has range [0:24)
+   */
+  changeTime = hour => {
+    this.props.changeTime(hour);
   };
 
   render() {
@@ -64,12 +79,12 @@ class LeftSidebarPosts extends React.Component {
             </div>
           </Panel>
           <Panel header="section" key="2">
-            <Checkbox>sports</Checkbox>
-            <Checkbox>news</Checkbox>
-            <Checkbox>opinion</Checkbox>
+            <Checkbox onChange={this.setSection("SPORTS")}>sports</Checkbox>
+            <Checkbox onChange={this.setSection("NEWS")}>news</Checkbox>
+            <Checkbox onChange={this.setSection("OPINION")}>opinion</Checkbox>
           </Panel>
           <Panel header="post time" key="3">
-            <TimeSlider />
+            <TimeSlider onSlideEnd={this.changeTime} />
           </Panel>
           <Panel header="status" key="4">
             <Checkbox onChange={this.setStatus("READ_TO_POST")}>ready to post</Checkbox>
