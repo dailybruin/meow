@@ -60,6 +60,7 @@ class Home extends React.Component {
               <Route path="/settings/sections" component={OnlineRedir(Sections)} />
               <Route path="/settings/permissions" component={OnlineRedir(PrettyPermissions)} />
               <Route path="/profile/:username" component={PrettyUserProfile} />
+              <Route path="/me" component={PrettyUserProfile} />
             </Switch>
           </Content>
         </Layout>
