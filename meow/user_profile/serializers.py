@@ -15,11 +15,11 @@ class ThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme
         fields = '__all__'
-        
+
 
 class SafeUserSerializer(serializers.ModelSerializer):
     section = serializers.StringRelatedField()
-    theme = ThemeSerializer()
+    selected_theme = ThemeSerializer()
 
     class Meta:
         model = User
