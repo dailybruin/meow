@@ -6,6 +6,7 @@ import { Modal, Input, Form } from "antd";
 import "./index.css";
 
 const FB_URL = "http://localhost:5000/api/v1/fb-redir/";
+const TWIT_URL = "http://localhost:5000/api/v1/twitter-redir/";
 
 class SectionModal extends React.Component {
   state = {
@@ -40,7 +41,7 @@ class SectionModal extends React.Component {
           <span>twitter: </span>
           {twitter_account_handle}
           <div>
-            <a href="">
+            <a href={TWIT_URL}>
               <img src="https://i.imgur.com/8kGZAvb.png" alt="Connect with Twitter" />
             </a>
           </div>

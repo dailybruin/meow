@@ -525,19 +525,42 @@ Thanks,
     return render(request, 'scheduler/manage.html', context)
 
 
-@user_passes_test(can_manage)
+def twitter_redir(request):
+    TWITTER_CONSUMER_KEY = MeowSetting.objects.get(
+        setting_key='twitter_consumer_key').setting_value
+    TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(
+        setting_key='twitter_consumer_secret').setting_value
+
+    twitter_auth = tweepy.OAuthHandler(
+        TWITTER_CONSUMER_KEY,
+        TWITTER_CONSUMER_SECRET,
+        MeowSetting.objects.get(
+            setting_key="site_url").setting_value + "/api/v1/twitter-connect/"
+    )
+    twitter_auth.secure = True
+    twitter_auth_url = twitter_auth.get_authorization_url()
+    request.session["twitter_auth_token"] = twitter_auth.request_token
+    request.session.save()
+    return redirect(twitter_auth_url)
+
+
+# @user_passes_test(can_manage)
 def twitter_connect(request):
+    print("INSIDE TWITTER CONNECT")
     context = {
         "user": request.user,
         "site_settings": get_settings(),
         "sections": Section.objects.all(),
     }
     if request.method == "POST" and request.POST.get("action", None) == "connect":
+        print("here")
         try:
             TWITTER_CONSUMER_KEY = MeowSetting.objects.get(
                 setting_key='twitter_consumer_key').setting_value
+            print(TWITTER_CONSUMER_KEY)
             TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(
                 setting_key='twitter_consumer_secret').setting_value
+            print(TWITTER_CONSUMER_SECRET)
             twitter_auth = tweepy.OAuthHandler(
                 TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
             twitter_auth.secure = True
@@ -572,8 +595,11 @@ def twitter_connect(request):
         return redirect("/")
 
     else:
+        print("there")
         token = request.GET.get("oauth_token", None)
+        print(token)
         verifier = request.GET.get("oauth_verifier", None)
+        print(verifier)
         message = {}
         if not (token and verifier):
             message["mtype"] = "alert"
@@ -581,7 +607,7 @@ def twitter_connect(request):
         context["message"] = message
         context["token"] = token
         context["verifier"] = verifier
-        return render(request, 'scheduler/twitter_connect.html', context)
+        return render(request, 'twit-connect.html', context)
 
 def fb_redir(request):
     fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
@@ -603,9 +629,9 @@ def fb_redir(request):
         fb_authorization_base_url)
     return redirect(facebook_auth_url)
 
-@user_passes_test(can_manage)
+#TODO: fix to use this
+#@user_passes_test(can_manage)
 def fb_connect(request):
-    print("INSIDE FB CONNECT")
     context = {
         "user": request.user,
         "site_settings": get_settings(),
@@ -669,12 +695,10 @@ def fb_connect(request):
                                  redirect_uri=redirect_uri,
                                  scope=fb_permissions)
         facebook = facebook_compliance_fix(facebook)
-        print("gonna get token")
         fb_token = facebook.fetch_token(
             fb_token_url,
             client_secret=fb_app_secret,
             code=fb_code)
-        print(fb_token)
         token = fb_token['access_token']
 
         extended_token = facepy.utils.get_extended_access_token(
@@ -698,7 +722,7 @@ def fb_connect(request):
             message["mtext"] = "Connection to Facebook failed; try again and be sure to authorize the application and all its permissions and be sure your account is an administrator on the page."
         context["message"] = message
         context["pages"] = pages_info
-        return render(request, 'scheduler/fb_connect.html', context)
+        return render(request, 'fb-connect.html', context)
 
 
 def logout(request):
