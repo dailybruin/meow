@@ -6,7 +6,7 @@ import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
 import "./styling.css";
-import { userDetail } from "../../services/api";
+import { userDetail, themeList } from "../../services/api";
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -48,6 +48,8 @@ class UserProfile extends React.Component {
 
   componentWillMount() {
     let username = this.props.match.params.username;
+
+    themeList().then(d => console.log(d));
 
     userDetail(username).then(d => {
       let data = d.data;

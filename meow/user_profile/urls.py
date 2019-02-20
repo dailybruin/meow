@@ -9,6 +9,7 @@ urlpatterns = [
     path('me/', views.me, name="me"),
     path('logout/', views.logout, name="userLogout"),
     path('<str:username>', views.userDetail, name="userDetail"),
+    path('themes/', views.themeList, name="themeList"),
     path('', views.userList, name="userList"),
 ]
 

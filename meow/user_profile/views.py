@@ -8,10 +8,18 @@ from rest_framework.response import Response
 
 from meow.utils.decorators import api_login_required
 from user_profile.models import User
-from user_profile.serializers import SafeUserSerializer
+from user_profile.serializers import SafeUserSerializer, ThemeSerializer
 import json
 # Create your views here.
 
+@api_login_required()
+def themeList(request):
+    if request.method == "GET":
+        themes = Theme.objects.values('id', 'primary', 'primary_font_color', 'secondary', 'secondary_font_color')
+        serialized_themes = ThemeSerializer(themes, many=True)
+        themeOrderedDict = serialized_themes.data
+        
+        return JsonResponse(themeOrderedDict, safe=False)
 
 @api_login_required()
 def me(request):
