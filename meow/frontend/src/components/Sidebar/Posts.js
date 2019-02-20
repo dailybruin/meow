@@ -30,7 +30,16 @@ class LeftSidebarPosts extends React.Component {
         <Collapse className="meow-collapse" defaultActiveKey={["1"]}>
           <Panel className="full-width-panel" header="posts from" key="1">
             <div style={{ width: "100%", backgroundColor: "white" }}>
-              <Calendar fullscreen={false} />
+              <Calendar
+                onSelect={x =>
+                  this.props.history.push({
+                    pathname: "/",
+                    search: `date=${x.format("MM/DD/YYYY")}`
+                  })
+                }
+                fullscreen={false}
+                defaultValue={this.props.location.search}
+              />
             </div>
           </Panel>
           <Panel header="section" key="2">
