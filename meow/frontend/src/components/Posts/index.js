@@ -1,19 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Table, Button } from "antd";
+import { Table } from "antd";
+import moment from "moment";
 import "./styles.css";
 
 import { loadPosts } from "../../actions/post";
 import { loadSections } from "../../actions/section";
-
-const utc = "UTC";
-
-const timeOptions = {
-  hour: "numeric",
-  minute: "numeric",
-  hour12: true
-};
 
 const columns = [
   {
@@ -57,8 +50,7 @@ const columns = [
     sortDirections: ["ascend", "descend"],
     defaultSortOrder: "descend",
     sorter: (a, b) => new Date(a.pub_time) - new Date(b.pub_time),
-    render: text =>
-      text ? new Date(`${text} ${utc}`).toLocaleString("en-US", timeOptions) : "No Time"
+    render: text => (text ? moment(text, "HH:mm:ss").format("hh:mm a") : "No Time")
   },
   {
     key: "status",
