@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import Fuse from "fuse.js";
 import { Table } from "antd";
 import moment from "moment";
 import "./styles.css";
@@ -15,7 +16,8 @@ const columns = [
     dataIndex: "section",
     className: "section",
     sortDirections: ["ascend", "descend"],
-    render: text => (text ? sectionStore.find(x => x.id === text).name : "No Section"),
+    render: text =>
+      text && sectionStore ? sectionStore.find(x => x.id === text).name : "No Section",
     sorter: (a, b) => a.section.localeCompare(b.section)
   },
   {
@@ -74,23 +76,63 @@ const columns = [
   }
 ];
 
+const options = {
+  shouldSort: true,
+  threshold: 0.3,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: ["section", "pub_time", "status"]
+};
+
 let dataStore;
 let sectionStore;
+let fuse;
 class Posts extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       data: null
     };
   }
 
   componentDidMount() {
-    this.props.loadPosts().then(res => {
-      dataStore = res;
-      this.setState({ data: res });
-    });
-    this.props.loadSections();
-    sectionStore = this.props.sections;
+    this.props
+      .loadPosts()
+      .then(res => {
+        fuse = new Fuse(res, options);
+        console.log("set fuse");
+        dataStore = res;
+        this.setState({ data: res });
+      })
+      .then(() => {
+        this.props.loadSections().then(() => {
+          sectionStore = this.props.sections;
+          this.setState({ loading: false });
+        });
+      });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(nextState);
+    if (nextState.loading || !nextState.data) {
+      return null;
+    }
+    console.log("shouldComponentUpdate");
+    console.log(nextProps.query);
+    let newData;
+    if (nextProps.query.sections.length) {
+      // we are filtering based on section
+      newData = fuse.search(`"section": ${nextProps.query.sections[0]}`);
+    }
+    this.setState(
+      {
+        data: newData
+      },
+      () => true
+    );
   }
 
   onRow = (record, rowIndex) => {
@@ -100,6 +142,9 @@ class Posts extends React.Component {
   };
 
   render() {
+    if (this.state.loading) {
+      return null;
+    }
     return (
       <React.Fragment>
         <p>{this.props.location.search}</p>
@@ -123,7 +168,8 @@ class Posts extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  sections: state.default.section.sections
+  sections: state.default.section.sections,
+  query: state.default.query
 });
 
 const mapDispatchToProps = {

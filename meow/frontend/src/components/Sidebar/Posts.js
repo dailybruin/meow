@@ -79,9 +79,11 @@ class LeftSidebarPosts extends React.Component {
             </div>
           </Panel>
           <Panel header="section" key="2">
-            <Checkbox onChange={this.setSection("SPORTS")}>sports</Checkbox>
-            <Checkbox onChange={this.setSection("NEWS")}>news</Checkbox>
-            <Checkbox onChange={this.setSection("OPINION")}>opinion</Checkbox>
+            {this.props.sections.map(s => (
+              <Checkbox value={s.id} onChange={this.setSection(s.id)}>
+                {s.name}
+              </Checkbox>
+            ))}
           </Panel>
           <Panel header="post time" key="3">
             <TimeSlider onSlideEnd={this.changeTime} />
@@ -119,6 +121,10 @@ class LeftSidebarPosts extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  sections: state.default.section.sections
+});
+
 const mapDispatchToProps = {
   logout,
   changeTime,
@@ -130,7 +136,7 @@ const mapDispatchToProps = {
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(LeftSidebarPosts)
 );

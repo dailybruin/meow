@@ -16,7 +16,7 @@ const persistConfig = {
   key: "root",
   storage,
   stateReconciler: autoMergeLevel2,
-  blacklist: ["post"]
+  blacklist: ["post", "query"]
 };
 
 const reducer = persistCombineReducers(persistConfig, require("./reducers"));

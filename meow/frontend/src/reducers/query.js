@@ -2,12 +2,6 @@ const initialState = { time: [], sections: [], status: [] };
 
 export default function section(state = initialState, action) {
   switch (action.type) {
-    case "LOAD_SECTIONS_SUCCESS":
-      return {
-        ...state,
-        sections: action.payload
-      };
-
     case "CHANGE_TIME":
       return {
         ...state,
@@ -26,7 +20,7 @@ export default function section(state = initialState, action) {
     case "ADD_SECTION":
       return {
         ...state,
-        sections: [...state.sections, action.section]
+        sections: [...new Set([...state.sections, action.section])]
       };
     case "REMOVE_SECTION":
       return {
