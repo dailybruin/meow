@@ -2,6 +2,7 @@
 
 .user-profile-row {
   display: flex;
+  flex-grow: 1;
 }
 
 .user-profile-container {
@@ -97,23 +98,30 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  flex-direction: column;
 }
 
 .user-profile-theme-dot {
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  margin-right: 15%;
-  margin-bottom: 10%;
+  margin-right: 20px;
+  border: 3px black solid;
 }
 
-.user-profile-theme-dot-active {
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  margin-right: 15%;
-  margin-bottom: 10%;
-  border: 3px black solid;
+.user-profile-theme-row {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  margin-bottom: 15px;
+  align-items: center;
+  background: lightgrey;
+}
+
+.user-profile-theme-row-name {
+  font-size: 24px;
+  width: 30%;
+  margin-right: 10px;
 }
 
 .user-profile-social-media-bubble {

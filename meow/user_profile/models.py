@@ -31,4 +31,4 @@ class Theme(models.Model):
     secondary_font_color = models.CharField(max_length=7, blank=True)
 
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=False)

@@ -23,25 +23,21 @@ class UserProfile extends React.Component {
       email: "Loading...",
       bio: "Loading...",
       themes: [
-        { themeColor: "#FF0000" },
-        { themeColor: "#FFA500" },
-        { themeColor: "#FFFF00" },
-        { themeColor: "#00FF00" },
-
-        { themeColor: "#0000FF", isActive: true },
-        { themeColor: "#0000FF" },
-        { themeColor: "#AD14E3" },
-        { themeColor: "#000000" },
-
-        { themeColor: "#ACF48B" },
-        { themeColor: "#FFFA80" },
-        { themeColor: "#F8BB8F" },
-        { themeColor: "#EF8F8F" },
-
-        { themeColor: "#C4C4C4" },
-        { themeColor: "#D689F1" },
-        { themeColor: "#8FA4EC" },
-        { themeColor: "#B6EAFB" }
+        // {
+        //   name: "Daily Bruin",
+        //   ​​​primary: "#3D73AD",
+        //   primary_font_color: "FFFFFF",
+        //   secondary: "4699DA",
+        //   secondary_font_color: "FFFFFF",
+        // },
+        {
+          name: "Daily Bruin",
+          primary: "#00000",
+          secondary: "#00000",
+          primary_font_color: "#101010",
+          secondary_font_color: "123211",
+          id: 10
+        }
       ]
     };
   }
@@ -49,8 +45,12 @@ class UserProfile extends React.Component {
   componentWillMount() {
     let username = this.props.match.params.username;
 
-    themeList().then(d => console.log(d));
-
+    themeList().then(d => {
+      this.setState({
+        ...this.state,
+        themes: d.data
+      });
+    });
     userDetail(username).then(d => {
       let data = d.data;
 
@@ -64,34 +64,12 @@ class UserProfile extends React.Component {
         role: data.role,
         slack_username: data.username,
         email: data.username + "@media.ucla.edu",
-        bio: data.bio,
-        themes: [
-          { themeColor: "#FF0000" },
-          { themeColor: "#FFA500" },
-          { themeColor: "#FFFF00" },
-          { themeColor: "#00FF00" },
-
-          { themeColor: data.theme ? data.theme.background_color : "#000000", isActive: true },
-          { themeColor: "#0000FF" },
-          { themeColor: "#AD14E3" },
-          { themeColor: "#000000" },
-
-          { themeColor: "#ACF48B" },
-          { themeColor: "#FFFA80" },
-          { themeColor: "#F8BB8F" },
-          { themeColor: "#EF8F8F" },
-
-          { themeColor: "#C4C4C4" },
-          { themeColor: "#D689F1" },
-          { themeColor: "#8FA4EC" },
-          { themeColor: "#B6EAFB" }
-        ]
+        bio: data.bio
       });
     });
   }
 
   render() {
-    console.log("rendering");
     return (
       <div className="user-profile-container">
         <div className="user-profile-row">

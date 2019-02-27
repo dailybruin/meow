@@ -1,23 +1,18 @@
 import React from "react";
 
-import UserProfileThemeDot from "./UserProfileThemeDot";
+import UserProfileThemeRow from "./UserProfileThemeRow";
 
 import "./styling.css";
 
 function UserProfileTheme(props) {
+  console.log(props);
   return (
     <div className="user-profile-theme-container">
       <h2 className="user-profile-theme-header">theme: </h2>
       <div className="user-profile-theme-box">
         {props.themes.map((value, index) => {
           //  return <p key={index}>{value.themeColor}</p>
-          return (
-            <UserProfileThemeDot
-              key={index}
-              isActive={value.isActive}
-              themeColor={value.themeColor}
-            />
-          );
+          return <UserProfileThemeRow key={value.id} theme={value} />;
         })}
       </div>
     </div>
