@@ -42,6 +42,13 @@ export const userDetail = username => {
     });
 };
 
+export const putUser = newData => {
+  return axios.put(`${SERVER_URL}/users/me/`, newData).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
+};
+
 export const postList = () => {
   return axios
     .get(`${SERVER_URL}/post/`, {

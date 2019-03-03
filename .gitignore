@@ -8,7 +8,6 @@ meow/frontend/bundles/*
 node_modules
 *.pid
 __pycache__
-package-lock.json
 webpack-stats.json
 .vscode/*
 *~

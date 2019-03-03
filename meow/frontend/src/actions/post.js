@@ -8,10 +8,8 @@ const savePostSuccess = () => ({
   type: "SAVE_POST_SUCCESS"
 });
 
-export const savePost = postId => (dispatch, getState) => {
+export const savePost = (postId, postData) => dispatch => {
   dispatch(savePostRequest);
-
-  const postData = getState().default.post;
 
   return postPost(postId, postData).then(
     ({ data, status }) => {
@@ -71,6 +69,7 @@ export const getPost = postId => {
           });
         } else {
           dispatch({ type: "FETCH_POST_SUCCESS", payload: data });
+          return data;
         }
       },
       err => {
