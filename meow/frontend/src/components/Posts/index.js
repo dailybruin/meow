@@ -8,22 +8,13 @@ import Sidebar from "../Sidebar";
 import "./styles.css";
 
 import { loadPosts } from "../../actions/post";
+import { loadSections } from "../../actions/section";
 
 const { Content } = Layout;
 
 const PrettyPadding = ({ children }) => (
   <div style={{ margin: "24px 16px 0", overflow: "initial" }}>{children}</div>
 );
-
-const options = {
-  shouldSort: true,
-  threshold: 0.3,
-  location: 0,
-  distance: 100,
-  maxPatternLength: 32,
-  minMatchCharLength: 1,
-  keys: ["section", "pub_time", "status"]
-};
 
 let dataStore;
 class Posts extends React.Component {
@@ -32,7 +23,11 @@ class Posts extends React.Component {
     this.state = {
       loading: true,
       data: [],
-      query: {}
+      query: {
+        time: null,
+        status: [],
+        section: []
+      }
     };
   }
 
@@ -41,11 +36,10 @@ class Posts extends React.Component {
       .loadPosts()
       .then(data => {
         dataStore = data;
-        this.setState({ data });
+        this.setState({ data, loading: false });
       })
       .then(() => {
         this.props.loadSections().then(() => {
-          sectionStore = this.props.sections;
           this.setState({ loading: false });
         });
       });
@@ -53,43 +47,62 @@ class Posts extends React.Component {
 
   filterPosts = () => {
     const { time, status, section } = this.state.query;
-
-    if (!(time || status || section)) {
+    console.log("THIS STATE QUERY");
+    console.log(this.state.query);
+    console.log(dataStore);
+    if (!(time || status.length || section.length)) {
       return dataStore;
     }
 
     let rTime = [];
     if (time) {
-      rTime.push(dataStore.filter(x => x.pub_time > time));
+      rTime = dataStore.filter(x => x.pub_time > time);
     }
 
     let rStatus = [];
     if (status.length) {
+      let readyPosts = [];
       if (status.includes("READY")) {
-        rStatus.push(dataStore.filter(x => x.pub_ready_online));
+        readyPosts = dataStore.filter(x => x.pub_ready_online);
+        console.log("ready posts");
+        console.log(readyPosts);
       }
 
+      let draftPosts = [];
       if (status.includes("DRAFT")) {
-        rStatus.push(dataStore.filter(x => !(x.pub_ready_online || x.pub_ready_copy)));
+        console.log("draft");
+        draftPosts = dataStore.filter(x => !(x.pub_ready_online || x.pub_ready_copy));
+        console.log(draftPosts);
       }
 
+      let sentPosts = [];
       if (status.includes("SENT")) {
-        rStatus.push(dataStore.filter(x => x.sent));
+        sentPosts = dataStore.filter(x => x.sent);
       }
+
+      rStatus = [...new Set([...readyPosts, ...draftPosts, ...sentPosts])];
     }
 
     let rSection = [];
     if (section.length) {
-      rSection.push(dataStore.filter(x => section.includes(x.section)));
+      rSection = dataStore.filter(x => section.includes(x.section));
     }
+    console.log("RSECTION");
+    console.log(rSection);
 
-    return new Set([...rTime, ...rStatus, ...rSection]);
+    return [...new Set([...rTime, ...rStatus, ...rSection])];
   };
 
-  queryChanged = newQuery => {
-    this.setState({
-      query: { ...this.state.query, newQuery }
-    });
+  queryChanged = change => {
+    this.setState(
+      {
+        query: {
+          ...this.state.query,
+          ...change
+        }
+      },
+      () => console.log(this.state.query)
+    );
   };
 
   render() {
@@ -98,27 +111,37 @@ class Posts extends React.Component {
     }
 
     const filteredData = this.filterPosts();
+    console.log("FILTERED DATA");
+    console.log(filteredData);
     return (
       <React.Fragment>
         <Sidebar>
-          <PostSidebar {...this.state} />
+          <PostSidebar
+            editParent={this.queryChanged}
+            section={this.props.sections}
+            {...this.state}
+          />
         </Sidebar>
         <Content>
           <PrettyPadding>
             <PostContent data={filteredData} />
           </PrettyPadding>
         </Content>
-        <Content />
       </React.Fragment>
     );
   }
 }
 
+const mapStateToProps = state => ({
+  sections: state.default.section.sections
+});
+
 const mapDispatchToProps = {
-  loadPosts
+  loadPosts,
+  loadSections
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Posts);

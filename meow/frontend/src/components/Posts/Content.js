@@ -81,20 +81,22 @@ class Posts extends React.Component {
     sectionStore = this.props.sections;
   }
 
-  onRow = (record, rowIndex) => {
-    return {
-      onClick: event => this.props.history.push("/edit/" + record.id)
-    };
-  };
+  // onRow = (record, rowIndex) => {
+  //   return {
+  //     onClick: event => this.props.history.push("/edit/" + record.id)
+  //   };
+  // };
 
   render() {
+    console.log("INSIDE POST TABLE");
+    console.log(this.props.data);
     return (
       <Table
         className="post-table"
         rowKey="id"
         dataSource={this.props.data}
         columns={columns}
-        onRowClick={record => this.props.history.push("/edit/" + record.id)}
+        onRowClick={record => this.props.history.push(`/edit/${record.id}`)}
         rowClassName={record => {
           if (record.sent_error) return "sent-error";
           if (record.sending) return "sending";

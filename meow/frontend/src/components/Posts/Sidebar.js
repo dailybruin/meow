@@ -12,6 +12,11 @@ import TimeSlider from "./TimeSlider";
 const { Panel } = Collapse;
 
 class Sidebar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.editParent = this.props.editParent.bind(this);
+  }
+
   logout = () => {
     this.props.logout().then(() => {
       this.props.history.push("/");
@@ -25,14 +30,14 @@ class Sidebar extends React.Component {
   };
 
   addStatus = status => {
-    const newStatus = [new Set([...this.props.status, status])];
+    const newStatus = [...new Set([...this.props.query.status, status])];
     this.editParent({
       status: newStatus
     });
   };
 
   removeStatus = status => {
-    const newStatus = this.props.status.filter(x != status);
+    const newStatus = this.props.query.status.filter(x => x != status);
     this.editParent({
       status: newStatus
     });
@@ -41,22 +46,22 @@ class Sidebar extends React.Component {
   changeStatus = status => {
     return e => {
       if (e.target.checked) {
-        addStatus(status);
+        this.addStatus(status);
       } else {
-        removeStatus(status);
+        this.removeStatus(status);
       }
     };
   };
 
   addSection = sectionId => {
-    const newSection = [new Set([...this.props.section, sectionId])];
+    const newSection = [...this.props.query.section, sectionId];
     this.editParent({
       section: newSection
     });
   };
 
   removeSection = sectionId => {
-    const newSection = this.props.section.filter(x != sectionId);
+    const newSection = this.props.query.section.filter(x => x != sectionId);
     this.editParent({
       section: newSection
     });
@@ -65,9 +70,9 @@ class Sidebar extends React.Component {
   changeSection = sectionId => {
     return e => {
       if (e.target.checked) {
-        addSection(sectionId);
+        this.addSection(sectionId);
       } else {
-        removeSection(sectionId);
+        this.removeSection(sectionId);
       }
     };
   };
@@ -107,7 +112,7 @@ class Sidebar extends React.Component {
             </div>
           </Panel>
           <Panel header="section" key="2">
-            {this.props.sections.map(s => (
+            {this.props.section.map(s => (
               <Checkbox value={s.id} onChange={this.changeSection(s.id)}>
                 {s.name}
               </Checkbox>

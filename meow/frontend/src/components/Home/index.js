@@ -24,21 +24,9 @@ const PrettyUserProfile = () => (
     <UserProfile />
   </PrettyPadding>
 );
-const PrettyUserProfile = () => (
-  <PrettyPadding>
-    <UserProfile />
-  </PrettyPadding>
-);
 
 class Home extends React.Component {
   render() {
-    const { location } = this.props;
-
-    const contentStyles =
-      location.pathname === "/add" || location.pathname.substring(0, 5) === "/edit"
-        ? { position: "relative", transform: "translateY(-30px)" }
-        : { backgroundColor: "white" };
-
     return (
       <Layout
         style={{
