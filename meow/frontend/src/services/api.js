@@ -7,6 +7,19 @@ axios.defaults.withCredentials = true;
 
 const { SERVER_URL } = config;
 
+export const themeList = () => {
+  return axios
+    .get(`${SERVER_URL}/users/themes/all`, {
+      withCredentials: true
+    })
+    .then(res => {
+      return {
+        data: res.data,
+        status: res.status
+      };
+    });
+};
+
 export const getMe = () => {
   return axios
     .get(`${SERVER_URL}/users/me/`, {

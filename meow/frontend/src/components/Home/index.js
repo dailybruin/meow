@@ -24,6 +24,11 @@ const PrettyUserProfile = () => (
     <UserProfile />
   </PrettyPadding>
 );
+const PrettyUserProfile = () => (
+  <PrettyPadding>
+    <UserProfile />
+  </PrettyPadding>
+);
 
 class Home extends React.Component {
   render() {

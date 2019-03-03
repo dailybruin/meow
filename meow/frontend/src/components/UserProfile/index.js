@@ -6,7 +6,7 @@ import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
 import "./styling.css";
-import { userDetail } from "../../services/api";
+import { userDetail, themeList } from "../../services/api";
 
 class UserProfile extends React.Component {
   constructor(props) {
