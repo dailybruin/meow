@@ -40,13 +40,9 @@ def me(request):
             'isAuthenticated': True
         })
     elif request.method == "PUT":
-        print("PUT REQUEST")
         req_data = json.loads(request.body)
         new_bio = req_data["bio"]
-        if new_bio:
-            print("HERE")
-            print(new_bio)
-            print(user)
+        if new_bio == "" or new_bio:
             user.bio = new_bio
             user.save()
             return HttpResponse(status=200)
