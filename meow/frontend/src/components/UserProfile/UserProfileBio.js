@@ -42,13 +42,10 @@ class UserProfileBio extends React.Component {
 
     let val;
     if (this.state.value && !this.state.isEditing) {
-      console.log("TRIGGERED1");
       val = this.props.bio;
     } else if (this.state.value && this.state.isEditing) {
-      console.log("TRIGGERED2");
       val = this.state.value;
     } else if (!this.state.value) {
-      console.log("TRIGGERED3");
       val = defaultBio;
     }
 

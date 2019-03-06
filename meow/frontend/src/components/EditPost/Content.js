@@ -93,6 +93,8 @@ const mapStateToProps = state => ({
   story_url: state.default.post.story_url,
   post_facebook: state.default.post.post_facebook,
   post_twitter: state.default.post.post_twitter,
+  pub_ready_copy: state.default.post.pub_ready_copy,
+  pub_ready_online: state.default.post.pub_ready_online,
   pub_ready_copy_user: state.default.post.pub_ready_copy_user,
   pub_ready_online_user: state.default.post.pub_ready_online_user,
   section: state.default.post.section,

@@ -34,12 +34,8 @@ class UserProfile extends React.Component {
 
       this.setState({
         loading: false,
-        profile_img:
-          "https://pixel.nymag.com/imgs/daily/intelligencer/2018/09/24/24-bongo-cat.w700.h700.jpg",
         first_name: data.first_name,
         last_name: data.last_name,
-        instagram: "http://instagram.com",
-        twitter: "http://twitter.com",
         role: data.role,
         slack_username: data.username,
         email: data.username + "@media.ucla.edu",

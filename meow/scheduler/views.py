@@ -44,14 +44,23 @@ class SectionList(APIView):
         return Response(serializer.data)
 
 
-
 class SMPostList(APIView):
     """
     List all SMPosts, or create a new SMPost.
     """
 
     def get(self, request, format=None):
-        posts = SMPost.objects.all()
+        year = request.GET.get('year', None)
+        month = request.GET.get('month', None)
+        day = request.GET.get('day', None)
+        print("SMPostList")
+        print(year, month, day)
+
+        if year and month and day:
+            posts = SMPost.objects.filter(
+                pub_date=datetime.date(int(year), int(month), int(day)))
+        else:
+            posts = SMPost.objects.all()
         serializer = SMPostSerializer(posts, many=True)
         return Response(serializer.data)
 
@@ -609,6 +618,7 @@ def twitter_connect(request):
         context["verifier"] = verifier
         return render(request, 'twit-connect.html', context)
 
+
 def fb_redir(request):
     fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
     fb_app_secret = MeowSetting.objects.get(
@@ -629,8 +639,10 @@ def fb_redir(request):
         fb_authorization_base_url)
     return redirect(facebook_auth_url)
 
-#TODO: fix to use this
-#@user_passes_test(can_manage)
+# TODO: fix to use this
+# @user_passes_test(can_manage)
+
+
 def fb_connect(request):
     context = {
         "user": request.user,

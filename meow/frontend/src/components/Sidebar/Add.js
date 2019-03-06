@@ -12,7 +12,6 @@ class LeftSidebarAdd extends React.Component {
   };
 
   render() {
-    console.log(this.props.pub_time ? this.props.pub_time : "NULL TIME");
     return (
       <div className="leftSidebarAdd">
         <div style={{ width: "100%", backgroundColor: "white" }}>
@@ -31,8 +30,6 @@ class LeftSidebarAdd extends React.Component {
             ? { value: moment(this.props.pub_time, "HH:mm:ss") }
             : { value: null })}
           onChange={x => {
-            console.log("ON CHANGE");
-            console.log(x);
             this.handleFormChange({
               pub_time: x.format("HH:mm")
             });

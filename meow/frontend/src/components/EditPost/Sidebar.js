@@ -1,6 +1,6 @@
 import React from "react";
 import { Calendar, TimePicker, Button } from "antd";
-
+import moment from "moment";
 import "./Sidebar.css";
 
 class Sidebar extends React.Component {
@@ -8,9 +8,26 @@ class Sidebar extends React.Component {
     return (
       <div className="leftSidebarAdd">
         <div style={{ width: "100%", backgroundColor: "white" }}>
-          <Calendar fullscreen={false} />
+          <Calendar
+            fullscreen={false}
+            value={moment(this.props.pub_date)}
+            onChange={x => {
+              this.props.editPost({
+                pub_date: x.format("YYYY-MM-DD")
+              });
+            }}
+          />
         </div>
-        <TimePicker use12Hours format="h:mm a" />
+        <TimePicker
+          use12Hours
+          format="h:mm a"
+          value={moment(this.props.pub_time, "HH:mm:ss")}
+          onChange={x => {
+            this.props.editPost({
+              pub_time: x.format("HH:mm").concat(":00")
+            });
+          }}
+        />
         <Button
           style={{
             backgroundColor: "white",

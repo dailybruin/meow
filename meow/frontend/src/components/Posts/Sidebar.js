@@ -103,7 +103,7 @@ class Sidebar extends React.Component {
                 onSelect={x =>
                   this.props.history.push({
                     pathname: "/",
-                    search: `date=${x.format("MM/DD/YYYY")}`
+                    search: `date=${x.format("YYYY-MM-DD")}`
                   })
                 }
                 fullscreen={false}
@@ -112,7 +112,7 @@ class Sidebar extends React.Component {
             </div>
           </Panel>
           <Panel header="section" key="2">
-            {this.props.section.map(s => (
+            {this.props.sections.map(s => (
               <Checkbox value={s.id} onChange={this.changeSection(s.id)}>
                 {s.name}
               </Checkbox>
@@ -154,13 +154,17 @@ class Sidebar extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  sections: state.default.section.sections
+});
+
 const mapDispatchToProps = {
   logout
 };
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(Sidebar)
 );

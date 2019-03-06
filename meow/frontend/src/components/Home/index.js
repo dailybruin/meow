@@ -1,22 +1,24 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { Route, Switch, withRouter } from "react-router-dom";
 import { Layout } from "antd";
 
 import Header from "../Header";
 import Posts from "../Posts";
 import EditPost from "../EditPost";
+import AddPost from "../AddPost";
 import Sections from "../Settings/Sections";
-import Permissions from "../Settings/Permissions";
 import UserProfile from "../UserProfile";
 import { OnlineRedir } from "../../services/auth";
+
+import { loadSections } from "../../actions/section";
 
 const PrettyPadding = ({ children }) => (
   <div style={{ margin: "24px 16px 0", overflow: "initial" }}>{children}</div>
 );
-const PrettyPermissions = () => (
+const PrettySections = () => (
   <PrettyPadding>
-    <Permissions />
+    <Sections />
   </PrettyPadding>
 );
 const PrettyUserProfile = () => (
@@ -26,7 +28,19 @@ const PrettyUserProfile = () => (
 );
 
 class Home extends React.Component {
+  state = {
+    loading: true
+  };
+
+  componentDidMount() {
+    this.props.loadSections().then(() => this.setState({ loading: false }));
+  }
+
   render() {
+    if (this.state.loading) {
+      return null;
+    }
+
     return (
       <Layout
         style={{
@@ -37,11 +51,9 @@ class Home extends React.Component {
         <Layout>
           <Switch>
             <Route exact path="/" component={Posts} />
-            <Route path="/add" component={EditPost} />
+            <Route path="/add" component={AddPost} />
             <Route path="/edit/:postId" component={EditPost} />
-
-            <Route path="/settings/sections" component={OnlineRedir(Sections)} />
-            <Route path="/settings/permissions" component={OnlineRedir(PrettyPermissions)} />
+            <Route path="/settings/sections" component={OnlineRedir(PrettySections)} />
             <Route path="/profile/:username" component={PrettyUserProfile} />
             <Route path="/me" component={PrettyUserProfile} />
           </Switch>
@@ -51,4 +63,13 @@ class Home extends React.Component {
   }
 }
 
-export default withRouter(Home);
+const mapDispatchToProps = {
+  loadSections
+};
+
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(Home)
+);
