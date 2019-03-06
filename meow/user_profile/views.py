@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.contrib.auth import logout as django_logout
 from django.conf import settings
 from django.core import serializers
@@ -7,21 +7,51 @@ from django.core import serializers
 from rest_framework.response import Response
 
 from meow.utils.decorators import api_login_required
-from user_profile.models import User
-from user_profile.serializers import SafeUserSerializer
+from user_profile.models import User, Theme
+from user_profile.serializers import SafeUserSerializer, ThemeSerializer
 import json
 # Create your views here.
+
+@api_login_required()
+def themeList(request):
+    if request.method == "GET":
+        themes = Theme.objects.all()
+        serialized_themes = ThemeSerializer(themes, many=True)
+        themeOrderedDict = serialized_themes.data
+        return JsonResponse(themeOrderedDict, safe=False)
+
+@api_login_required()
+def themeList(request):
+    if request.method == "GET":
+        themes = Theme.objects.all()
+        serialized_themes = ThemeSerializer(themes, many=True)
+        themeOrderedDict = serialized_themes.data
+        return JsonResponse(themeOrderedDict, safe=False)
 
 
 @api_login_required()
 def me(request):
     user = request.user
-    return JsonResponse({
-        'username': user.username,
-        'first_name': user.first_name,
-        'groups': list(user.groups.all().values()),
-        'isAuthenticated': True
-    })
+    if request.method == "GET":
+        return JsonResponse({
+            'username': user.username,
+            'first_name': user.first_name,
+            'groups': list(user.groups.all().values()),
+            'isAuthenticated': True
+        })
+    elif request.method == "PUT":
+        print("PUT REQUEST")
+        req_data = json.loads(request.body)
+        new_bio = req_data["bio"]
+        if new_bio:
+            print("HERE")
+            print(new_bio)
+            print(user)
+            user.bio = new_bio
+            user.save()
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=500)
 
 
 @api_login_required()

@@ -8,6 +8,7 @@ app_name = "user_profile"
 urlpatterns = [
     path('me/', views.me, name="me"),
     path('logout/', views.logout, name="userLogout"),
+    path('themes/all', views.themeList, name="themeList"),
     path('<str:username>', views.userDetail, name="userDetail"),
     path('', views.userList, name="userList"),
 ]

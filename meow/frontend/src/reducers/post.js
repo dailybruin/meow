@@ -9,7 +9,7 @@ export default function post(state = initialState, action) {
         sections: action.payload.sections,
         post_facebook: action.payload.post_facebook,
         post_twitter: action.payload.post_twitter,
-        pub_date: action.payload.pub_time,
+        pub_date: action.payload.pub_date,
         pub_time: action.payload.pub_time,
         pub_ready_copy_user: action.payload.pub_ready_copy_user,
         pub_ready_online_user: action.payload.pub_ready_online_user

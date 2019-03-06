@@ -8,10 +8,8 @@ const savePostSuccess = () => ({
   type: "SAVE_POST_SUCCESS"
 });
 
-export const savePost = postId => (dispatch, getState) => {
+export const savePost = (postId, postData) => dispatch => {
   dispatch(savePostRequest);
-
-  const postData = getState().default.post;
 
   return postPost(postId, postData).then(
     ({ data, status }) => {
@@ -34,30 +32,28 @@ export const savePost = postId => (dispatch, getState) => {
   );
 };
 
-export const loadPosts = () => {
-  return dispatch => {
-    return postList().then(
-      ({ data, status }) => {
-        if (status >= 400) {
-          dispatch({
-            type: "LOAD_POSTS_FAIL",
-            message: "Could not load posts."
-          });
-        } else {
-          dispatch({
-            type: "LOAD_POSTS_SUCCESS"
-          });
-          return data;
-        }
-      },
-      err => {
+export const loadPosts = YMD => dispatch => {
+  return postList(YMD).then(
+    ({ data, status }) => {
+      if (status >= 400) {
         dispatch({
-          type: "NETWORK_ERROR",
-          message: "Could not connect to server."
+          type: "LOAD_POSTS_FAIL",
+          message: "Could not load posts."
         });
+      } else {
+        dispatch({
+          type: "LOAD_POSTS_SUCCESS"
+        });
+        return data;
       }
-    );
-  };
+    },
+    err => {
+      dispatch({
+        type: "NETWORK_ERROR",
+        message: "Could not connect to server."
+      });
+    }
+  );
 };
 
 export const getPost = postId => {
@@ -71,6 +67,7 @@ export const getPost = postId => {
           });
         } else {
           dispatch({ type: "FETCH_POST_SUCCESS", payload: data });
+          return data;
         }
       },
       err => {

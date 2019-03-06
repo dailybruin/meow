@@ -1,41 +1,32 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Calendar, TimePicker, Button } from "antd";
 import moment from "moment";
-import "./Add.css";
+import "./Sidebar.css";
 
-import { editPost } from "../../actions/post";
-
-class LeftSidebarAdd extends React.Component {
-  handleFormChange = changedFields => {
-    this.props.editPost(changedFields);
-  };
-
+class Sidebar extends React.Component {
   render() {
     return (
       <div className="leftSidebarAdd">
         <div style={{ width: "100%", backgroundColor: "white" }}>
           <Calendar
+            fullscreen={false}
             value={moment(this.props.pub_date)}
             onChange={x => {
-              this.handleFormChange({
+              this.props.editPost({
                 pub_date: x.format("YYYY-MM-DD")
               });
             }}
-            fullscreen={false}
           />
         </div>
         <TimePicker
-          {...(this.props.pub_time
-            ? { value: moment(this.props.pub_time, "HH:mm:ss") }
-            : { value: null })}
-          onChange={x => {
-            this.handleFormChange({
-              pub_time: x.format("HH:mm")
-            });
-          }}
           use12Hours
           format="h:mm a"
+          value={moment(this.props.pub_time, "HH:mm:ss")}
+          onChange={x => {
+            this.props.editPost({
+              pub_time: x.format("HH:mm").concat(":00")
+            });
+          }}
         />
         <Button
           style={{
@@ -55,16 +46,4 @@ class LeftSidebarAdd extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  pub_date: state.default.post.pub_date,
-  pub_time: state.default.post.pub_time
-});
-
-const mapDispatchToProps = {
-  editPost: data => editPost(data)
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LeftSidebarAdd);
+export default Sidebar;

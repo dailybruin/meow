@@ -35,9 +35,6 @@
   flex-grow: 1;
 }
 
-.user-profile-basic-info-table {
-}
-
 .user-profile-basic-info-form-group {
   display: flex;
   flex-wrap: wrap;
@@ -47,14 +44,14 @@
 .user-profile-basic-info-title {
   flex: 1 0 20%;
   max-width: 220px;
-  font-size: 48px;
+  font-size: 2.2em;
   margin-bottom: 0px;
 }
 
 .user-profile-basic-info-data {
   flex: 1 0 40%;
   /* max-width: 220px; */
-  font-size: 36px;
+  font-size: 2em;
   margin-bottom: 0px;
   border-bottom: 2px solid #000;
 }
@@ -74,11 +71,11 @@
 }
 
 .user-profile-bio-header {
-  font-size: 48px;
+  font-size: 2.2em;
 }
 
 .user-profile-bio-paragraph {
-  font-size: 24px;
+  font-size: 1.3em;
   max-width: 100%;
 }
 
@@ -90,7 +87,7 @@
 }
 
 .user-profile-theme-header {
-  font-size: 48px;
+  font-size: 2.2em;
 }
 
 .user-profile-theme-box {

@@ -7,6 +7,19 @@ axios.defaults.withCredentials = true;
 
 const { SERVER_URL } = config;
 
+export const themeList = () => {
+  return axios
+    .get(`${SERVER_URL}/users/themes/all`, {
+      withCredentials: true
+    })
+    .then(res => {
+      return {
+        data: res.data,
+        status: res.status
+      };
+    });
+};
+
 export const getMe = () => {
   return axios
     .get(`${SERVER_URL}/users/me/`, {
@@ -42,9 +55,16 @@ export const userDetail = username => {
     });
 };
 
-export const postList = () => {
+export const putUser = newData => {
+  return axios.put(`${SERVER_URL}/users/me/`, newData).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
+};
+
+export const postList = YMD => {
   return axios
-    .get(`${SERVER_URL}/post/`, {
+    .get(`${SERVER_URL}/post/?year=${YMD.year}&month=${YMD.month}&day=${YMD.day}`, {
       withCredentials: true
     })
     .then(res => ({
@@ -53,14 +73,15 @@ export const postList = () => {
     }));
 };
 
-export const postDetail = post_id => {
+export const postDetail = postId => {
   return axios
-    .get(`${SERVER_URL}/post/${post_id}`, {
+    .get(`${SERVER_URL}/post/${postId}`, {
       withCredentials: true
     })
-    .then(res => {
-      return res;
-    });
+    .then(res => ({
+      data: res.data,
+      status: res.status
+    }));
 };
 
 export const postPost = (postId, postData) => {

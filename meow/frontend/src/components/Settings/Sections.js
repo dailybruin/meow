@@ -22,8 +22,6 @@ class Sections extends React.Component {
   };
 
   showModal = section => {
-    console.log("show modal!");
-    console.log(section);
     this.setState({
       showModal: true,
       name: section.name,
