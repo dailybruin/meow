@@ -7,6 +7,7 @@ import requests
 import urllib
 from django.core.mail import send_mail
 from bs4 import BeautifulSoup
+from user_profile.models import User
 
 
 class SMPost(models.Model):
@@ -297,3 +298,10 @@ class EmailNotification(models.Model):
 
     def __str__(self):
         return self.name + " <" + self.email_address + ">"
+
+class PostHistory(models.Model):
+    post_facebook = models.TextField(null=True, blank=True)
+    post_instagram = models.TextField(null=True, blank=True, default="")
+    last_edit_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
+    created = models.DateTimeField(auto_now_add=True)
