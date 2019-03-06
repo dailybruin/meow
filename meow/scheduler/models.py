@@ -300,8 +300,10 @@ class EmailNotification(models.Model):
         return self.name + " <" + self.email_address + ">"
 
 class PostHistory(models.Model):
+    smpost = models.ForeignKey(
+            SMPost, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
     post_facebook = models.TextField(null=True, blank=True)
     post_instagram = models.TextField(null=True, blank=True, default="")
     last_edit_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
-    created = models.DateTimeField(auto_now_add=True)
+    creation_time = models.DateTimeField(auto_now_add=True)
