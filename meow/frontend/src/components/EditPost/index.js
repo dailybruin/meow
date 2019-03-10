@@ -1,35 +1,51 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Button, Row, Col } from "antd";
 
-import EditForm from "./EditForm";
+import { Layout } from "antd";
+
+import EditSidebar from "./Sidebar";
+import EditContent from "./Content";
+import Sidebar from "../Sidebar";
 
 import { getPost, editPost, savePost } from "../../actions/post";
 import { loadSections } from "../../actions/section";
 
+const { Content } = Layout;
+const contentStyles = { position: "relative", transform: "translateY(-30px)" };
+
 class EditPost extends React.Component {
+  state = {
+    sections: this.props.sections
+  };
+
   componentDidMount() {
     const { postId } = this.props.match.params;
 
     if (postId) {
-      this.props.getPost(postId);
+      this.props.getPost(postId).then(data => {
+        this.setState({
+          ...data
+        });
+      });
       this.props.loadSections();
+    } else {
+      this.setState({
+        ...this.props.defaultData
+      });
     }
   }
 
-  nevermind = () => {
-    this.props.history.push("/");
+  editField = changedField => {
+    this.setState({
+      ...changedField
+    });
   };
 
-  handleFormChange = changedFields => {
-    this.props.editPost(changedFields);
-  };
-
-  handleOk = () => {
+  savePost = () => {
     const { postId } = this.props.match.params;
 
-    this.props.savePost(postId).then(data => {
+    this.props.savePost(postId, this.state).then(data => {
       if (data) {
         this.props.history.push("/");
       } else {
@@ -39,75 +55,19 @@ class EditPost extends React.Component {
 
   render() {
     return (
-      <div
-        style={{
-          border: "3px solid black",
-          borderRadius: "25px",
-          backgroundColor: "white",
-          padding: "2.2em 2em"
-        }}
-      >
-        <EditForm {...this.props} onChange={this.handleFormChange} />
-        <Row
-          style={{
-            marginBottom: "1.2em"
-          }}
-        >
-          <Col span={12}>
-            {this.props.pub_ready_copy_user !== null
-              ? `Copy-edited by: ${this.props.pub_ready_copy_user}`
-              : `Not copy-edited`}
-          </Col>
-          <Col span={12}>
-            {this.props.pub_ready_online_user !== null
-              ? `Marked ready by: ${this.props.pub_ready_online_user}`
-              : `Not ready to send`}
-          </Col>
-        </Row>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between"
-          }}
-        >
-          <Button
-            style={{
-              backgroundColor: "#CB0000",
-              borderRadius: "20px",
-              fontSize: "2em",
-              color: "white"
-            }}
-            size="large"
-            onClick={this.nevermind}
-          >
-            nevermind
-          </Button>
-          <Button
-            style={{
-              backgroundColor: "#3980bf",
-              borderRadius: "20px",
-              fontSize: "2em"
-            }}
-            type="primary"
-            size="large"
-            onClick={this.handleOk}
-          >
-            save
-          </Button>
-        </div>
-      </div>
+      <React.Fragment>
+        <Sidebar>
+          <EditSidebar {...this.state} editPost={this.editField} />
+        </Sidebar>
+        <Content style={contentStyles}>
+          <EditContent {...this.state} editPost={this.editField} savePost={this.savePost} />
+        </Content>
+      </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  slug: state.default.post.slug,
-  story_url: state.default.post.story_url,
-  post_facebook: state.default.post.post_facebook,
-  post_twitter: state.default.post.post_twitter,
-  pub_ready_copy_user: state.default.post.pub_ready_copy_user,
-  pub_ready_online_user: state.default.post.pub_ready_online_user,
-  section: state.default.post.section,
   sections: state.default.section.sections
 });
 
@@ -115,7 +75,7 @@ const mapDispatchToProps = {
   getPost: postId => getPost(postId),
   loadSections,
   editPost: data => editPost(data),
-  savePost: postId => savePost(postId)
+  savePost: (postId, postData) => savePost(postId, postData)
 };
 
 export default withRouter(

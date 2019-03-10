@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Layout, Row, Col, Button, Icon } from "antd";
+import { Button } from "antd";
 import "./index.css";
-import { ED } from "../../services/auth";
 import SettingsButton from "./SettingsButton";
-
-const { Header: AntdHeader } = Layout;
 
 const options = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-digit" };
 
@@ -32,9 +29,13 @@ class Header extends Component {
   };
 
   toHome = () => {
-    if (this.props.location.pathname !== "/") {
+    if (this.props.location.pathname !== "/" || this.props.location.search) {
       this.props.history.push("/");
     }
+  };
+
+  toMe = () => {
+    this.props.history.push("/me");
   };
 
   render() {
@@ -57,7 +58,9 @@ class Header extends Component {
         <h2>today: {this.state.time}</h2>
         {this.state.showNewmeow ? (
           <div>
-            <span style={{ fontSize: "1.3em" }}>Hi there, {this.props.firstName}!</span>
+            <span onClick={this.toMe} style={{ fontSize: "1.3em", cursor: "pointer" }}>
+              Hi there, {this.props.firstName}!
+            </span>
             <SettingsButton />
             <Button
               style={{

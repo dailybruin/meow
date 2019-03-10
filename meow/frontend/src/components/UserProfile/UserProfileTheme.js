@@ -5,7 +5,6 @@ import UserProfileThemeRow from "./UserProfileThemeRow";
 import "./styling.css";
 
 function UserProfileTheme(props) {
-  console.log(props);
   return (
     <div className="user-profile-theme-container">
       <h2 className="user-profile-theme-header">theme: </h2>

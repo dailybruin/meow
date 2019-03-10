@@ -1,30 +1,24 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { Route, Switch, withRouter } from "react-router-dom";
 import { Layout } from "antd";
 
-import Sidebar from "../Sidebar";
 import Header from "../Header";
 import Posts from "../Posts";
 import EditPost from "../EditPost";
+import AddPost from "../AddPost";
 import Sections from "../Settings/Sections";
-import Permissions from "../Settings/Permissions";
 import UserProfile from "../UserProfile";
 import { OnlineRedir } from "../../services/auth";
 
-const { Content } = Layout;
+import { loadSections } from "../../actions/section";
 
 const PrettyPadding = ({ children }) => (
   <div style={{ margin: "24px 16px 0", overflow: "initial" }}>{children}</div>
 );
-const PaddedPosts = () => (
+const PrettySections = () => (
   <PrettyPadding>
-    <Posts />
-  </PrettyPadding>
-);
-const PrettyPermissions = () => (
-  <PrettyPadding>
-    <Permissions />
+    <Sections />
   </PrettyPadding>
 );
 const PrettyUserProfile = () => (
@@ -34,13 +28,18 @@ const PrettyUserProfile = () => (
 );
 
 class Home extends React.Component {
-  render() {
-    const { location } = this.props;
+  state = {
+    loading: true
+  };
 
-    const contentStyles =
-      location.pathname === "/add" || location.pathname.substring(0, 5) === "/edit"
-        ? { position: "relative", transform: "translateY(-30px)" }
-        : { backgroundColor: "white" };
+  componentDidMount() {
+    this.props.loadSections().then(() => this.setState({ loading: false }));
+  }
+
+  render() {
+    if (this.state.loading) {
+      return null;
+    }
 
     return (
       <Layout
@@ -50,23 +49,27 @@ class Home extends React.Component {
       >
         <Header />
         <Layout>
-          <Sidebar />
-          <Content style={contentStyles}>
-            <Switch>
-              <Route exact path="/" component={PaddedPosts} />
-              <Route path="/add" component={EditPost} />
-              <Route path="/edit/:postId" component={EditPost} />
-
-              <Route path="/settings/sections" component={OnlineRedir(Sections)} />
-              <Route path="/settings/permissions" component={OnlineRedir(PrettyPermissions)} />
-              <Route path="/profile/:username" component={PrettyUserProfile} />
-              <Route path="/me" component={PrettyUserProfile} />
-            </Switch>
-          </Content>
+          <Switch>
+            <Route exact path="/" component={Posts} />
+            <Route path="/add" component={AddPost} />
+            <Route path="/edit/:postId" component={EditPost} />
+            <Route path="/settings/sections" component={OnlineRedir(PrettySections)} />
+            <Route path="/profile/:username" component={PrettyUserProfile} />
+            <Route path="/me" component={PrettyUserProfile} />
+          </Switch>
         </Layout>
       </Layout>
     );
   }
 }
 
-export default withRouter(Home);
+const mapDispatchToProps = {
+  loadSections
+};
+
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(Home)
+);

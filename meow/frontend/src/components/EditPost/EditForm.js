@@ -1,6 +1,6 @@
 import React from "react";
-import { Form, Row, Col, Input, Select, Radio, Divider } from "antd";
-import { ED, Copy, Online } from "../../services/auth";
+import { Form, Row, Col, Input, Checkbox, Radio } from "antd";
+import { Copy, Online } from "../../services/auth";
 import "./EditForm.css";
 
 const RadioGroup = Radio.Group;
@@ -28,14 +28,20 @@ class EditForm extends React.Component {
     const { getFieldDecorator } = this.props.form;
     const CopyEdited = Copy(() => (
       <Form.Item className="checkable-items">
-        {getFieldDecorator("copy_edited", {
-          rules: []
+        {getFieldDecorator("pub_ready_copy", {
+          rules: [],
+          valuePropName: "checked",
+          initialValue: false
         })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
       </Form.Item>
     ));
     const OnlineReady = Online(() => (
       <Form.Item className="checkable-items">
-        <Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>
+        {getFieldDecorator("pub_ready_online", {
+          rules: [],
+          valuePropName: "checked",
+          initialValue: true
+        })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
       </Form.Item>
     ));
 
@@ -126,9 +132,13 @@ export default Form.create({
         ...props.post_twitter,
         value: props.post_twitter
       }),
-      copy_edited: Form.createFormField({
-        ...props.copy_edited,
-        value: props.copy_edited
+      pub_ready_copy: Form.createFormField({
+        ...props.pub_ready_copy,
+        value: props.pub_ready_copy
+      }),
+      pub_ready_online: Form.createFormField({
+        ...props.pub_ready_online,
+        value: props.pub_ready_online
       })
     };
   },

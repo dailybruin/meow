@@ -11,7 +11,6 @@ class Login extends React.Component {
   componentDidMount() {
     this.props.login().then(() => {
       if (this.props.isAuthenticated) {
-        console.log("RES LOGIN");
         this.props.history.push("/");
       }
     });
@@ -35,19 +34,23 @@ class Login extends React.Component {
       >
         <div
           style={{
-            width: "80%",
-            maxWidth: "400px",
-            marginTop: "10%",
+            left: "10vw",
+            bottom: "20vh",
+            position: "absolute",
             textAlign: "center",
             height: "fit-content",
             padding: "1em",
-            background: "rgba(255, 255, 255, 0.5)",
             borderRadius: "8px"
           }}
         >
-          <Divider>
-            <h1>meow</h1>
-          </Divider>
+          <h1
+            style={{
+              fontSize: "5em",
+              color: "white"
+            }}
+          >
+            meow
+          </h1>
           <Button href={AUTH_URL} size="large" icon="slack">
             Sign in with Slack
           </Button>

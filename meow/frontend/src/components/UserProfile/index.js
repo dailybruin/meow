@@ -12,6 +12,8 @@ class UserProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
+      isMe: false,
       profile_img:
         "https://pixel.nymag.com/imgs/daily/intelligencer/2018/09/24/24-bongo-cat.w700.h700.jpg",
       first_name: "Loading...",
@@ -24,13 +26,6 @@ class UserProfile extends React.Component {
       bio: "Loading...",
       selected_theme: 1,
       themes: [
-        // {
-        //   name: "Daily Bruin",
-        //   ​​​primary: "#3D73AD",
-        //   primary_font_color: "FFFFFF",
-        //   secondary: "4699DA",
-        //   secondary_font_color: "FFFFFF",
-        // },
         {
           name: "Daily Bruin",
           primary: "#00000",
@@ -44,7 +39,7 @@ class UserProfile extends React.Component {
   }
 
   componentWillMount() {
-    let username = this.props.match.params.username;
+    const { username } = this.props.match.params;
 
     themeList().then(d => {
       this.setState({
@@ -52,16 +47,28 @@ class UserProfile extends React.Component {
         themes: d.data
       });
     });
-    userDetail(username).then(d => {
+
+    if (username) {
+      this.fetchUserFor(username);
+    } else {
+      // This is the /me route
+      //TODO check if this is /me route
+      this.fetchUserFor(this.props.username).then(() => {
+        this.setState({
+          isMe: true
+        });
+      });
+    }
+  }
+
+  fetchUserFor = username => {
+    return userDetail(username).then(d => {
       let data = d.data;
 
       this.setState({
-        profile_img:
-          "https://pixel.nymag.com/imgs/daily/intelligencer/2018/09/24/24-bongo-cat.w700.h700.jpg",
+        loading: false,
         first_name: data.first_name,
         last_name: data.last_name,
-        instagram: "http://instagram.com",
-        twitter: "http://twitter.com",
         role: data.role,
         slack_username: data.username,
         email: data.username + "@media.ucla.edu",
@@ -69,9 +76,12 @@ class UserProfile extends React.Component {
         selected_theme: data.selected_theme
       });
     });
-  }
+  };
 
   render() {
+    if (this.state.loading) {
+      return null;
+    }
     return (
       <div className="user-profile-container">
         <div className="user-profile-row">
@@ -86,14 +96,20 @@ class UserProfile extends React.Component {
           />
         </div>
         <div className="user-profile-row">
-          <UserProfileBio bio={this.state.bio} />
-          <UserProfileTheme themes={this.state.themes} selected_theme={this.state.selected_theme} />
+          <UserProfileBio canEdit={this.state.isMe} bio={this.state.bio} />
+          <UserProfileTheme
+            canEdit={this.state.isMe}
+            themes={this.state.themes}
+            selected_theme={this.state.selected_theme}
+          />
         </div>
       </div>
     );
   }
 }
 
-// const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  username: state.default.user.username
+});
 
-export default withRouter(connect(null)(UserProfile));
+export default withRouter(connect(mapStateToProps)(UserProfile));

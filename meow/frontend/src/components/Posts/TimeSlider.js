@@ -1,25 +1,48 @@
 import React from "react";
+import moment from "moment";
 import { Slider } from "antd";
 
 export default class TimeSlider extends React.Component {
   state = {
-    inputValue: 24,
-    time: "12:00 PM"
+    time: 24
   };
 
   getTime = value => {
     let time = Math.floor(value / 2);
-    time = time % 12;
+    time = time % 24;
+
     if (time == 0) {
       time = "12";
     } else {
       time = "" + time;
     }
     if (value % 2 == 0) {
-      time = time + ":00";
+      time += "00";
     } else {
-      time = time + ":30";
+      time += "30";
     }
+
+    return moment(time, "hmm").format("HH:mm");
+  };
+
+  formatTime = () => {
+    const value = this.state.time;
+
+    let time = Math.floor(value / 2);
+    time = time % 12;
+
+    if (time == 0) {
+      time = "12";
+    } else {
+      time = "" + time;
+    }
+
+    if (value % 2 == 0) {
+      time += ":00";
+    } else {
+      time += ":30";
+    }
+
     if (value > 24) {
       time = time + " PM";
     } else {
@@ -30,23 +53,23 @@ export default class TimeSlider extends React.Component {
 
   onChange = value => {
     this.setState({
-      inputValue: value,
-      time: this.getTime(value)
+      time: value
     });
+    this.props.onSlideEnd(this.getTime(value));
   };
 
   render() {
     return (
-      <React.Fragment>
-        <h3>{this.state.time}</h3>
+      <div style={{ textAlign: "center" }}>
+        <h3>{this.formatTime()}</h3>
         <Slider
           min={0}
           max={47}
-          defaultValue={24}
+          defaultValue={this.state.time}
           onChange={this.onChange}
           tooltipVisible={false}
         />
-      </React.Fragment>
+      </div>
     );
   }
 }

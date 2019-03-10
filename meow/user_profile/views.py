@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.contrib.auth import logout as django_logout
 from django.conf import settings
 from django.core import serializers
@@ -23,14 +23,25 @@ def themeList(request):
 @api_login_required()
 def me(request):
     user = request.user
-    serialized_theme = ThemeSerializer(user.selected_theme);
-    return JsonResponse({
-        'username': user.username,
-        'first_name': user.first_name,
-        'theme': serialized_theme.data,
-        'groups': list(user.groups.all().values()),
-        'isAuthenticated': True
-    }, safe=False)
+
+    if request.method == "GET":
+        return JsonResponse({
+            'username': user.username,
+            'first_name': user.first_name,
+            'theme': serialized_theme.data,
+            'groups': list(user.groups.all().values()),
+            'isAuthenticated': True
+        }, safe=False)
+    elif request.method == "PUT":
+        req_data = json.loads(request.body)
+        new_bio = req_data["bio"]
+        if new_bio == "" or new_bio:
+            user.bio = new_bio
+            user.save()
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=500)
+
 
 
 @api_login_required()

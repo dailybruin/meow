@@ -1,4 +1,4 @@
-import { getMe, userDetail, logout as apiLogout } from "../services/api";
+import { getMe, userDetail, logout as apiLogout, putUser } from "../services/api";
 
 const loginSuccess = ({ username, firstName, isAuthenticated }) => ({
   type: "USER_LOGIN_SUCCESS",
@@ -75,4 +75,25 @@ export const getUser = username => {
       }
     );
   };
+};
+
+export const editUser = newData => dispatch => {
+  return putUser(newData).then(
+    ({ data, status }) => {
+      if (status >= 400) {
+        dispatch({
+          type: "EDIT_USER_FAIL",
+          message: `Could not edit current user"`
+        });
+      } else {
+        return data;
+      }
+    },
+    err => {
+      dispatch({
+        type: "NETWORK_ERROR",
+        message: "Could not connect to server."
+      });
+    }
+  );
 };
