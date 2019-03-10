@@ -11,6 +11,7 @@ function UserProfileTheme(props) {
       <h2 className="user-profile-theme-header">theme: </h2>
       <div className="user-profile-theme-box">
         {props.themes.map((value, index) => {
+          value.active = value.id === props.selected_theme.id;
           //  return <p key={index}>{value.themeColor}</p>
           return <UserProfileThemeRow key={value.id} theme={value} />;
         })}

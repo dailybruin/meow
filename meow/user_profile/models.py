@@ -25,10 +25,11 @@ class User(AbstractUser):
 
 
 class Theme(models.Model):
-    primary = models.CharField(max_length=7, blank=True)
-    secondary = models.CharField(max_length=7, blank=True)
-    primary_font_color = models.CharField(max_length=7, blank=True)
-    secondary_font_color = models.CharField(max_length=7, blank=True)
+    primary = models.CharField(max_length=7)
+    secondary = models.CharField(max_length=7)
+    primary_font_color = models.CharField(max_length=7)
+    secondary_font_color = models.CharField(max_length=7)
+    tertiary = models.CharField(max_length=7)
 
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    name = models.CharField(max_length=50, blank=False)
+    name = models.CharField(max_length=50)

@@ -23,6 +23,7 @@ export const login = () => {
             loginSuccess({
               username: data.username,
               firstName: data.first_name,
+              theme: data.theme,
               isAuthenticated: true
             })
           );

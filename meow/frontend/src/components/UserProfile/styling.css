@@ -115,13 +115,26 @@
   width: 100%;
   margin-bottom: 15px;
   align-items: center;
-  background: lightgrey;
+  border: 2px solid lightgrey;
+}
+
+.user-profile-theme-row-active {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  margin-bottom: 15px;
+  align-items: center;
+  border: 5px solid grey;
 }
 
 .user-profile-theme-row-name {
-  font-size: 24px;
-  width: 30%;
+  font-size: 12px;
+  width: 15%;
   margin-right: 10px;
+}
+
+.user-profile-theme-row-hand {
+  width: 30px;
 }
 
 .user-profile-social-media-bubble {

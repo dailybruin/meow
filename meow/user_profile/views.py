@@ -23,12 +23,14 @@ def themeList(request):
 @api_login_required()
 def me(request):
     user = request.user
+    serialized_theme = ThemeSerializer(user.selected_theme);
     return JsonResponse({
         'username': user.username,
         'first_name': user.first_name,
+        'theme': serialized_theme.data,
         'groups': list(user.groups.all().values()),
         'isAuthenticated': True
-    })
+    }, safe=False)
 
 
 @api_login_required()

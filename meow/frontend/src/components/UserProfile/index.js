@@ -22,6 +22,7 @@ class UserProfile extends React.Component {
       slack_username: "Loading...",
       email: "Loading...",
       bio: "Loading...",
+      selected_theme: 1,
       themes: [
         // {
         //   name: "Daily Bruin",
@@ -36,7 +37,7 @@ class UserProfile extends React.Component {
           secondary: "#00000",
           primary_font_color: "#101010",
           secondary_font_color: "123211",
-          id: 10
+          id: 1
         }
       ]
     };
@@ -64,7 +65,8 @@ class UserProfile extends React.Component {
         role: data.role,
         slack_username: data.username,
         email: data.username + "@media.ucla.edu",
-        bio: data.bio
+        bio: data.bio,
+        selected_theme: data.selected_theme
       });
     });
   }
@@ -85,7 +87,7 @@ class UserProfile extends React.Component {
         </div>
         <div className="user-profile-row">
           <UserProfileBio bio={this.state.bio} />
-          <UserProfileTheme themes={this.state.themes} />
+          <UserProfileTheme themes={this.state.themes} selected_theme={this.state.selected_theme} />
         </div>
       </div>
     );
