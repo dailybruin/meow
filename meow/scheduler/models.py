@@ -7,7 +7,6 @@ import requests
 import urllib
 from django.core.mail import send_mail
 from bs4 import BeautifulSoup
-from user_profile.models import User
 
 
 class SMPost(models.Model):
