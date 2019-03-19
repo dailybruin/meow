@@ -86,6 +86,14 @@ export const editUser = newData => dispatch => {
           message: `Could not edit current user"`
         });
       } else {
+        console.log("got here");
+        console.log(newData);
+        dispatch({
+          type: "THEME_CHANGE",
+          payload: {
+            selected_theme: newData.selected_theme
+          }
+        });
         return data;
       }
     },

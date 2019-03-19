@@ -14,8 +14,8 @@ class User(AbstractUser):
     #where did slack_username go?
     profile_img = models.ImageField(upload_to='profile/imgs/',
                                     null=True)
-    selected_theme = models.ForeignKey(
-        'Theme', blank=True, null=True, on_delete=models.SET_NULL)
+    # gets first theme (Daily Bruin) in database and sets as default theme
+    selected_theme = models.ForeignKey('Theme', null=True, on_delete=models.SET_NULL, default=1)
 
     def __str__(self):
         return self.username

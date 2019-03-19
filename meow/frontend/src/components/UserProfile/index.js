@@ -11,6 +11,15 @@ import { userDetail, themeList } from "../../services/api";
 class UserProfile extends React.Component {
   constructor(props) {
     super(props);
+    //the most confusing part of this state is the 3 themes:
+    //themes = a list of all themes avialable to the user.
+    //         for now this is litterally all the themes in the themes table
+    //theme = the theme selected by the current user. This comes from the redux state
+    //        by default, that part of the redux state is the Daily Bruin Theme.
+    //        whenever a user logins in, the redux state's theme is updated to the user's
+    //selected_theme = the theme selected by the person whose profile is being shown
+    //                 if nprajapati is looking at dnewman's profile, selected_theme = peach theme
+    //                 (since that is dustin's theme) not dark theme (which is neil's theme).
     this.state = {
       loading: true,
       isMe: false,
@@ -24,7 +33,15 @@ class UserProfile extends React.Component {
       slack_username: "Loading...",
       email: "Loading...",
       bio: "Loading...",
-      selected_theme: 1,
+
+      selected_theme: {
+        name: "Daily Bruin",
+        primary: "#00000",
+        secondary: "#00000",
+        primary_font_color: "#101010",
+        secondary_font_color: "123211",
+        id: 1
+      },
       themes: [
         {
           name: "Daily Bruin",
@@ -64,7 +81,7 @@ class UserProfile extends React.Component {
   fetchUserFor = username => {
     return userDetail(username).then(d => {
       let data = d.data;
-
+      console.log(d.data);
       this.setState({
         loading: false,
         first_name: data.first_name,
@@ -79,6 +96,8 @@ class UserProfile extends React.Component {
   };
 
   render() {
+    console.log("Re render");
+    console.log(this.props);
     if (this.state.loading) {
       return null;
     }
@@ -97,10 +116,11 @@ class UserProfile extends React.Component {
         </div>
         <div className="user-profile-row">
           <UserProfileBio canEdit={this.state.isMe} bio={this.state.bio} />
+
           <UserProfileTheme
             canEdit={this.state.isMe}
             themes={this.state.themes}
-            selected_theme={this.state.selected_theme}
+            selected_theme={this.state.isMe ? this.props.theme : this.state.selected_theme}
           />
         </div>
       </div>
@@ -109,7 +129,8 @@ class UserProfile extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  username: state.default.user.username
+  username: state.default.user.username,
+  theme: state.default.user.theme
 });
 
 export default withRouter(connect(mapStateToProps)(UserProfile));

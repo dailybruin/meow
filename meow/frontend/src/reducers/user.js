@@ -2,7 +2,7 @@ const initialState = {
   username: null,
   firstName: null,
   isAuthenticated: null,
-  theme: {
+  selected_theme: {
     name: "Daily Bruin",
     primary: "3D73AD",
     secondary: "4699DA",
@@ -22,14 +22,16 @@ export default function user(state = initialState, action) {
         ...state,
         username: action.payload.username === "" ? null : action.payload.username,
         firstName: action.payload.firstName === "" ? null : action.payload.firstName,
-        theme: action.payload.theme ? action.payload.theme : initialState.theme,
+        theme: action.payload.selected_theme
+          ? action.payload.selected_theme
+          : initialState.selected_theme,
         isAuthenticated: action.payload.isAuthenticated
       };
     }
     case "THEME_CHANGE": {
       return {
         ...state,
-        theme: action.payload.theme
+        theme: action.payload.selected_theme
       };
     }
     default:
