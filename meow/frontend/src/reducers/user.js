@@ -2,7 +2,9 @@ const initialState = {
   username: null,
   firstName: null,
   isAuthenticated: null,
-  selected_theme: {
+  //TODO: it feels wrong to hard code since we have this hardcoded in 2 places
+  // (in the migrations which add the Daily Bruin theme)
+  theme: {
     name: "Daily Bruin",
     primary: "3D73AD",
     secondary: "4699DA",
@@ -22,16 +24,15 @@ export default function user(state = initialState, action) {
         ...state,
         username: action.payload.username === "" ? null : action.payload.username,
         firstName: action.payload.firstName === "" ? null : action.payload.firstName,
-        theme: action.payload.selected_theme
-          ? action.payload.selected_theme
-          : initialState.selected_theme,
+        //the selected theme
+        theme: action.payload.selected_theme ? action.payload.selected_theme : initialState.theme,
         isAuthenticated: action.payload.isAuthenticated
       };
     }
     case "THEME_CHANGE": {
       return {
         ...state,
-        theme: action.payload.selected_theme
+        theme: action.payload.theme
       };
     }
     default:

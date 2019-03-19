@@ -87,6 +87,14 @@ class Sidebar extends React.Component {
   };
 
   render() {
+    let primaryBackgroundAndFont = {
+      backgroundColor: `#${this.props.theme.primary}`
+      // color: `#${this.props.theme.primary_font_color}`
+    };
+    let secondaryBackgroundAndFont = {
+      backgroundColor: `#${this.props.theme.secondary}`
+      // color: `#${this.props.theme.secondary_font_color}`
+    };
     return (
       <div
         style={{
@@ -96,8 +104,17 @@ class Sidebar extends React.Component {
           minHeight: "100%"
         }}
       >
-        <Collapse className="meow-collapse" defaultActiveKey={["1"]}>
-          <Panel className="full-width-panel" header="posts from" key="1">
+        <Collapse
+          className="meow-collapse"
+          style={primaryBackgroundAndFont}
+          defaultActiveKey={["1"]}
+        >
+          <Panel
+            className="full-width-panel"
+            style={secondaryBackgroundAndFont}
+            header="posts from"
+            key="1"
+          >
             <div style={{ width: "100%", backgroundColor: "white" }}>
               <Calendar
                 onSelect={x =>
@@ -118,7 +135,7 @@ class Sidebar extends React.Component {
               </Checkbox>
             ))}
           </Panel>
-          <Panel header="post time" key="3">
+          <Panel header="post time" style={secondaryBackgroundAndFont} key="3">
             <TimeSlider onSlideEnd={this.changeTime} />
           </Panel>
           <Panel header="status" key="4">
@@ -132,7 +149,7 @@ class Sidebar extends React.Component {
           style={{
             width: "100%",
             height: "8vh",
-            backgroundColor: "#2a73b2",
+            backgroundColor: `#${this.props.theme.primary}`,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -155,7 +172,8 @@ class Sidebar extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  sections: state.default.section.sections
+  sections: state.default.section.sections,
+  theme: state.default.user.theme
 });
 
 const mapDispatchToProps = {

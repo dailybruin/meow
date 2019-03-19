@@ -88,12 +88,14 @@ export const editUser = newData => dispatch => {
       } else {
         console.log("got here");
         console.log(newData);
-        dispatch({
-          type: "THEME_CHANGE",
-          payload: {
-            selected_theme: newData.selected_theme
-          }
-        });
+        if (newData.selected_theme) {
+          dispatch({
+            type: "THEME_CHANGE",
+            payload: {
+              theme: newData.selected_theme
+            }
+          });
+        }
         return data;
       }
     },
