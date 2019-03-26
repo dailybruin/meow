@@ -86,6 +86,8 @@ class UserProfile extends React.Component {
         loading: false,
         first_name: data.first_name,
         last_name: data.last_name,
+        instagram: data.instagram,
+        twitter: data.twitter,
         role: data.role,
         slack_username: data.username,
         email: data.username + "@media.ucla.edu",
@@ -112,6 +114,7 @@ class UserProfile extends React.Component {
             email={this.state.email}
             instagram={this.state.instagram}
             twitter={this.state.twitter}
+            canEdit={this.state.isMe}
           />
         </div>
         <div className="user-profile-row">

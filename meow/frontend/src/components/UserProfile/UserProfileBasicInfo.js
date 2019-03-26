@@ -1,7 +1,10 @@
 import React from "react";
-import UserProfileSocialMedia from "./UserProfileSocialMedia";
+import UserProfileSocialMediaContainer from "./UserProfileSocialMediaContainer";
 import "./styling.css";
 
+//============================ helper functions =======================//
+
+//============================ ACTUAL FUNCTIONAL Component ===================//
 function UserProfileBasicInfo(props) {
   return (
     <div className="user-profile-basic-info-container">
@@ -26,18 +29,11 @@ function UserProfileBasicInfo(props) {
           <div className="user-profile-basic-info-data">{props.slack_username}</div>
         </li>
 
-        <li className="user-profile-basic-info-form-group">
-          <UserProfileSocialMedia
-            href={props.instagram}
-            src="/static/src/assets/social_media/instagram.png"
-            alt="Instagram logo"
-          />
-          <UserProfileSocialMedia
-            href={props.twitter}
-            src="/static/src/assets/social_media/twitter.png"
-            alt="Twitter logo"
-          />
-        </li>
+        <UserProfileSocialMediaContainer
+          canEdit={props.canEdit}
+          instagram={props.instagram}
+          twitter={props.twitter}
+        />
       </ul>
     </div>
   );

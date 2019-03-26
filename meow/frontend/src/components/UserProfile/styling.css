@@ -144,3 +144,22 @@
   margin-top: 15px;
   margin-bottom: 10px;
 }
+
+.user-profile-social-media-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.user-profile-social-media-container-edit-button {
+  margin-top: 15px;
+}
+
+.user-profile-social-media-inline {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile-social-media-url {
+  font-size: 1.3em;
+}

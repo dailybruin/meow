@@ -11,7 +11,8 @@ class User(AbstractUser):
         choices=ROLE_CHOICES,
         default=CONTRIBUTOR
     )
-    #where did slack_username go?
+    instagram = models.URLField(default="https://www.instagram.com/chubby.umi/")
+    twitter = models.URLField(default="https://twitter.com/Cats")
     profile_img = models.ImageField(upload_to='profile/imgs/',
                                     null=True)
     # gets first theme (Daily Bruin) in database and sets as default theme

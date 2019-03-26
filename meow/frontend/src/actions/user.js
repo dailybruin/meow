@@ -86,8 +86,6 @@ export const editUser = newData => dispatch => {
           message: `Could not edit current user"`
         });
       } else {
-        console.log("got here");
-        console.log(newData);
         if (newData.selected_theme) {
           dispatch({
             type: "THEME_CHANGE",

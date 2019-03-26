@@ -37,22 +37,32 @@ def me(request):
     elif request.method == "PUT":
         req_data = json.loads(request.body);
         new_bio = req_data.get("bio", None);
-        print(req_data.get("selected_theme", None));
+        new_instagram = req_data.get("instagram", None);
+        new_twitter =  req_data.get("twitter", None);
         new_theme = req_data.get("selected_theme", None);
+        updated = False;
 
         if new_bio == "" or new_bio:
             user.bio = new_bio
-            user.save()
-            return HttpResponse(status=200)
+            updated = True;
+        if new_instagram == "" or new_instagram:
+            user.instagram = new_instagram;
+            updated = True
+        if new_twitter == "" or new_twitter:
+            user.twitter = new_twitter
+            updated = True
         if new_theme and new_theme["id"] and Theme.objects.filter(id=new_theme["id"]).count() > 0:
             # this isn't very good but for now it works
             # the problem is that the front ends sends the entire theme object
             # and all the backend does is use the id.
             user.selected_theme = Theme.objects.get(pk=new_theme["id"]);
+            updated = True;
+
+        if updated:
             user.save()
-            return HttpResponse(status=200)
-        else:
-            return HttpResponse(status=500)
+            return HttpResponse(status=200);
+
+        return HttpResponse(status=500)
 
 
 

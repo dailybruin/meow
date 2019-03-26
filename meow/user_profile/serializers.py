@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'profile_img', 'first_name', )
+        fields = ('username', 'profile_img', 'first_name', 'instagram', 'twitter')
 
 
 class ThemeSerializer(serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class ThemeSerializer(serializers.ModelSerializer):
 
 class SafeUserSerializer(serializers.ModelSerializer):
     section = serializers.StringRelatedField()
-    selected_theme = ThemeSerializer()
+    selected_theme = ThemeSerializer() 
 
     class Meta:
         model = User
