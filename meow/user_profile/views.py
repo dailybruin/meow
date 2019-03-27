@@ -30,7 +30,8 @@ def me(request):
         return JsonResponse({
             'username': user.username,
             'first_name': user.first_name,
-            'selected_theme': serialized_theme.data,
+            #not sure if this is a bad idea but it is returned as theme in views.me but selected_theme in views.userDetail
+            'theme': serialized_theme.data,
             'groups': list(user.groups.all().values()),
             'isAuthenticated': True
         }, safe=False)

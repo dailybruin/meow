@@ -20,12 +20,13 @@ export default function user(state = initialState, action) {
       return initialState;
     }
     case "USER_LOGIN_SUCCESS": {
+      console.log(action.payload);
       return {
         ...state,
         username: action.payload.username === "" ? null : action.payload.username,
         firstName: action.payload.firstName === "" ? null : action.payload.firstName,
         //the selected theme
-        theme: action.payload.selected_theme ? action.payload.selected_theme : initialState.theme,
+        theme: action.payload.theme ? action.payload.theme : initialState.theme,
         isAuthenticated: action.payload.isAuthenticated
       };
     }

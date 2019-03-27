@@ -1,11 +1,12 @@
 import { getMe, userDetail, logout as apiLogout, putUser } from "../services/api";
 
-const loginSuccess = ({ username, firstName, isAuthenticated }) => ({
+const loginSuccess = ({ username, firstName, isAuthenticated, theme }) => ({
   type: "USER_LOGIN_SUCCESS",
   payload: {
     username,
     firstName,
-    isAuthenticated
+    isAuthenticated,
+    theme
   }
 });
 
