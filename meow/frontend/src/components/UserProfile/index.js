@@ -14,9 +14,9 @@ class UserProfile extends React.Component {
     //the most confusing part of this state is the 3 themes:
     //themes = a list of all themes avialable to the user.
     //         for now this is litterally all the themes in the themes table
-    //theme = the theme selected by the current user. This comes from the redux state
-    //        by default, that part of the redux state is the Daily Bruin Theme.
-    //        whenever a user logins in, the redux state's theme is updated to the user's
+    //theme = the theme selected by the current user. This comes from the redux state.
+    //        By default, the theme is the Daily Bruin Theme.
+    //        whenever a user logins in, the redux state's theme is set to the user's
     //selected_theme = the theme selected by the person whose profile is being shown
     //                 if nprajapati is looking at dnewman's profile, selected_theme = peach theme
     //                 (since that is dustin's theme) not dark theme (which is neil's theme).
@@ -89,6 +89,7 @@ class UserProfile extends React.Component {
         instagram: data.instagram,
         twitter: data.twitter,
         role: data.role,
+        profile_img: data.profile_img,
         slack_username: data.username,
         email: data.username + "@media.ucla.edu",
         bio: data.bio,

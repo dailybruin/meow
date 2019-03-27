@@ -20,8 +20,8 @@ class ThemeSerializer(serializers.ModelSerializer):
 
 class SafeUserSerializer(serializers.ModelSerializer):
     section = serializers.StringRelatedField()
-    selected_theme = ThemeSerializer() 
+    selected_theme = ThemeSerializer()
 
     class Meta:
         model = User
-        exclude = ('password', 'user_permissions', 'profile_img')
+        exclude = ('password', 'user_permissions')

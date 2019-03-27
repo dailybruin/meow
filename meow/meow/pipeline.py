@@ -7,6 +7,7 @@ from scheduler.models import Section, MeowSetting
 import requests
 
 CHANNELS_ENDPOINT = "https://slack.com/api/users.conversations"
+PROFILE_ENDPOINT = "https://slack.com/api/users.profile.get"
 
 
 def set_roles(backend, user, response, details, *args, **kwargs):
@@ -33,6 +34,23 @@ def set_roles(backend, user, response, details, *args, **kwargs):
                 user.groups.add(copy_group)
             elif channel["name"] == online_channel:
                 user.groups.add(online_group)
+
+        set_profile_picture(backend, user, response, details, args, kwargs)
     else:
         print('for some reason this is not a slack thing')
     return None
+
+def set_profile_picture(backend, user, response, details, *args, **kwargs):
+    # if backend.name == 'meow':
+    access_token = response['access_token']
+    PARAMS = {'token': access_token} # do i need to pass the user or is that implicity passed?
+    slack_res = requests.get(url=PROFILE_ENDPOINT, params=PARAMS)
+    slack_res_json = slack_res.json()
+    print(slack_res.json())
+
+
+    user.profile_img = slack_res_json["profile"]["image_original"];
+    user.save();
+    # else:
+    print('for some reason this is not a slack thing')
+    # return None

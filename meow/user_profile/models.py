@@ -11,10 +11,10 @@ class User(AbstractUser):
         choices=ROLE_CHOICES,
         default=CONTRIBUTOR
     )
+
     instagram = models.URLField(default="https://www.instagram.com/chubby.umi/")
     twitter = models.URLField(default="https://twitter.com/Cats")
-    profile_img = models.ImageField(upload_to='profile/imgs/',
-                                    null=True)
+    profile_img = models.URLField(default=None, null=True);
     # gets first theme (Daily Bruin) in database and sets as default theme
     selected_theme = models.ForeignKey('Theme', null=True, on_delete=models.SET_NULL, default=1)
 

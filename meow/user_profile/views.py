@@ -33,6 +33,7 @@ def me(request):
             #not sure if this is a bad idea but it is returned as theme in views.me but selected_theme in views.userDetail
             'theme': serialized_theme.data,
             'groups': list(user.groups.all().values()),
+            'profile_img': user.profile_img,
             'isAuthenticated': True
         }, safe=False)
     elif request.method == "PUT":
