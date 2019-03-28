@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "font-awesome": "^4.7.0",
+    "react-color": "^2.17.0",
     "fuse.js": "^3.4.2",
     "sidebar-style-guide": "^2.0.0"
   }

@@ -43,13 +43,14 @@ class Header extends Component {
       <div
         className="meow-header"
         style={{
-          backgroundColor: "#2a73b2",
+          backgroundColor: `#${this.props.theme.primary}`,
           height: "13vh",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           paddingLeft: "3em",
-          paddingRight: "3em"
+          paddingRight: "3em",
+          color: `#${this.props.theme.primary_font_color}`
         }}
       >
         <h1 onClick={this.toHome} style={{ fontSize: "3em", cursor: "pointer" }}>
@@ -86,7 +87,8 @@ class Header extends Component {
 
 const mapStateToProps = state => ({
   username: state.default.user.username,
-  firstName: state.default.user.firstName
+  firstName: state.default.user.firstName,
+  theme: state.default.user.theme
 });
 
 export default withRouter(connect(mapStateToProps)(Header));

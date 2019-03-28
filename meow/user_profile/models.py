@@ -11,11 +11,12 @@ class User(AbstractUser):
         choices=ROLE_CHOICES,
         default=CONTRIBUTOR
     )
-    #where did slack_username go?
-    profile_img = models.ImageField(upload_to='profile/imgs/',
-                                    null=True)
-    selected_theme = models.ForeignKey(
-        'Theme', blank=True, null=True, on_delete=models.SET_NULL)
+
+    instagram = models.URLField(default="https://www.instagram.com/chubby.umi/")
+    twitter = models.URLField(default="https://twitter.com/Cats")
+    profile_img = models.URLField(default=None, null=True);
+    # gets first theme (Daily Bruin) in database and sets as default theme
+    selected_theme = models.ForeignKey('Theme', null=True, on_delete=models.SET_NULL, default=1)
 
     def __str__(self):
         return self.username
@@ -25,10 +26,11 @@ class User(AbstractUser):
 
 
 class Theme(models.Model):
-    primary = models.CharField(max_length=7, blank=True)
-    secondary = models.CharField(max_length=7, blank=True)
-    primary_font_color = models.CharField(max_length=7, blank=True)
-    secondary_font_color = models.CharField(max_length=7, blank=True)
+    primary = models.CharField(max_length=7)
+    secondary = models.CharField(max_length=7)
+    primary_font_color = models.CharField(max_length=7)
+    secondary_font_color = models.CharField(max_length=7)
+    tertiary = models.CharField(max_length=7)
 
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=50)

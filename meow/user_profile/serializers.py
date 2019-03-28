@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'profile_img', 'first_name', )
+        fields = ('username', 'profile_img', 'first_name', 'instagram', 'twitter')
 
 
 class ThemeSerializer(serializers.ModelSerializer):
@@ -24,4 +24,4 @@ class SafeUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ('password', 'user_permissions', 'profile_img')
+        exclude = ('password', 'user_permissions')

@@ -9,7 +9,7 @@ const { SERVER_URL } = config;
 
 export const themeList = () => {
   return axios
-    .get(`${SERVER_URL}/users/themes/all`, {
+    .get(`${SERVER_URL}/users/themes/`, {
       withCredentials: true
     })
     .then(res => {

@@ -1,11 +1,12 @@
 import { getMe, userDetail, logout as apiLogout, putUser } from "../services/api";
 
-const loginSuccess = ({ username, firstName, isAuthenticated }) => ({
+const loginSuccess = ({ username, firstName, isAuthenticated, theme }) => ({
   type: "USER_LOGIN_SUCCESS",
   payload: {
     username,
     firstName,
-    isAuthenticated
+    isAuthenticated,
+    theme
   }
 });
 
@@ -23,6 +24,7 @@ export const login = () => {
             loginSuccess({
               username: data.username,
               firstName: data.first_name,
+              theme: data.theme,
               isAuthenticated: true
             })
           );
@@ -85,6 +87,14 @@ export const editUser = newData => dispatch => {
           message: `Could not edit current user"`
         });
       } else {
+        if (newData.selected_theme) {
+          dispatch({
+            type: "THEME_CHANGE",
+            payload: {
+              theme: newData.selected_theme
+            }
+          });
+        }
         return data;
       }
     },

@@ -11,6 +11,15 @@ import { userDetail, themeList } from "../../services/api";
 class UserProfile extends React.Component {
   constructor(props) {
     super(props);
+    //the most confusing part of this state is the 3 themes:
+    //themes = a list of all themes avialable to the user.
+    //         for now this is litterally all the themes in the themes table
+    //theme = the theme selected by the current user. This comes from the redux state.
+    //        By default, the theme is the Daily Bruin Theme.
+    //        whenever a user logins in, the redux state's theme is set to the user's
+    //selected_theme = the theme selected by the person whose profile is being shown
+    //                 if nprajapati is looking at dnewman's profile, selected_theme = peach theme
+    //                 (since that is dustin's theme) not dark theme (which is neil's theme).
     this.state = {
       loading: true,
       isMe: false,
@@ -24,56 +33,43 @@ class UserProfile extends React.Component {
       slack_username: "Loading...",
       email: "Loading...",
       bio: "Loading...",
-      themes: []
+
+      selected_theme: {
+        name: "Daily Bruin",
+        primary: "#00000",
+        secondary: "#00000",
+        primary_font_color: "#101010",
+        secondary_font_color: "123211",
+        id: 1
+      },
+      themes: [
+        {
+          name: "Daily Bruin",
+          primary: "#00000",
+          secondary: "#00000",
+          primary_font_color: "#101010",
+          secondary_font_color: "123211",
+          id: 1
+        }
+      ]
     };
   }
-
-  fetchUserFor = username => {
-    return userDetail(username).then(d => {
-      let data = d.data;
-
-      this.setState({
-        loading: false,
-        first_name: data.first_name,
-        last_name: data.last_name,
-        role: data.role,
-        slack_username: data.username,
-        email: data.username + "@media.ucla.edu",
-        bio: data.bio,
-        themes: [
-          { themeColor: "#FF0000" },
-          { themeColor: "#FFA500" },
-          { themeColor: "#FFFF00" },
-          { themeColor: "#00FF00" },
-
-          { themeColor: data.theme ? data.theme.background_color : "#000000", isActive: true },
-          { themeColor: "#0000FF" },
-          { themeColor: "#AD14E3" },
-          { themeColor: "#000000" },
-
-          { themeColor: "#ACF48B" },
-          { themeColor: "#FFFA80" },
-          { themeColor: "#F8BB8F" },
-          { themeColor: "#EF8F8F" },
-
-          { themeColor: "#C4C4C4" },
-          { themeColor: "#D689F1" },
-          { themeColor: "#8FA4EC" },
-          { themeColor: "#B6EAFB" }
-        ]
-      });
-    });
-  };
 
   componentWillMount() {
     const { username } = this.props.match.params;
 
-    themeList().then(d => console.log(d));
+    themeList().then(d => {
+      this.setState({
+        ...this.state,
+        themes: d.data
+      });
+    });
 
     if (username) {
       this.fetchUserFor(username);
     } else {
       // This is the /me route
+      //TODO check if this is /me route
       this.fetchUserFor(this.props.username).then(() => {
         this.setState({
           isMe: true
@@ -82,7 +78,29 @@ class UserProfile extends React.Component {
     }
   }
 
+  fetchUserFor = username => {
+    return userDetail(username).then(d => {
+      let data = d.data;
+      console.log(d.data);
+      this.setState({
+        loading: false,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        instagram: data.instagram,
+        twitter: data.twitter,
+        role: data.role,
+        profile_img: data.profile_img,
+        slack_username: data.username,
+        email: data.username + "@media.ucla.edu",
+        bio: data.bio,
+        selected_theme: data.selected_theme
+      });
+    });
+  };
+
   render() {
+    console.log("Re render");
+    console.log(this.props);
     if (this.state.loading) {
       return null;
     }
@@ -97,11 +115,17 @@ class UserProfile extends React.Component {
             email={this.state.email}
             instagram={this.state.instagram}
             twitter={this.state.twitter}
+            canEdit={this.state.isMe}
           />
         </div>
         <div className="user-profile-row">
           <UserProfileBio canEdit={this.state.isMe} bio={this.state.bio} />
-          <UserProfileTheme canEdit={this.state.isMe} themes={this.state.themes} />
+
+          <UserProfileTheme
+            canEdit={this.state.isMe}
+            themes={this.state.themes}
+            selected_theme={this.state.isMe ? this.props.theme : this.state.selected_theme}
+          />
         </div>
       </div>
     );
@@ -109,7 +133,8 @@ class UserProfile extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  username: state.default.user.username
+  username: state.default.user.username,
+  theme: state.default.user.theme
 });
 
 export default withRouter(connect(mapStateToProps)(UserProfile));

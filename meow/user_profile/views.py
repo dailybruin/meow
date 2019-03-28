@@ -21,37 +21,51 @@ def themeList(request):
         return JsonResponse(themeOrderedDict, safe=False)
 
 @api_login_required()
-def themeList(request):
-    if request.method == "GET":
-        themes = Theme.objects.all()
-        serialized_themes = ThemeSerializer(themes, many=True)
-        themeOrderedDict = serialized_themes.data
-        return JsonResponse(themeOrderedDict, safe=False)
-
-
-@api_login_required()
 def me(request):
     user = request.user
+
+    serialized_theme = ThemeSerializer(user.selected_theme);
+
     if request.method == "GET":
         return JsonResponse({
             'username': user.username,
             'first_name': user.first_name,
+            # Note: theme in views.me, selected_theme in views.userDetail. This difference is intentional. see UserProfile/index.js and reducers for details 
+            'theme': serialized_theme.data,
             'groups': list(user.groups.all().values()),
+            'profile_img': user.profile_img,
             'isAuthenticated': True
-        })
+        }, safe=False)
     elif request.method == "PUT":
-        print("PUT REQUEST")
-        req_data = json.loads(request.body)
-        new_bio = req_data["bio"]
-        if new_bio:
-            print("HERE")
-            print(new_bio)
-            print(user)
+        req_data = json.loads(request.body);
+        new_bio = req_data.get("bio", None);
+        new_instagram = req_data.get("instagram", None);
+        new_twitter =  req_data.get("twitter", None);
+        new_theme = req_data.get("selected_theme", None);
+        updated = False;
+
+        if new_bio == "" or new_bio:
             user.bio = new_bio
+            updated = True;
+        if new_instagram == "" or new_instagram:
+            user.instagram = new_instagram;
+            updated = True
+        if new_twitter == "" or new_twitter:
+            user.twitter = new_twitter
+            updated = True
+        if new_theme and new_theme["id"] and Theme.objects.filter(id=new_theme["id"]).count() > 0:
+            # this isn't very good but for now it works
+            # the problem is that the front ends sends the entire theme object
+            # and all the backend does is use the id.
+            user.selected_theme = Theme.objects.get(pk=new_theme["id"]);
+            updated = True;
+
+        if updated:
             user.save()
-            return HttpResponse(status=200)
-        else:
-            return HttpResponse(status=500)
+            return HttpResponse(status=200);
+
+        return HttpResponse(status=500)
+
 
 
 @api_login_required()
@@ -65,10 +79,9 @@ def userList(request):
     if request.method == "GET":
         users = User.objects.values('id', 'username', 'first_name', 'last_name',
                                     'section', 'last_login', 'is_superuser', 'bio', 'role', 'email', 'theme', 'groups')
-        print(users)
+
         usersRawData = SafeUserSerializer(users, many=True)
         usersOrderedDict = usersRawData.data
-        print(usersOrderedDict)
         return JsonResponse(usersOrderedDict, safe=False)
 
 
@@ -76,8 +89,6 @@ def userList(request):
 def userDetail(request, username):
     if request.method == "GET":
         user = User.objects.get(username=username)
-        print(user)
         userRawData = SafeUserSerializer(user)
         userOrderedDict = userRawData.data
-        print(userOrderedDict)
         return JsonResponse(userOrderedDict, safe=False)

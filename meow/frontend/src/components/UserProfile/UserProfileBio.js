@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
 
 import { Button, Input } from "antd";
 
@@ -27,6 +26,26 @@ class UserProfileBio extends React.Component {
     this.props.editUser({
       bio: this.state.value
     });
+
+    this.setState({
+      isEditing: false
+    });
+  };
+
+  displayEditButton = () => {
+    if (this.props.canEdit && this.state.isEditing) {
+      return (
+        <Button onClick={this.saveBio} type="danger" icon="save" size="large" shape="round">
+          Save Bio
+        </Button>
+      );
+    } else if (this.props.canEdit) {
+      return (
+        <Button onClick={this.allowEditing} type="primary" icon="edit" size="large" shape="round">
+          Edit Bio
+        </Button>
+      );
+    }
   };
 
   render() {
@@ -50,7 +69,6 @@ class UserProfileBio extends React.Component {
     }
 
     return (
-      // <div></div>
       <div className="user-profile-bio-container">
         <div
           style={{
@@ -60,21 +78,7 @@ class UserProfileBio extends React.Component {
           }}
         >
           <h2 className="user-profile-bio-header">about</h2>
-          {this.state.isEditing ? (
-            <Button onClick={this.saveBio} type="danger" icon="save" size="large" shape="round">
-              Save Bio
-            </Button>
-          ) : (
-            <Button
-              onClick={this.allowEditing}
-              type="primary"
-              icon="edit"
-              size="large"
-              shape="round"
-            >
-              Edit Bio
-            </Button>
-          )}
+          {this.displayEditButton()}
         </div>
         {this.state.isEditing ? (
           <TextArea
@@ -82,10 +86,10 @@ class UserProfileBio extends React.Component {
               console.log(v.target.value);
               this.setState({ value: v.target.value });
             }}
-            value={val}
+            value={this.state.value}
           />
         ) : (
-          <p className="user-profile-bio-paragraph">{this.props.bio || defaultBio}</p>
+          <p className="user-profile-bio-paragraph">{this.state.value || defaultBio}</p>
         )}
       </div>
     );
