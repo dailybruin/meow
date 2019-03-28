@@ -30,7 +30,7 @@ def me(request):
         return JsonResponse({
             'username': user.username,
             'first_name': user.first_name,
-            #not sure if this is a bad idea but it is returned as theme in views.me but selected_theme in views.userDetail
+            # Note: theme in views.me, selected_theme in views.userDetail. This difference is intentional. see UserProfile/index.js and reducers for details 
             'theme': serialized_theme.data,
             'groups': list(user.groups.all().values()),
             'profile_img': user.profile_img,

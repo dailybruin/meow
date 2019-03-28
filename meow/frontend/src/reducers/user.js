@@ -2,8 +2,7 @@ const initialState = {
   username: null,
   firstName: null,
   isAuthenticated: null,
-  //TODO: it feels wrong to hard code since we have this hardcoded in 2 places
-  // (in the migrations which add the Daily Bruin theme)
+  // if you modify this, be sure to modify the database's Daily Bruin theme too.
   theme: {
     name: "Daily Bruin",
     primary: "3D73AD",
