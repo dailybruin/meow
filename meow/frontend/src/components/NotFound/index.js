@@ -4,9 +4,9 @@ import "./style.css";
 function NotFound(props) {
   return (
     <div className="not-found-body">
-      <h1> 404 </h1>
-      <h2> We couldn't find your page... </h2>
-      <h2> but we found you this: </h2>
+      <h1 className="not-found-h1"> 404 </h1>
+      <h2 className="not-found-h2"> We couldn't find your page... </h2>
+      <h2 className="not-found-h2"> but we found you this: </h2>
       <iframe
         width="560"
         height="315"
