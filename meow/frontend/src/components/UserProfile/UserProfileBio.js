@@ -7,6 +7,8 @@ import { editUser } from "../../actions/user";
 
 const { TextArea } = Input;
 
+const BIO_MAX_LENGTH = 512;
+
 class UserProfileBio extends React.Component {
   constructor(props) {
     super(props);
@@ -81,13 +83,19 @@ class UserProfileBio extends React.Component {
           {this.displayEditButton()}
         </div>
         {this.state.isEditing ? (
-          <TextArea
-            onChange={v => {
-              console.log(v.target.value);
-              this.setState({ value: v.target.value });
-            }}
-            value={this.state.value}
-          />
+          <div>
+            <TextArea
+              onChange={v => {
+                console.log(v.target.value);
+                this.setState({ value: v.target.value });
+              }}
+              value={this.state.value}
+              maxLength={BIO_MAX_LENGTH}
+            />
+            <span style={{ color: this.state.value.length == BIO_MAX_LENGTH ? "red" : "black" }}>
+              {this.state.value.length} / {BIO_MAX_LENGTH}
+            </span>
+          </div>
         ) : (
           <p className="user-profile-bio-paragraph">{this.state.value || defaultBio}</p>
         )}
