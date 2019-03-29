@@ -16,7 +16,7 @@ class MeowAuth(SlackOAuth2):
         fullname = user['real_name']
         full_name_list = fullname.split(' ', 1)
         first_name = full_name_list[0]
-        last_name = full_name_list[1]
+        last_name = "" if len(full_name_list) <= 1 else full_name_list[1]
 
         if self.setting('USERNAME_WITH_TEAM', True) and team and \
            'name' in team:
