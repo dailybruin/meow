@@ -9,6 +9,7 @@ import EditPost from "../EditPost";
 import AddPost from "../AddPost";
 import Sections from "../Settings/Sections";
 import UserProfile from "../UserProfile";
+import NotFound from "../NotFound";
 import { OnlineRedir } from "../../services/auth";
 
 import { loadSections } from "../../actions/section";
@@ -24,6 +25,12 @@ const PrettySections = () => (
 const PrettyUserProfile = () => (
   <PrettyPadding>
     <UserProfile />
+  </PrettyPadding>
+);
+
+const PrettyNotFound = () => (
+  <PrettyPadding>
+    <NotFound />
   </PrettyPadding>
 );
 
@@ -56,6 +63,7 @@ class Home extends React.Component {
             <Route path="/settings/sections" component={OnlineRedir(PrettySections)} />
             <Route path="/profile/:username" component={PrettyUserProfile} />
             <Route path="/me" component={PrettyUserProfile} />
+            <Route component={PrettyNotFound} />
           </Switch>
         </Layout>
       </Layout>
