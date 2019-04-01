@@ -12,6 +12,7 @@ from user_profile.serializers import SafeUserSerializer, ThemeSerializer
 import json
 # Create your views here.
 
+
 @api_login_required()
 def themeList(request):
     if request.method == "GET":
@@ -20,35 +21,36 @@ def themeList(request):
         themeOrderedDict = serialized_themes.data
         return JsonResponse(themeOrderedDict, safe=False)
 
+
 @api_login_required()
 def me(request):
     user = request.user
 
-    serialized_theme = ThemeSerializer(user.selected_theme);
+    serialized_theme = ThemeSerializer(user.selected_theme)
 
     if request.method == "GET":
         return JsonResponse({
             'username': user.username,
             'first_name': user.first_name,
-            # Note: theme in views.me, selected_theme in views.userDetail. This difference is intentional. see UserProfile/index.js and reducers for details 
+            # Note: theme in views.me, selected_theme in views.userDetail. This difference is intentional. see UserProfile/index.js and reducers for details
             'theme': serialized_theme.data,
             'groups': list(user.groups.all().values()),
             'profile_img': user.profile_img,
             'isAuthenticated': True
         }, safe=False)
     elif request.method == "PUT":
-        req_data = json.loads(request.body);
-        new_bio = req_data.get("bio", None);
-        new_instagram = req_data.get("instagram", None);
-        new_twitter =  req_data.get("twitter", None);
-        new_theme = req_data.get("selected_theme", None);
-        updated = False;
+        req_data = json.loads(request.body)
+        new_bio = req_data.get("bio", None)
+        new_instagram = req_data.get("instagram", None)
+        new_twitter = req_data.get("twitter", None)
+        new_theme = req_data.get("selected_theme", None)
+        updated = False
 
         if new_bio == "" or new_bio:
             user.bio = new_bio
-            updated = True;
+            updated = True
         if new_instagram == "" or new_instagram:
-            user.instagram = new_instagram;
+            user.instagram = new_instagram
             updated = True
         if new_twitter == "" or new_twitter:
             user.twitter = new_twitter
@@ -57,21 +59,20 @@ def me(request):
             # this isn't very good but for now it works
             # the problem is that the front ends sends the entire theme object
             # and all the backend does is use the id.
-            user.selected_theme = Theme.objects.get(pk=new_theme["id"]);
-            updated = True;
+            user.selected_theme = Theme.objects.get(pk=new_theme["id"])
+            updated = True
 
         if updated:
             user.save()
-            return HttpResponse(status=200);
+            return HttpResponse(status=200)
 
         return HttpResponse(status=500)
-
 
 
 @api_login_required()
 def logout(request):
     django_logout(request)
-    return HttpResponseRedirect("http://localhost:5000")
+    return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
 
 @api_login_required()

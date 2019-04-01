@@ -220,13 +220,13 @@ SOCIAL_AUTH_MEOW_SECRET = env('SLACK_CLIENT_SECRET')
 # mix identity and user scopes
 SOCIAL_AUTH_MEOW_IGNORE_DEFAULT_SCOPE = True
 SOCIAL_AUTH_MEOW_SCOPE = ['groups:read',
-                           'channels:read', 'users:read', 'users.profile:read']
+                          'channels:read', 'users:read', 'users.profile:read']
 SOCIAL_AUTH_MEOW_TEAM = 'dailybruin'
 
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5000/'
-LOGIN_REDIRECT_URL = 'http://localhost:5000/'
-LOGOUT_REDIRECT_URL = 'http://localhost:5000/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5000/' if DEBUG else 'https://meow.dailybruin.com/'
+LOGIN_REDIRECT_URL = 'http://localhost:5000/' if DEBUG else 'https://meow.dailybruin.com/'
+LOGOUT_REDIRECT_URL = 'http://localhost:5000/' if DEBUG else 'https://meow.dailybruin.com/'
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',

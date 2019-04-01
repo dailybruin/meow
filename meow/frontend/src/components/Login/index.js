@@ -5,7 +5,10 @@ import { Divider, Button } from "antd";
 
 import { login } from "../../actions/user";
 
-const AUTH_URL = "http://localhost:5000/api/v1/auth/login/meow/";
+const AUTH_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://meow.dailybruin.com/api/v1/auth/login/meow/"
+    : "http://localhost:5000/api/v1/auth/login/meow/";
 
 class Login extends React.Component {
   componentDidMount() {

@@ -5,8 +5,14 @@ import { Modal, Input, Form } from "antd";
 
 import "./index.css";
 
-const FB_URL = "http://localhost:5000/api/v1/fb-redir/";
-const TWIT_URL = "http://localhost:5000/api/v1/twitter-redir/";
+const FB_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://meow.dailybruin.com/api/v1/fb-redir/"
+    : "http://localhost:5000/api/v1/fb-redir/";
+const TWIT_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://meow.dailybruin.com/api/v1/twitter-redir/"
+    : "http://localhost:5000/api/v1/twitter-redir/";
 
 class SectionModal extends React.Component {
   state = {
