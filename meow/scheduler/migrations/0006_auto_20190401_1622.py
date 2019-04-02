@@ -48,7 +48,7 @@ def import_old_sm_posts(apps, schema_editor):
         facebook_account_handle=None,
     );
 
-    with open('meow/scheduler/migrations/old_smpost_data.csv', 'rt') as csvfile:
+    with open('meow/scheduler/migrations/newer_posts.csv', 'rt') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         first = True
         for row in spamreader:
