@@ -7,4 +7,8 @@ set -e
 # DO NOT USE THIS FOR PROD!
 export PYTHONUNBUFFERED=1
 
+# Apply database migrations
+echo "Apply database migrations"
+python meow/manage.py migrate
+
 exec "$@"

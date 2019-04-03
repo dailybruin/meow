@@ -41,7 +41,7 @@ def set_roles_and_profile_pic(backend, user, response, details, *args, **kwargs)
     return None
 
 def set_profile_picture(backend, user, response, details, *args, **kwargs):
-    
+
     # if backend.name == 'meow':
     access_token = response['access_token']
     PARAMS = {'token': access_token}
@@ -50,7 +50,7 @@ def set_profile_picture(backend, user, response, details, *args, **kwargs):
     print(slack_res.json())
 
 
-    user.profile_img = slack_res_json["profile"]["image_original"];
-    user.save();
+    user.profile_img = slack_res_json["profile"]["image_original"]
+    user.save()
     # else:
     # return None

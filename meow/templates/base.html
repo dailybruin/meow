@@ -1,4 +1,4 @@
-{% load static %} {% load render_bundle from webpack_loader %} <!DOCTYPE html>
+{% load static %} <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -8,15 +8,16 @@
     <link
       rel="icon"
       type="image/png"
-      href="{% static 'img/favicons/favicon-32x32.png' %}"
+      href="{% static 'favicons/favicon-32x32.png' %}"
       sizes="32x32"
     />
     <link
       rel="icon"
       type="image/png"
-      href="{% static 'img/favicons/favicon-96x96.png' %}"
+      href="{% static 'favicons/favicon-96x96.png' %}"
       sizes="96x96"
     />
+    <link rel="shortcut icon" href="{% static 'favicons/favicon-96x96.png' %}" />
     <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
     <title>meow - Daily Bruin</title>
     <style>
@@ -31,6 +32,7 @@
   <body>
     {% block content %}
     <div id="app"></div>
-    {% render_bundle 'main' %} {% endblock %}
+    <script type="text/javascript" src="/static/main-964c6e23ec20816b9938.js"></script>
+    {% endblock %}
   </body>
 </html>

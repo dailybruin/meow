@@ -3,9 +3,9 @@ FROM node:8
 WORKDIR /meow
 ADD package.json package-lock.json /meow/
 RUN npm install
-COPY ./webpack.config.js ./jsconfig.json ./
+COPY ./webpack.config.js ./webpack.prod.config.js ./jsconfig.json ./
 COPY meow/frontend meow/frontend
-RUN npm run build
+RUN npm run build-production
 
 # Slightly modified from
 # https://www.caktusgroup.com/blog/2017/03/14/production-ready-dockerfile-your-python-django-app/

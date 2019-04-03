@@ -18,13 +18,15 @@ if not DEBUG:
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
+# ALLOWED_HOSTS=['*']
+# print(ALLOWED_HOSTS)
 DATABASES = {
     'default': env.db()
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
+# ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
 if os.environ.get('HOSTS'):
     ALLOWED_HOSTS.append(os.environ.get('HOSTS'))
 
@@ -63,7 +65,9 @@ MEDIA_URL = ''
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'frontend'),
+    os.path.join(os.path.dirname(BASE_DIR), 'meow', 'frontend', 'bundles'),
+    os.path.join(os.path.dirname(BASE_DIR), 'meow', 'frontend', 'img'),
+    os.path.join(os.path.dirname(BASE_DIR), 'meow', 'frontend', 'src', 'assets'),
 )
 
 # URL prefix for static files.
@@ -182,11 +186,12 @@ AUTH_USER_MODEL = 'user_profile.User'
 # Webpack
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'bundles/',
+        'CACHE': False,
+        'BUNDLE_DIR_NAME': '/',
         'STATS_FILE': os.path.join(os.path.dirname(BASE_DIR), 'webpack-stats.json'),
     }
 }
+
 
 if os.environ.get('REDIS_URL') is not None:
     CELERY_BROKER_URL = os.environ.get('REDIS_URL')

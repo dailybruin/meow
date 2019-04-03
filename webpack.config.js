@@ -1,23 +1,23 @@
-const path = require('path');
-const webpack = require('webpack');
-const BundleTracker = require('webpack-bundle-tracker');
-const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
+const path = require("path");
+const webpack = require("webpack");
+const BundleTracker = require("webpack-bundle-tracker");
+const dotenv = require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 module.exports = {
   context: __dirname,
 
-  mode: process.env.DEBUG === 'True' ? 'development' : 'production',
+  mode: process.env.DEBUG === "True" ? "development" : "production",
 
   entry: {
-    main: './meow/frontend/src/index'
+    main: path.resolve("./meow/frontend/src/index")
   },
 
   output: {
-    path: path.resolve('./meow/frontend/bundles/'),
-    filename: '[name]-[hash].js'
+    path: path.resolve("./meow/frontend/bundles/"),
+    filename: "[name]-[hash].js"
   },
 
-  plugins: [new BundleTracker({ filename: './webpack-stats.json' })],
+  plugins: [new BundleTracker({ filename: "./webpack-stats.json" })],
 
   module: {
     rules: [
@@ -25,10 +25,10 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
-            plugins: ['transform-class-properties']
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+            plugins: ["transform-class-properties"]
           }
         }
       },
@@ -36,18 +36,18 @@ module.exports = {
         test: /\.(css|sass|scss)$/,
         use: [
           {
-            loader: 'style-loader' // creates style nodes from JS strings
+            loader: "style-loader" // creates style nodes from JS strings
           },
           {
-            loader: 'css-loader' // translates CSS into CommonJS
+            loader: "css-loader" // translates CSS into CommonJS
           },
           {
-            loader: 'sass-loader' // translates CSS into CommonJS
+            loader: "sass-loader" // translates CSS into CommonJS
           }
         ]
       },
       {
-        test: /\.(jpe|jpg|woff|woff2|eot|ttf|svg)(\?.*$|$)/,
+        test: /\.(jpe|jpg|woff|woff2|eot|ttf|svg)(\?.*$|$)/
       }
     ]
   }
