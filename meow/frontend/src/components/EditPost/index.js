@@ -72,7 +72,11 @@ class EditPost extends React.Component {
           <EditSidebar {...this.state} editPost={this.editField} />
         </Sidebar>
         <Content style={contentStyles}>
-          <EditContent {...this.state} editPost={this.editField} save={this.savePost.bind(this)} />
+          <EditContent
+            {...this.state}
+            editPost={this.editField}
+            savePost={this.savePost.bind(this)}
+          />
         </Content>
       </React.Fragment>
     );
