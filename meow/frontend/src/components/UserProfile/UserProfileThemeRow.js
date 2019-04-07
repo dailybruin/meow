@@ -47,9 +47,7 @@ class UserProfileThemeRow extends React.Component {
 
   createHandOrGap = () => {
     if (this.props.active) {
-      return (
-        <img src="/static/src/assets/other/bongocat.png" className="user-profile-theme-row-hand" />
-      );
+      return <img src="/static/other/bongocat.png" className="user-profile-theme-row-hand" />;
     } else {
       return <span className="user-profile-theme-row-hand" />;
     }
