@@ -53,7 +53,7 @@ class SMPost(models.Model):
         default=False, help_text="Do you want to send this post immediately?")
 
     def __str__(self):
-        return self.slug
+        return "" if self.slug is None else self.slug
 
     class Meta:
         permissions = (

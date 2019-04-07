@@ -63,7 +63,9 @@ class EditForm extends React.Component {
           })(
             <RadioGroup>
               {this.props.sections.map(x => (
-                <Radio value={x.id}>{x.name}</Radio>
+                <Radio key={x.id} value={x.id}>
+                  {x.name}
+                </Radio>
               ))}
             </RadioGroup>
           )}
