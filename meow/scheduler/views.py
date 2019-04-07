@@ -53,7 +53,8 @@ class SMPostList(APIView):
         year = request.GET.get('year', None)
         month = request.GET.get('month', None)
         day = request.GET.get('day', None)
-
+        print("SMPostList")
+        print(year, month, day)
 
         if year and month and day:
             posts = SMPost.objects.filter(
@@ -64,14 +65,10 @@ class SMPostList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        print(request.data)
-
         serializer = SMPostSerializer(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors);
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

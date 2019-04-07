@@ -15,7 +15,7 @@ class EditPost extends React.Component {
   };
 
   handleOk = () => {
-    this.props.savePost();
+    this.props.save();
   };
 
   render() {
