@@ -11,11 +11,11 @@ import { connect } from "react-redux";
 
 const SOCIAL_MEDIA_STUFF = {
   instagram: {
-    src: "/static/src/assets/social_media/instagram.png",
+    src: "/static/social_media/instagram.png",
     alt: "Instagram logo"
   },
   twitter: {
-    src: "/static/src/assets/social_media/twitter.png",
+    src: "/static/social_media/twitter.png",
     alt: "Twitter logo"
   }
 };
