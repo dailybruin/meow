@@ -15,14 +15,7 @@ class EditPost extends React.Component {
   };
 
   handleOk = () => {
-    const { postId } = this.props.match.params;
-
-    this.props.savePost(postId).then(data => {
-      if (data) {
-        this.props.history.push("/");
-      } else {
-      }
-    });
+    this.props.save();
   };
 
   render() {
