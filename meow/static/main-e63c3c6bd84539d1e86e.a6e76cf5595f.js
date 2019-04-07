@@ -39851,7 +39851,11 @@ object-assign
       Qn = [dn, Object(pn.createLogger)()],
       ne = [
         z.a.apply(void 0, Qn),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+        window.__REDUX_DEVTOOLS_EXTENSION__
+          ? window.__REDUX_DEVTOOLS_EXTENSION__()
+          : function(n) {
+              return n;
+            }
       ],
       ee = { key: "root", storage: $n.a, stateReconciler: Xn.a, blacklist: ["post", "query"] },
       te = ((Nn = ee),
@@ -63637,10 +63641,7 @@ object-assign
                 a.props.editPost(n);
               }),
               (a.handleOk = function() {
-                var n = a.props.match.params.postId;
-                a.props.savePost(n).then(function(n) {
-                  n && a.props.history.push("/");
-                });
+                a.props.save();
               }),
               t)
             );
@@ -63906,7 +63907,10 @@ object-assign
                     { style: ey },
                     r.a.createElement(
                       Uv,
-                      qv({}, this.state, { editPost: this.editField, savePost: this.savePost })
+                      qv({}, this.state, {
+                        editPost: this.editField,
+                        save: this.savePost.bind(this)
+                      })
                     )
                   )
                 );
@@ -66336,8 +66340,15 @@ object-assign
                           }),
                           r.a.createElement(
                             "span",
-                            { style: { color: 512 == this.state.value.length ? "red" : "black" } },
-                            this.state.value.length,
+                            {
+                              style: {
+                                color:
+                                  this.state.value && 512 == this.state.value.length
+                                    ? "red"
+                                    : "black"
+                              }
+                            },
+                            this.state.value ? this.state.value.length : 0,
                             " / ",
                             512
                           )

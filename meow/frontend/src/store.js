@@ -9,7 +9,7 @@ const middlewares = [thunkMiddleware, createLogger()];
 
 const enhancers = [
   applyMiddleware(...middlewares),
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : x => x
 ];
 
 const persistConfig = {

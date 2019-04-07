@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const BundleTracker = require("webpack-bundle-tracker");
 const config = require("./webpack.config.js");
+const dotenv = require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 // config.output.path = path.resolve("./meow/frontend/dist");
 
@@ -11,7 +12,7 @@ config.plugins.push[
   // removes a lot of debugging code in React
   (new webpack.DefinePlugin({
     "process.env": {
-      NODE_ENV: JSON.stringify("production")
+      NODE_ENV: JSON.stringify(process.env.DEBUG === "True" ? "development" : "production")
     }
   }),
   // keeps hashes consistent between compilations

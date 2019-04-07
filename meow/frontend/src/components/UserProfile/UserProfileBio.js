@@ -92,8 +92,13 @@ class UserProfileBio extends React.Component {
               value={this.state.value}
               maxLength={BIO_MAX_LENGTH}
             />
-            <span style={{ color: this.state.value.length == BIO_MAX_LENGTH ? "red" : "black" }}>
-              {this.state.value.length} / {BIO_MAX_LENGTH}
+            <span
+              style={{
+                color:
+                  this.state.value && this.state.value.length == BIO_MAX_LENGTH ? "red" : "black"
+              }}
+            >
+              {this.state.value ? this.state.value.length : 0} / {BIO_MAX_LENGTH}
             </span>
           </div>
         ) : (
