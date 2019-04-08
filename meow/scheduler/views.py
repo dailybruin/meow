@@ -58,9 +58,9 @@ class SMPostList(APIView):
 
         if year and month and day:
             posts = SMPost.objects.filter(
-                pub_date=datetime.date(int(year), int(month), int(day)))
+                pub_date=datetime.date(int(year), int(month), int(day)), is_active=True)
         else:
-            posts = SMPost.objects.all()
+            posts = SMPost.objects.filter(is_active=True)
         serializer = SMPostSerializer(posts, many=True)
         return Response(serializer.data)
 
@@ -496,7 +496,7 @@ Thanks,
         TWITTER_CONSUMER_KEY,
         TWITTER_CONSUMER_SECRET,
         MeowSetting.objects.get(
-            setting_key="site_url").setting_value + "/manage/twitter-connect/"
+            setting_key="site_url").setting_value + "/api/v1/twitter-connect/"
     )
     twitter_auth.secure = True
     twitter_auth_url = twitter_auth.get_authorization_url()
@@ -511,7 +511,7 @@ Thanks,
     fb_authorization_base_url = 'https://www.facebook.com/v2.10/dialog/oauth'
     fb_token_url = 'https://graph.facebook.com/oauth/access_token'
     redirect_uri = MeowSetting.objects.get(
-        setting_key="site_url").setting_value + '/manage/fb-connect'
+        setting_key="site_url").setting_value + '/api/v1/fb-connect'
     fb_permissions = ["manage_pages", "publish_pages"]
 
     facebook = OAuth2Session(fb_app_id,
@@ -544,7 +544,7 @@ def twitter_redir(request):
         TWITTER_CONSUMER_KEY,
         TWITTER_CONSUMER_SECRET,
         MeowSetting.objects.get(
-            setting_key="site_url").setting_value + "/api/v1/twitter-connect/"
+            setting_key="site_url").setting_value + '/api/v1/twitter-connect/'
     )
     twitter_auth.secure = True
     twitter_auth_url = twitter_auth.get_authorization_url()

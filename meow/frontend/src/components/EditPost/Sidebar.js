@@ -41,6 +41,19 @@ class Sidebar extends React.Component {
         >
           now!
         </Button>
+        <Button
+          onClick={this.props.delete}
+          style={{
+            color: "white",
+            border: "2px solid white",
+            borderRadius: "20px",
+            fontSize: "1.4em"
+          }}
+          type="danger"
+          size="large"
+        >
+          delete
+        </Button>
       </div>
     );
   }

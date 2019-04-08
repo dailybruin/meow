@@ -52,6 +52,9 @@ class SMPost(models.Model):
     send_now = models.BooleanField(
         default=False, help_text="Do you want to send this post immediately?")
 
+    is_active = models.BooleanField(
+        default=True, help_text="If false, consider mock-deleted.")
+
     def __str__(self):
         return self.slug
 

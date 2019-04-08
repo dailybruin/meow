@@ -53,11 +53,26 @@ class EditPost extends React.Component {
     });
   };
 
+  deletePost = () => {
+    const { postId } = this.props.match.params;
+
+    this.props.savePost(postId, { is_active: false }).then(data => {
+      if (data) {
+        this.props.history.push("/");
+      } else {
+      }
+    });
+  };
+
   render() {
     return (
       <React.Fragment>
         <Sidebar>
-          <EditSidebar {...this.state} editPost={this.editField} />
+          <EditSidebar
+            {...this.state}
+            editPost={this.editField}
+            delete={this.deletePost.bind(this)}
+          />
         </Sidebar>
         <Content style={contentStyles}>
           <EditContent {...this.state} editPost={this.editField} save={this.savePost.bind(this)} />

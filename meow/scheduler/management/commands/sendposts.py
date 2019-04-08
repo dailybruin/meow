@@ -36,6 +36,8 @@ class Command(BaseCommand):
             pub_ready_copy=True
         ).filter(
             pub_ready_online=True
+        ).filter(
+            is_active=True
         ).exclude(
             sent=True
         ).exclude(
@@ -44,12 +46,14 @@ class Command(BaseCommand):
 
         sendNowPosts = SMPost.objects.filter(
             send_now=True
+        ).filter(
+            is_active=True
         ).exclude(
             sent=True
         ).exclude(
             section=None
         )
-        
+
         posts = regularPosts | sendNowPosts
 
         if len(posts) == 0:
