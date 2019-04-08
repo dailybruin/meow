@@ -56,7 +56,7 @@ class SMPost(models.Model):
         default=True, help_text="If false, consider mock-deleted.")
 
     def __str__(self):
-        return self.slug
+        return "" if self.slug is None else self.slug
 
     class Meta:
         permissions = (

@@ -45,12 +45,24 @@ class EditPost extends React.Component {
   savePost = () => {
     const { postId } = this.props.match.params;
 
-    this.props.savePost(postId, this.state).then(data => {
-      if (data) {
-        this.props.history.push("/");
-      } else {
-      }
-    });
+    this.props
+      .savePost(postId, {
+        slug: this.state.slug,
+        story_url: this.state.story_url,
+        section: this.state.section,
+        pub_date: this.state.pub_date,
+        pub_time: this.state.pub_time,
+        pub_ready_copy: false,
+        pub_ready_online: false,
+        post_facebook: this.state.post_facebook,
+        post_twitter: this.state.post_twitter
+      })
+      .then(data => {
+        if (data) {
+          this.props.history.push("/");
+        } else {
+        }
+      });
   };
 
   deletePost = () => {
@@ -75,7 +87,11 @@ class EditPost extends React.Component {
           />
         </Sidebar>
         <Content style={contentStyles}>
-          <EditContent {...this.state} editPost={this.editField} save={this.savePost.bind(this)} />
+          <EditContent
+            {...this.state}
+            editPost={this.editField}
+            savePost={this.savePost.bind(this)}
+          />
         </Content>
       </React.Fragment>
     );
