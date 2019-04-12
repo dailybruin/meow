@@ -1,7 +1,7 @@
 const initialState = {
   username: null,
   firstName: null,
-  isAuthenticated: null,
+  isAuthenticated: false,
   // if you modify this, be sure to modify the database's Daily Bruin theme too.
   theme: {
     name: "Daily Bruin",
@@ -27,6 +27,12 @@ export default function user(state = initialState, action) {
         //the selected theme
         theme: action.payload.theme ? action.payload.theme : initialState.theme,
         isAuthenticated: action.payload.isAuthenticated
+      };
+    }
+    case "USER_LOGIN_FAIL": {
+      return {
+        ...state,
+        isAuthenticated: false
       };
     }
     case "THEME_CHANGE": {

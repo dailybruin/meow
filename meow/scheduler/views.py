@@ -54,12 +54,11 @@ class SMPostList(APIView):
         month = request.GET.get('month', None)
         day = request.GET.get('day', None)
 
-
         if year and month and day:
             posts = SMPost.objects.filter(
-                pub_date=datetime.date(int(year), int(month), int(day)), is_active=True)
+                pub_date=datetime.date(int(year), int(month), int(day))) .exclude(is_active=False)
         else:
-            posts = SMPost.objects.filter(is_active=True)
+            posts = SMPost.objects.all().exclude(is_active=False)
         serializer = SMPostSerializer(posts, many=True)
         return Response(serializer.data)
 
