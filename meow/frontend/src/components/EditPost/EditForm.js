@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Row, Col, Input, Checkbox, Radio } from "antd";
 import { Copy, Online } from "../../services/auth";
 import "./EditForm.css";
+import { getMe } from "../../services/api";
 
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
@@ -24,17 +25,28 @@ const formItemLayout = {
 };
 
 class EditForm extends React.Component {
+  state = { groups: [] };
+
+  componentDidMount() {
+    getMe().then(res => {
+      this.setState({ groups: res.data.groups });
+    });
+  }
   render() {
     const { getFieldDecorator } = this.props.form;
-    const CopyEdited = Copy(() => (
-      <Form.Item className="checkable-items">
-        {getFieldDecorator("pub_ready_copy", {
-          rules: [],
-          valuePropName: "checked",
-          initialValue: false
-        })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
-      </Form.Item>
-    ));
+    const CopyEdited = Copy(
+      () => (
+        <Form.Item className="checkable-items">
+          {getFieldDecorator("pub_ready_copy", {
+            rules: [],
+            valuePropName: "checked",
+            initialValue: false
+          })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
+        </Form.Item>
+      ),
+      null,
+      this.state.groups
+    );
     const OnlineReady = Online(() => (
       <Form.Item className="checkable-items">
         {getFieldDecorator("pub_ready_online", {
