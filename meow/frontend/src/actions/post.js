@@ -1,4 +1,4 @@
-import { postPost, postList, postDetail } from "../services/api";
+import { postPost, postList, postDetail, postSendNow } from "../services/api";
 
 const savePostRequest = () => ({
   type: "SAVE_POST_REQUEST"
@@ -54,6 +54,31 @@ export const loadPosts = YMD => dispatch => {
       });
     }
   );
+};
+
+export const sendPostNow = postId => {
+  console.log("post.js sendPostNow");
+  return dispatch => {
+    return postSendNow(postId).then(
+      ({ data, status }) => {
+        if (status >= 400) {
+          dispatch({
+            type: "POST_SEND_NOW_FAIL",
+            message: `Could not send ${postId} now.`
+          });
+        } else {
+          dispatch({ type: "POST_SEND_NOW_SUCCESS", payload: data });
+          return status; //returning status instead of data
+        }
+      },
+      err => {
+        dispatch({
+          type: "NETWORK_ERROR",
+          message: "Could not connect to server."
+        });
+      }
+    );
+  };
 };
 
 export const getPost = postId => {
