@@ -5,8 +5,8 @@ from user_profile.serializers import BasicInfoUserSerializer
 class SMPostSerializer(serializers.ModelSerializer):
     section = serializers.PrimaryKeyRelatedField
     #category_name = serializers.CharField(source='category.name')
-    pub_ready_copy_user = BasicInfoUserSerializer()
-    pub_ready_online_user = BasicInfoUserSerializer()
+    pub_ready_copy_user = BasicInfoUserSerializer(required=False)
+    pub_ready_online_user = BasicInfoUserSerializer(required=False)
 
     class Meta:
         model = SMPost
