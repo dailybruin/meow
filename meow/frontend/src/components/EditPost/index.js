@@ -10,7 +10,7 @@ import Sidebar from "../Sidebar";
 
 import { getMe } from "../../services/api";
 
-import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
+import { getPost, editPost, savePost } from "../../actions/post";
 import { loadSections } from "../../actions/section";
 
 const { Content } = Layout;
