@@ -94,6 +94,17 @@ class SMPostDetail(APIView):
         post = self.get_object(post_id)
         serializer = SMPostSerializer(post, data=request.data)
         if serializer.is_valid():
+            print()
+            if post.pub_ready_copy != request.data["pub_ready_copy"]:
+                # it means that the sender of this request tried to change it
+                # we have to check if they have copy permissions
+                #if request.user.group
+                if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
+                    #  TODO: what data should the response send back
+                    return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
+            if post.pub_ready_online != request.data["pub_ready_online"]:
+                if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
+                    return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

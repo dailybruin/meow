@@ -30,6 +30,7 @@ def me(request):
 
     if request.method == "GET":
         return JsonResponse({
+            'id': user.id,
             'username': user.username,
             'first_name': user.first_name,
             # Note: theme in views.me, selected_theme in views.userDetail. This difference is intentional. see UserProfile/index.js and reducers for details

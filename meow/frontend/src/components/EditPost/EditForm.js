@@ -25,13 +25,6 @@ const formItemLayout = {
 };
 
 class EditForm extends React.Component {
-  state = { groups: [] };
-
-  componentDidMount() {
-    getMe().then(res => {
-      this.setState({ groups: res.data.groups });
-    });
-  }
   render() {
     const { getFieldDecorator } = this.props.form;
     const CopyEdited = Copy(
@@ -45,17 +38,21 @@ class EditForm extends React.Component {
         </Form.Item>
       ),
       null,
-      this.state.groups
+      this.props.user_groups
     );
-    const OnlineReady = Online(() => (
-      <Form.Item className="checkable-items">
-        {getFieldDecorator("pub_ready_online", {
-          rules: [],
-          valuePropName: "checked",
-          initialValue: true
-        })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
-      </Form.Item>
-    ));
+    const OnlineReady = Online(
+      () => (
+        <Form.Item className="checkable-items">
+          {getFieldDecorator("pub_ready_online", {
+            rules: [],
+            valuePropName: "checked",
+            initialValue: true
+          })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
+        </Form.Item>
+      ),
+      null,
+      this.props.user_groups
+    );
 
     return (
       <Form layout="horizontal" className="login-form">
