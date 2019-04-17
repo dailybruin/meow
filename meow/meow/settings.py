@@ -12,6 +12,7 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
+SLACK_ENDPOINT = env('SLACK_ENDPOINT')
 
 if not DEBUG:
     ALLOWED_HOSTS = [env('SITE_HOST'), ]
