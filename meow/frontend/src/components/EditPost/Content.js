@@ -35,13 +35,18 @@ class EditPost extends React.Component {
           }}
         >
           <Col span={12}>
-            {this.props.pub_ready_copy_user !== null
-              ? `Copy-edited by: ${this.props.pub_ready_copy_user}`
+            {this.props.pub_ready_copy_user !== null && this.props.pub_ready_copy_user !== undefined
+              ? `Copy-edited by: ${this.props.pub_ready_copy_user.first_name +
+                  " " +
+                  this.props.pub_ready_copy_user.last_name}`
               : `Not copy-edited`}
           </Col>
           <Col span={12}>
-            {this.props.pub_ready_online_user !== null
-              ? `Marked ready by: ${this.props.pub_ready_online_user}`
+            {this.props.pub_ready_online_user !== null &&
+            this.props.pub_ready_online_user !== undefined
+              ? `Marked ready by: ${this.props.pub_ready_online_user.first_name +
+                  " " +
+                  this.props.pub_ready_online_user.last_name}`
               : `Not ready to send`}
           </Col>
         </Row>

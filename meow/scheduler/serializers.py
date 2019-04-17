@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from scheduler.models import SMPost, Section
-
+from user_profile.serializers import BasicInfoUserSerializer
 
 class SMPostSerializer(serializers.ModelSerializer):
     section = serializers.PrimaryKeyRelatedField
-    pub_ready_copy_user = serializers.PrimaryKeyRelatedField
-    pub_ready_online_user = serializers.PrimaryKeyRelatedField
+    #category_name = serializers.CharField(source='category.name')
+    pub_ready_copy_user = BasicInfoUserSerializer()
+    pub_ready_online_user = BasicInfoUserSerializer()
 
     class Meta:
         model = SMPost
