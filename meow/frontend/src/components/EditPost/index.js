@@ -10,7 +10,9 @@ import Sidebar from "../Sidebar";
 
 import { getMe } from "../../services/api";
 
+
 import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
+
 import { loadSections } from "../../actions/section";
 
 const { Content } = Layout;
@@ -89,6 +91,7 @@ class EditPost extends React.Component {
     });
   };
 
+
   sendNow = () => {
     const { postId } = this.props.match.params;
     this.props.sendPostNow(postId).then(status => {
@@ -99,6 +102,7 @@ class EditPost extends React.Component {
       }
     });
   };
+
 
   render() {
     return (

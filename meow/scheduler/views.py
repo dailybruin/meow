@@ -107,6 +107,7 @@ class SMPostDetail(APIView):
                 if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
                     #  TODO: what data should the response send back
                     return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
+
                 elif request.data["pub_ready_copy"]:
                     b_should_update_copy_user = True
 
