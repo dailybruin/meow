@@ -29,6 +29,7 @@ class Sidebar extends React.Component {
           }}
         />
         <Button
+          onClick={this.props.sendNow}
           style={{
             backgroundColor: "white",
             color: "black",
@@ -45,7 +46,8 @@ class Sidebar extends React.Component {
           onClick={this.props.delete}
           style={{
             color: "white",
-            border: "2px solid white",
+            backgroundColor: "red",
+            border: "2px solid black",
             borderRadius: "20px",
             fontSize: "1.4em"
           }}

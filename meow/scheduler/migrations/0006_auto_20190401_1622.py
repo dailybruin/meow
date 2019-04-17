@@ -48,47 +48,47 @@ def import_old_sm_posts(apps, schema_editor):
         facebook_account_handle=None,
     );
 
-    with open('meow/scheduler/migrations/newest_posts.csv', 'rt') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        first = True
-        for row in spamreader:
-            # "id","slug","pub_date","pub_time","story_url","story_short_url",
-            #"featured_image_url","post_twitter","post_facebook",
-            #"pub_ready_copy","pub_ready_online","sent","sending",
-            #"sent_time","sent_error","sent_error_text","last_edit_user_id","pub_ready_copy_user_id","pub_ready_online_user_id","section_id","send_now","id_facebook","id_twitter","post_instagram","post_notes"
-            if first:
-                first = False
-                continue
-
-
-
-            SMPost.objects.create(
-                #id is automatically created
-                slug=row[1],
-                pub_date=datetime.strptime(row[2], "%Y-%m-%d"),
-                pub_time=datetime.strptime(row[3][:row[3].rfind('.')], "%H:%M:%S"),
-                story_url=row[4],
-                story_short_url=row[5],
-                featured_image_url=row[6],
-                post_twitter=row[7],
-                post_facebook=row[8],
-                pub_ready_copy=row[9] == 'True',
-                pub_ready_online=row[10] == 'True',
-                sent=row[11] == 'True',
-                sending= row[12] == 'True',
-                sent_time= utc_time(row[13]),
-                sent_error = row[14] == 'True',
-                sent_error_text = row[15],
-                last_edit_user=None,
-                pub_ready_copy_user=None,
-                pub_ready_online_user_id =None,
-                section_id= None if not row[19] else int(row[19]),
-                send_now= row[20] == 'True',
-                id_facebook = 0 if not row[21].isdigit() else int(row[21]),
-                id_twitter = 0 if not row[22].isdigit() else int(row[22]),
-                post_instagram="",
-                post_notes=row[24],
-            )
+    # with open('meow/scheduler/migrations/newest_posts.csv', 'rt') as csvfile:
+        # spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        # first = True
+        # for row in spamreader:
+        #     # "id","slug","pub_date","pub_time","story_url","story_short_url",
+        #     #"featured_image_url","post_twitter","post_facebook",
+        #     #"pub_ready_copy","pub_ready_online","sent","sending",
+        #     #"sent_time","sent_error","sent_error_text","last_edit_user_id","pub_ready_copy_user_id","pub_ready_online_user_id","section_id","send_now","id_facebook","id_twitter","post_instagram","post_notes"
+        #     if first:
+        #         first = False
+        #         continue
+        #
+        #
+        #
+        #     SMPost.objects.create(
+        #         #id is automatically created
+        #         slug=row[1],
+        #         pub_date=datetime.strptime(row[2], "%Y-%m-%d"),
+        #         pub_time=datetime.strptime(row[3][:row[3].rfind('.')], "%H:%M:%S"),
+        #         story_url=row[4],
+        #         story_short_url=row[5],
+        #         featured_image_url=row[6],
+        #         post_twitter=row[7],
+        #         post_facebook=row[8],
+        #         pub_ready_copy=row[9] == 'True',
+        #         pub_ready_online=row[10] == 'True',
+        #         sent=row[11] == 'True',
+        #         sending= row[12] == 'True',
+        #         sent_time= utc_time(row[13]),
+        #         sent_error = row[14] == 'True',
+        #         sent_error_text = row[15],
+        #         last_edit_user=None,
+        #         pub_ready_copy_user=None,
+        #         pub_ready_online_user_id =None,
+        #         section_id= None if not row[19] else int(row[19]),
+        #         send_now= row[20] == 'True',
+        #         id_facebook = 0 if not row[21].isdigit() else int(row[21]),
+        #         id_twitter = 0 if not row[22].isdigit() else int(row[22]),
+        #         post_instagram="",
+        #         post_notes=row[24],
+        #     )
 
 class Migration(migrations.Migration):
 

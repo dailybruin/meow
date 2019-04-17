@@ -1,4 +1,4 @@
-{% load static %} <!DOCTYPE html>
+{% load static %} {% load webpack_loader %} <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -32,7 +32,8 @@
   <body>
     {% block content %}
     <div id="app"></div>
-    <script type="text/javascript" src="/static/main-41975c789d319dd704b8.js"></script>
+    {% render_bundle 'main' %}
+    <!-- <script type="text/javascript" src="/static/main-41975c789d319dd704b8.js"></script> -->
     {% endblock %}
   </body>
 </html>
