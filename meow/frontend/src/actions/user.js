@@ -40,19 +40,19 @@ export const login = () => {
   };
 };
 
-export const logout = () => {
-  return dispatch => {
-    dispatch({
-      type: "LOGOUT"
-    });
-
-    return apiLogout().then(null, err => {
+export const logout = () => dispatch => {
+  return apiLogout()
+    .then(() => {
+      dispatch({
+        type: "LOGOUT"
+      });
+    })
+    .catch(err => {
       dispatch({
         type: "NETWORK_ERROR",
         message: "Could not connect to server."
       });
     });
-  };
 };
 
 export const getUser = username => {
