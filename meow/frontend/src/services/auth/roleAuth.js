@@ -20,7 +20,6 @@ export const RoleAuth = allowedRole => (
         });
     }
     render() {
-      console.log(this.state);
       if (this.state.groups.some(x => x.name === allowedRole)) {
         return <WrappedComponent {...this.props} />;
       } else {

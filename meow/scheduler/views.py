@@ -94,7 +94,6 @@ class SMPostDetail(APIView):
         post = self.get_object(post_id)
         serializer = SMPostSerializer(post, data=request.data)
         if serializer.is_valid():
-            print()
             if post.pub_ready_copy != request.data["pub_ready_copy"]:
                 # it means that the sender of this request tried to change it
                 # we have to check if they have copy permissions

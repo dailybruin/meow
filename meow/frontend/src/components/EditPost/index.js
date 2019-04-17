@@ -55,7 +55,6 @@ class EditPost extends React.Component {
 
   savePost = () => {
     const { postId } = this.props.match.params;
-    console.log(this.state);
 
     this.props
       .savePost(postId, {
@@ -90,16 +89,16 @@ class EditPost extends React.Component {
     });
   };
 
-  sendNow = () => {
-    const { postId } = this.props.match.params;
-    this.props.sendPostNow(postId).then(status => {
-      if (status == 200) {
-        //using double == because status might be a string.
-        this.props.history.push("/");
-      } else {
-      }
-    });
-  };
+  // sendNow = () => {
+  //   const { postId } = this.props.match.params;
+  //   this.props.sendPostNow(postId).then(status => {
+  //     if (status == 200) {
+  //       //using double == because status might be a string.
+  //       this.props.history.push("/");
+  //     } else {
+  //     }
+  //   });
+  // };
 
   render() {
     return (
@@ -109,7 +108,7 @@ class EditPost extends React.Component {
             {...this.state}
             editPost={this.editField}
             delete={this.deletePost.bind(this)}
-            sendNow={this.sendNow}
+            //sendNow={this.sendNow}
           />
         </Sidebar>
         <Content style={contentStyles}>
@@ -133,8 +132,8 @@ const mapDispatchToProps = {
   getPost: postId => getPost(postId),
   loadSections,
   editPost: data => editPost(data),
-  savePost: (postId, postData) => savePost(postId, postData),
-  sendPostNow: postId => sendPostNow(postId)
+  savePost: (postId, postData) => savePost(postId, postData)
+  //sendPostNow: postId => sendPostNow(postId)
 };
 
 export default withRouter(
