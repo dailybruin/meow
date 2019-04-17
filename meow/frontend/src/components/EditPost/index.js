@@ -8,6 +8,8 @@ import EditSidebar from "./Sidebar";
 import EditContent from "./Content";
 import Sidebar from "../Sidebar";
 
+import { getMe } from "../../services/api";
+
 import { getPost, editPost, savePost } from "../../actions/post";
 import { loadSections } from "../../actions/section";
 
@@ -22,10 +24,19 @@ class EditPost extends React.Component {
   componentDidMount() {
     const { postId } = this.props.match.params;
 
+    getMe().then(res => {
+      console.log(res.data);
+      this.setState({
+        user_groups: res.data.groups
+      });
+    });
+
     if (postId) {
       this.props.getPost(postId).then(data => {
         this.setState({
-          ...data
+          ...data,
+          pub_ready_copy_old: data.pub_ready_copy,
+          pub_ready_online_old: data.pub_ready_online
         });
       });
       this.props.loadSections();
@@ -55,7 +66,9 @@ class EditPost extends React.Component {
         pub_ready_copy: false,
         pub_ready_online: false,
         post_facebook: this.state.post_facebook,
-        post_twitter: this.state.post_twitter
+        post_twitter: this.state.post_twitter,
+        pub_ready_copy: this.state.pub_ready_copy,
+        pub_ready_online: this.state.pub_ready_online
       })
       .then(data => {
         if (data) {
@@ -76,6 +89,17 @@ class EditPost extends React.Component {
     });
   };
 
+  // sendNow = () => {
+  //   const { postId } = this.props.match.params;
+  //   this.props.sendPostNow(postId).then(status => {
+  //     if (status == 200) {
+  //       //using double == because status might be a string.
+  //       this.props.history.push("/");
+  //     } else {
+  //     }
+  //   });
+  // };
+
   render() {
     return (
       <React.Fragment>
@@ -84,6 +108,7 @@ class EditPost extends React.Component {
             {...this.state}
             editPost={this.editField}
             delete={this.deletePost.bind(this)}
+            //sendNow={this.sendNow}
           />
         </Sidebar>
         <Content style={contentStyles}>
@@ -91,6 +116,7 @@ class EditPost extends React.Component {
             {...this.state}
             editPost={this.editField}
             savePost={this.savePost.bind(this)}
+            user_groups={this.state.user_groups}
           />
         </Content>
       </React.Fragment>
@@ -107,6 +133,7 @@ const mapDispatchToProps = {
   loadSections,
   editPost: data => editPost(data),
   savePost: (postId, postData) => savePost(postId, postData)
+  //sendPostNow: postId => sendPostNow(postId)
 };
 
 export default withRouter(
