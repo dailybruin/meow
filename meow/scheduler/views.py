@@ -92,8 +92,14 @@ class SMPostDetail(APIView):
 
     def put(self, request, post_id, format=None):
         post = self.get_object(post_id)
+
         serializer = SMPostSerializer(post, data=request.data)
         if serializer.is_valid():
+            b_should_update_copy_user = False
+            b_should_update_online_user = False
+
+            #print(type(request.data["pub_ready_copy"]));
+
             if post.pub_ready_copy != request.data["pub_ready_copy"]:
                 # it means that the sender of this request tried to change it
                 # we have to check if they have copy permissions
@@ -101,10 +107,29 @@ class SMPostDetail(APIView):
                 if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
                     #  TODO: what data should the response send back
                     return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
+                elif request.data["pub_ready_copy"]:
+                    b_should_update_copy_user = True
+
             if post.pub_ready_online != request.data["pub_ready_online"]:
+
                 if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
                     return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
-            serializer.save()
+                elif request.data["pub_ready_online"]:
+                    b_should_update_online_user = True
+
+
+
+            post = serializer.save()
+
+            # if the user updated the copy edited or online approved status,
+            # record them as the copy_user or online_user
+            if b_should_update_copy_user:
+                post.pub_ready_copy_user = request.user
+            if b_should_update_online_user:
+                post.pub_ready_online_user = request.user
+            if b_should_update_copy_user or b_should_update_online_user:
+                post.save()
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

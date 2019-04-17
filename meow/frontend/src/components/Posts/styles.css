@@ -21,6 +21,14 @@
   background-color: #c93030;
 }
 
+.ant-table-tbody tr.sent {
+  background-color: #dcdcdc;
+}
+
+.ant-table-tbody tr.sent:hover td {
+  background-color: #d3d3d3;
+}
+
 .ant-table-thead .pub_time {
   white-space: nowrap;
 }
