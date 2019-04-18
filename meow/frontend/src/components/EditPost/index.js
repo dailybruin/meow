@@ -10,7 +10,6 @@ import Sidebar from "../Sidebar";
 
 import { getMe } from "../../services/api";
 
-
 import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
 
 import { loadSections } from "../../actions/section";
@@ -69,6 +68,7 @@ class EditPost extends React.Component {
         pub_ready_online: false,
         post_facebook: this.state.post_facebook,
         post_twitter: this.state.post_twitter,
+        post_instagram: this.state.post_instagram,
         pub_ready_copy: this.state.pub_ready_copy,
         pub_ready_online: this.state.pub_ready_online
       })
@@ -91,7 +91,6 @@ class EditPost extends React.Component {
     });
   };
 
-
   sendNow = () => {
     const { postId } = this.props.match.params;
     this.props.sendPostNow(postId).then(status => {
@@ -102,7 +101,6 @@ class EditPost extends React.Component {
       }
     });
   };
-
 
   render() {
     return (

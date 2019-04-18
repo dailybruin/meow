@@ -98,6 +98,7 @@ class EditForm extends React.Component {
         <Row type="flex" gutter={12}>
           <Col span={12}>
             <Form.Item label="instagram">
+              <span className="insta-note">Note: meow cannot post to instagram</span>
               {getFieldDecorator("post_instagram", {
                 rules: []
               })(<TextArea rows={6} />)}
@@ -142,6 +143,10 @@ export default Form.create({
       post_twitter: Form.createFormField({
         ...props.post_twitter,
         value: props.post_twitter
+      }),
+      post_instagram: Form.createFormField({
+        ...props.post_instagram,
+        value: props.post_instagram
       }),
       pub_ready_copy: Form.createFormField({
         ...props.pub_ready_copy,
