@@ -24,7 +24,16 @@ const formItemLayout = {
   }
 };
 
+let TWITTER_MAX_LENGTH = 92; //this is hardcoded and does not change if the backend changes.
+
 class EditForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      twitter_length: 0
+    };
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const CopyEdited = Copy(
@@ -91,7 +100,25 @@ class EditForm extends React.Component {
             <Form.Item label="twitter">
               {getFieldDecorator("post_twitter", {
                 rules: []
-              })(<TextArea rows={6} />)}
+              })(
+                <TextArea
+                  rows={6}
+                  onChange={v => {
+                    //console.log(v.target.value.length);
+                    this.setState({ twitter_length: v.target.value.normalize("NFC").length });
+                  }}
+                />
+              )}
+              <span
+                style={{
+                  color:
+                    this.state.twitter_length && this.state.twitter_length > TWITTER_MAX_LENGTH
+                      ? "red"
+                      : "black"
+                }}
+              >
+                {this.state.twitter_length ? this.state.twitter_length : 0} / {TWITTER_MAX_LENGTH}
+              </span>
             </Form.Item>
           </Col>
         </Row>
