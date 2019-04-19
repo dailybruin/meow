@@ -100,7 +100,7 @@ class SMPostDetail(APIView):
 
             #print(type(request.data["pub_ready_copy"]));
 
-            if post.pub_ready_copy != request.data["pub_ready_copy"]:
+            if "pub_ready_copy" in request.data and post.pub_ready_copy != request.data["pub_ready_copy"]:
                 # it means that the sender of this request tried to change it
                 # we have to check if they have copy permissions
                 #if request.user.group
@@ -111,7 +111,7 @@ class SMPostDetail(APIView):
                 elif request.data["pub_ready_copy"]:
                     b_should_update_copy_user = True
 
-            if post.pub_ready_online != request.data["pub_ready_online"]:
+            if "pub_ready_online" in request.data and post.pub_ready_online != request.data["pub_ready_online"]:
 
                 if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
                     return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
