@@ -91,6 +91,9 @@ class Posts extends React.Component {
           }
           return "Ready to post";
         }
+        if (record.pub_ready_copy) {
+          return "Copy-Edited";
+        }
         return "Draft";
       }
     }
@@ -114,6 +117,9 @@ class Posts extends React.Component {
                 return "sent";
               }
               return "ready-to-post";
+            }
+            if (record.pub_ready_copy) {
+              return "copy-edited";
             }
             return "draft";
           }}
