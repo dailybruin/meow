@@ -69,6 +69,7 @@ class EditPost extends React.Component {
         post_facebook: this.state.post_facebook,
         post_twitter: this.state.post_twitter,
         post_instagram: this.state.post_instagram,
+        post_notes: this.state.post_notes,
         pub_ready_copy: this.state.pub_ready_copy,
         pub_ready_online: this.state.pub_ready_online
       })

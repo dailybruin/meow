@@ -131,6 +131,14 @@ class EditForm extends React.Component {
               })(<TextArea rows={6} />)}
             </Form.Item>
           </Col>
+          <Col span={12}>
+            <Form.Item label="notes">
+              <span>&#x2800;</span>
+              {getFieldDecorator("post_notes", {
+                rules: []
+              })(<TextArea rows={6} />)}
+            </Form.Item>
+          </Col>
         </Row>
         <Row type="flex" gutter={12}>
           <Col span={12}>
@@ -174,6 +182,10 @@ export default Form.create({
       post_instagram: Form.createFormField({
         ...props.post_instagram,
         value: props.post_instagram
+      }),
+      post_notes: Form.createFormField({
+        ...props.post_notes,
+        value: props.post_notes
       }),
       pub_ready_copy: Form.createFormField({
         ...props.pub_ready_copy,
