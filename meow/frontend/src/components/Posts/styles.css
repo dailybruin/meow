@@ -47,6 +47,10 @@
   background-color: #ffff99;
 }
 
+.ant-table-tbody .copy-edited .status {
+  background-color: #ffcc99;
+}
+
 .ant-table-tbody .ready-to-post .status {
   background-color: #b2f7b2;
 }
