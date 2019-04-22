@@ -24,14 +24,31 @@ const formItemLayout = {
   }
 };
 
-let TWITTER_MAX_LENGTH = 92; //this is hardcoded and does not change if the backend changes.
+let TWITTER_MAX_LENGTH = 280; //this is hardcoded and does not change if the backend changes.
 
 class EditForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      twitter_length: 0
+      twitter_length: 0 //even if post_twitter has something, the constructor will be called
+      //before that data is avialable so just set it to 0.
     };
+  }
+
+  static getDerivedStateFromProps(props, current_state) {
+    const { getFieldValue } = props.form;
+    //this is kinda gross but unfortunately, its neccessary for
+    //setting the twitter_length if post_twitter was a non empty string
+    //before the editing session started
+    const twitter_length_from_field = getFieldValue("post_twitter")
+      ? getFieldValue("post_twitter").normalize("NFC").length
+      : 0;
+    if (twitter_length_from_field != current_state.twitter_length) {
+      return {
+        twitter_length: twitter_length_from_field
+      };
+    }
+    return null;
   }
 
   render() {
@@ -111,13 +128,10 @@ class EditForm extends React.Component {
               )}
               <span
                 style={{
-                  color:
-                    this.state.twitter_length && this.state.twitter_length > TWITTER_MAX_LENGTH
-                      ? "red"
-                      : "black"
+                  color: this.state.twitter_length > TWITTER_MAX_LENGTH ? "red" : "black"
                 }}
               >
-                {this.state.twitter_length ? this.state.twitter_length : 0} / {TWITTER_MAX_LENGTH}
+                {this.state.twitter_length} / {TWITTER_MAX_LENGTH}
               </span>
             </Form.Item>
           </Col>
