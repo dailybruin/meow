@@ -24,7 +24,7 @@ const formItemLayout = {
   }
 };
 
-let TWITTER_MAX_LENGTH = 280; //this is hardcoded and does not change if the backend changes.
+let TWITTER_MAX_LENGTH = 232; //this is hardcoded and does not change if the backend changes.
 
 class EditForm extends React.Component {
   constructor(props) {
