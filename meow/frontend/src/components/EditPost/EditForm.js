@@ -25,6 +25,7 @@ const formItemLayout = {
 };
 
 let TWITTER_MAX_LENGTH = 232; //this is hardcoded and does not change if the backend changes.
+let TWITTER_MAX_RECOMMENDED_LENGTH = 200;
 
 class EditForm extends React.Component {
   constructor(props) {
@@ -124,14 +125,20 @@ class EditForm extends React.Component {
                     //console.log(v.target.value.length);
                     this.setState({ twitter_length: v.target.value.normalize("NFC").length });
                   }}
+                  maxLength={TWITTER_MAX_LENGTH}
                 />
               )}
               <span
                 style={{
-                  color: this.state.twitter_length > TWITTER_MAX_LENGTH ? "red" : "black"
+                  color:
+                    this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH
+                      ? "black"
+                      : this.state.twitter_length > TWITTER_MAX_LENGTH
+                      ? "red"
+                      : "#F59F00"
                 }}
               >
-                {this.state.twitter_length} / {TWITTER_MAX_LENGTH}
+                {this.state.twitter_length} / {TWITTER_MAX_RECOMMENDED_LENGTH}
               </span>
             </Form.Item>
           </Col>
