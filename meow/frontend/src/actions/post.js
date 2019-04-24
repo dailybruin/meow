@@ -13,6 +13,7 @@ export const savePost = (postId, postData) => dispatch => {
 
   return postPost(postId, postData).then(
     ({ data, status }) => {
+      console.log(status);
       if (status >= 400) {
         dispatch({
           type: "SAVE_POST_FAIL",
@@ -22,13 +23,15 @@ export const savePost = (postId, postData) => dispatch => {
         dispatch(savePostSuccess());
         return data;
       }
-    },
-    err => {
-      dispatch({
-        type: "NETWORK_ERROR",
-        message: "Could not connect to server."
-      });
     }
+    //,
+    // err => {
+    //   console.log(err);
+    //   dispatch({
+    //     type: "NETWORK_ERROR",
+    //     message: "Could not connect to server."
+    //   });
+    // }
   );
 };
 
@@ -57,7 +60,6 @@ export const loadPosts = YMD => dispatch => {
 };
 
 export const sendPostNow = postId => {
-  console.log("post.js sendPostNow");
   return dispatch => {
     return postSendNow(postId).then(
       ({ data, status }) => {
