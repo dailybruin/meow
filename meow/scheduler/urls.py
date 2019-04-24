@@ -40,6 +40,8 @@ urlpatterns = [
     url(r'^fb-redir/$', views.fb_redir, name="fb_redir"),
     url(r'^fb-connect/$', views.fb_connect, name="fb_connect"),
     url(r'^manage/$', views.manage, name="manage"),
+    url(r'^history/(?P<post_id>[0-9]+)$', views.get_history, name="history"),
+    url(r'^history/$', views.post_history, name="history"),
     url(r'^$', views.dashboard, name='dashboard'),
 ]
 

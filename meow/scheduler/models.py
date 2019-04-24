@@ -304,6 +304,6 @@ class EmailNotification(models.Model):
 class PostHistory(models.Model):
     smpost = models.ForeignKey(SMPost, on_delete=models.CASCADE)
     post_facebook = models.TextField(null=True, blank=True, default=None)
-    post_instagram = models.TextField(null=True, blank=True, default=None)
+    post_twitter = models.TextField(null=True, blank=True, default=None)
     last_edit_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     creation_time = models.DateTimeField(auto_now_add=True)

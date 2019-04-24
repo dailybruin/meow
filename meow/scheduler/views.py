@@ -5,13 +5,14 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 
 from scheduler.models import *
-from scheduler.serializers import SMPostSerializer, SectionSerializer
+from scheduler.serializers import SMPostSerializer, SectionSerializer, PostHistorySerializer
 
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view
 
 import datetime
 import parsedatetime.parsedatetime as pdt
@@ -741,3 +742,35 @@ def fb_connect(request):
 
 def logout(request):
     return logout(request)
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+@api_view(['GET'])
+def get_history(request, post_id):
+    """
+    returns a list of all histories of a post
+    """
+    print(post_id)
+    if len(SMPost.objects.filter(id=post_id)) == 0:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    hists = PostHistory.objects.filter(smpost_id=post_id).order_by('-creation_time')
+
+    serializer = PostHistorySerializer(hists, many=True)
+    return Response(serializer.data)
+
+@csrf_exempt
+@api_view(['POST'])
+def post_history(request):
+    """
+    create a new PostHistory for a post
+    """
+    print(request.data)
+    serializer = PostHistorySerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
