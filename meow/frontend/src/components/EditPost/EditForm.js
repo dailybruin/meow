@@ -150,7 +150,7 @@ class EditForm extends React.Component {
           </Col>
           <Col span={12}>
             <Form.Item label="notes">
-              <span>&#x2800;</span>
+              <span>&#8195;</span>
               {getFieldDecorator("post_notes", {
                 rules: []
               })(<TextArea rows={6} />)}
