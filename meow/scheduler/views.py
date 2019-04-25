@@ -789,7 +789,6 @@ def logout(request):
 
 from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
 @api_view(['GET'])
 def get_history(request, post_id):
     """
@@ -803,7 +802,6 @@ def get_history(request, post_id):
     serializer = PostHistorySerializer(hists, many=True)
     return Response(serializer.data)
 
-@csrf_exempt
 @api_view(['POST'])
 def post_history(request):
     """
