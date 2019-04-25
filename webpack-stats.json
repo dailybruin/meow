@@ -1,17 +1,13 @@
-<<<<<<< Updated upstream
 {
   "status": "done",
   "publicPath": "/static/",
   "chunks": {
     "main": [
       {
-        "name": "main-f93f72898bcb4c610e72.js",
-        "publicPath": "/static/main-f93f72898bcb4c610e72.js",
-        "path": "/Users/galenw/Code/db/meow/meow/frontend/bundles/main-f93f72898bcb4c610e72.js"
+        "name": "main-df2f400632f3bd646c42.js",
+        "publicPath": "/static/main-df2f400632f3bd646c42.js",
+        "path": "/Users/galenw/Code/db/meow/meow/frontend/bundles/main-df2f400632f3bd646c42.js"
       }
     ]
   }
 }
-=======
-{"status":"done","publicPath":"/static/","chunks":{"main":[{"name":"main-df2f400632f3bd646c42.js","publicPath":"/static/main-df2f400632f3bd646c42.js","path":"/Users/galenw/Code/db/meow/meow/frontend/bundles/main-df2f400632f3bd646c42.js"}]}}
->>>>>>> Stashed changes

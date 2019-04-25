@@ -5,14 +5,19 @@ import { withRouter } from "react-router";
 // Authorization HOC
 // Courtesy of Ricardo Fearing
 // https://medium.com/@ricardo_42589/this-is-awesome-470fe9bb6f56
-export const RoleAuth = allowedRole => (WrappedComponent, FallbackComponent = null) => {
+export const RoleAuth = allowedRole => (
+  WrappedComponent,
+  FallbackComponent = null,
+  in_group = []
+) => {
   return class AuthorizedComponent extends React.PureComponent {
-    state = { groups: [] };
+    state = { groups: in_group };
 
     componentDidMount() {
-      getMe().then(res => {
-        this.setState({ groups: res.data.groups });
-      });
+      if (in_group.length === 0)
+        getMe().then(res => {
+          this.setState({ groups: res.data.groups });
+        });
     }
     render() {
       if (this.state.groups.some(x => x.name === allowedRole)) {

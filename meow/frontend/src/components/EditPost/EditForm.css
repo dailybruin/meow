@@ -24,3 +24,8 @@
 .checkable-items.ant-form-item {
   margin-bottom: 12px;
 }
+
+.insta-note {
+  color: red;
+  font-size: 12px;
+}

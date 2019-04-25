@@ -14,7 +14,8 @@ module.exports = {
 
   output: {
     path: path.resolve("./meow/frontend/bundles/"),
-    filename: "[name]-[hash].js"
+    filename: "[name]-[hash].js",
+    publicPath: "/static/"
   },
 
   plugins: [new BundleTracker({ filename: "./webpack-stats.json" })],

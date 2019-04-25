@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Row, Col, Input, Checkbox, Radio } from "antd";
 import { Copy, Online } from "../../services/auth";
 import "./EditForm.css";
+import { getMe } from "../../services/api";
 
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
@@ -26,24 +27,32 @@ const formItemLayout = {
 class EditForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
-    const CopyEdited = Copy(() => (
-      <Form.Item className="checkable-items">
-        {getFieldDecorator("pub_ready_copy", {
-          rules: [],
-          valuePropName: "checked",
-          initialValue: false
-        })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
-      </Form.Item>
-    ));
-    const OnlineReady = Online(() => (
-      <Form.Item className="checkable-items">
-        {getFieldDecorator("pub_ready_online", {
-          rules: [],
-          valuePropName: "checked",
-          initialValue: true
-        })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
-      </Form.Item>
-    ));
+    const CopyEdited = Copy(
+      () => (
+        <Form.Item className="checkable-items">
+          {getFieldDecorator("pub_ready_copy", {
+            rules: [],
+            valuePropName: "checked",
+            initialValue: false
+          })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
+        </Form.Item>
+      ),
+      null,
+      this.props.user_groups
+    );
+    const OnlineReady = Online(
+      () => (
+        <Form.Item className="checkable-items">
+          {getFieldDecorator("pub_ready_online", {
+            rules: [],
+            valuePropName: "checked",
+            initialValue: true
+          })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
+        </Form.Item>
+      ),
+      null,
+      this.props.user_groups
+    );
 
     return (
       <Form layout="horizontal" className="login-form">
@@ -89,6 +98,7 @@ class EditForm extends React.Component {
         <Row type="flex" gutter={12}>
           <Col span={12}>
             <Form.Item label="instagram">
+              <span className="insta-note">Note: meow cannot post to instagram</span>
               {getFieldDecorator("post_instagram", {
                 rules: []
               })(<TextArea rows={6} />)}
@@ -133,6 +143,10 @@ export default Form.create({
       post_twitter: Form.createFormField({
         ...props.post_twitter,
         value: props.post_twitter
+      }),
+      post_instagram: Form.createFormField({
+        ...props.post_instagram,
+        value: props.post_instagram
       }),
       pub_ready_copy: Form.createFormField({
         ...props.pub_ready_copy,

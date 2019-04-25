@@ -10,11 +10,27 @@ import { store, persistor } from "./store";
 import "./index.css";
 import App from "./components/App";
 
-if (typeof Notification === "function") {
+try {
   Notification.requestPermission().then(permission => {
     if (permission === "denied") {
+      // eslint-disable-next-line no-alert
+      alert("Notifications have been disabled");
     }
   });
+} catch (error) {
+  // Safari doesn't return a promise for requestPermissions and it
+  // throws a TypeError. It takes a callback as the first argument
+  // instead.
+  if (error instanceof TypeError) {
+    Notification.requestPermission(permission => {
+      if (permission === "denied") {
+        // eslint-disable-next-line no-alert
+        alert("Notifications have been disabled");
+      }
+    });
+  } else {
+    throw error;
+  }
 }
 
 ReactDOM.render(

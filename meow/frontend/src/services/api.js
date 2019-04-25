@@ -98,6 +98,10 @@ export const postPost = (postId, postData) => {
   }));
 };
 
+export const postSendNow = postId => {
+  return axios.post(`${SERVER_URL}/post/${postId}/send_now`);
+};
+
 export const sectionList = () => {
   return axios
     .get(`${SERVER_URL}/section/`, {
