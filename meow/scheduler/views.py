@@ -96,38 +96,46 @@ class SMPostDetail(APIView):
         serializer = SMPostSerializer(post, data=request.data)
         if serializer.is_valid():
             b_should_update_copy_user = False
+            update_copy_user_to = None
             b_should_update_online_user = False
+            update_online_user_to = None
 
             #print(type(request.data["pub_ready_copy"]));
 
-            if post.pub_ready_copy != request.data["pub_ready_copy"]:
+            if "pub_ready_copy" in request.data and post.pub_ready_copy != request.data["pub_ready_copy"]:
                 # it means that the sender of this request tried to change it
                 # we have to check if they have copy permissions
                 #if request.user.group
                 if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
                     #  TODO: what data should the response send back
                     return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
-
-                elif request.data["pub_ready_copy"]:
+                else:
                     b_should_update_copy_user = True
-
-            if post.pub_ready_online != request.data["pub_ready_online"]:
+                    if request.data["pub_ready_copy"]:
+                        update_copy_user_to = request.user
+                    else:
+                        update_copy_user_to = None # means that the user marked it as not copy edited so clear the copy edited user
+            if "pub_ready_online" in request.data and post.pub_ready_online != request.data["pub_ready_online"]:
 
                 if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
                     return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
-                elif request.data["pub_ready_online"]:
+                else:
                     b_should_update_online_user = True
-
-
+                    if request.data["pub_ready_online"]:
+                        update_online_user_to = request.user
+                    else:
+                        update_online_user_to = None
 
             post = serializer.save()
 
             # if the user updated the copy edited or online approved status,
             # record them as the copy_user or online_user
             if b_should_update_copy_user:
-                post.pub_ready_copy_user = request.user
+                post.pub_ready_copy_user = update_copy_user_to
+
             if b_should_update_online_user:
-                post.pub_ready_online_user = request.user
+                post.pub_ready_online_user = update_online_user_to
+
             if b_should_update_copy_user or b_should_update_online_user:
                 post.save()
 

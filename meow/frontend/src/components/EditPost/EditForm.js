@@ -131,11 +131,7 @@ class EditForm extends React.Component {
               <span
                 style={{
                   color:
-                    this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH
-                      ? "black"
-                      : this.state.twitter_length > TWITTER_MAX_LENGTH
-                      ? "red"
-                      : "#F59F00"
+                    this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH ? "black" : "#F59F00"
                 }}
               >
                 {this.state.twitter_length} / {TWITTER_MAX_RECOMMENDED_LENGTH}
@@ -154,7 +150,7 @@ class EditForm extends React.Component {
           </Col>
           <Col span={12}>
             <Form.Item label="notes">
-              <span>&#x2800;</span>
+              <span>&#8195;</span>
               {getFieldDecorator("post_notes", {
                 rules: []
               })(<TextArea rows={6} />)}

@@ -30,9 +30,9 @@ def set_roles_and_profile_pic(backend, user, response, details, *args, **kwargs)
         for channel in channels_list:
             if channel["name"] == editor_channel:
                 user.groups.add(editor_group)
-            elif channel["name"] == copy_channel:
+            if channel["name"] == copy_channel:
                 user.groups.add(copy_group)
-            elif channel["name"] == online_channel:
+            if channel["name"] == online_channel:
                 user.groups.add(online_group)
 
         set_profile_picture(backend, user, response, details, args, kwargs)

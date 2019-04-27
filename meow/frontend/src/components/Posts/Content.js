@@ -85,11 +85,14 @@ class Posts extends React.Component {
         if (record.sending) {
           return "Sending";
         }
-        if (record.pub_ready_copy && record.pub_ready_online) {
-          return "Ready to post";
-        }
         if (record.sent) {
           return "Sent";
+        }
+        if (record.pub_ready_copy) {
+          if (record.pub_ready_online) {
+            return "Ready to post";
+          }
+          return "Copy-Edited";
         }
         if (record.sent_error) {
           return "Error";
@@ -114,7 +117,8 @@ class Posts extends React.Component {
             if (record.sending) return "sending";
             if (record.sent) return "sent";
             if (record.pub_ready_copy && record.pub_ready_online) {
-              return "ready-to-post";
+              if (record.pub_ready_online) return "ready-to-post";
+              return "copy-edited";
             }
             return "draft";
           }}
