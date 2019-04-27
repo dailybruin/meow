@@ -116,7 +116,7 @@ class Posts extends React.Component {
             if (record.sent_error) return "sent-error";
             if (record.sending) return "sending";
             if (record.sent) return "sent";
-            if (record.pub_ready_copy && record.pub_ready_online) {
+            if (record.pub_ready_copy) {
               if (record.pub_ready_online) return "ready-to-post";
               return "copy-edited";
             }
