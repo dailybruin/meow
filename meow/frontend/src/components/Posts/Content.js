@@ -86,10 +86,13 @@ class Posts extends React.Component {
           return "Sending";
         }
         if (record.pub_ready_copy && record.pub_ready_online) {
-          if (record.sent) {
-            return "Sent";
-          }
           return "Ready to post";
+        }
+        if (record.sent) {
+          return "Sent";
+        }
+        if (record.sent_error) {
+          return "Error";
         }
         return "Draft";
       }
@@ -109,10 +112,8 @@ class Posts extends React.Component {
           rowClassName={record => {
             if (record.sent_error) return "sent-error";
             if (record.sending) return "sending";
+            if (record.sent) return "sent";
             if (record.pub_ready_copy && record.pub_ready_online) {
-              if (record.sent) {
-                return "sent";
-              }
               return "ready-to-post";
             }
             return "draft";
