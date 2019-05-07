@@ -71,7 +71,8 @@ def me(request):
 
 @api_login_required()
 def logout(request):
-    django_logout(request)
+    if request.user:
+        django_logout(request)
     return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
 
