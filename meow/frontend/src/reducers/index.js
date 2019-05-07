@@ -4,14 +4,14 @@ import user from "./user";
 import post from "./post";
 import section from "./section";
 import query from "./query";
-import error from "./error";
+import alert from "./alert";
 
 const rootReducer = combineReducers({
   user,
   post,
   section,
   query,
-  error
+  alert
 });
 
 export default rootReducer;
