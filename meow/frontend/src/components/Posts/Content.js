@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Table, ConfigProvider } from "antd";
+
 import moment from "moment";
 import "./styles.css";
 
@@ -21,6 +22,26 @@ const NoPosts = () => (
 );
 
 class Posts extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      /* current visible columns */
+      columns: this.truncateColumns()
+    };
+  }
+
+  truncateColumns = () => {
+    if (typeof window === undefined) {
+      return this.columns;
+    }
+
+    if (window.innerWidth < 600) {
+      return this.columns.filter(x => x.key === "section" || x.key === "slug");
+    }
+
+    return this.columns;
+  };
+
   columns = [
     {
       key: "section",
@@ -32,7 +53,7 @@ class Posts extends React.Component {
         text && this.props.sections
           ? this.props.sections.find(x => x.id === text).name
           : "No Section",
-      sorter: (a, b) => a.section.localeCompare(b.section)
+      sorter: (a, b) => a.section - b.section
     },
     {
       key: "slug",
@@ -65,7 +86,7 @@ class Posts extends React.Component {
       className: "pub_time",
       sortDirections: ["ascend", "descend"],
       defaultSortOrder: "descend",
-      sorter: (a, b) => new Date(a.pub_time) - new Date(b.pub_time),
+      sorter: (a, b) => a.pub_time < b.pub_time,
       render: text => (text ? moment(text, "HH:mm:ss").format("hh:mm a") : "No Time")
     },
     {
@@ -105,24 +126,26 @@ class Posts extends React.Component {
   render() {
     return (
       <ConfigProvider renderEmpty={NoPosts}>
-        <Table
-          pagination={false}
-          className="post-table"
-          rowKey="id"
-          dataSource={this.props.data}
-          columns={this.columns}
-          onRowClick={record => this.props.history.push(`/edit/${record.id}`)}
-          rowClassName={record => {
-            if (record.sent_error) return "sent-error";
-            if (record.sending) return "sending";
-            if (record.sent) return "sent";
-            if (record.pub_ready_copy) {
-              if (record.pub_ready_online) return "ready-to-post";
-              return "copy-edited";
-            }
-            return "draft";
-          }}
-        />
+        <div id="meow-table-wrapper">
+          <Table
+            pagination={false}
+            className="post-table"
+            rowKey="id"
+            dataSource={this.props.data}
+            columns={this.state.columns}
+            onRowClick={record => this.props.history.push(`/edit/${record.id}`)}
+            rowClassName={record => {
+              if (record.sent_error) return "sent-error";
+              if (record.sending) return "sending";
+              if (record.sent) return "sent";
+              if (record.pub_ready_copy) {
+                if (record.pub_ready_online) return "ready-to-post";
+                return "copy-edited";
+              }
+              return "draft";
+            }}
+          />
+        </div>
       </ConfigProvider>
     );
   }

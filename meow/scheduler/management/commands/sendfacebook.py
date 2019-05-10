@@ -68,7 +68,7 @@ class Command(BaseCommand):
                 data['picture'] = photo_url
             else:
                 data['picture'] = fb_default_photo
-            
+
             if url:
                 data['link'] = url
 
