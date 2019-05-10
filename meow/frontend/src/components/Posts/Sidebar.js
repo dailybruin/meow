@@ -23,19 +23,6 @@ class Sidebar extends React.Component {
     });
   };
 
-  // getCurrentDate = () => {
-  //   const { search } = this.props.location;
-  //   if (search) {
-  //     console.log(search)
-  //     console.log(typeof search)
-  //     const match = DATE_REG.exec(search);
-  //     console.log(match)
-  //     console.log(match[1])
-  //     return moment(match[1]);
-  //   }
-  //   return moment(); // now
-  // };
-
   addStatus = status => {
     const newStatus = [...new Set([...this.props.query.status, status])];
     this.editParent({
@@ -131,7 +118,9 @@ class Sidebar extends React.Component {
                   })
                 }
                 fullscreen={false}
-                defaultValue={this.props.date ? moment(this.props.date) : moment.now()}
+                defaultValue={
+                  this.props.date ? moment(this.props.date, "YYYY-MM-DD") : moment.now()
+                }
               />
             </div>
           </Panel>
