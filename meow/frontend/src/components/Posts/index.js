@@ -21,7 +21,7 @@ class Posts extends React.Component {
     this.state = {
       loading: true,
       data: [],
-      date: "",
+      date: null,
       query: {
         time: null,
         status: [],

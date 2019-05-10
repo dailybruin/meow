@@ -75,15 +75,11 @@ class Command(BaseCommand):
             errors = 0
             res = None
             while errors < 2:
-                print("inside while loop")
-                print(errors)
                 try:
                     res = graph.post(**data)
-                    print(res)
                     break
                 except Exception as e:
                     smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
-                    print(e)
                     if errors >= 2:
                         raise Exception
                         break

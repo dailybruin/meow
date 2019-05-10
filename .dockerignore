@@ -20,7 +20,7 @@ node_modules/
 coverage/
 
 meow/frontend/bundles/
-meow/static/
+static/
 
 stats.json
 webpack-stats.json

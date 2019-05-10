@@ -131,7 +131,7 @@ class Sidebar extends React.Component {
                   })
                 }
                 fullscreen={false}
-                defaultValue={moment(this.props.date)}
+                defaultValue={this.props.date ? moment(this.props.date) : moment.now()}
               />
             </div>
           </Panel>
