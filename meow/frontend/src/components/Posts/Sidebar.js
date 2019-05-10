@@ -23,11 +23,18 @@ class Sidebar extends React.Component {
     });
   };
 
-  getCurrentDate = () => {
-    const { search } = this.props.location;
-    if (search) return moment(search);
-    return moment(); // now
-  };
+  // getCurrentDate = () => {
+  //   const { search } = this.props.location;
+  //   if (search) {
+  //     console.log(search)
+  //     console.log(typeof search)
+  //     const match = DATE_REG.exec(search);
+  //     console.log(match)
+  //     console.log(match[1])
+  //     return moment(match[1]);
+  //   }
+  //   return moment(); // now
+  // };
 
   addStatus = status => {
     const newStatus = [...new Set([...this.props.query.status, status])];
@@ -124,7 +131,7 @@ class Sidebar extends React.Component {
                   })
                 }
                 fullscreen={false}
-                defaultValue={this.getCurrentDate()}
+                defaultValue={moment(this.props.date)}
               />
             </div>
           </Panel>
