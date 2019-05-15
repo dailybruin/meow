@@ -7,6 +7,7 @@ import { Layout } from "antd";
 import EditSidebar from "./Sidebar";
 import EditContent from "./Content";
 import Sidebar from "../Sidebar";
+import HistoryBar from "../HistoryBar";
 
 import { getMe } from "../../services/api";
 
@@ -103,6 +104,7 @@ class EditPost extends React.Component {
   };
 
   render() {
+    const { postId } = this.props.match.params;
     return (
       <React.Fragment>
         <Sidebar>
@@ -121,6 +123,9 @@ class EditPost extends React.Component {
             user_groups={this.state.user_groups}
           />
         </Content>
+        <div style={{ width: "25vw" }}>
+          <HistoryBar postId={postId} />
+        </div>
       </React.Fragment>
     );
   }
