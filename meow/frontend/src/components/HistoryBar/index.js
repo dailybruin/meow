@@ -1,8 +1,14 @@
 import React from "react";
-import { Table } from "antd";
+import { Button, Table, Popconfirm } from "antd";
 import moment from "moment";
 
 import { getHistory } from "../../services/api";
+
+/**
+ * To understand the code in this file, read the documentation
+ * for antd Table compoenents. I make sure you know what is a
+ * `curried function`.
+ */
 
 const columns = [
   {
@@ -27,9 +33,21 @@ const columns = [
   }
 ];
 
-const hiddenRow = record => {
-  console.log(record);
+const historyWarning = "Unsaved changes will be discarded. Are you sure to replace history?";
+
+/**
+ * HiddenRow is a curried function. `replaceHistory` is a function
+ * that changes the state within `EditPost` components. Check the
+ * file `EditPost/index.js` for definition of `replaceHistory`.
+ * This curried function is used by antd Table component in
+ * `HistoryBar` to generate the expandable Rows. Check `HistoryBar`
+ * defintion in this file for details.
+ * @param {function: (string, string) => void} replaceHistory
+ * @param {object} record
+ */
+const hiddenRow = replaceHistory => record => {
   const { post_facebook: fb, post_twitter: tw } = record;
+  const onConfirm = () => replaceHistory(fb, tw);
   return (
     <React.Fragment>
       <h3>
@@ -40,6 +58,9 @@ const hiddenRow = record => {
         <strong>Twitter:</strong>
       </h3>
       <p>{tw}</p>
+      <Popconfirm title={historyWarning} onConfirm={onConfirm} okText="Replace!" cancelText="No!">
+        <Button type="danger"> Revert History </Button>
+      </Popconfirm>
     </React.Fragment>
   );
 };
@@ -76,8 +97,15 @@ class HistoryBar extends React.Component {
 
   render() {
     const { data } = this.state;
+    const { replaceWithHistory } = this.props;
 
-    return <Table columns={columns} dataSource={data} expandedRowRender={hiddenRow} />;
+    return (
+      <Table
+        columns={columns}
+        dataSource={data}
+        expandedRowRender={hiddenRow(replaceWithHistory)}
+      />
+    );
   }
 }
 

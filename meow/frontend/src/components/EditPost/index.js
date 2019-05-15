@@ -103,6 +103,18 @@ class EditPost extends React.Component {
     });
   };
 
+  /**
+   * This function is used by the HistoryBar compoenent
+   * to replace current posts with one of the historic edits.
+   * It should be passed to HistoryBar and no other componenets
+   * should call this function!
+   * @param {string} fb facebook post string
+   * @param {string} tw twitter post string
+   */
+  replaceWithHistory = (fb, tw) => {
+    this.setState({ post_facebook: fb, post_twitter: tw });
+  };
+
   render() {
     const { postId } = this.props.match.params;
     return (
@@ -124,7 +136,7 @@ class EditPost extends React.Component {
           />
         </Content>
         <div style={{ width: "25vw" }}>
-          <HistoryBar postId={postId} />
+          <HistoryBar replaceWithHistory={this.replaceWithHistory} postId={postId} />
         </div>
       </React.Fragment>
     );
