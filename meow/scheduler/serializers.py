@@ -20,7 +20,7 @@ class SectionSerializer(serializers.ModelSerializer):
                   'twitter_account_handle',)
 
 class PostHistorySerializer(serializers.ModelSerializer):
-    last_edit_user_data = BasicInfoUserSerializer(required=False)
+    last_edit_user = BasicInfoUserSerializer(required=False)
     class Meta:
         model = PostHistory
         fields = '__all__'
