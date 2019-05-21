@@ -29,3 +29,8 @@
   color: red;
   font-size: 12px;
 }
+
+.field-with-errors {
+  border-bottom: 2px solid red;
+  color: red;
+}
