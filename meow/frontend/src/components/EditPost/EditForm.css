@@ -18,6 +18,7 @@
 .login-form input.ant-input {
   border-color: transparent;
   outline: none;
+  height: 100%;
   border-bottom: 2px solid black;
 }
 

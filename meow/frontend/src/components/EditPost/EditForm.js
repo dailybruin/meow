@@ -24,7 +24,34 @@ const formItemLayout = {
   }
 };
 
+let TWITTER_MAX_LENGTH = 232; //this is hardcoded and does not change if the backend changes.
+let TWITTER_MAX_RECOMMENDED_LENGTH = 200;
+
 class EditForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      twitter_length: 0 //even if post_twitter has something, the constructor will be called
+      //before that data is avialable so just set it to 0.
+    };
+  }
+
+  static getDerivedStateFromProps(props, current_state) {
+    const { getFieldValue } = props.form;
+    //this is kinda gross but unfortunately, its neccessary for
+    //setting the twitter_length if post_twitter was a non empty string
+    //before the editing session started
+    const twitter_length_from_field = getFieldValue("post_twitter")
+      ? getFieldValue("post_twitter").normalize("NFC").length
+      : 0;
+    if (twitter_length_from_field != current_state.twitter_length) {
+      return {
+        twitter_length: twitter_length_from_field
+      };
+    }
+    return null;
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const CopyEdited = Copy(
@@ -91,7 +118,24 @@ class EditForm extends React.Component {
             <Form.Item label="twitter">
               {getFieldDecorator("post_twitter", {
                 rules: []
-              })(<TextArea rows={6} />)}
+              })(
+                <TextArea
+                  rows={6}
+                  onChange={v => {
+                    //console.log(v.target.value.length);
+                    this.setState({ twitter_length: v.target.value.normalize("NFC").length });
+                  }}
+                  maxLength={TWITTER_MAX_LENGTH}
+                />
+              )}
+              <span
+                style={{
+                  color:
+                    this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH ? "black" : "#F59F00"
+                }}
+              >
+                {this.state.twitter_length} / {TWITTER_MAX_RECOMMENDED_LENGTH}
+              </span>
             </Form.Item>
           </Col>
         </Row>
@@ -100,6 +144,14 @@ class EditForm extends React.Component {
             <Form.Item label="instagram">
               <span className="insta-note">Note: meow cannot post to instagram</span>
               {getFieldDecorator("post_instagram", {
+                rules: []
+              })(<TextArea rows={6} />)}
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="notes">
+              <span>&#8195;</span>
+              {getFieldDecorator("post_notes", {
                 rules: []
               })(<TextArea rows={6} />)}
             </Form.Item>
@@ -147,6 +199,10 @@ export default Form.create({
       post_instagram: Form.createFormField({
         ...props.post_instagram,
         value: props.post_instagram
+      }),
+      post_notes: Form.createFormField({
+        ...props.post_notes,
+        value: props.post_notes
       }),
       pub_ready_copy: Form.createFormField({
         ...props.pub_ready_copy,

@@ -29,7 +29,7 @@ class Command(BaseCommand):
         self.set_preference("fb_default_photo", "Default facebook icon",
                             "http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg")
         self.set_preference("twitter_character_limit",
-                            "Twitter character limit", "92")
+                            "Twitter character limit", "232")
         self.set_preference("bitly_access_token", "Bit.ly access token")
         self.set_preference("site_url", "Meow URL",
                             "http://meow.dailybruin.com")
