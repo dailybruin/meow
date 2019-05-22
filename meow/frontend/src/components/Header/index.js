@@ -26,7 +26,11 @@ class Header extends Component {
   }
 
   newmeow = () => {
-    this.props.history.push("/add");
+    let passedDate = this.props.location.search;
+    this.props.history.push({
+      pathname: "/add",
+      search: passedDate && passedDate.length > 1 ? passedDate.substring(1, passedDate.length) : "" //substr strip "?"
+    });
   };
 
   toHome = () => {
