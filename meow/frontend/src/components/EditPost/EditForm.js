@@ -59,10 +59,10 @@ class EditForm extends React.Component {
     const re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
     if (!value || re.test(value)) {
       this.setState({ story_url_errors: "" });
-      //callback();
+      callback();
     } else {
       this.setState({ story_url_errors: "meow meow thats not a url" });
-      //callback('meow meow thats not a url');
+      callback("meow meow thats not a url");
     }
   };
 
@@ -103,14 +103,16 @@ class EditForm extends React.Component {
             rules: []
           })(<Input placeholder="type slug here" />)}
         </Form.Item>
-        <Form.Item className={this.state.story_url_errors ? "field-with-errors" : ""} label="url">
+        <Form.Item {...formItemLayout} label="url">
           {getFieldDecorator("story_url", {
-            rules: [
-              {
-                validator: this.validateURL
-              }
-            ]
-          })(<Input placeholder="https://dailybruin.com/..." />)}
+            rules: [{ validator: this.validateURL }]
+          })(
+            <Input
+              className={this.state.story_url_errors ? "field-with-errors" : ""}
+              placeholder="https://dailybruin.com/..."
+            />
+          )}
+          <span>{this.state.story_url_errors}</span>
         </Form.Item>
         <Form.Item {...formItemLayout} label="sections">
           {getFieldDecorator("section", {

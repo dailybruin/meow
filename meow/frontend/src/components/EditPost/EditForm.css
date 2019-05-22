@@ -30,7 +30,7 @@
   font-size: 12px;
 }
 
-.field-with-errors {
+.login-form input.field-with-errors {
   border-bottom: 2px solid red;
   color: red;
 }
