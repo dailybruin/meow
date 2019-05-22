@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
+import { withRouter, Route, Switch } from "react-router-dom";
 import Home from "./Home";
 import Authorization from "../authorization";
 import Login from "./Login";
@@ -28,7 +28,9 @@ const mapDispatchToProps = {
   setDevice: width => setDevice(width)
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(App);
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(App)
+);
