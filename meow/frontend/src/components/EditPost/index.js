@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
 import { Layout } from "antd";
 
 import EditSidebar from "./Sidebar";
@@ -9,10 +8,9 @@ import EditContent from "./Content";
 import Sidebar from "../Sidebar";
 
 import { getMe } from "../../services/api";
-
 import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
-
 import { loadSections } from "../../actions/section";
+import config from "../../config";
 
 const { Content } = Layout;
 const contentStyles = { position: "relative", transform: "translateY(-30px)" };
@@ -103,7 +101,7 @@ class EditPost extends React.Component {
     });
   };
 
-  render() {
+  renderDesktop() {
     return (
       <React.Fragment>
         <Sidebar>
@@ -125,10 +123,36 @@ class EditPost extends React.Component {
       </React.Fragment>
     );
   }
+
+  renderMobile() {
+    return (
+      <React.Fragment>
+        <EditSidebar
+          {...this.state}
+          editPost={this.editField}
+          delete={this.deletePost.bind(this)}
+          sendNow={this.sendNow}
+          mobile={true}
+        />
+        <EditContent
+          {...this.state}
+          editPost={this.editField}
+          savePost={this.savePost.bind(this)}
+          user_groups={this.state.user_groups}
+          mobile={true}
+        />
+      </React.Fragment>
+    );
+  }
+
+  render() {
+    return this.props.device === config.MOBILE ? this.renderMobile() : this.renderDesktop();
+  }
 }
 
 const mapStateToProps = state => ({
-  sections: state.default.section.sections
+  sections: state.default.section.sections,
+  device: state.default.mobile.device
 });
 
 const mapDispatchToProps = {

@@ -30,3 +30,7 @@
   color: red;
   font-size: 12px;
 }
+
+.customEditFormRow .ant-form-item {
+  width: 100%;
+}
