@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, Table, Popconfirm } from "antd";
-import moment from "moment";
+import { Button, Table, Popconfirm, Empty } from "antd";
 
 import { getHistory } from "../../services/api";
+import AutoUpdateTimer from "./AutoUpdateTimer";
 
 /**
  * To understand the code in this file, read the documentation
@@ -16,10 +16,7 @@ const columns = [
     dataIndex: "creation_time",
     key: "creation_time",
     // timeString is in ISO 8601 format
-    render: timeString => {
-      const dayStr = moment(timeString).fromNow();
-      return <p>{dayStr}</p>;
-    }
+    render: timeString => <AutoUpdateTimer time={timeString} />
   },
   {
     title: "Editor",
@@ -50,19 +47,34 @@ const hiddenRow = replaceHistory => record => {
   const onConfirm = () => replaceHistory(fb, tw);
   return (
     <React.Fragment>
-      <h3>
-        <strong>Facebook:</strong>
-      </h3>
+      {fb ? (
+        <h3>
+          <strong>Facebook:</strong>
+        </h3>
+      ) : null}
       <p>{fb}</p>
-      <h3>
-        <strong>Twitter:</strong>
-      </h3>
+      {tw ? (
+        <h3>
+          <strong>Twitter:</strong>
+        </h3>
+      ) : null}
       <p>{tw}</p>
       <Popconfirm title={historyWarning} onConfirm={onConfirm} okText="Replace!" cancelText="No!">
         <Button type="danger"> Revert History </Button>
       </Popconfirm>
     </React.Fragment>
   );
+};
+
+const tableStyle = {
+  borderRadius: "20px",
+  overflow: "hidden",
+  height: "100%",
+  /**
+   * this -15px is half of the value shifted for the EditPost Compoenent.
+   * Please see `contentStyles` in `EditPost/index.js`
+   */
+  transform: "translateY(-15px)"
 };
 
 class HistoryBar extends React.Component {
@@ -100,11 +112,16 @@ class HistoryBar extends React.Component {
     const { replaceWithHistory } = this.props;
 
     return (
-      <Table
-        columns={columns}
-        dataSource={data}
-        expandedRowRender={hiddenRow(replaceWithHistory)}
-      />
+      <div style={tableStyle}>
+        <Table
+          // makes the table take up full page
+          style={{ height: "100%" }}
+          locale={{ emptyText: <Empty description={<span>No History Yet!</span>} /> }}
+          columns={columns}
+          dataSource={data}
+          expandedRowRender={hiddenRow(replaceWithHistory)}
+        />
+      </div>
     );
   }
 }
