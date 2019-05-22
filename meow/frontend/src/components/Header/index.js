@@ -4,6 +4,7 @@ import { withRouter } from "react-router-dom";
 import { Button } from "antd";
 import "./index.css";
 import SettingsButton from "./SettingsButton";
+import config from "../../config";
 
 const options = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-digit" };
 
@@ -56,7 +57,7 @@ class Header extends Component {
         <h1 onClick={this.toHome} style={{ fontSize: "3em", cursor: "pointer" }}>
           meow
         </h1>
-        <h2>today: {this.state.time}</h2>
+        {this.props.device === config.MOBILE ? null : <h2>today: {this.state.time}</h2>}
         {this.state.showNewmeow ? (
           <div>
             <span onClick={this.toMe} style={{ fontSize: "1.3em", cursor: "pointer" }}>
@@ -66,10 +67,11 @@ class Header extends Component {
             <Button
               style={{
                 marginLeft: "0.6em",
-                backgroundColor: "white",
+                backgroundColor: "#ffe600",
                 color: "black",
-                border: "2px solid black",
                 borderRadius: "20px",
+                border: "none",
+                boxShadow: "0 4px 4px rgba(0,0,0,0.5)",
                 fontSize: "1.4em"
               }}
               type="primary"
@@ -88,7 +90,8 @@ class Header extends Component {
 const mapStateToProps = state => ({
   username: state.default.user.username,
   firstName: state.default.user.firstName,
-  theme: state.default.user.theme
+  theme: state.default.user.theme,
+  device: state.default.mobile.device
 });
 
 export default withRouter(connect(mapStateToProps)(Header));

@@ -5,6 +5,7 @@ import { Table, ConfigProvider } from "antd";
 
 import moment from "moment";
 import "./styles.css";
+import config from "../../config";
 
 const NoPosts = () => (
   <div
@@ -31,11 +32,7 @@ class Posts extends React.Component {
   }
 
   truncateColumns = () => {
-    if (typeof window === undefined) {
-      return this.columns;
-    }
-
-    if (window.innerWidth < 600) {
+    if (this.props.device === config.MOBILE) {
       return this.columns.filter(x => x.key === "section" || x.key === "slug");
     }
 
@@ -152,7 +149,8 @@ class Posts extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  sections: state.default.section.sections
+  sections: state.default.section.sections,
+  device: state.default.mobile.device
 });
 
 export default withRouter(

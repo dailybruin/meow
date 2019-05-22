@@ -58,3 +58,7 @@
 .ant-table-tbody .sending .status {
   background-color: #b3e9ff;
 }
+
+.mobilePanel .ant-collapse-content-box {
+  padding: 0;
+}
