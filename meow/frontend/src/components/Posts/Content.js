@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Table, ConfigProvider, List, Collapse } from "antd";
+import { Table, ConfigProvider, List, Collapse, Card } from "antd";
 
 import moment from "moment";
 import "./styles.css";
@@ -57,6 +57,9 @@ const statusCSS = record => {
   return "draft";
 };
 
+const displaySection = text =>
+  text && this.props.sections ? this.props.sections.find(x => x.id === text).name : "No Section";
+
 class Posts extends React.Component {
   constructor(props) {
     super(props);
@@ -81,10 +84,7 @@ class Posts extends React.Component {
       dataIndex: "section",
       className: "section",
       sortDirections: ["ascend", "descend"],
-      render: text =>
-        text && this.props.sections
-          ? this.props.sections.find(x => x.id === text).name
-          : "No Section",
+      render: text => displaySection(text),
       sorter: (a, b) => a.section - b.section
     },
     {
@@ -176,7 +176,15 @@ class Posts extends React.Component {
                 </div>
               </div>
             }
-          />
+          >
+            <Card size="small" title={displaySection(post.section)} />
+            <Card size="small" title="tweet">
+              {post.post_twitter}
+            </Card>
+            <Card size="small" title="facebook">
+              {post.post_facebook}
+            </Card>
+          </Panel>
         ))}
       </Collapse>
     );
