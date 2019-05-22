@@ -7,6 +7,8 @@ import { Layout } from "antd";
 import EditSidebar from "./Sidebar";
 import EditContent from "./Content";
 import Sidebar from "../Sidebar";
+import moment from "moment";
+const dateMatcher = /\?date=(\d{4})\-(\d{2})\-(\d{2})/;
 
 import { getMe } from "../../services/api";
 
@@ -45,6 +47,28 @@ class EditPost extends React.Component {
       this.setState({
         ...this.props.defaultData
       });
+      //console.log(this.props.location);
+      if (this.props.location.search) {
+        //means that ?date=2019-05-17 is appended to the url
+
+        let YMDArray = dateMatcher.exec(this.props.location.search);
+        //console.log(YMDArray);
+        if (YMDArray) {
+          YMDArray.shift();
+          let YMD = {
+            year: YMDArray[0],
+            month: YMDArray[1],
+            day: YMDArray[2]
+          };
+          let dateString = `${YMD.year}-${YMD.month}-${YMD.day}`;
+          console.log(moment(dateString, "YYYY-MM-DD", true));
+          if (moment(dateString, "YYYY-MM-DD", true)._isValid) {
+            this.setState({
+              pub_date: dateString
+            });
+          }
+        }
+      }
     }
   }
 
@@ -69,6 +93,7 @@ class EditPost extends React.Component {
         post_facebook: this.state.post_facebook,
         post_twitter: this.state.post_twitter,
         post_instagram: this.state.post_instagram,
+        post_notes: this.state.post_notes,
         pub_ready_copy: this.state.pub_ready_copy,
         pub_ready_online: this.state.pub_ready_online
       })

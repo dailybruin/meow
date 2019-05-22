@@ -23,12 +23,6 @@ class Sidebar extends React.Component {
     });
   };
 
-  getCurrentDate = () => {
-    const { search } = this.props.location;
-    if (search) return moment(search);
-    return moment(); // now
-  };
-
   addStatus = status => {
     const newStatus = [...new Set([...this.props.query.status, status])];
     this.editParent({
@@ -124,7 +118,9 @@ class Sidebar extends React.Component {
                   })
                 }
                 fullscreen={false}
-                defaultValue={this.getCurrentDate()}
+                defaultValue={
+                  this.props.date ? moment(this.props.date, "YYYY-MM-DD") : moment.now()
+                }
               />
             </div>
           </Panel>

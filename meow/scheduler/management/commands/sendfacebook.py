@@ -68,24 +68,29 @@ class Command(BaseCommand):
                 data['picture'] = photo_url
             else:
                 data['picture'] = fb_default_photo
-            
+
             if url:
                 data['link'] = url
 
-            errors = 0
             res = None
-            while errors < 2:
-                try:
-                    res = graph.post(**data)
-                    break
-                except Exception as e:
-                    smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
-                    if errors >= 2:
-                        raise Exception
-                        break
-                    else:
-                        time.sleep(0.5)
-                        errors += 1
+
+            try:
+                res = graph.post(**data)
+            except Exception as e:
+                smpost.log("Facebook Errored. Msg:\n %s \n Traceback:\n %s" % (e, traceback.format_exc()))
+                raise Exception
+
+            if not res:
+                # this is the same error we got when the post sent 4 times.
+                # graph.post(**data) posted but res was still None
+
+                # so if a similar situation occurs, we should assume that
+                # the post posted but we will log the error
+                smpost.log("Unknown Facebook Error. res in sendfacebook.py was unexpectedly None.")
+                smpost.sent = True
+                smpost.save()
+
+                raise Exception
 
             print("----------------------")
             post_id = res['id'].split('_')[1]
