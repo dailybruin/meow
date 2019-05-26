@@ -70,6 +70,14 @@ echo -e "REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432
 Be sure to also add a `SLACK_ENDPOINT` variable. You can get the value of it
 [here](https://dailybruin.slack.com/archives/CA5HGUUV7/p1526607201000113).
 
+### 0. Shortcut: init-script
+
+When you switch branches, it's generally a good idea to start with fresh containers. In order to do that, you need to tear down all the containers with `docker-compose down` and then run all these build steps again. To make this whole process easier, we have a script which will run all the steps except `npm run watch`.
+
+```bash
+./init-script
+```
+
 ### 1. Build images
 
 Next, pull and build the relevant Docker images. Make sure you have Docker
