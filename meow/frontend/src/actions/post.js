@@ -79,7 +79,7 @@ export const sendPostNow = postId => {
           });
         } else {
           dispatch({ type: "POST_SEND_NOW_SUCCESS", payload: data });
-          return status; //returning status instead of data
+          return data; //returning status instead of data
         }
       },
       err => {

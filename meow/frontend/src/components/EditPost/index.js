@@ -94,13 +94,33 @@ class EditPost extends React.Component {
 
   sendNow = () => {
     const { postId } = this.props.match.params;
-    this.props.sendPostNow(postId).then(status => {
-      if (status == 200) {
-        //using double == because status might be a string.
-        this.props.history.push("/");
-      } else {
-      }
-    });
+    this.props
+      .savePost(postId, {
+        slug: this.state.slug,
+        story_url: this.state.story_url,
+        section: this.state.section,
+        pub_date: this.state.pub_date,
+        pub_time: this.state.pub_time,
+        pub_ready_copy: false,
+        pub_ready_online: false,
+        post_facebook: this.state.post_facebook,
+        post_twitter: this.state.post_twitter,
+        post_instagram: this.state.post_instagram,
+        post_notes: this.state.post_notes,
+        pub_ready_copy: this.state.pub_ready_copy,
+        pub_ready_online: this.state.pub_ready_online
+      })
+      .then(data => {
+        if (data) {
+          this.props.sendPostNow(postId).then(response => {
+            console.log(response);
+            if (!data.error) {
+              //using double == because status might be a string.
+              this.props.history.push("/");
+            }
+          });
+        }
+      });
   };
 
   render() {

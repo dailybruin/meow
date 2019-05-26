@@ -61,7 +61,7 @@ class EditForm extends React.Component {
       this.setState({ story_url_errors: "" });
       callback();
     } else {
-      this.setState({ story_url_errors: "meow meow thats not a url" });
+      this.setState({ story_url_errors: "meow thats not a url (hint: make sure to include http)" });
       callback("meow meow thats not a url");
     }
   };
@@ -112,7 +112,7 @@ class EditForm extends React.Component {
               placeholder="https://dailybruin.com/..."
             />
           )}
-          <span>{this.state.story_url_errors}</span>
+          <span className="error-message">{this.state.story_url_errors}</span>
         </Form.Item>
         <Form.Item {...formItemLayout} label="sections">
           {getFieldDecorator("section", {

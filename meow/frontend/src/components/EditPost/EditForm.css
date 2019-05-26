@@ -34,3 +34,8 @@
   border-bottom: 2px solid red;
   color: red;
 }
+.error-message {
+  position: absolute;
+  right: 0px;
+  color: red;
+}
