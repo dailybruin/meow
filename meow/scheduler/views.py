@@ -1,17 +1,21 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 
 from scheduler.models import *
-from scheduler.serializers import SMPostSerializer, SectionSerializer
+from scheduler.serializers import SMPostSerializer, SectionSerializer, PostHistorySerializer
 
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view
 
 import datetime
 import parsedatetime.parsedatetime as pdt
@@ -68,7 +72,7 @@ class SMPostList(APIView):
         serializer = SMPostSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(last_edit_user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print(serializer.errors);
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -126,7 +130,7 @@ class SMPostDetail(APIView):
                     else:
                         update_online_user_to = None
 
-            post = serializer.save()
+            post = serializer.save(last_edit_user=request.user)
 
             # if the user updated the copy edited or online approved status,
             # record them as the copy_user or online_user
@@ -789,3 +793,51 @@ def fb_connect(request):
 
 def logout(request):
     return logout(request)
+
+@api_view(['GET'])
+def get_history(request, post_id):
+    """
+    returns a list of all histories of a post given post_id.
+    Results are sorted in chronological order with newest first.
+    """
+    if len(SMPost.objects.filter(id=post_id)) == 0:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    hists = PostHistory.objects.filter(smpost_id=post_id).order_by('-creation_time')
+
+    serializer = PostHistorySerializer(hists, many=True)
+    return Response(serializer.data)
+
+@receiver(post_save, sender=SMPost)
+def new_history(sender, instance, **kwargs):
+    """
+    receiver listens on a `save' event on the model SMPost.
+    Whenever a SMPost is saved, this function is called.
+    It compares the new post to its previous version.
+    If old version has the same content,
+        return immediately without saving
+    else,
+        create a new history object
+
+    Parameters:
+    sender: the model that triggered a save. It should always be SMPost
+    instance: the instance of the object being saved
+
+    Returns:
+    None
+    """
+    # optimization to check if top of the history stack is the same
+    ph = PostHistory.objects.filter(smpost_id=instance.id).order_by('-creation_time')
+    past_history = list(ph)
+    if len(past_history) >= 1:
+        prev_fb = past_history[0].post_facebook
+        prev_tw = past_history[0].post_twitter
+        # if newest history is the same we return
+        if prev_fb == instance.post_facebook and prev_tw == instance.post_twitter:
+            return
+
+    PostHistory.objects.create(
+        smpost=instance,
+        post_twitter=instance.post_twitter,
+        post_facebook=instance.post_facebook,
+        last_edit_user=instance.last_edit_user,
+        )

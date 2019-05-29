@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Table, ConfigProvider } from "antd";
+
 import moment from "moment";
 import "./styles.css";
 
@@ -20,7 +21,50 @@ const NoPosts = () => (
   </div>
 );
 
+/**
+ * strNullSorter sorts string alphabetically.
+ * Null and undefined are sorted in ascending order.
+ * The original ordering should be preserved both are null (stable sorting).
+ * @param {string|null|undefined} a
+ * @param {string|null|undefined} b
+ */
+const strNullSorter = (a, b) => {
+  if (a && b) return a > b;
+  if (a) return false;
+  if (b) return true;
+  return false;
+};
+
+/**
+ * time sorter sorts time string by parsing it with moment
+ * @param {string} a time string in format of HH:mm:ss
+ * @param {string} b time string in format of HH:mm:ss
+ */
+const timeSorter = (a, b) => {
+  return moment(a, "HH:mm:ss").valueOf() - moment(b, "HH:mm:ss").valueOf();
+};
+
 class Posts extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      /* current visible columns */
+      columns: this.truncateColumns()
+    };
+  }
+
+  truncateColumns = () => {
+    if (typeof window === undefined) {
+      return this.columns;
+    }
+
+    if (window.innerWidth < 600) {
+      return this.columns.filter(x => x.key === "section" || x.key === "slug");
+    }
+
+    return this.columns;
+  };
+
   columns = [
     {
       key: "section",
@@ -32,7 +76,7 @@ class Posts extends React.Component {
         text && this.props.sections
           ? this.props.sections.find(x => x.id === text).name
           : "No Section",
-      sorter: (a, b) => a.section.localeCompare(b.section)
+      sorter: (a, b) => strNullSorter(a.section, b.section)
     },
     {
       key: "slug",
@@ -40,7 +84,7 @@ class Posts extends React.Component {
       dataIndex: "slug",
       className: "slug",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => a.slug.localeCompare(b.slug)
+      sorter: (a, b) => strNullSorter(a.slug, b.slug)
     },
     {
       key: "post_twitter",
@@ -48,7 +92,7 @@ class Posts extends React.Component {
       dataIndex: "post_twitter",
       className: "twitter",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => a.post_twitter.localeCompare(b.post_twitter)
+      sorter: (a, b) => strNullSorter(a.post_twitter, b.post_twitter)
     },
     {
       key: "post_facebook",
@@ -56,7 +100,7 @@ class Posts extends React.Component {
       dataIndex: "post_facebook",
       className: "facebook",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => a.post_facebook.localeCompare(b.post_facebook)
+      sorter: (a, b) => strNullSorter(a.post_facebook, b.post_facebook)
     },
     {
       key: "pub_time",
@@ -65,7 +109,7 @@ class Posts extends React.Component {
       className: "pub_time",
       sortDirections: ["ascend", "descend"],
       defaultSortOrder: "descend",
-      sorter: (a, b) => new Date(a.pub_time) - new Date(b.pub_time),
+      sorter: (a, b) => timeSorter(a.pub_time, b.pub_time),
       render: text => (text ? moment(text, "HH:mm:ss").format("hh:mm a") : "No Time")
     },
     {
@@ -85,14 +129,17 @@ class Posts extends React.Component {
         if (record.sending) {
           return "Sending";
         }
-        if (record.pub_ready_copy && record.pub_ready_online) {
-          if (record.sent) {
-            return "Sent";
-          }
-          return "Ready to post";
+        if (record.sent) {
+          return "Sent";
         }
         if (record.pub_ready_copy) {
+          if (record.pub_ready_online) {
+            return "Ready to post";
+          }
           return "Copy-Edited";
+        }
+        if (record.sent_error) {
+          return "Error";
         }
         return "Draft";
       }
@@ -102,28 +149,26 @@ class Posts extends React.Component {
   render() {
     return (
       <ConfigProvider renderEmpty={NoPosts}>
-        <Table
-          pagination={false}
-          className="post-table"
-          rowKey="id"
-          dataSource={this.props.data}
-          columns={this.columns}
-          onRowClick={record => this.props.history.push(`/edit/${record.id}`)}
-          rowClassName={record => {
-            if (record.sent_error) return "sent-error";
-            if (record.sending) return "sending";
-            if (record.pub_ready_copy && record.pub_ready_online) {
-              if (record.sent) {
-                return "sent";
+        <div id="meow-table-wrapper">
+          <Table
+            pagination={false}
+            className="post-table"
+            rowKey="id"
+            dataSource={this.props.data}
+            columns={this.state.columns}
+            onRowClick={record => this.props.history.push(`/edit/${record.id}`)}
+            rowClassName={record => {
+              if (record.sent_error) return "sent-error";
+              if (record.sending) return "sending";
+              if (record.sent) return "sent";
+              if (record.pub_ready_copy) {
+                if (record.pub_ready_online) return "ready-to-post";
+                return "copy-edited";
               }
-              return "ready-to-post";
-            }
-            if (record.pub_ready_copy) {
-              return "copy-edited";
-            }
-            return "draft";
-          }}
-        />
+              return "draft";
+            }}
+          />
+        </div>
       </ConfigProvider>
     );
   }

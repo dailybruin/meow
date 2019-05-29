@@ -1,12 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import moment from "moment";
 import { Layout } from "antd";
 
 import EditSidebar from "./Sidebar";
 import EditContent from "./Content";
 import Sidebar from "../Sidebar";
+import HistoryBar from "../HistoryBar";
+
+const dateMatcher = /\?date=(\d{4})\-(\d{2})\-(\d{2})/;
 
 import { getMe } from "../../services/api";
 
@@ -46,6 +49,28 @@ class EditPost extends React.Component {
       this.setState({
         ...this.props.defaultData
       });
+      //console.log(this.props.location);
+      if (this.props.location.search) {
+        //means that ?date=2019-05-17 is appended to the url
+
+        let YMDArray = dateMatcher.exec(this.props.location.search);
+        //console.log(YMDArray);
+        if (YMDArray) {
+          YMDArray.shift();
+          let YMD = {
+            year: YMDArray[0],
+            month: YMDArray[1],
+            day: YMDArray[2]
+          };
+          let dateString = `${YMD.year}-${YMD.month}-${YMD.day}`;
+          console.log(moment(dateString, "YYYY-MM-DD", true));
+          if (moment(dateString, "YYYY-MM-DD", true)._isValid) {
+            this.setState({
+              pub_date: dateString
+            });
+          }
+        }
+      }
     }
   }
 
@@ -125,7 +150,20 @@ class EditPost extends React.Component {
       });
   };
 
+  /**
+   * This function is used by the HistoryBar compoenent
+   * to replace current posts with one of the historic edits.
+   * It should be passed to HistoryBar and no other componenets
+   * should call this function!
+   * @param {string} fb facebook post string
+   * @param {string} tw twitter post string
+   */
+  replaceWithHistory = (fb, tw) => {
+    this.setState({ post_facebook: fb, post_twitter: tw });
+  };
+
   render() {
+    const { postId } = this.props.match.params;
     return (
       <React.Fragment>
         <Sidebar>
@@ -144,6 +182,9 @@ class EditPost extends React.Component {
             user_groups={this.state.user_groups}
           />
         </Content>
+        <div style={{ width: "25vw" }}>
+          <HistoryBar replaceWithHistory={this.replaceWithHistory} postId={postId} />
+        </div>
       </React.Fragment>
     );
   }

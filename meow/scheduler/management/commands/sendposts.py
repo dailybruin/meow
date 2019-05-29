@@ -48,6 +48,10 @@ class Command(BaseCommand):
             send_now=True
         ).filter(
             is_active=True
+        ).filter(
+            pub_ready_copy=True
+        ).filter(
+            pub_ready_online=True
         ).exclude(
             sent=True
         ).exclude(

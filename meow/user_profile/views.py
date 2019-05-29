@@ -71,7 +71,8 @@ def me(request):
 
 
 def logout(request):
-    django_logout(request)
+    if request.user.is_authenticated:
+        django_logout(request)
     return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
 

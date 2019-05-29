@@ -21,6 +21,7 @@ class Posts extends React.Component {
     this.state = {
       loading: true,
       data: [],
+      date: null,
       query: {
         time: null,
         status: [],
@@ -50,7 +51,8 @@ class Posts extends React.Component {
 
     this.props.loadPosts(YMD).then(data => {
       dataStore = data;
-      this.setState({ data, loading: false });
+      const date = `${YMD.year}-${YMD.month}-${YMD.day}`;
+      this.setState({ data, date, loading: false });
     });
   }
 
