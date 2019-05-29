@@ -41,18 +41,12 @@ export const login = () => {
 };
 
 export const logout = () => dispatch => {
-  return apiLogout()
-    .then(() => {
-      dispatch({
-        type: "LOGOUT"
-      });
-    })
-    .catch(err => {
-      dispatch({
-        type: "NETWORK_ERROR",
-        message: "Could not connect to server."
-      });
-    });
+  // We logout frontend no matter what heppens
+  dispatch({
+    type: "LOGOUT"
+  });
+  // we don't care what returns from server
+  apiLogout();
 };
 
 export const getUser = username => {
