@@ -48,52 +48,48 @@ export const logout = () => dispatch => {
 
 export const getUser = username => {
   return dispatch => {
-    return userDetail(username).then(
-      ({ data, status }) => {
-        if (status >= 400) {
+    return userDetail(username)
+      .then(({ data }) => data)
+      .catch(err => {
+        const { status } = err.response;
+        if (status >= 400 && status < 500)
           dispatch({
             type: "PROFILE_FAIL",
             message: `Could not get specified user "${username}"`
           });
-        } else {
-          return data;
-        }
-      },
-      err => {
-        dispatch({
-          type: "NETWORK_ERROR",
-          message: "Could not connect to server."
-        });
-      }
-    );
+        else
+          dispatch({
+            type: "NETWORK_ERROR",
+            message: "Could not connect to server."
+          });
+      });
   };
 };
 
 export const editUser = newData => dispatch => {
-  return putUser(newData).then(
-    ({ data, status }) => {
-      if (status >= 400) {
+  return putUser(newData)
+    .then(({ data }) => {
+      if (newData.selected_theme) {
+        dispatch({
+          type: "THEME_CHANGE",
+          payload: {
+            theme: newData.selected_theme
+          }
+        });
+      }
+      return data;
+    })
+    .catch(err => {
+      const { status } = err.response;
+      if (status >= 400 && status < 500)
         dispatch({
           type: "EDIT_USER_FAIL",
           message: `Could not edit current user"`
         });
-      } else {
-        if (newData.selected_theme) {
-          dispatch({
-            type: "THEME_CHANGE",
-            payload: {
-              theme: newData.selected_theme
-            }
-          });
-        }
-        return data;
-      }
-    },
-    err => {
-      dispatch({
-        type: "NETWORK_ERROR",
-        message: "Could not connect to server."
-      });
-    }
-  );
+      else
+        dispatch({
+          type: "NETWORK_ERROR",
+          message: "Could not connect to server."
+        });
+    });
 };
