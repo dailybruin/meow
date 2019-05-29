@@ -2,7 +2,7 @@
 
 # get rid of old stuff
 docker-compose down
-
+rm meow/frontend/bundles/* -f
 
 REDIS_POSTGRES="REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres"
 

@@ -72,17 +72,23 @@ export const sendPostNow = postId => {
   return dispatch => {
     return postSendNow(postId).then(
       ({ data, status }) => {
-        if (status >= 400) {
-          dispatch({
-            type: "POST_SEND_NOW_FAIL",
-            message: `Could not send ${postId} now.`
-          });
-        } else {
-          dispatch({ type: "POST_SEND_NOW_SUCCESS", payload: data });
-          return data; //returning status instead of data
-        }
+        dispatch({ type: "POST_SEND_NOW_SUCCESS", payload: data });
+        return data; //returning status instead of data
       },
       err => {
+        console.log(err.response.data);
+        //error: asdjlsjdfkljdlfs
+        let description = "Unknown error";
+        let data = err.response.data;
+        if (data["error"] !== undefined) {
+          description = data["error"];
+        }
+        alertError("Send now failed :(", description)(dispatch);
+
+        dispatch({
+          type: "POST_SEND_NOW_FAIL",
+          message: `Could not send ${postId} now.`
+        });
         dispatch({
           type: "NETWORK_ERROR",
           message: "Could not connect to server."
@@ -107,16 +113,6 @@ export const getPost = postId => {
         }
       },
       err => {
-        //TODO figure out what errors happen and what object is returned
-        console.log(err.response.data);
-        //story_url: Array [ "Enter a valid URL." ]
-        let description = "Unknown error";
-        let data = err.response.data;
-        if (data["story_url"] !== undefined) {
-          description = "Invalid URL";
-        }
-        alertError("Send now failed :(", description)(dispatch);
-
         dispatch({
           type: "NETWORK_ERROR",
           message: "Could not connect to server."

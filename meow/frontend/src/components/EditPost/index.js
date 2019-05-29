@@ -11,6 +11,7 @@ import Sidebar from "../Sidebar";
 import { getMe } from "../../services/api";
 
 import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
+import { alertError } from "../../actions/alert";
 
 import { loadSections } from "../../actions/section";
 
@@ -114,7 +115,8 @@ class EditPost extends React.Component {
         if (data) {
           this.props.sendPostNow(postId).then(response => {
             console.log(response);
-            if (!data.error) {
+            if (response.error) {
+            } else {
               //using double == because status might be a string.
               this.props.history.push("/");
             }

@@ -152,10 +152,10 @@ class SMPostDetail(APIView):
 def send_posts_now(request, post_id):
     if request.method == "POST":
         sendNowPost = SMPost.objects.get(id=post_id)
-        if sendNowPost.pub_ready_online:
-            return JsonResponse({"error": "Post is not online approved"}, safe=True )
+        if not sendNowPost.pub_ready_online:
+            return JsonResponse({"error": "Post is not ready to publish"}, safe=True, status=409 )
         if not sendNowPost.pub_ready_copy:
-            return JsonResponse({"error": "Post is not copy edited"}, safe=True )
+            return JsonResponse({"error": "Post is not copy edited"}, safe=True, status=409 )
         sendNowPost.send_now = True
         sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
         sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
