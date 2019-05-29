@@ -14,6 +14,8 @@ import { getMe } from "../../services/api";
 
 import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
 
+import { logout } from "../../actions/user";
+
 import { loadSections } from "../../actions/section";
 
 const { Content } = Layout;
@@ -27,12 +29,17 @@ class EditPost extends React.Component {
   componentDidMount() {
     const { postId } = this.props.match.params;
 
-    getMe().then(res => {
-      console.log(res.data);
-      this.setState({
-        user_groups: res.data.groups
+    getMe()
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          user_groups: res.data.groups
+        });
+      })
+      .catch(err => {
+        // any error we logout
+        this.props.logout();
       });
-    });
 
     if (postId) {
       this.props.getPost(postId).then(data => {
@@ -160,7 +167,8 @@ const mapDispatchToProps = {
   loadSections,
   editPost: data => editPost(data),
   savePost: (postId, postData) => savePost(postId, postData),
-  sendPostNow: postId => sendPostNow(postId)
+  sendPostNow: postId => sendPostNow(postId),
+  logout
 };
 
 export default withRouter(

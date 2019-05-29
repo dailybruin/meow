@@ -12,31 +12,28 @@ const loginSuccess = ({ username, firstName, isAuthenticated, theme }) => ({
 
 export const login = () => {
   return dispatch => {
-    return getMe().then(
-      ({ data, status }) => {
-        if (status >= 400) {
-          dispatch({
-            type: "USER_LOGIN_FAIL",
-            message: "Could not get current user."
-          });
-        } else {
-          dispatch(
-            loginSuccess({
-              username: data.username,
-              firstName: data.first_name,
-              theme: data.theme,
-              isAuthenticated: true
-            })
-          );
-        }
-      },
-      err => {
+    return getMe()
+      .then(({ data }) => {
+        dispatch(
+          loginSuccess({
+            username: data.username,
+            firstName: data.first_name,
+            theme: data.theme,
+            isAuthenticated: true
+          })
+        );
+      })
+      .catch(err => {
         dispatch({
-          type: "NETWORK_ERROR",
-          message: "Could not connect to server."
+          type: "USER_LOGIN_FAIL",
+          message: "Could not get current user."
         });
-      }
-    );
+        if (err.response.status >= 500)
+          dispatch({
+            type: "NETWORK_ERROR",
+            message: "Could not connect to server."
+          });
+      });
   };
 };
 
