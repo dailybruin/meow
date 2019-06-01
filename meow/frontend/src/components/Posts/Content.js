@@ -162,9 +162,9 @@ class Posts extends React.Component {
             className="mobile_post_panel"
             header={
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ padding: "1em 0px 0px 0px", fontSize: "1.2em" }}>{post.slug}</div>
+                <div style={{ padding: "1em 0px 0px 0.5em", fontSize: "1.2em" }}>{post.slug}</div>
                 <div style={{ display: "flex" }}>
-                  <div style={{ width: "100%", padding: "1em 0" }}>
+                  <div style={{ width: "100%", padding: "1em 0", textAlign: "center" }}>
                     {displayTime(post.pub_time)}
                   </div>
                   <div

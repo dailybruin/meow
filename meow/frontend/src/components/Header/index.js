@@ -53,8 +53,8 @@ class Header extends Component {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          paddingLeft: "3em",
-          paddingRight: "3em",
+          paddingLeft: `${this.props.device === config.MOBILE ? "1em" : "3em"}`,
+          paddingRight: `${this.props.device === config.MOBILE ? "1em" : "3em"}`,
           color: `#${this.props.theme.primary_font_color}`
         }}
       >
