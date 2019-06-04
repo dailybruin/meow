@@ -112,3 +112,9 @@ export const sectionList = () => {
       status: res.status
     }));
 };
+
+export const getHistory = postId =>
+  axios.get(`${SERVER_URL}/history/${postId}`).then(({ data, status }) => ({
+    data,
+    status
+  }));

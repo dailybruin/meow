@@ -1,12 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import moment from "moment";
 import { Layout } from "antd";
 
 import EditSidebar from "./Sidebar";
 import EditContent from "./Content";
 import Sidebar from "../Sidebar";
-import moment from "moment";
+import HistoryBar from "../HistoryBar";
+
 const dateMatcher = /\?date=(\d{4})\-(\d{2})\-(\d{2})/;
 
 import { getMe } from "../../services/api";
@@ -125,7 +127,22 @@ class EditPost extends React.Component {
     });
   };
 
+
+  /**
+   * This function is used by the HistoryBar compoenent
+   * to replace current posts with one of the historic edits.
+   * It should be passed to HistoryBar and no other componenets
+   * should call this function!
+   * @param {string} fb facebook post string
+   * @param {string} tw twitter post string
+   */
+  replaceWithHistory = (fb, tw) => {
+    this.setState({ post_facebook: fb, post_twitter: tw });
+  };
+
   renderDesktop() {
+    const { postId } = this.props.match.params;
+
     return (
       <React.Fragment>
         <Sidebar>
@@ -144,6 +161,9 @@ class EditPost extends React.Component {
             user_groups={this.state.user_groups}
           />
         </Content>
+        <div style={{ width: "25vw" }}>
+          <HistoryBar replaceWithHistory={this.replaceWithHistory} postId={postId} />
+        </div>
       </React.Fragment>
     );
   }

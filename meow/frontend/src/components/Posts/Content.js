@@ -60,6 +60,30 @@ const statusCSS = record => {
 const displaySection = text =>
   text && this.props.sections ? this.props.sections.find(x => x.id === text).name : "No Section";
 
+
+/**
+ * strNullSorter sorts string alphabetically.
+ * Null and undefined are sorted in ascending order.
+ * The original ordering should be preserved both are null (stable sorting).
+ * @param {string|null|undefined} a
+ * @param {string|null|undefined} b
+ */
+const strNullSorter = (a, b) => {
+  if (a && b) return a > b;
+  if (a) return false;
+  if (b) return true;
+  return false;
+};
+
+/**
+ * time sorter sorts time string by parsing it with moment
+ * @param {string} a time string in format of HH:mm:ss
+ * @param {string} b time string in format of HH:mm:ss
+ */
+const timeSorter = (a, b) => {
+  return moment(a, "HH:mm:ss").valueOf() - moment(b, "HH:mm:ss").valueOf();
+};
+
 class Posts extends React.Component {
   constructor(props) {
     super(props);
@@ -84,8 +108,11 @@ class Posts extends React.Component {
       dataIndex: "section",
       className: "section",
       sortDirections: ["ascend", "descend"],
-      render: text => displaySection(text),
-      sorter: (a, b) => a.section - b.section
+      render: text =>
+        text && this.props.sections
+          ? this.props.sections.find(x => x.id === text).name
+          : "No Section",
+      sorter: (a, b) => strNullSorter(a.section, b.section)
     },
     {
       key: "slug",
@@ -93,7 +120,7 @@ class Posts extends React.Component {
       dataIndex: "slug",
       className: "slug",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => a.slug.localeCompare(b.slug)
+      sorter: (a, b) => strNullSorter(a.slug, b.slug)
     },
     {
       key: "post_twitter",
@@ -101,7 +128,7 @@ class Posts extends React.Component {
       dataIndex: "post_twitter",
       className: "twitter",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => a.post_twitter.localeCompare(b.post_twitter)
+      sorter: (a, b) => strNullSorter(a.post_twitter, b.post_twitter)
     },
     {
       key: "post_facebook",
@@ -109,7 +136,7 @@ class Posts extends React.Component {
       dataIndex: "post_facebook",
       className: "facebook",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => a.post_facebook.localeCompare(b.post_facebook)
+      sorter: (a, b) => strNullSorter(a.post_facebook, b.post_facebook)
     },
     {
       key: "pub_time",
@@ -118,8 +145,9 @@ class Posts extends React.Component {
       className: "pub_time",
       sortDirections: ["ascend", "descend"],
       defaultSortOrder: "descend",
-      sorter: (a, b) => a.pub_time < b.pub_time,
-      render: text => displayTime(text)
+
+      sorter: (a, b) => timeSorter(a.pub_time, b.pub_time),
+      render: text => (text ? moment(text, "HH:mm:ss").format("hh:mm a") : "No Time")
     },
     {
       key: "status",
