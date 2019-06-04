@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -156,12 +156,16 @@ class SMPostDetail(APIView):
 def send_posts_now(request, post_id):
     if request.method == "POST":
         sendNowPost = SMPost.objects.get(id=post_id)
+        if not sendNowPost.pub_ready_online:
+            return JsonResponse({"error": "Post is not ready to publish"}, safe=True, status=409 )
+        if not sendNowPost.pub_ready_copy:
+            return JsonResponse({"error": "Post is not copy edited"}, safe=True, status=409 )
         sendNowPost.send_now = True
         sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
         sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
         sendNowPost.save()
         sendposts.delay()
-        return HttpResponse(status=200)
+        return JsonResponse({"error": ""}, safe=True)
 
 
 def get_settings():

@@ -1,4 +1,5 @@
 import { postPost, postList, postDetail, postSendNow } from "../services/api";
+import { alertError, alertSuccess } from "./alert";
 
 const savePostRequest = () => ({
   type: "SAVE_POST_REQUEST"
@@ -13,17 +14,28 @@ export const savePost = (postId, postData) => dispatch => {
 
   return postPost(postId, postData).then(
     ({ data, status }) => {
+      console.log(status);
       if (status >= 400) {
         dispatch({
           type: "SAVE_POST_FAIL",
           message: "Could not save or create post."
         });
+        //alertError("Saving failed :(", "Maybe the url is not a valid url?")(dispatch);
       } else {
         dispatch(savePostSuccess());
+        alertSuccess("Saved successfully!")(dispatch);
         return data;
       }
     },
     err => {
+      console.log(err.response.data["story_url"][0]);
+      //story_url: Array [ "Enter a valid URL." ]
+      let description = "Unknown error";
+      let data = err.response.data;
+      if (data["story_url"] !== undefined) {
+        description = "Invalid URL";
+      }
+      alertError("Saving failed :(", description)(dispatch);
       dispatch({
         type: "NETWORK_ERROR",
         message: "Could not connect to server."
@@ -57,21 +69,26 @@ export const loadPosts = YMD => dispatch => {
 };
 
 export const sendPostNow = postId => {
-  console.log("post.js sendPostNow");
   return dispatch => {
     return postSendNow(postId).then(
       ({ data, status }) => {
-        if (status >= 400) {
-          dispatch({
-            type: "POST_SEND_NOW_FAIL",
-            message: `Could not send ${postId} now.`
-          });
-        } else {
-          dispatch({ type: "POST_SEND_NOW_SUCCESS", payload: data });
-          return status; //returning status instead of data
-        }
+        dispatch({ type: "POST_SEND_NOW_SUCCESS", payload: data });
+        return data; //returning status instead of data
       },
       err => {
+        console.log(err.response.data);
+        //error: asdjlsjdfkljdlfs
+        let description = "Unknown error";
+        let data = err.response.data;
+        if (data["error"] !== undefined) {
+          description = data["error"];
+        }
+        alertError("Send now failed :(", description)(dispatch);
+
+        dispatch({
+          type: "POST_SEND_NOW_FAIL",
+          message: `Could not send ${postId} now.`
+        });
         dispatch({
           type: "NETWORK_ERROR",
           message: "Could not connect to server."

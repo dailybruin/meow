@@ -30,3 +30,13 @@
   color: red;
   font-size: 12px;
 }
+
+.login-form input.field-with-errors {
+  border-bottom: 2px solid red;
+  color: red;
+}
+.error-message {
+  position: absolute;
+  right: 0px;
+  color: red;
+}

@@ -31,6 +31,7 @@ class EditForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      story_url_errors: "",
       twitter_length: 0 //even if post_twitter has something, the constructor will be called
       //before that data is avialable so just set it to 0.
     };
@@ -51,6 +52,19 @@ class EditForm extends React.Component {
     }
     return null;
   }
+
+  validateURL = (rule, value, callback) => {
+    const form = this.props.form;
+    //taken from stack overflow...probably works
+    const re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+    if (!value || re.test(value)) {
+      this.setState({ story_url_errors: "" });
+      callback();
+    } else {
+      this.setState({ story_url_errors: "meow thats not a url (hint: make sure to include http)" });
+      callback("meow meow thats not a url");
+    }
+  };
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -81,6 +95,7 @@ class EditForm extends React.Component {
       this.props.user_groups
     );
 
+    // const urlError = isFieldTouched('story_url') && getFieldError('story_url');
     return (
       <Form layout="horizontal" className="login-form">
         <Form.Item {...formItemLayout} label="slug">
@@ -90,8 +105,14 @@ class EditForm extends React.Component {
         </Form.Item>
         <Form.Item {...formItemLayout} label="url">
           {getFieldDecorator("story_url", {
-            rules: []
-          })(<Input placeholder="https://dailybruin.com/..." />)}
+            rules: [{ validator: this.validateURL }]
+          })(
+            <Input
+              className={this.state.story_url_errors ? "field-with-errors" : ""}
+              placeholder="https://dailybruin.com/..."
+            />
+          )}
+          <span className="error-message">{this.state.story_url_errors}</span>
         </Form.Item>
         <Form.Item {...formItemLayout} label="sections">
           {getFieldDecorator("section", {
