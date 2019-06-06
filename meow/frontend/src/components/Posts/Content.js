@@ -157,7 +157,8 @@ class Posts extends React.Component {
             dataSource={this.props.data}
             columns={this.state.columns}
             onRowClick={record => {
-              onClick: () => this.props.history.push(`/edit/${record.id}`);
+              console.log("asdf");
+              this.props.history.push(`/edit/${record.id}`);
             }}
             rowClassName={record => {
               if (record.sent_error) return "sent-error";
