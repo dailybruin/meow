@@ -57,9 +57,6 @@ const statusCSS = record => {
   return "draft";
 };
 
-const displaySection = text =>
-  text && this.props.sections ? this.props.sections.find(x => x.id === text).name : "No Section";
-
 /**
  * strNullSorter sorts string alphabetically.
  * Null and undefined are sorted in ascending order.
@@ -90,6 +87,7 @@ class Posts extends React.Component {
       /* current visible columns */
       columns: this.truncateColumns()
     };
+    this.displaySection = this.displaySection.bind(this);
   }
 
   truncateColumns = () => {
@@ -99,6 +97,9 @@ class Posts extends React.Component {
 
     return this.columns;
   };
+
+  displaySection = text =>
+    text && this.props.sections ? this.props.sections.find(x => x.id === text).name : "No Section";
 
   columns = [
     {
