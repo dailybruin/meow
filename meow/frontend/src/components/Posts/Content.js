@@ -108,10 +108,7 @@ class Posts extends React.Component {
       dataIndex: "section",
       className: "section",
       sortDirections: ["ascend", "descend"],
-      render: text =>
-        text && this.props.sections
-          ? this.props.sections.find(x => x.id === text).name
-          : "No Section",
+      render: text => this.displaySection(text),
       sorter: (a, b) => strNullSorter(a.section, b.section)
     },
     {
@@ -205,7 +202,7 @@ class Posts extends React.Component {
               </div>
             }
           >
-            <Card size="small" title={displaySection(post.section)} />
+            <Card size="small" title={this.displaySection(post.section)} />
             <Card size="small" title="tweet">
               {post.post_twitter}
             </Card>
