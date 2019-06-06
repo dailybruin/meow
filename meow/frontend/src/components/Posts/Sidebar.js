@@ -101,6 +101,7 @@ class Sidebar extends React.Component {
         <Collapse
           className="meow-collapse"
           style={primaryBackgroundAndFont}
+          expandIconPosition="right"
           defaultActiveKey={["1"]}
         >
           <Panel

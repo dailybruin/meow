@@ -28,34 +28,38 @@ class Sidebar extends React.Component {
             });
           }}
         />
-        <Button
-          onClick={this.props.sendNow}
-          style={{
-            backgroundColor: "white",
-            color: "black",
-            border: "2px solid black",
-            borderRadius: "20px",
-            fontSize: "1.4em"
-          }}
-          type="primary"
-          size="large"
-        >
-          now!
-        </Button>
-        <Button
-          onClick={this.props.delete}
-          style={{
-            color: "white",
-            backgroundColor: "red",
-            border: "2px solid black",
-            borderRadius: "20px",
-            fontSize: "1.4em"
-          }}
-          type="danger"
-          size="large"
-        >
-          delete
-        </Button>
+        {this.props.mobile === true ? null : (
+          <Button
+            onClick={this.props.sendNow}
+            style={{
+              backgroundColor: "white",
+              color: "black",
+              border: "2px solid black",
+              borderRadius: "20px",
+              fontSize: "1.4em"
+            }}
+            type="primary"
+            size="large"
+          >
+            now!
+          </Button>
+        )}
+        {this.props.mobile === true ? null : (
+          <Button
+            onClick={this.props.delete}
+            style={{
+              color: "white",
+              backgroundColor: "red",
+              border: "2px solid black",
+              borderRadius: "20px",
+              fontSize: "1.4em"
+            }}
+            type="danger"
+            size="large"
+          >
+            delete
+          </Button>
+        )}
       </div>
     );
   }

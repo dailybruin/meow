@@ -24,8 +24,8 @@ const formItemLayout = {
   }
 };
 
-let TWITTER_MAX_LENGTH = 232; //this is hardcoded and does not change if the backend changes.
-let TWITTER_MAX_RECOMMENDED_LENGTH = 200;
+const TWITTER_MAX_LENGTH = 232; // this is hardcoded and does not change if the backend changes.
+const TWITTER_MAX_RECOMMENDED_LENGTH = 200;
 
 class EditForm extends React.Component {
   constructor(props) {
@@ -39,9 +39,9 @@ class EditForm extends React.Component {
 
   static getDerivedStateFromProps(props, current_state) {
     const { getFieldValue } = props.form;
-    //this is kinda gross but unfortunately, its neccessary for
-    //setting the twitter_length if post_twitter was a non empty string
-    //before the editing session started
+    // this is kinda gross but unfortunately, its neccessary for
+    // setting the twitter_length if post_twitter was a non empty string
+    // before the editing session started
     const twitter_length_from_field = getFieldValue("post_twitter")
       ? getFieldValue("post_twitter").normalize("NFC").length
       : 0;
@@ -63,6 +63,28 @@ class EditForm extends React.Component {
     } else {
       this.setState({ story_url_errors: "meow thats not a url (hint: make sure to include http)" });
       callback("meow meow thats not a url");
+    }
+  };
+
+  responsiveRender = (firstComp, secondComp) => {
+    if (this.props.mobile === true) {
+      return (
+        <React.Fragment>
+          <Row className="customEditFormRow" type="flex" gutter={12}>
+            {firstComp}
+          </Row>
+          <Row className="customEditFormRow" type="flex" gutter={12}>
+            {secondComp}
+          </Row>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <Row type="flex" gutter={12}>
+          <Col span={12}>{firstComp}</Col>
+          <Col span={12}>{secondComp}</Col>
+        </Row>
+      );
     }
   };
 
@@ -127,65 +149,50 @@ class EditForm extends React.Component {
             </RadioGroup>
           )}
         </Form.Item>
-        <Row type="flex" gutter={12}>
-          <Col span={12}>
-            <Form.Item label="facebook">
-              {getFieldDecorator("post_facebook", {
-                rules: []
-              })(<TextArea rows={6} />)}
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="twitter">
-              {getFieldDecorator("post_twitter", {
-                rules: []
-              })(
-                <TextArea
-                  rows={6}
-                  onChange={v => {
-                    //console.log(v.target.value.length);
-                    this.setState({ twitter_length: v.target.value.normalize("NFC").length });
-                  }}
-                  maxLength={TWITTER_MAX_LENGTH}
-                />
-              )}
-              <span
-                style={{
-                  color:
-                    this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH ? "black" : "#F59F00"
+        {this.responsiveRender(
+          <Form.Item label="facebook">
+            {getFieldDecorator("post_facebook", {
+              rules: []
+            })(<TextArea rows={6} />)}
+          </Form.Item>,
+          <Form.Item label="twitter">
+            {getFieldDecorator("post_twitter", {
+              rules: []
+            })(
+              <TextArea
+                rows={6}
+                onChange={v => {
+                  // console.log(v.target.value.length);
+                  this.setState({ twitter_length: v.target.value.normalize("NFC").length });
                 }}
-              >
-                {this.state.twitter_length} / {TWITTER_MAX_RECOMMENDED_LENGTH}
-              </span>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row type="flex" gutter={12}>
-          <Col span={12}>
-            <Form.Item label="instagram">
-              <span className="insta-note">Note: meow cannot post to instagram</span>
-              {getFieldDecorator("post_instagram", {
-                rules: []
-              })(<TextArea rows={6} />)}
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="notes">
-              <span>&#8195;</span>
-              {getFieldDecorator("post_notes", {
-                rules: []
-              })(<TextArea rows={6} />)}
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row type="flex" gutter={12}>
-          <Col span={12}>
-            <CopyEdited />
-          </Col>
-          <Col span={12}>
-            <OnlineReady />
-          </Col>
-        </Row>
+                maxLength={TWITTER_MAX_LENGTH}
+              />
+            )}
+            <span
+              style={{
+                color:
+                  this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH ? "black" : "#F59F00"
+              }}
+            >
+              {this.state.twitter_length} / {TWITTER_MAX_RECOMMENDED_LENGTH}
+            </span>
+          </Form.Item>
+        )}
+        {this.responsiveRender(
+          <Form.Item label="instagram">
+            <span className="insta-note">Note: meow cannot post to instagram</span>
+            {getFieldDecorator("post_instagram", {
+              rules: []
+            })(<TextArea rows={6} />)}
+          </Form.Item>,
+          <Form.Item label="notes">
+            <span>&#8195;</span>
+            {getFieldDecorator("post_notes", {
+              rules: []
+            })(<TextArea rows={6} />)}
+          </Form.Item>
+        )}
+        {this.responsiveRender(<CopyEdited />, <OnlineReady />)}
       </Form>
     );
   }

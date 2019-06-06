@@ -12,13 +12,13 @@ import HistoryBar from "../HistoryBar";
 const dateMatcher = /\?date=(\d{4})\-(\d{2})\-(\d{2})/;
 
 import { getMe } from "../../services/api";
-
 import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
 import { alertError } from "../../actions/alert";
 
 import { logout } from "../../actions/user";
 
 import { loadSections } from "../../actions/section";
+import config from "../../config";
 
 const { Content } = Layout;
 const contentStyles = { position: "relative", transform: "translateY(-30px)" };
@@ -169,8 +169,9 @@ class EditPost extends React.Component {
     this.setState({ post_facebook: fb, post_twitter: tw });
   };
 
-  render() {
+  renderDesktop() {
     const { postId } = this.props.match.params;
+
     return (
       <React.Fragment>
         <Sidebar>
@@ -195,10 +196,36 @@ class EditPost extends React.Component {
       </React.Fragment>
     );
   }
+
+  renderMobile() {
+    return (
+      <React.Fragment>
+        <EditSidebar
+          {...this.state}
+          editPost={this.editField}
+          delete={this.deletePost.bind(this)}
+          sendNow={this.sendNow}
+          mobile={true}
+        />
+        <EditContent
+          {...this.state}
+          editPost={this.editField}
+          savePost={this.savePost.bind(this)}
+          user_groups={this.state.user_groups}
+          mobile={true}
+        />
+      </React.Fragment>
+    );
+  }
+
+  render() {
+    return this.props.device === config.MOBILE ? this.renderMobile() : this.renderDesktop();
+  }
 }
 
 const mapStateToProps = state => ({
-  sections: state.default.section.sections
+  sections: state.default.section.sections,
+  device: state.default.mobile.device
 });
 
 const mapDispatchToProps = {

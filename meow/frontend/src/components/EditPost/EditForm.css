@@ -31,6 +31,10 @@
   font-size: 12px;
 }
 
+.customEditFormRow .ant-form-item {
+  width: 100%;
+}
+
 .login-form input.field-with-errors {
   border-bottom: 2px solid red;
   color: red;
