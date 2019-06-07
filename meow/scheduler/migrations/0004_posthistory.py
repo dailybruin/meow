@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('post_facebook', models.TextField(blank=True, null=True)),
-                ('post_twitter', models.TextField(blank=True, default='', null=True)),
+                ('post_instagram', models.TextField(blank=True, default='', null=True)),
                 ('creation_time', models.DateTimeField(auto_now_add=True)),
                 ('last_edit_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('smpost', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='scheduler.SMPost')),

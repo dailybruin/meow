@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='posthistory',
-            name='post_twitter',
+            name='post_instagram',
             field=models.TextField(blank=True, default=None, null=True),
         ),
     ]
