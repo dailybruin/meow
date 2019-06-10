@@ -6,6 +6,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from functools import wraps
 
 from scheduler.models import *
 from scheduler.serializers import SMPostSerializer, SectionSerializer, PostHistorySerializer
@@ -37,12 +38,15 @@ from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
 
+
 class SectionList(APIView):
     """
     List all SMPosts, or create a new SMPost.
     """
 
     def get(self, request, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
         sections = Section.objects.all()
         serializer = SectionSerializer(sections, many=True)
         return Response(serializer.data)
@@ -54,6 +58,9 @@ class SMPostList(APIView):
     """
 
     def get(self, request, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         year = request.GET.get('year', None)
         month = request.GET.get('month', None)
         day = request.GET.get('day', None)
@@ -67,6 +74,9 @@ class SMPostList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         print(request.data)
 
         serializer = SMPostSerializer(data=request.data)
@@ -84,17 +94,26 @@ class SMPostDetail(APIView):
     """
 
     def get_object(self, post_id):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         try:
             return SMPost.objects.get(id=post_id)
         except SMPost.DoesNotExist:
             raise Http404
 
     def get(self, request, post_id, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         post = self.get_object(post_id)
         serializer = SMPostSerializer(post)
         return Response(serializer.data)
 
     def put(self, request, post_id, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         post = self.get_object(post_id)
 
         serializer = SMPostSerializer(post, data=request.data)
@@ -147,6 +166,9 @@ class SMPostDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, post_id, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         post = self.get_object(post_id)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -154,6 +176,9 @@ class SMPostDetail(APIView):
 
 @login_required
 def send_posts_now(request, post_id):
+    if not request.user.is_authenticated:
+        return Response("Must be logged in", status=403)
+        
     if request.method == "POST":
         sendNowPost = SMPost.objects.get(id=post_id)
         if not sendNowPost.pub_ready_online:

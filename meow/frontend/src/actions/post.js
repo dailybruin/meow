@@ -28,7 +28,13 @@ export const savePost = (postId, postData) => dispatch => {
       }
     },
     err => {
-      console.log(err.response.data["story_url"][0]);
+      if (err.response.status === 403) {
+        console.log("Logging off because of 403 from saving posts");
+        dispatch({
+          type: "LOGOUT"
+        });
+        return;
+      }
       //story_url: Array [ "Enter a valid URL." ]
       let description = "Unknown error";
       let data = err.response.data;
@@ -60,6 +66,13 @@ export const loadPosts = YMD => dispatch => {
       }
     },
     err => {
+      if (err.response.status === 403) {
+        console.log("Logging off because of 403");
+        dispatch({
+          type: "LOGOUT"
+        });
+        return;
+      }
       dispatch({
         type: "NETWORK_ERROR",
         message: "Could not connect to server."
@@ -76,7 +89,12 @@ export const sendPostNow = postId => {
         return data; //returning status instead of data
       },
       err => {
-        console.log(err.response.data);
+        if (err.response.status === 403) {
+          dispatch({
+            type: "LOGOUT"
+          });
+          return;
+        }
         //error: asdjlsjdfkljdlfs
         let description = "Unknown error";
         let data = err.response.data;
@@ -113,6 +131,13 @@ export const getPost = postId => {
         }
       },
       err => {
+        if (err.response.status === 403) {
+          console.log("Logged off because 403");
+          dispatch({
+            type: "LOGOUT"
+          });
+          return;
+        }
         dispatch({
           type: "NETWORK_ERROR",
           message: "Could not connect to server."
