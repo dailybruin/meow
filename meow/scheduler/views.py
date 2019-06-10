@@ -94,8 +94,6 @@ class SMPostDetail(APIView):
     """
 
     def get_object(self, post_id):
-        if not request.user.is_authenticated:
-            return Response("Must be logged in", status=403)
 
         try:
             return SMPost.objects.get(id=post_id)
@@ -178,7 +176,7 @@ class SMPostDetail(APIView):
 def send_posts_now(request, post_id):
     if not request.user.is_authenticated:
         return Response("Must be logged in", status=403)
-        
+
     if request.method == "POST":
         sendNowPost = SMPost.objects.get(id=post_id)
         if not sendNowPost.pub_ready_online:
