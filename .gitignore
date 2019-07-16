@@ -11,3 +11,4 @@ __pycache__
 webpack-stats.json
 .vscode/*
 *~
+*.log
