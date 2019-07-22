@@ -43,8 +43,8 @@ const historyWarning = "Unsaved changes will be discarded. Are you sure to repla
  * @param {object} record
  */
 const hiddenRow = replaceHistory => record => {
-  const { post_facebook: fb, post_twitter: tw } = record;
-  const onConfirm = () => replaceHistory(fb, tw);
+  const { post_facebook: fb, post_twitter: tw, post_newsletter: nl } = record;
+  const onConfirm = () => replaceHistory(fb, tw, nl);
   return (
     <React.Fragment>
       {fb ? (
@@ -59,6 +59,12 @@ const hiddenRow = replaceHistory => record => {
         </h3>
       ) : null}
       <p>{tw}</p>
+      {nl ? (
+        <h3>
+          <strong>Newsletter:</strong>
+        </h3>
+      ) : null}
+      <p>{nl}</p>
       <Popconfirm title={historyWarning} onConfirm={onConfirm} okText="Replace!" cancelText="No!">
         <Button type="danger"> Revert History </Button>
       </Popconfirm>

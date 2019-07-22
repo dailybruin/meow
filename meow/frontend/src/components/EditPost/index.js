@@ -101,7 +101,7 @@ class EditPost extends React.Component {
         pub_ready_online: false,
         post_facebook: this.state.post_facebook,
         post_twitter: this.state.post_twitter,
-        post_instagram: this.state.post_instagram,
+        post_newsletter: this.state.post_newsletter,
         post_notes: this.state.post_notes,
         pub_ready_copy: this.state.pub_ready_copy,
         pub_ready_online: this.state.pub_ready_online
@@ -138,7 +138,7 @@ class EditPost extends React.Component {
         pub_ready_online: false,
         post_facebook: this.state.post_facebook,
         post_twitter: this.state.post_twitter,
-        post_instagram: this.state.post_instagram,
+        post_newsletter: this.state.post_newsletter,
         post_notes: this.state.post_notes,
         pub_ready_copy: this.state.pub_ready_copy,
         pub_ready_online: this.state.pub_ready_online
@@ -165,8 +165,8 @@ class EditPost extends React.Component {
    * @param {string} fb facebook post string
    * @param {string} tw twitter post string
    */
-  replaceWithHistory = (fb, tw) => {
-    this.setState({ post_facebook: fb, post_twitter: tw });
+  replaceWithHistory = (fb, tw, nl) => {
+    this.setState({ post_facebook: fb, post_twitter: tw, post_newsletter: nl });
   };
 
   renderDesktop() {
