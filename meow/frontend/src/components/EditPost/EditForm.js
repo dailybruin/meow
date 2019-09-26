@@ -179,14 +179,12 @@ class EditForm extends React.Component {
           </Form.Item>
         )}
         {this.responsiveRender(
-          <Form.Item label="instagram">
-            <span className="insta-note">Note: meow cannot post to instagram</span>
-            {getFieldDecorator("post_instagram", {
+          <Form.Item label="newsletter">
+            {getFieldDecorator("post_newsletter", {
               rules: []
             })(<TextArea rows={6} />)}
           </Form.Item>,
           <Form.Item label="notes">
-            <span>&#8195;</span>
             {getFieldDecorator("post_notes", {
               rules: []
             })(<TextArea rows={6} />)}
@@ -224,9 +222,9 @@ export default Form.create({
         ...props.post_twitter,
         value: props.post_twitter
       }),
-      post_instagram: Form.createFormField({
-        ...props.post_instagram,
-        value: props.post_instagram
+      post_newsletter: Form.createFormField({
+        ...props.post_newsletter,
+        value: props.post_newsletter
       }),
       post_notes: Form.createFormField({
         ...props.post_notes,

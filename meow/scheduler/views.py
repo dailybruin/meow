@@ -854,13 +854,15 @@ def new_history(sender, instance, **kwargs):
     if len(past_history) >= 1:
         prev_fb = past_history[0].post_facebook
         prev_tw = past_history[0].post_twitter
+        prev_n = past_history[0].post_newsletter
         # if newest history is the same we return
-        if prev_fb == instance.post_facebook and prev_tw == instance.post_twitter:
+        if prev_n == instance.post_newsletter and prev_fb == instance.post_facebook and prev_tw == instance.post_twitter:
             return
 
     PostHistory.objects.create(
         smpost=instance,
         post_twitter=instance.post_twitter,
         post_facebook=instance.post_facebook,
+        post_newsletter=instance.post_newsletter,
         last_edit_user=instance.last_edit_user,
         )
