@@ -194,11 +194,11 @@ LOGGING = {
 			'filters': ['require_debug_false'],
 			'class': 'logging.StreamHandler',
 		},
-		'django.server': {
-			'level': 'INFO',
-			'class': 'logging.StreamHandler',
-			'formatter': 'django.server',
-		},
+		# 'django.server': {
+		# 	'level': 'INFO',
+		# 	'class': 'logging.StreamHandler',
+		# 	'formatter': 'django.server',
+		# },
 		# 'mail_admins': {
 		# 	'level': 'ERROR',
 		# 	'filters': ['require_debug_false'],
@@ -210,11 +210,16 @@ LOGGING = {
 			'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',
 		},
-		'django.server': {
-			'handlers': ['django.server', 'logfile'],
+        'scheduler': {
+            'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',
-			'propagate': False,
-		}
+        }
+        # this logger logs 4XX and 5XX responses
+		# 'django.server': {
+		# 	'handlers': ['django.server'],
+		# 	'level': 'INFO',
+		# 	'propagate': False,
+		# }
 	}
 }
 

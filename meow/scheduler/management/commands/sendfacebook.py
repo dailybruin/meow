@@ -17,7 +17,7 @@ import logging
 
 from scheduler.models import MeowSetting, SMPost
 
-logger = logging.getLogger('django.server')
+logger = logging.getLogger('scheduler')
 
 class Command(BaseCommand):
     help = "Sends the appropriate Facebook post"
