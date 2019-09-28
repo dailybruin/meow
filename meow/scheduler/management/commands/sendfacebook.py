@@ -13,8 +13,11 @@ import json
 import sys
 import time
 import traceback
+import logging
 
 from scheduler.models import MeowSetting, SMPost
+
+logger = logging.getLogger('django.server')
 
 class Command(BaseCommand):
     help = "Sends the appropriate Facebook post"
@@ -45,7 +48,7 @@ class Command(BaseCommand):
         fb_default_photo = options.get('fb_default_photo', None)
 
         try:
-            print('Sending FB: {}'.format(smpost.post_facebook))
+            logger.info('Sending FB: {}'.format(smpost.post_facebook))
             # follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
             # Facebook needs the following permissions:
             # status_update, manage_pages
@@ -89,7 +92,7 @@ class Command(BaseCommand):
 
             print("----------------------")
             post_id = res['id'].split('_')[1]
-            print("Successfully posted to FB at ID: %s" % post_id)
+            logger.info("Successfully posted to FB at ID: %s" % post_id)
 
             # Add the id for the post to the database
             smpost.id_facebook = post_id

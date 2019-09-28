@@ -12,9 +12,11 @@ import json
 import sys
 import time
 import traceback
+import logging
 
 from scheduler.models import MeowSetting, SMPost
 
+logger = logging.getLogger('django.server')
 
 class Command(BaseCommand):
     help = "Sends the appropriate tweet"
@@ -39,7 +41,7 @@ class Command(BaseCommand):
         url = options.get('url', None)
         photo_url = options.get('photo_url', None)
         try:
-            print('Sending Tweet: {}'.format(smpost.post_twitter))
+            logger.info('Sending Tweet: {}'.format(smpost.post_twitter))
             CONSUMER_KEY = MeowSetting.objects.get(
                 setting_key='twitter_consumer_key').setting_value
             CONSUMER_SECRET = MeowSetting.objects.get(
@@ -60,8 +62,8 @@ class Command(BaseCommand):
 
             res = api.update_status(status=tweet)
 
-            print("----------------------")
-            print(res.id)
+            #print("----------------------")
+            logger.info("sendtweet.py: res.id="res.id)
 
             # Add the id for the post to the database
             smpost.id_twitter = res.id

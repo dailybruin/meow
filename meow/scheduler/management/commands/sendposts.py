@@ -14,8 +14,11 @@ import json
 import sys
 import time
 import traceback
+import logging
 
 from scheduler.models import MeowSetting, SMPost
+
+logger = logging.getLogger('django.server')
 
 class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
@@ -24,7 +27,7 @@ class Command(BaseCommand):
         send_posts = MeowSetting.objects.get(
             setting_key="send_posts").setting_value
         if send_posts == "No" or send_posts == "no":
-            print("Post sending is currently off!")
+            logger.info("Post sending is currently off!")
             return
 
         # Get posts from the database that are ready to send
@@ -61,7 +64,7 @@ class Command(BaseCommand):
         posts = regularPosts | sendNowPosts
 
         if len(posts) == 0:
-            print("No posts to send!")
+            logger.info("No posts to send!")
 
         for post in posts:
             try:
@@ -96,7 +99,7 @@ class Command(BaseCommand):
                         post.save()
                     except:
                         post.log(traceback.format_exc())
-                        print("Something is very wrong2")
+                        logger.critical("Something is very wrong in sendpost.py " + traceback.format_exc())
                         pass  # But we can still try the rest of the posts that are going to be sent
                     continue
 
@@ -117,7 +120,7 @@ class Command(BaseCommand):
                         fb_default_photo = MeowSetting.objects.get(
                             setting_key='fb_default_photo').setting_value
                     except:
-                        print(
+                        logger.warning(
                             "[WARN] Facebook default photo setting is not set properly!")
                 fb_url = None
                 tweet_url = None
@@ -181,7 +184,7 @@ class Command(BaseCommand):
                               headers={'Content-Type': 'application/json'})
                 post.save()
             except (Exception) as e:
-                print("Something is very wrong")
+                logger.critical("Something is very wrong" + traceback.format_exc())
                 post.log(traceback.format_exc())
                 post.log_error(e, post.section, True)
                 pass  # But we can still try the rest of the posts that are going to be sent
