@@ -170,10 +170,11 @@ LOGGING = {
 		},
 	},
 	'formatters': {
-		'django.server': {
+		'simple_server': {
 			'()': 'django.utils.log.ServerFormatter',
 			'format': '[%(server_time)s] %(message)s',
-		}
+		},
+
 	},
 	'handlers': {
 		'console': {
@@ -184,15 +185,16 @@ LOGGING = {
         'logfile': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'meow.log'),
-            'maxBytes': 1024*1024*15, # 15MB
+            'filename': os.path.join(BASE_DIR, 'meow2.log'),
+            'maxBytes': 1024*1024*3, # 15MB
             'backupCount': 3,
+            'formatter': 'simple_server'
         },
         # this handler makes errors show up in rancher's console
 		'console_debug_false': {
 			'level': 'ERROR',
 			'filters': ['require_debug_false'],
-			'class': 'logging.StreamHandler',
+			'class': 'logging.StreamHandler'
 		},
 		# 'django.server': {
 		# 	'level': 'INFO',
