@@ -15,7 +15,6 @@ REDIS_POSTGRES="REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@
 if [ ! -f ".env" ]
 then
 	echo -e  $REDIS_POSTGRES > .env
-	echo -e "\nThe following values can be found in the pinned messages of the #meow-dev channel"
 	read -p "SECRET_KEY: " TMP
 	echo -e "SECRET_KEY=$TMP" >> .env
 

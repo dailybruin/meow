@@ -63,7 +63,7 @@ class Command(BaseCommand):
             res = api.update_status(status=tweet)
 
             #print("----------------------")
-            logger.info("sendtweet.py: res.id=" + res.id)
+            logger.info("sendtweet.py: res.id=" + str(res.id))
 
             # Add the id for the post to the database
             smpost.id_twitter = res.id
