@@ -78,10 +78,13 @@ class Command(BaseCommand):
                     post.save()
 
                 if post.sending:
-                    continue
+                    logger.info("sendpost.py: Post {}-{} is currently in the process of being sent. ".format(post.slug, post.id))
+                    continue # if its in the processs of being sent, ignore
                 else:
                     post.sending = True
                     post.save()
+
+                logger.info("sendpost.py: Post {}-{} will begin sending. ".format(post.slug, post.id))
 
                 # Make sure this post should actually be sent out. If it's more than
                 # 20 minutes late, we're gonna mark it as an error and send an error
@@ -100,8 +103,9 @@ class Command(BaseCommand):
                     except:
                         post.log(traceback.format_exc())
                         logger.critical("Something is very wrong in sendpost.py " + traceback.format_exc())
-                        pass  # But we can still try the rest of the posts that are going to be sent
-                    continue
+
+                    logger.info("sendpost.py: Post {}-{} failed to send because it would been late. ".format(post.slug, post.id))
+                    continue # skip this iteration of the loop so this post will not be posted.
 
                 # This is just Bitly -- it won't throw any exceptions
                 # send_url[0] is canonical. send_url[1] is short url.
@@ -148,43 +152,19 @@ class Command(BaseCommand):
                 post.log(traceback.format_exc())
                 post.log_error(e, post.section, True)
 
-                slack_data = {
-                    "text": ":sadparrot: *{}* has errored at {}"
-                    .format(post.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
-                    "attachments": [{"color": "danger", "title": "Error", "text": str(e)}]
-                }
-
-                requests.post(settings.SLACK_ENDPOINT,
-                              data=json.dumps(slack_data),
-                              headers={'Content-Type': 'application/json'})
-                continue
+                logger.error(
+                    "sendpost.py: {} has errored. It will NOT be sent. trackback: {}"
+                    .format(post.slug, traceback.format_exc())
+                );
+                continue # don't do anything else
 
             # Now save whatever we changed to the post
             try:
                 post.sending = False
                 post.sent = True
                 post.sent_time = timezone.localtime(timezone.now())
-
-                slack_data = {
-                    "text": ":partyparrot: *{}* has been meow'd to {} at {}"
-                    .format(post.slug, post.section.name, post.sent_time.strftime("%A, %d. %B %Y %I:%M%p")),
-                    "attachments": []
-                }
-
-                if fb_url:
-                    slack_data["attachments"].append(
-                        {"text": "Facebook: {}".format(fb_url)})
-
-                if tweet_url:
-                    slack_data["attachments"].append(
-                        {"text": "Twitter: {}".format(tweet_url)})
-
-                requests.post(settings.SLACK_ENDPOINT,
-                              data=json.dumps(slack_data),
-                              headers={'Content-Type': 'application/json'})
                 post.save()
             except (Exception) as e:
                 logger.critical("Something is very wrong" + traceback.format_exc())
                 post.log(traceback.format_exc())
                 post.log_error(e, post.section, True)
-                pass  # But we can still try the rest of the posts that are going to be sent

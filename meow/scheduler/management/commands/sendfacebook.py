@@ -92,23 +92,16 @@ class Command(BaseCommand):
 
             print("----------------------")
             post_id = res['id'].split('_')[1]
-            logger.info("Successfully posted to FB at ID: %s" % post_id)
 
             # Add the id for the post to the database
             smpost.id_facebook = post_id
             smpost.save()
 
+            # make sure logging is the last thing you do...
+            logger.info("Successfully posted to FB at ID: %s" % post_id)
             return "https://facebook.com/{}".format(post_id)
 
         except (FacepyError) as e:
             smpost.log(traceback.format_exc())
             smpost.log_error(e, section, True)
-            slack_data = {
-                "text": ":sadparrot: *{}* has errored at {}"
-                .format(smpost.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
-                "attachments": [{"color": "danger", "title": "Facebook Error", "text": str(e)}]
-            }
-
-            requests.post(settings.SLACK_ENDPOINT,
-                          data=json.dumps(slack_data),
-                          headers={'Content-Type': 'application/json'})
+            logger.error("Send facebook errored\nslug: {} {}".format(smpost.slug, traceback.format_exc()))
