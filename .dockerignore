@@ -7,6 +7,7 @@ celerybeat.pid
 *.pyc
 *.swp
 .vagrant
+*.log
 .DS_Store
 staticfiles
 *.pid
