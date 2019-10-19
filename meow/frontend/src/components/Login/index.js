@@ -23,6 +23,11 @@ class Login extends React.Component {
     let img_index = Math.floor(10 * Math.random() + 1);
     let img_extension = img_index == 5 ? "png" : "jpg";
     let img_url = `/static/cats/${img_index}.${img_extension}`;
+    let img_d = new Date(),
+      img_m = 3,
+      img_dd = 1;
+    let img_address_modifier = img_d.getMonth() === img_m && img_d.getDate() === img_dd;
+    img_url = img_address_modifier ? `/static/other/2.jpg` : img_url;
 
     return (
       <div
@@ -52,7 +57,7 @@ class Login extends React.Component {
               color: "white"
             }}
           >
-            meow
+            {!img_address_modifier ? "meow" : "scott"}
           </h1>
           <Button href={AUTH_URL} size="large" icon="slack">
             Sign in with Slack

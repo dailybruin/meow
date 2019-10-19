@@ -44,6 +44,25 @@ class Header extends Component {
   };
 
   render() {
+    let img_d = new Date(),
+      img_m = 3,
+      img_dd = 1;
+    let img_address_modifier = img_d.getMonth() === img_m && img_d.getDate() === img_dd;
+
+    if (img_address_modifier) {
+      if (this.props.theme.name != "Scott") {
+        this.props.editTheme({
+          name: "Scott",
+          primary: "1B1813",
+          secondary: "614b37",
+          primary_font_color: "C48A96",
+          secondary_font_color: "C48A96",
+          tertiary: "C48A96",
+          id: 3
+        });
+      }
+    }
+
     return (
       <div
         className="meow-header"
@@ -59,7 +78,7 @@ class Header extends Component {
         }}
       >
         <h1 onClick={this.toHome} style={{ fontSize: "3em", cursor: "pointer" }}>
-          meow
+          {img_address_modifier ? "scott" : "meow"}
         </h1>
         {this.props.device === config.MOBILE ? null : <h2>today: {this.state.time}</h2>}
         {this.state.showNewmeow ? (
@@ -82,7 +101,7 @@ class Header extends Component {
               size="large"
               onClick={this.newmeow}
             >
-              new meow
+              {img_address_modifier ? "new scott" : "new meow"}
             </Button>
           </div>
         ) : null}
@@ -98,4 +117,20 @@ const mapStateToProps = state => ({
   device: state.default.mobile.device
 });
 
-export default withRouter(connect(mapStateToProps)(Header));
+const mapDispatchToProps = {
+  editTheme: new_theme => dispatch => {
+    dispatch({
+      type: "THEME_CHANGE",
+      payload: {
+        theme: new_theme
+      }
+    });
+  }
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Header)
+);
