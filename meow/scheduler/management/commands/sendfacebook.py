@@ -13,8 +13,11 @@ import json
 import sys
 import time
 import traceback
+import logging
 
 from scheduler.models import MeowSetting, SMPost
+
+logger = logging.getLogger('scheduler')
 
 class Command(BaseCommand):
     help = "Sends the appropriate Facebook post"
@@ -45,7 +48,7 @@ class Command(BaseCommand):
         fb_default_photo = options.get('fb_default_photo', None)
 
         try:
-            print('Sending FB: {}'.format(smpost.post_facebook))
+            logger.info('Sending FB: {}'.format(smpost.post_facebook))
             # follow these steps: http://stackoverflow.com/questions/17620266/getting-a-manage-page-access-token-to-upload-events-to-a-facebook-page
             # Facebook needs the following permissions:
             # status_update, manage_pages
@@ -68,7 +71,7 @@ class Command(BaseCommand):
                 data['picture'] = photo_url
             else:
                 data['picture'] = fb_default_photo
-            
+
             if url:
                 data['link'] = url
 
@@ -89,23 +92,16 @@ class Command(BaseCommand):
 
             print("----------------------")
             post_id = res['id'].split('_')[1]
-            print("Successfully posted to FB at ID: %s" % post_id)
 
             # Add the id for the post to the database
             smpost.id_facebook = post_id
             smpost.save()
 
+            # make sure logging is the last thing you do...
+            logger.info("Successfully posted to FB at ID: %s" % post_id)
             return "https://facebook.com/{}".format(post_id)
 
         except (FacepyError) as e:
             smpost.log(traceback.format_exc())
             smpost.log_error(e, section, True)
-            slack_data = {
-                "text": ":sadparrot: *{}* has errored at {}"
-                .format(smpost.slug, timezone.now().strftime("%A, %d. %B %Y %I:%M%p")),
-                "attachments": [{"color": "danger", "title": "Facebook Error", "text": str(e)}]
-            }
-
-            requests.post(settings.SLACK_ENDPOINT,
-                          data=json.dumps(slack_data),
-                          headers={'Content-Type': 'application/json'})
+            logger.error("Send facebook errored\nslug: {} {}".format(smpost.slug, traceback.format_exc()))

@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block content %} {% if message %}
+<div class="row">
+  <div class="large-12 columns">
+    <div class="alert-box {{ message.mtype }}">{{ message.mtext }}</div>
+  </div>
+</div>
+{% endif %}
+
+<div class="row">
+  {# Choose section #} {% if pages %}
+  <div class="large-4 large-offset-4 columns">
+    <h3>Connect with Facebook</h3>
+    <p>Which section would you like to connect this Facebook account to?</p>
+    <form method="post">
+      {% csrf_token %} <input type="hidden" name="token" value="{{ token }}" />
+      <input type="hidden" name="verifier" value="{{ verifier }}" />
+      <input type="hidden" name="action" value="connect" />
+      <select name="section_id">
+        <option selected disabled>Choose a section</option>
+        {% for section in sections %}
+        <option value="{{ section.id }}">{{ section.name }}</option>
+        {% endfor %}
+      </select>
+      <p>Which Facebook page should it post to?</p>
+      <select name="page_id">
+        <option selected disabled>Choose a page</option>
+        {% for page in pages %}
+        <option value="{{ page.id }}">{{ page.name }}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Connect" name="connect" class="button" />
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+.ant-table-wrapper,
+.post-table .ant-table-thead > tr > th {
+  background-color: #fff;
+}
+
+.ant-table-thead > tr > th {
+  border-bottom: 1px solid #000;
+  font-size: 1.3em;
+  font-weight: 1000;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #000;
+}
+
+.ant-table-tbody tr.sent-error,
+.sent-error.status {
+  background-color: #ff7373;
+}
+
+.ant-table-tbody tr.sent-error:hover td {
+  background-color: #c93030;
+}
+
+.ant-table-tbody tr.sent,
+.sent.status {
+  background-color: #dcdcdc;
+}
+
+.ant-table-tbody tr.sent:hover td {
+  background-color: #d3d3d3;
+}
+
+.ant-table-thead .pub_time {
+  white-space: nowrap;
+}
+
+.ant-table-tbody .section,
+.ant-table-tbody .slug,
+.ant-table-tbody .status {
+  white-space: nowrap;
+}
+
+.ant-table-tbody td {
+  word-break: break-word;
+}
+
+.ant-table-tbody .draft .status,
+.draft.status {
+  background-color: #ffff99;
+}
+
+.ant-table-tbody .copy-edited .status,
+.copy-edited.status {
+  background-color: #ffcc99;
+}
+
+.ant-table-tbody .ready-to-post .status,
+.ready-to-post.status {
+  background-color: #b2f7b2;
+}
+
+.ant-table-tbody .sending .status,
+.sending.status {
+  background-color: #b3e9ff;
+}
+
+.mobilePanel .ant-collapse-content-box {
+  padding: 0;
+}
+
+.ant-collapse > .mobile_post_panel > .ant-collapse-header {
+  padding: 0px 0px 0px 40px;
+}
