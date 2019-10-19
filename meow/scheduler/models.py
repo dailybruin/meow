@@ -21,7 +21,7 @@ class SMPost(models.Model):
     id_twitter = models.DecimalField(
         default=0, max_digits=25, decimal_places=0)
     post_facebook = models.TextField(null=True, blank=True)
-    post_instagram = models.TextField(null=True, blank=True, default="")
+    post_newsletter = models.TextField(null=True, blank=True, default="")
     post_notes = models.TextField(null=True, blank=True, default="")
     # change to decimal(38, 0) if not big enough
     id_facebook = models.DecimalField(
@@ -302,8 +302,15 @@ class EmailNotification(models.Model):
         return self.name + " <" + self.email_address + ">"
 
 class PostHistory(models.Model):
+    """
+    PostHistory has currently 2 access methods, one implicit and one explicit
+    Explicit (through API access): `get_history'
+    Implicit (through event listener): `new_history'
+    See views.py for details.
+    """
     smpost = models.ForeignKey(SMPost, on_delete=models.CASCADE)
     post_facebook = models.TextField(null=True, blank=True, default=None)
-    post_instagram = models.TextField(null=True, blank=True, default=None)
-    last_edit_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post_twitter = models.TextField(null=True, blank=True, default=None)
+    post_newsletter = models.TextField(null=True, blank=True, default=None)
+    last_edit_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     creation_time = models.DateTimeField(auto_now_add=True)

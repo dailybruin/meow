@@ -1,17 +1,22 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse, Http404
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+from functools import wraps
 
 from scheduler.models import *
-from scheduler.serializers import SMPostSerializer, SectionSerializer
+from scheduler.serializers import SMPostSerializer, SectionSerializer, PostHistorySerializer
 
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view
 
 import datetime
 import parsedatetime.parsedatetime as pdt
@@ -33,12 +38,15 @@ from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
 
+
 class SectionList(APIView):
     """
     List all SMPosts, or create a new SMPost.
     """
 
     def get(self, request, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
         sections = Section.objects.all()
         serializer = SectionSerializer(sections, many=True)
         return Response(serializer.data)
@@ -50,6 +58,9 @@ class SMPostList(APIView):
     """
 
     def get(self, request, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         year = request.GET.get('year', None)
         month = request.GET.get('month', None)
         day = request.GET.get('day', None)
@@ -63,12 +74,15 @@ class SMPostList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         print(request.data)
 
         serializer = SMPostSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(last_edit_user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print(serializer.errors);
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -80,17 +94,24 @@ class SMPostDetail(APIView):
     """
 
     def get_object(self, post_id):
+
         try:
             return SMPost.objects.get(id=post_id)
         except SMPost.DoesNotExist:
             raise Http404
 
     def get(self, request, post_id, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         post = self.get_object(post_id)
         serializer = SMPostSerializer(post)
         return Response(serializer.data)
 
     def put(self, request, post_id, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         post = self.get_object(post_id)
 
         serializer = SMPostSerializer(post, data=request.data)
@@ -126,7 +147,7 @@ class SMPostDetail(APIView):
                     else:
                         update_online_user_to = None
 
-            post = serializer.save()
+            post = serializer.save(last_edit_user=request.user)
 
             # if the user updated the copy edited or online approved status,
             # record them as the copy_user or online_user
@@ -143,6 +164,9 @@ class SMPostDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, post_id, format=None):
+        if not request.user.is_authenticated:
+            return Response("Must be logged in", status=403)
+
         post = self.get_object(post_id)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -150,14 +174,21 @@ class SMPostDetail(APIView):
 
 @login_required
 def send_posts_now(request, post_id):
+    if not request.user.is_authenticated:
+        return Response("Must be logged in", status=403)
+
     if request.method == "POST":
         sendNowPost = SMPost.objects.get(id=post_id)
+        if not sendNowPost.pub_ready_online:
+            return JsonResponse({"error": "Post is not ready to publish"}, safe=True, status=409 )
+        if not sendNowPost.pub_ready_copy:
+            return JsonResponse({"error": "Post is not copy edited"}, safe=True, status=409 )
         sendNowPost.send_now = True
         sendNowPost.pub_date = timezone.localtime(timezone.now()).date()
         sendNowPost.pub_time = timezone.localtime(timezone.now()).time()
         sendNowPost.save()
         sendposts.delay()
-        return HttpResponse(status=200)
+        return JsonResponse({"error": ""}, safe=True)
 
 
 def get_settings():
@@ -421,7 +452,7 @@ def add(request):
 
 
 def can_manage(user):
-    return user.has_perm('add_user')
+    return user.has_perm('auth.add_user')
 
 
 @user_passes_test(can_manage)
@@ -785,3 +816,53 @@ def fb_connect(request):
 
 def logout(request):
     return logout(request)
+
+@api_view(['GET'])
+def get_history(request, post_id):
+    """
+    returns a list of all histories of a post given post_id.
+    Results are sorted in chronological order with newest first.
+    """
+    if len(SMPost.objects.filter(id=post_id)) == 0:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    hists = PostHistory.objects.filter(smpost_id=post_id).order_by('-creation_time')
+
+    serializer = PostHistorySerializer(hists, many=True)
+    return Response(serializer.data)
+
+@receiver(post_save, sender=SMPost)
+def new_history(sender, instance, **kwargs):
+    """
+    receiver listens on a `save' event on the model SMPost.
+    Whenever a SMPost is saved, this function is called.
+    It compares the new post to its previous version.
+    If old version has the same content,
+        return immediately without saving
+    else,
+        create a new history object
+
+    Parameters:
+    sender: the model that triggered a save. It should always be SMPost
+    instance: the instance of the object being saved
+
+    Returns:
+    None
+    """
+    # optimization to check if top of the history stack is the same
+    ph = PostHistory.objects.filter(smpost_id=instance.id).order_by('-creation_time')
+    past_history = list(ph)
+    if len(past_history) >= 1:
+        prev_fb = past_history[0].post_facebook
+        prev_tw = past_history[0].post_twitter
+        prev_n = past_history[0].post_newsletter
+        # if newest history is the same we return
+        if prev_n == instance.post_newsletter and prev_fb == instance.post_facebook and prev_tw == instance.post_twitter:
+            return
+
+    PostHistory.objects.create(
+        smpost=instance,
+        post_twitter=instance.post_twitter,
+        post_facebook=instance.post_facebook,
+        post_newsletter=instance.post_newsletter,
+        last_edit_user=instance.last_edit_user,
+        )

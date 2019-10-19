@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from scheduler.models import SMPost, Section
+from scheduler.models import SMPost, Section, PostHistory
 from user_profile.serializers import BasicInfoUserSerializer
 
 class SMPostSerializer(serializers.ModelSerializer):
@@ -18,3 +18,9 @@ class SectionSerializer(serializers.ModelSerializer):
         model = Section
         fields = ('name', 'id', 'facebook_account_handle',
                   'twitter_account_handle',)
+
+class PostHistorySerializer(serializers.ModelSerializer):
+    last_edit_user = BasicInfoUserSerializer(required=False)
+    class Meta:
+        model = PostHistory
+        fields = '__all__'

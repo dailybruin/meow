@@ -19,6 +19,49 @@ class EditPost extends React.Component {
   };
 
   render() {
+    const copyEdited =
+      this.props.pub_ready_copy_user !== null && this.props.pub_ready_copy_user !== undefined
+        ? `Copy-edited by: ${this.props.pub_ready_copy_user.first_name +
+            " " +
+            this.props.pub_ready_copy_user.last_name}`
+        : `Not copy-edited`;
+
+    const markedReady =
+      this.props.pub_ready_online_user !== null && this.props.pub_ready_online_user !== undefined
+        ? `Marked ready by: ${this.props.pub_ready_online_user.first_name +
+            " " +
+            this.props.pub_ready_online_user.last_name}`
+        : `Not ready to send`;
+
+    const actionButtons = (
+      <React.Fragment>
+        <Button
+          style={{
+            backgroundColor: "#CB0000",
+            borderRadius: "20px",
+            fontSize: "2em",
+            color: "white"
+          }}
+          size="large"
+          onClick={this.nevermind}
+        >
+          nevermind
+        </Button>
+        <Button
+          style={{
+            backgroundColor: "#3980bf",
+            borderRadius: "20px",
+            fontSize: "2em"
+          }}
+          type="primary"
+          size="large"
+          onClick={this.handleOk}
+        >
+          save
+        </Button>
+      </React.Fragment>
+    );
+
     return (
       <div
         style={{
@@ -29,58 +72,32 @@ class EditPost extends React.Component {
         }}
       >
         <EditForm {...this.props} onChange={this.handleFormChange} />
-        <Row
-          style={{
-            marginBottom: "1.2em"
-          }}
-        >
-          <Col span={12}>
-            {this.props.pub_ready_copy_user !== null && this.props.pub_ready_copy_user !== undefined
-              ? `Copy-edited by: ${this.props.pub_ready_copy_user.first_name +
-                  " " +
-                  this.props.pub_ready_copy_user.last_name}`
-              : `Not copy-edited`}
-          </Col>
-          <Col span={12}>
-            {this.props.pub_ready_online_user !== null &&
-            this.props.pub_ready_online_user !== undefined
-              ? `Marked ready by: ${this.props.pub_ready_online_user.first_name +
-                  " " +
-                  this.props.pub_ready_online_user.last_name}`
-              : `Not ready to send`}
-          </Col>
-        </Row>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between"
-          }}
-        >
-          <Button
-            style={{
-              backgroundColor: "#CB0000",
-              borderRadius: "20px",
-              fontSize: "2em",
-              color: "white"
-            }}
-            size="large"
-            onClick={this.nevermind}
-          >
-            nevermind
-          </Button>
-          <Button
-            style={{
-              backgroundColor: "#3980bf",
-              borderRadius: "20px",
-              fontSize: "2em"
-            }}
-            type="primary"
-            size="large"
-            onClick={this.handleOk}
-          >
-            save
-          </Button>
-        </div>
+        {this.props.mobile === true ? (
+          <React.Fragment>
+            <div>{copyEdited}</div>
+            <div>{markedReady}</div>
+            {actionButtons}
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <Row
+              style={{
+                marginBottom: "1.2em"
+              }}
+            >
+              <Col span={12}>{copyEdited}</Col>
+              <Col span={12}>{markedReady}</Col>
+            </Row>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between"
+              }}
+            >
+              {actionButtons}
+            </div>
+          </React.Fragment>
+        )}
       </div>
     );
   }

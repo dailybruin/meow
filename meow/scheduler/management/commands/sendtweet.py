@@ -12,9 +12,11 @@ import json
 import sys
 import time
 import traceback
+import logging
 
 from scheduler.models import MeowSetting, SMPost
 
+logger = logging.getLogger('scheduler')
 
 class Command(BaseCommand):
     help = "Sends the appropriate tweet"
@@ -39,7 +41,7 @@ class Command(BaseCommand):
         url = options.get('url', None)
         photo_url = options.get('photo_url', None)
         try:
-            print('Sending Tweet: {}'.format(smpost.post_twitter))
+            logger.info('Sending Tweet: {}: {}'.format(smpost.slug, smpost.post_twitter))
             CONSUMER_KEY = MeowSetting.objects.get(
                 setting_key='twitter_consumer_key').setting_value
             CONSUMER_SECRET = MeowSetting.objects.get(
@@ -60,24 +62,18 @@ class Command(BaseCommand):
 
             res = api.update_status(status=tweet)
 
-            print("----------------------")
-            print(res.id)
-
             # Add the id for the post to the database
             smpost.id_twitter = res.id
             smpost.save()
 
+            logger.info('Tweet {} has sent successfully. URL: {}'.format(
+                smpost.slug,
+                "https://twitter.com/statuses/{}".format(res.id))
+            )
             return "https://twitter.com/statuses/{}".format(res.id)
 
         except tweepy.TweepError as e:
             smpost.log(traceback.format_exc())
             smpost.log_error(e, section, True)
-            slack_data = {
-                "text": ":sadparrot: *{}* has errored at {}"
-                .format(smpost.slug, timezone.localtime(timezone.now()).strftime("%A, %d. %B %Y %I:%M%p")),
-                "attachments": [{"color": "danger", "title": "Twitter Error", "text": str(e)}]
-            }
 
-            requests.post(settings.SLACK_ENDPOINT,
-                          data=json.dumps(slack_data),
-                          headers={'Content-Type': 'application/json'})
+            logger.error("Send tweet errored\nslug: {} {}".format(smpost.slug, traceback.format_exc()))

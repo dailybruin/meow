@@ -1,16 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Layout } from "antd";
+import { Layout, Collapse } from "antd";
 
 import PostSidebar from "./Sidebar";
 import PostContent from "./Content";
 import Sidebar from "../Sidebar";
 import "./styles.css";
+import config from "../../config";
 
 import { loadPosts } from "../../actions/post";
 
 const { Content } = Layout;
+const { Panel } = Collapse;
 
 const dateMatcher = /\?date=(\d{4})\-(\d{2})\-(\d{2})/;
 
@@ -93,9 +95,17 @@ class Posts extends React.Component {
 
     return (
       <React.Fragment>
-        <Sidebar>
-          <PostSidebar editParent={this.queryChanged} {...this.state} />
-        </Sidebar>
+        {this.props.device === config.MOBILE ? (
+          <Collapse expandIconPosition="right">
+            <Panel className="mobilePanel" header="filter" key="1">
+              <PostSidebar editParent={this.queryChanged} {...this.state} />
+            </Panel>
+          </Collapse>
+        ) : (
+          <Sidebar>
+            <PostSidebar editParent={this.queryChanged} {...this.state} />
+          </Sidebar>
+        )}
         <Content>
           <PostContent data={filteredData} />
         </Content>
@@ -104,13 +114,17 @@ class Posts extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  device: state.default.mobile.device
+});
+
 const mapDispatchToProps = {
   loadPosts: YMD => loadPosts(YMD)
 };
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(Posts)
 );
