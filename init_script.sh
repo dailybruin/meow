@@ -10,7 +10,9 @@ echo -e "Note: never run this on production!"
 docker-compose down
 rm meow/frontend/bundles/* -f
 
+
 REDIS_POSTGRES="REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres\n"
+
 
 if [ ! -f ".env" ]
 then
