@@ -44,5 +44,5 @@ social-auth-core==1.7.0
 tweepy==3.5.0
 urllib3==1.24.2
 vine==1.1.4
-whitenoise==3.3.0
+whitenoise==3.3.1
 wrapt==1.10.11
