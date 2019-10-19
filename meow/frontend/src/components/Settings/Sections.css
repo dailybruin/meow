@@ -1,0 +1,12 @@
+#meow-sections .ant-list-item-meta-title,
+#meow-sections .ant-list-item-content {
+  color: white;
+}
+
+#meow-sections .ant-list-item-meta-title {
+  font-size: 28px;
+}
+
+#meow-sections .ant-list-item {
+  padding-left: 2em;
+}

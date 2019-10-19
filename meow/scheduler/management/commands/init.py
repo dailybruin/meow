@@ -21,6 +21,7 @@ class Command(BaseCommand):
         s.save()
 
     def handle(self, *args, **options):
+        print("These values can be found in the pinned messages of the #meow-dev slack channel")
         self.set_preference("twitter_consumer_key", "Twitter consumer key")
         self.set_preference("twitter_consumer_secret",
                             "Twitter consumer secret")
@@ -29,7 +30,7 @@ class Command(BaseCommand):
         self.set_preference("fb_default_photo", "Default facebook icon",
                             "http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg")
         self.set_preference("twitter_character_limit",
-                            "Twitter character limit", "92")
+                            "Twitter character limit", "232")
         self.set_preference("bitly_access_token", "Bit.ly access token")
         self.set_preference("site_url", "Meow URL",
                             "http://meow.dailybruin.com")
@@ -41,6 +42,9 @@ class Command(BaseCommand):
         self.set_preference("site_message", "Site message (blank)")
         self.set_preference("default_image_selector",
                             "Default featured image selector", "img.attachment-db-category-full")
+        self.set_preference("editor_channel", "Editor Role Channel", "editors-100")
+        self.set_preference("copy_channel", "Copy Role Channel", "editors-100")
+        self.set_preference("online_channel", "Online Role Channel", "editors-100")
 
         # Configure gruops
         if Group.objects.filter(name='Editors').count() == 0:

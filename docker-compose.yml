@@ -1,10 +1,11 @@
-version: '3'
+version: "3"
 
 services:
   web:
     build: .
     image: meow
     command: honcho start -f Procfile.dev
+    entrypoint: ./entrypoint-dev.sh
     ports:
       - "5000:5000"
     env_file: .env
@@ -15,9 +16,5 @@ services:
       - .:/meow
   db:
     image: postgres:latest
-    ports:
-      - "5432:5432"
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
