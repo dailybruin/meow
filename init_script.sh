@@ -12,7 +12,7 @@ rm meow/frontend/bundles/* -f
 
 
 REDIS_POSTGRES="REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres\n"
-
+PERIODIC_TASK_MINUTES=2
 
 if [ ! -f ".env" ]
 then
@@ -39,6 +39,21 @@ npm run build
 docker-compose build &&
 docker-compose run web meow/manage.py migrate &&
 echo ">>> The ids and secrets can be found in the #meow_dev channel's pinned messages" &&
-docker-compose run web meow/manage.py init &&
-echo -e "from scheduler.models import Section\ns = Section(name=\"test\")\ns.save()" | docker-compose run web meow/manage.py shell
+docker-compose run web meow/manage.py collectstatic --noinput
+docker-compose run web meow/manage.py init 
+if [ $? == 0 ]; then
+	echo -e "from scheduler.models import Section\ns = Section(name=\"test\")\ns.save()" | docker-compose run web meow/manage.py shell
+	if [ $? != 0 ]; then
+		echo "!!!!! Failed to create Test section !!!!!"
+	else
+		echo "Created section \"Test\""
+	fi
+	
+	echo -e "from django_celery_beat.models import PeriodicTask, IntervalSchedule\nschedule=IntervalSchedule.objects.create(every=$PERIODIC_TASK_MINUTES, period=IntervalSchedule.MINUTES)\nPeriodicTask.objects.create(interval=schedule, name='Send Posts', task='sendposts')\n" | docker-compose run web meow/manage.py shell
+	if [ $? != 0 ]; then
+		echo "!!!!! Failed to create Periodic Task !!!!!"
+	else
+		echo "Created sendposts Periodic Task (running every $PERIODIC_TASK_MINUTES minutes)"
+	fi
+fi
 rm -f celerybeat.pid
