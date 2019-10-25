@@ -1,0 +1,165 @@
+/*  Move this into index.css when doen  */
+
+.user-profile-row {
+  display: flex;
+  flex-grow: 1;
+}
+
+.user-profile-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: start;
+  font-family: Varela Round;
+  color: black;
+}
+
+/* User Profile Image */
+.user-profile-image-container {
+  width: 30%;
+  height: 50%;
+  margin-right: 40px; /*should I try using % instead*/
+}
+
+.user-profile-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 200px;
+  box-sizing: border-box;
+  border: 5px solid black;
+}
+
+/* User Profile Basic Information */
+.user-profile-basic-info-container {
+  width: 50%;
+  height: 50%;
+  flex-grow: 1;
+}
+
+.user-profile-basic-info-form-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.user-profile-basic-info-title {
+  flex: 1 0 20%;
+  max-width: 220px;
+  font-size: 2.2em;
+  margin-bottom: 0px;
+}
+
+.user-profile-basic-info-data {
+  flex: 1 0 40%;
+  /* max-width: 220px; */
+
+  font-size: 2em;
+  margin-bottom: 0px;
+  border-bottom: 2px solid #000;
+}
+
+.user-profile-basic-info-horizontal-line {
+  width: 90%;
+  margin-right: 10%;
+  /* margin-left: 30%; */
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+.user-profile-bio-container {
+  width: 50%;
+  height: 50%;
+  margin-right: 40px;
+}
+
+.user-profile-bio-header {
+  font-size: 2.2em;
+}
+
+.user-profile-bio-paragraph {
+  font-size: 1.3em;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* User Profile Theme */
+.user-profile-theme-container {
+  width: 50%;
+  height: 50%;
+  flex-grow: 1;
+}
+
+.user-profile-theme-header {
+  font-size: 2.2em;
+}
+
+.user-profile-theme-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-direction: column;
+}
+
+.user-profile-theme-dot {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 20px;
+  border: 3px black solid;
+}
+
+.user-profile-theme-row {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  margin-bottom: 15px;
+  align-items: center;
+  border: 2px solid lightgrey;
+}
+
+.user-profile-theme-row-active {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  margin-bottom: 15px;
+  align-items: center;
+  border: 5px solid grey;
+}
+
+.user-profile-theme-row-name {
+  font-size: 12px;
+  width: 15%;
+  margin-right: 10px;
+}
+
+.user-profile-theme-row-hand {
+  width: 30px;
+}
+
+.user-profile-social-media-bubble {
+  height: 50px;
+  width: 50px;
+  /* border-radius: 50%; */
+  margin-right: 30px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.user-profile-social-media-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.user-profile-social-media-container-edit-button {
+  margin-top: 15px;
+}
+
+.user-profile-social-media-inline {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile-social-media-url {
+  font-size: 1.3em;
+}

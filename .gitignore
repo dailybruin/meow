@@ -3,5 +3,13 @@
 .vagrant
 .DS_Store
 staticfiles
+meow/frontend/bundles/*
 .env
+node_modules
 *.pid
+__pycache__
+webpack-stats.json
+.vscode/*
+*~
+*.log
+meow/static

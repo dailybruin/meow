@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
-source /venv/bin/activate
 
 # Collect static files
 echo "Collect static files"

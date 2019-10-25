@@ -1,0 +1,46 @@
+.login-form .ant-form-item-label label,
+.login-form input.ant-input {
+  font-size: 2em;
+}
+
+.login-form textarea.ant-input {
+  font-size: 1.1em;
+}
+
+.login-form .ant-form-item-label {
+  text-align: left;
+}
+
+.login-form .ant-checkbox + span {
+  font-size: 1.2em;
+}
+
+.login-form input.ant-input {
+  border-color: transparent;
+  outline: none;
+  height: 100%;
+  border-bottom: 2px solid black;
+}
+
+.checkable-items.ant-form-item {
+  margin-bottom: 12px;
+}
+
+.insta-note {
+  color: red;
+  font-size: 12px;
+}
+
+.customEditFormRow .ant-form-item {
+  width: 100%;
+}
+
+.login-form input.field-with-errors {
+  border-bottom: 2px solid red;
+  color: red;
+}
+.error-message {
+  position: absolute;
+  right: 0px;
+  color: red;
+}

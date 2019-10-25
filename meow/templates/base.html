@@ -1,57 +1,37 @@
-<!doctype html>
-<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en">
-<!--<![endif]-->
+{% load static %} {% load render_bundle from webpack_loader %} <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Social media scheduler." />
+    <meta name="author" content="The Daily Bruin" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'favicons/favicon-32x32.png' %}"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'favicons/favicon-96x96.png' %}"
+      sizes="96x96"
+    />
+    <link rel="shortcut icon" href="{% static 'favicons/favicon-96x96.png' %}" />
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
+    <title>meow - Daily Bruin</title>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+    {% block header %} {% endblock %}
+  </head>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-
-    <title>{% block title %}meow - Daily Bruin{% endblock %}</title>
-
-    <link rel="shortcut icon" href="//dailybruin.com/img/favicons/favicon-96x96.png" />
-
-
-    <link rel="stylesheet" href="/static/foundation/css/normalize.css" type="text/css">
-    <link rel="stylesheet" href="/static/foundation/css/foundation.min.css" type="text/css">
-    <link rel="stylesheet" href="/static/foundation/css/general_foundicons.css" type="text/css">
-    <link rel="stylesheet" href="/static/scheduler.css" type="text/css"> 
-    <link rel="stylesheet" href="https://unpkg.com/flatpickr/dist/flatpickr.min.css">
-    {% block extra-css %}{% endblock %}
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script>
-        window.jQuery || document.write('<script src="/static/foundation/js/vendor/jquery.js"><\/script>')
-    </script>
-
-    <script src="/static/foundation/js/vendor/custom.modernizr.js"></script>
-
-    <script src="/static/foundation/js/foundation.min.js"></script>
-    <script src="/static/foundation/js/foundation/foundation.alerts.js"></script>
-    <script src="/static/foundation/js/foundation/foundation.section.js"></script>
-    <script src="/static/foundation/js/foundation/foundation.abide.js"></script>
-    <script src="https://unpkg.com/flatpickr"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            // Fade alert boxes
-            $('.alert-box.success').animate({ opacity: 0.2 }, 5000);
-        });
-    </script>
-
-    {% block extra-js %}{% endblock %}
-
-</head>
-
-<body>
-    {% block content %}{% endblock %}
-</body>
-
-
-<script>
-        $(document).foundation();
-
-</script>
-
+  <body>
+    {% block content %}
+    <div id="app"></div>
+    {% render_bundle 'main' %} {% endblock %}
+  </body>
 </html>
