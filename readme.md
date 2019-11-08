@@ -75,7 +75,7 @@ Be sure to also add a `SLACK_ENDPOINT` variable. You can get the value of it
 To make this whole process easier, we have a script which will run all the steps except `npm run watch`. Note: the script may pause at certain points to prompt you for secrets or environment variables. If you are part of Daily Bruin, ask the Internal Tools Editor for these values since we have accounts for those set up already.
 
 ```bash
-./init-script
+./init_script.sh
 ```
 
 Once you run this, just run `docker-compose up` in one terminal tab and `npm run watch` in another. Then go to `localhost:5000` and you should see 1 of several random cats pics :D (and the login page). Now you are done and you can skip all the other steps.
