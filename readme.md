@@ -72,11 +72,15 @@ Be sure to also add a `SLACK_ENDPOINT` variable. You can get the value of it
 
 ### 0. Shortcut: init-script
 
-When you switch branches, it's generally a good idea to start with fresh containers. In order to do that, you need to tear down all the containers with `docker-compose down` and then run all these build steps again. To make this whole process easier, we have a script which will run all the steps except `npm run watch`.
+To make this whole process easier, we have a script which will run all the steps except `npm run watch`. Note: the script may pause at certain points to prompt you for secrets or environment variables. If you are part of Daily Bruin, ask the Internal Tools Editor for these values since we have accounts for those set up already.
 
 ```bash
 ./init-script
 ```
+
+Once you run this, just run `docker-compose up` in one terminal tab and `npm run watch` in another. Then go to `localhost:5000` and you should see 1 of several random cats pics :D (and the login page). Now you are done and you can skip all the other steps.
+
+If you want to install it manually, skip this step and move onto the next!
 
 ### 1. Build images
 
@@ -257,34 +261,6 @@ docker exec -it <container ID> psql -U postgres
 ```
 
 Now you add rows to the database using postgreSQL commands.
-
-## Slack oAuth Guide
-
-1. `git fetch`
-2. `git checkout dustin/react`
-3. `git pull`
-4. Go to [this Slack message](https://dailybruin.slack.com/archives/C7KPPH80K/p1541557984004300) and copy the contents into your `.env` file in the root directory. (Overwrite the previous contents)
-5. `docker-compose down` (This will clear out any superusers you already have defined)
-6. `docker-compose build` (This will take awhile)
-7. `docker-compose run web meow/manage.py migrate`
-8. `docker-compose run web meow/manage.py createsuperuser` (Values can be anything as long as you remember them.)
-9. `docker-compose up`
-10. (In new Terminal window (open with `Cmd+T` on Mac)) `npm install`
-11. `npm run watch`
-12. Go to http://localhost:5000/admin/
-13. Login with superuser account you made
-14. Go to Social accounts > Social applications
-15. Add
-16. Provider: Slack; Name can be anything; Client id and secret [here](https://dailybruin.slack.com/archives/C7KPPH80K/p1541558728005100); key is null
-17. Click save
-18. Go to Sites
-19. Add `http://localhost:5000/`
-20. Go back to the slack provider you defined and add the site
-21. Go to Terminal
-22. `docker-compose run web meow/manage.py shell`
-23. `from django.contrib.sites.models import Site`
-24. `Site.objects.get(id=5)` until you get localhost:5000
-25. Change `SITE_ID` to 5 in `meow/settings.py`
 
 ## Linting FAQ
 
