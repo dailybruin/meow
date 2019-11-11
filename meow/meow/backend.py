@@ -1,4 +1,10 @@
 from social_core.backends.slack import SlackOAuth2
+import logging
+import traceback
+import sys
+
+
+logger = logging.getLogger('oauth')
 
 
 class MeowAuth(SlackOAuth2):
@@ -8,35 +14,48 @@ class MeowAuth(SlackOAuth2):
         """Return user details from Slack account"""
         # Build the username with the team $username@$team_url
         # Necessary to get unique names for all of slack
-        user = response['user']
-        team = response.get('team')
-        name = user['name']
-        email = user.get('email')
-        username = email and email.split('@', 1)[0] or name
-        fullname = user['real_name']
-        full_name_list = fullname.split(' ', 1)
-        first_name = full_name_list[0]
-        last_name = "" if len(full_name_list) <= 1 else full_name_list[1]
 
-        if self.setting('USERNAME_WITH_TEAM', True) and team and \
-           'name' in team:
-            username = '{0}@{1}'.format(username, response['team']['name'])
+        try:
+            user = response['user']
+            team = response.get('team')
+            name = user['name']
+            email = user.get('email')
+            username = email and email.split('@', 1)[0] or name
+            fullname = user['real_name']
+            full_name_list = fullname.split(' ', 1)
+            first_name = full_name_list[0]
+            last_name = "" if len(full_name_list) <= 1 else full_name_list[1]
 
-        return {
-            'username': username,
-            'email': email,
-            'fullname': fullname,
-            'first_name': first_name,
-            'last_name': last_name
-        }
+            if self.setting('USERNAME_WITH_TEAM', True) and team and \
+               'name' in team:
+                username = '{0}@{1}'.format(username, response['team']['name'])
+
+            return {
+                'username': username,
+                'email': email,
+                'fullname': fullname,
+                'first_name': first_name,
+                'last_name': last_name
+            }
+        except Exception as e:
+            logger.error(traceback.format_exc());
+            raise e # throw it again so the system doesn't do continue
+
+
 
     def user_data(self, access_token, *args, **kwargs):
-        """Loads user data from service"""
-        temp_res = kwargs.get("response")
-        user_id = temp_res['user_id']
-        response = self.get_json('https://slack.com/api/users.info',
-                                    params={'token': access_token, 'user': user_id})
-        print("LOOK HERE")
-        if not response.get('id', None):
-            response['id'] = user_id
-        return response
+
+        try:
+            """Loads user data from service"""
+            temp_res = kwargs.get("response")
+            user_id = temp_res['user_id']
+            response = self.get_json('https://slack.com/api/users.info',
+                                        params={'token': access_token, 'user': user_id})
+            
+            if not response.get('id', None):
+                response['id'] = user_id
+            return response
+
+        except Exception as e:
+            logger.error(traceback.format_exc());
+            raise e # throw it again so the system doesn't do continue
