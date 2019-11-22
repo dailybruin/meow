@@ -830,6 +830,10 @@ def get_history(request, post_id):
     serializer = PostHistorySerializer(hists, many=True)
     return Response(serializer.data)
 
+@receiver(post_save, sender=SMPost) #receiver for specific field change in model
+def update_scheduler(sender, instance, **kwargs):
+
+
 @receiver(post_save, sender=SMPost)
 def new_history(sender, instance, **kwargs):
     """
@@ -859,6 +863,9 @@ def new_history(sender, instance, **kwargs):
         if prev_n == instance.post_newsletter and prev_fb == instance.post_facebook and prev_tw == instance.post_twitter:
             return
 
+    otherPostsAtTime = SMPost.objects.filter(pub_date = instance.pub_date).filter(pub_time = instance.pub_time).exclude(smpost_id = instance.id)
+
+
     PostHistory.objects.create(
         smpost=instance,
         post_twitter=instance.post_twitter,
@@ -866,3 +873,6 @@ def new_history(sender, instance, **kwargs):
         post_newsletter=instance.post_newsletter,
         last_edit_user=instance.last_edit_user,
         )
+    listOtherPostsAtTime =list(otherPostsAtTime)
+    if otherPostsAtTime:
+        #Do cron magic
