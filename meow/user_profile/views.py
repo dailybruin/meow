@@ -12,8 +12,33 @@ from user_profile.serializers import SafeUserSerializer, ThemeSerializer
 import json
 # Create your views here.
 
+# @api_login_required()
+def themeAdd(request):
+    if request.method == "POST":
+        themes = Theme.objects.all()
+        req_data = json.loads(request.body)
+        new_name = req_data.name.get("name", None)
+        new_primary = req_data.get("primary", None)
+        new_secondary = req_data.get("secondary", None)
+        new_primary_font_color = req_data.get("primary_font_color", None)
+        new_secondary_font_color = req_data.get("secondary_font_color", None)
+        new_tertiary = req_data.get("tertiary", None)
+        new_id = req_data.get("id", None)
+        author = request.data.get("user", None)
+        
+        if new_name == "":
+            return HttpResponse('Theme name cannot be an empty string', status=400)
+        if (themes.filter(name=new_name)):
+            return HttpResponse('Theme name must be unique', status=400)
+        new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=author, name=new_name)
+        return HttpResponse(status=200)
+        
+        
 
-@api_login_required()
+        
+
+
+# @api_login_required()
 def themeList(request):
     if request.method == "GET":
         themes = Theme.objects.all()

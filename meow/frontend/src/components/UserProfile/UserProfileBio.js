@@ -25,6 +25,7 @@ class UserProfileBio extends React.Component {
   };
 
   saveBio = () => {
+    console.log("test");
     this.props.editUser({
       bio: this.state.value
     });

@@ -87,6 +87,7 @@
   width: 50%;
   height: 50%;
   flex-grow: 1;
+  padding-bottom: 100px;
 }
 
 .user-profile-theme-header {
@@ -96,7 +97,7 @@
 .user-profile-theme-box {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
 }
 
@@ -123,17 +124,27 @@
   width: 100%;
   margin-bottom: 15px;
   align-items: center;
-  border: 5px solid grey;
+  border: 3px solid black;
 }
 
 .user-profile-theme-row-name {
   font-size: 12px;
-  width: 15%;
+  width: 34px;
   margin-right: 10px;
+  margin-left: 3px;
+  text-align: center;
 }
 
 .user-profile-theme-row-hand {
   width: 30px;
+  margin-left: 6px;
+}
+
+.user-profile-theme-row-row-with-nav {
+  display: flex;
+  flex-direction: row;
+  height: 76px;
+  width: 465px;
 }
 
 .user-profile-social-media-bubble {
@@ -162,4 +173,142 @@
 
 .user-profile-social-media-url {
   font-size: 1.3em;
+}
+
+.user-profile-theme-row-dropdown-menu {
+  display: inline;
+  top: -48px;
+}
+
+.user-profile-theme-row-dropdown-menu-item {
+  width: 168px;
+  height: 58px;
+  background: #ffffff;
+  border: 0.5px solid #000000;
+  box-sizing: border-box;
+}
+
+.user-profile-theme-row-dropdown-menu-item-edit {
+  font-family: Varela Round;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 23px;
+  line-height: 43px;
+  color: #000000 !important;
+  text-align: center;
+}
+
+.user-profile-theme-row-dropdown-menu-item-delete {
+  font-family: Varela Round;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 23px;
+  line-height: 43px;
+  color: #ff0000 !important;
+  text-align: center;
+}
+
+.user-profile-theme-row-dropdown {
+  margin: 0 6px;
+}
+
+.user-profile-theme-row-dropdown-icon {
+  font-size: 30px;
+  color: black;
+  margin-top: 14px;
+}
+
+.user-profile-theme-row-modal-input {
+  border-left: none;
+  outline: none;
+  border-right: none;
+  border-top: none;
+  border-bottom-color: black !important;
+  width: 82%;
+  border-radius: 0px;
+  font-size: 18px;
+}
+
+.ant-modal-body {
+  background: #ffffff;
+  border: 3.5px solid #000;
+  box-sizing: border-box;
+  border-radius: 18px;
+}
+
+.ant-modal-content {
+  border-radius: 18px;
+}
+
+.user-profile-theme-row-modal-items {
+  display: flex;
+  justify-content: center;
+}
+
+.user-profile-theme-row-modal-create-new-theme,
+.user-profile-theme-row-modal-create-new-theme:hover,
+.user-profile-theme-row-modal-create-new-theme:active,
+.user-profile-theme-row-modal-create-new-theme:focus {
+  background: #4699da;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 50px;
+  border-color: #4699da;
+  color: white;
+  font-size: 28px;
+  width: 80%;
+  height: 52px;
+  margin-top: 15px;
+}
+
+.user-profile-theme-row-modal-colorpicker {
+  margin-top: 4px;
+  width: 82% !important;
+  box-shadow: none !important;
+  font-family: Varela Round !important;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.saturation-black {
+  border: 2px solid darkgrey;
+}
+
+.user-profile-theme-row-modal-cancel {
+  margin-top: 11px;
+  border: none;
+  background-color: white;
+  font-family: Varela Round;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+}
+
+.user-profile-theme-row-modal-color-dots-container {
+  display: flex;
+  justify-content: space-around;
+  width: 82%;
+  margin-top: 16px;
+  border: 2px solid darkgrey;
+}
+
+.user-profile-theme-row-modal-color-dot {
+  border: 1.2px solid #000;
+  box-sizing: border-box;
+  border-radius: 24px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 53.35px;
+  height: 53.32px;
+  font-family: Varela Round;
+  font-size: 20px;
+}
+
+.user-profile-theme-add-button-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.user-profile-theme-add-button {
+  border: 1.2px solid #f0f2f5;
+  background-color: #f0f2f5;
 }

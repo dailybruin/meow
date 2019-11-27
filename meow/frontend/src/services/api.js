@@ -20,6 +20,10 @@ export const themeList = () => {
     });
 };
 
+export const themeAdd = newTheme => {
+  return axios.post(`${SERVER_URL}/users/themeAdd/`, newTheme);
+};
+
 export const getMe = () => {
   return axios
     .get(`${SERVER_URL}/users/me/`, {

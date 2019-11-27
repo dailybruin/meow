@@ -67,14 +67,14 @@ class Header extends Component {
       <div
         className="meow-header"
         style={{
-          backgroundColor: `#${this.props.theme.primary}`,
+          backgroundColor: `${this.props.theme.primary}`,
           height: "13vh",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           paddingLeft: `${this.props.device === config.MOBILE ? "1em" : "3em"}`,
           paddingRight: `${this.props.device === config.MOBILE ? "1em" : "3em"}`,
-          color: `#${this.props.theme.primary_font_color}`
+          color: `${this.props.theme.primary_font_color}`
         }}
       >
         <h1 onClick={this.toHome} style={{ fontSize: "3em", cursor: "pointer" }}>
