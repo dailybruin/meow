@@ -6,7 +6,7 @@ import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
 import "./styling.css";
-import { userDetail, themeList } from "../../services/api";
+import { userDetail, themeList, themeAdd } from "../../services/api";
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class UserProfile extends React.Component {
         primary: "#00000",
         secondary: "#00000",
         primary_font_color: "#101010",
-        secondary_font_color: "123211",
+        secondary_font_color: "#123211",
         id: 1
       },
       themes: [
@@ -48,7 +48,7 @@ class UserProfile extends React.Component {
           primary: "#00000",
           secondary: "#00000",
           primary_font_color: "#101010",
-          secondary_font_color: "123211",
+          secondary_font_color: "#123211",
           id: 1
         }
       ]
@@ -98,6 +98,22 @@ class UserProfile extends React.Component {
     });
   };
 
+  editCurrentTheme = (themeDetails, index) => {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.themes[index] = themeDetails;
+    this.setState(stateCopy);
+    console.log(stateCopy);
+  };
+
+  addNewTheme = themeDetails => {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.themes.push(themeDetails);
+    this.setState(stateCopy);
+    console.log("debug");
+    var index = this.state.themes.length - 1;
+    themeAdd(this.state.themes[index]);
+  };
+
   render() {
     console.log("Re render");
     console.log(this.props);
@@ -125,6 +141,10 @@ class UserProfile extends React.Component {
             canEdit={this.state.isMe}
             themes={this.state.themes}
             selected_theme={this.state.isMe ? this.props.theme : this.state.selected_theme}
+            editCurrentTheme={this.editCurrentTheme}
+            addNewTheme={this.addNewTheme}
+            saveTheme={this.saveTheme}
+            username={this.state.slack_username}
           />
         </div>
       </div>

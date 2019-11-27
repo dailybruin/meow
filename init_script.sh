@@ -7,7 +7,7 @@
 echo -e "Note: never run this on production!"
 
 # get rid of old stuff
-docker-compose down
+sudo docker-compose down
 rm meow/frontend/bundles/* -f
 rm -f celerybeat.pid
 
@@ -38,19 +38,27 @@ fi
 # this inits everything but will only continue if the pervious step was successful
 npm i
 npm run build
+<<<<<<< HEAD
 docker-compose build &&
 docker-compose run web meow/manage.py migrate &&
 docker-compose run web meow/manage.py collectstatic --noinput &&
 docker-compose run web meow/manage.py init 
+=======
+sudo docker-compose build &&
+sudo docker-compose run web meow/manage.py migrate &&
+echo ">>> The ids and secrets can be found in the #meow_dev channel's pinned messages" &&
+sudo docker-compose run web meow/manage.py collectstatic --noinput
+sudo docker-compose run web meow/manage.py init 
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 if [ $? == 0 ]; then
-	echo -e "from scheduler.models import Section\ns = Section(name=\"test\")\ns.save()" | docker-compose run web meow/manage.py shell
+	echo -e "from scheduler.models import Section\ns = Section(name=\"test\")\ns.save()" | sudo docker-compose run web meow/manage.py shell
 	if [ $? != 0 ]; then
 		echo "!!!!! Failed to create Test section !!!!!"
 	else
 		echo "Created section \"Test\""
 	fi
 	
-	echo -e "from django_celery_beat.models import PeriodicTask, IntervalSchedule\nschedule=IntervalSchedule.objects.create(every=$PERIODIC_TASK_MINUTES, period=IntervalSchedule.MINUTES)\nPeriodicTask.objects.create(interval=schedule, name='Send Posts', task='sendposts')\n" | docker-compose run web meow/manage.py shell
+	echo -e "from django_celery_beat.models import PeriodicTask, IntervalSchedule\nschedule=IntervalSchedule.objects.create(every=$PERIODIC_TASK_MINUTES, period=IntervalSchedule.MINUTES)\nPeriodicTask.objects.create(interval=schedule, name='Send Posts', task='sendposts')\n" | sudo docker-compose run web meow/manage.py shell
 	if [ $? != 0 ]; then
 		echo "!!!!! Failed to create Periodic Task !!!!!"
 	else
