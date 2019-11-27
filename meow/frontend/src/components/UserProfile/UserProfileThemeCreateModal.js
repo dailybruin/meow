@@ -1,5 +1,9 @@
 import React from "react";
 import "./styling.css";
+<<<<<<< HEAD
+=======
+import { connect } from "react-redux";
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 import { Icon, Modal, Button } from "antd";
 import { SketchPicker } from "react-color";
 
@@ -186,6 +190,7 @@ class CreateModal extends React.Component {
               };
               this.props.addNewTheme(themetoAdd);
               this.props.handleCancel();
+<<<<<<< HEAD
               console.log(this.resetState);
               this.setState(this.resetState);
               this.stateCopy = {
@@ -199,6 +204,9 @@ class CreateModal extends React.Component {
                 current: 0, //this is the index of the selection
                 name: ""
               };
+=======
+              this.setState(this.resetState);
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
             }}
           >
             <Icon type="plus" />

@@ -20,6 +20,7 @@ export const themeList = () => {
     });
 };
 
+<<<<<<< HEAD
 export const additionalthemeList = () => {
   return axios.get(`${SERVER_URL}/users/additionalthemes/`).then(res => {
     return {
@@ -81,6 +82,10 @@ export const themeDelete = deletedTheme => {
       status: res.status
     };
   });
+=======
+export const themeAdd = newTheme => {
+  return axios.post(`${SERVER_URL}/users/themeAdd/`, newTheme);
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 };
 
 export const getMe = () => {

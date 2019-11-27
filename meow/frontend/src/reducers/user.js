@@ -9,7 +9,11 @@ const initialState = {
     secondary: "#4699DA",
     primary_font_color: "#FFFFFF",
     secondary_font_color: "#FFFFFF",
+<<<<<<< HEAD
     tertiary: "#ffe600",
+=======
+    tertiary: "#FFFFFF",
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
     id: 1
   }
 };

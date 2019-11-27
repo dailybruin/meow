@@ -28,6 +28,7 @@ class User(AbstractUser):
 
 
 class Theme(models.Model):
+<<<<<<< HEAD
     name = models.CharField(max_length=50)
     primary = models.CharField(max_length=8)
     secondary = models.CharField(max_length=8)
@@ -57,3 +58,14 @@ def m2m_favorite_themes(sender, **kwargs):
 
 
 m2m_changed.connect(m2m_favorite_themes, sender=User.starred_themes.through)
+=======
+    primary = models.CharField(max_length=8)
+    secondary = models.CharField(max_length=8)
+    primary_font_color = models.CharField(max_length=8)
+    secondary_font_color = models.CharField(max_length=8)
+    tertiary = models.CharField(max_length=8)
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=50)
+
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py

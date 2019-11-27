@@ -1,15 +1,22 @@
 import React from "react";
 import UserProfileThemeRow from "./UserProfileThemeRow";
 import CreateModal from "./UserProfileThemeCreateModal";
+<<<<<<< HEAD
 import UserProfileAdditionalThemeRow from "./UserProfileAdditionalThemeRow";
+=======
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 import "./styling.css";
 import { Icon } from "antd";
 
 class UserProfileTheme extends React.Component {
+<<<<<<< HEAD
   state = {
     visible: false,
     seemore: false
   };
+=======
+  state = { visible: false };
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 
   showModal = () => {
     this.setState({
@@ -93,10 +100,13 @@ class UserProfileTheme extends React.Component {
             {this.props.themes.map((value, index) => {
               let active = value.name === this.props.selected_theme.name;
               //  return <p key={index}>{value.themeColor}</p>
+<<<<<<< HEAD
               let disabled = false;
               if (index === 0 || index === 1) {
                 disabled = true;
               }
+=======
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
               return (
                 <UserProfileThemeRow
                   canEdit={this.props.canEdit}
@@ -108,8 +118,11 @@ class UserProfileTheme extends React.Component {
                   name={value.name}
                   empty={false}
                   username={this.props.username}
+<<<<<<< HEAD
                   deleteTheme={this.props.deleteTheme}
                   disabled={disabled}
+=======
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
                 />
               );
             })}
@@ -126,7 +139,10 @@ class UserProfileTheme extends React.Component {
               />
             </button>
           </div>
+<<<<<<< HEAD
           <div style={{ marginTop: 12 }}>{seemore}</div>
+=======
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
         </div>
 
         <CreateModal

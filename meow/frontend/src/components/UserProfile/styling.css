@@ -212,10 +212,13 @@
   margin: 0 6px;
 }
 
+<<<<<<< HEAD
 .user-profile-theme-row-star {
   margin: 0 7px;
 }
 
+=======
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 .user-profile-theme-row-dropdown-icon {
   font-size: 30px;
   color: black;
@@ -310,13 +313,17 @@
 .user-profile-theme-add-button-container {
   display: flex;
   justify-content: flex-start;
+<<<<<<< HEAD
   margin-top: -2px;
+=======
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 }
 
 .user-profile-theme-add-button {
   border: 1.2px solid #f0f2f5;
   background-color: #f0f2f5;
 }
+<<<<<<< HEAD
 
 .ant-modal-confirm-body .ant-modal-confirm-title {
   font-weight: 600;
@@ -337,3 +344,5 @@
   font-size: 16px;
   font-weight: 300;
 }
+=======
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py

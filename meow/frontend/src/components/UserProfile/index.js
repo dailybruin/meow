@@ -6,6 +6,7 @@ import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
 import "./styling.css";
+<<<<<<< HEAD
 import {
   themeStarRemove,
   themeStarAdd,
@@ -18,6 +19,9 @@ import {
   starredthemesID
 } from "../../services/api";
 import { Modal } from "antd";
+=======
+import { userDetail, themeList, themeAdd } from "../../services/api";
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -126,6 +130,7 @@ class UserProfile extends React.Component {
     });
   };
 
+<<<<<<< HEAD
   ErrorModal = () => {
     Modal.warning({
       title: "Naming Error",
@@ -221,6 +226,22 @@ class UserProfile extends React.Component {
       });
       this.setState(stateCopy);
     });
+=======
+  editCurrentTheme = (themeDetails, index) => {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.themes[index] = themeDetails;
+    this.setState(stateCopy);
+    console.log(stateCopy);
+  };
+
+  addNewTheme = themeDetails => {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.themes.push(themeDetails);
+    this.setState(stateCopy);
+    console.log("debug");
+    var index = this.state.themes.length - 1;
+    themeAdd(this.state.themes[index]);
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
   };
 
   render() {
@@ -253,12 +274,15 @@ class UserProfile extends React.Component {
             addNewTheme={this.addNewTheme}
             saveTheme={this.saveTheme}
             username={this.state.slack_username}
+<<<<<<< HEAD
             deleteTheme={this.deleteTheme}
             loadadditionalThemes={this.loadadditionalThemes}
             additionalthemes={this.state.additionalthemes}
             starfavoriteTheme={this.starfavoriteTheme}
             starred_themes_id={this.state.starred_themes_id}
             unstarfavoriteTheme={this.unstarfavoriteTheme}
+=======
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
           />
         </div>
       </div>

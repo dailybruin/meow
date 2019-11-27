@@ -12,6 +12,7 @@ from user_profile.serializers import SafeUserSerializer, ThemeSerializer
 import json
 # Create your views here.
 
+<<<<<<< HEAD
 @api_login_required()
 def themeStar(request):
     user = request.user
@@ -46,11 +47,20 @@ def themeAdd(request):
         themes = Theme.objects.all()
         req_data = json.loads(request.body)
         new_name = req_data.get("name", None)
+=======
+# @api_login_required()
+def themeAdd(request):
+    if request.method == "POST":
+        themes = Theme.objects.all()
+        req_data = json.loads(request.body)
+        new_name = req_data.name.get("name", None)
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
         new_primary = req_data.get("primary", None)
         new_secondary = req_data.get("secondary", None)
         new_primary_font_color = req_data.get("primary_font_color", None)
         new_secondary_font_color = req_data.get("secondary_font_color", None)
         new_tertiary = req_data.get("tertiary", None)
+<<<<<<< HEAD
         new_id = themes[themes.count()-1].pk + 1
         if new_name == "":
             return HttpResponse('Theme name cannot be an empty string', status=400)
@@ -100,6 +110,24 @@ def themeDelete(request):
         return HttpResponse('Successful deletion', status=200)
 
 @api_login_required()
+=======
+        new_id = req_data.get("id", None)
+        author = request.data.get("user", None)
+        
+        if new_name == "":
+            return HttpResponse('Theme name cannot be an empty string', status=400)
+        if (themes.filter(name=new_name)):
+            return HttpResponse('Theme name must be unique', status=400)
+        new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=author, name=new_name)
+        return HttpResponse(status=200)
+        
+        
+
+        
+
+
+# @api_login_required()
+>>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 def themeList(request):
     user = request.user
     if request.method == "GET":
