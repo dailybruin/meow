@@ -67,10 +67,6 @@ class Command(BaseCommand):
                 "path": PAGE_ID + '/feed',
                 "message": smpost.post_facebook,
             }
-            if photo_url:
-                data['picture'] = photo_url
-            else:
-                data['picture'] = fb_default_photo
 
             if url:
                 data['link'] = url

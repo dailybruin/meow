@@ -172,7 +172,7 @@ LOGGING = {
 	'formatters': {
 		'simple_server': {
 			'()': 'django.utils.log.ServerFormatter',
-			'format': '[%(server_time)s] %(message)s',
+			'format': '[%(asctime)s|%(levelname)s] %(message)s',
 		},
 
 	},
@@ -185,8 +185,8 @@ LOGGING = {
         'logfile': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'meow2.log'),
-            'maxBytes': 1024*1024*3, # 15MB
+            'filename': os.path.join(BASE_DIR, 'meow.log'),
+            'maxBytes': 1024*1024*3, # 3MB
             'backupCount': 3,
             'formatter': 'simple_server'
         },
@@ -215,7 +215,11 @@ LOGGING = {
         'scheduler': {
             'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',
-        }
+        },
+        'oauth': {
+            'handlers': ['console', 'console_debug_false', 'logfile'],
+			'level': 'INFO',
+        },
         # this logger logs 4XX and 5XX responses
 		# 'django.server': {
 		# 	'handlers': ['django.server'],
