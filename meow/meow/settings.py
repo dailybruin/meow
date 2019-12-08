@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'social_django',
     'corsheaders',
     'django_celery_beat',
+    "taggit",
 
     # Internal dep
     'urls',

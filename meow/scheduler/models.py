@@ -7,6 +7,7 @@ import requests
 import urllib
 from django.core.mail import send_mail
 from bs4 import BeautifulSoup
+from taggit.managers import TaggableManager
 
 
 class SMPost(models.Model):
@@ -51,6 +52,7 @@ class SMPost(models.Model):
     sent_error_text = models.TextField(null=True, blank=True)
     send_now = models.BooleanField(
         default=False, help_text="Do you want to send this post immediately?")
+    tags = TaggableManager()
 
     is_active = models.BooleanField(
         default=True, help_text="If false, consider mock-deleted.")
