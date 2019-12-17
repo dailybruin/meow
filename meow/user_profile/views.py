@@ -69,8 +69,9 @@ def themeDelete(request):
 
 @api_login_required()
 def themeList(request):
+    user = request.user
     if request.method == "GET":
-        themes = Theme.objects.all()
+        themes = Theme.objects.filter(name="Daily Bruin")| Theme.objects.filter(name="Dark Bruin") | Theme.objects.filter(author=user)
         serialized_themes = ThemeSerializer(themes, many=True)
         themeOrderedDict = serialized_themes.data
         return JsonResponse(themeOrderedDict, safe=False)
