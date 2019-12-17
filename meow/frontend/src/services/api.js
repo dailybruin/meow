@@ -21,7 +21,24 @@ export const themeList = () => {
 };
 
 export const themeAdd = newTheme => {
-  return axios.post(`${SERVER_URL}/users/themeAdd/`, newTheme);
+  return axios.post(`${SERVER_URL}/users/themeAdd/`, newTheme).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
+};
+
+export const themeEdit = updatedTheme => {
+  return axios.put(`${SERVER_URL}/users/themeEdit/`, updatedTheme).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
+};
+
+export const themeDelete = deletedTheme => {
+  return axios.put(`${SERVER_URL}/users/themeDelete/`, deletedTheme).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
 };
 
 export const getMe = () => {

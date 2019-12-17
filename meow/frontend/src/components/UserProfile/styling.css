@@ -312,3 +312,12 @@
   border: 1.2px solid #f0f2f5;
   background-color: #f0f2f5;
 }
+
+.ant-modal-confirm-body .ant-modal-confirm-title {
+  font-weight: 600;
+  font-size: 19px;
+}
+
+.ant-modal-confirm-body .ant-modal-confirm-content {
+  font-size: 17px;
+}

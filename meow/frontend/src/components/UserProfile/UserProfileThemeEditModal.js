@@ -1,6 +1,5 @@
 import React from "react";
 import "./styling.css";
-import { connect } from "react-redux";
 import { Icon, Modal, Button } from "antd";
 import { SketchPicker } from "react-color";
 
@@ -18,7 +17,7 @@ class EditModal extends React.Component {
   };
 
   stateCopy = Object.assign({}, this.state);
-
+  oldname = this.stateCopy.name;
   items = this.stateCopy.colors.map((item, index) => {
     if (item.empty) {
       return (
@@ -165,6 +164,7 @@ class EditModal extends React.Component {
             className={"user-profile-theme-row-modal-create-new-theme"}
             onClick={() => {
               var themetoEdit = {
+                oldname: this.oldname,
                 name: this.state.name,
                 primary: this.state.colors[0].color,
                 secondary: this.state.colors[1].color,
@@ -174,6 +174,7 @@ class EditModal extends React.Component {
                 id: -1, //id is not used here, database id is not here yet
                 author: this.props.username
               };
+              console.log("editing");
               console.log(themetoEdit);
               this.props.editCurrentTheme(themetoEdit, this.props.index);
               this.props.handleCancel();

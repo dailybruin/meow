@@ -39,7 +39,15 @@ class UserProfileThemeRow extends React.Component {
         >
           <a className={"user-profile-theme-row-dropdown-menu-item-edit"}>Edit</a>
         </Menu.Item>
-        <Menu.Item key="1" className={"user-profile-theme-row-dropdown-menu-item"}>
+        <Menu.Item
+          key="1"
+          className={"user-profile-theme-row-dropdown-menu-item"}
+          onClick={() => {
+            console.log(this.props.index);
+            console.log("delete");
+            this.props.deleteTheme(this.props.index); //theme deletion function that is passed down
+          }}
+        >
           <a className={"user-profile-theme-row-dropdown-menu-item-delete"}>Delete</a>
         </Menu.Item>
       </Menu>
@@ -78,7 +86,7 @@ class UserProfileThemeRow extends React.Component {
         </div>
 
         <div className={"user-profile-theme-row-dropdown"}>
-          <Dropdown overlay={this.menu}>
+          <Dropdown overlay={this.menu} disabled={this.props.disabled}>
             <a href="#">
               <Icon type="ellipsis" className={"user-profile-theme-row-dropdown-icon"} />
             </a>

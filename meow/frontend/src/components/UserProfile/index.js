@@ -6,7 +6,8 @@ import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
 import "./styling.css";
-import { userDetail, themeList, themeAdd } from "../../services/api";
+import { userDetail, themeList, themeAdd, themeEdit, themeDelete } from "../../services/api";
+import { Modal } from "antd";
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -98,20 +99,61 @@ class UserProfile extends React.Component {
     });
   };
 
+  ErrorModal = () => {
+    Modal.error({
+      title: "Naming Error",
+      content: "Theme name must be unique!",
+      maskClosable: true,
+      closable: false,
+      okButtonProps: { style: { display: "none" } },
+      style: { marginTop: "30%" }
+    });
+  };
+
   editCurrentTheme = (themeDetails, index) => {
+    var found = false;
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.themes[index] = themeDetails;
-    this.setState(stateCopy);
-    console.log(stateCopy);
+    for (let i = 0; i < stateCopy.themes.length; i++) {
+      if (stateCopy.themes[i].name === themeDetails.name && i != index) {
+        found = true;
+      }
+    }
+    if (!found) {
+      stateCopy.themes[index] = themeDetails;
+      this.setState(stateCopy);
+      console.log(stateCopy);
+      themeEdit(this.state.themes[index]); //call the post function
+    } else {
+      console.log("Error: no same name themes allowed");
+      this.ErrorModal();
+    }
   };
 
   addNewTheme = themeDetails => {
+    var found = false;
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.themes.push(themeDetails);
+    for (var item of stateCopy.themes) {
+      if (item.name === themeDetails.name) {
+        found = true;
+      }
+    }
+    if (!found) {
+      stateCopy.themes.push(themeDetails);
+      this.setState(stateCopy);
+      var index = this.state.themes.length - 1;
+      themeAdd(this.state.themes[index]);
+    } else {
+      console.log("Error: no same name themes allowed");
+      this.ErrorModal();
+    }
+  };
+
+  deleteTheme = index => {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.themes[index].author = this.state.slack_username;
+    themeDelete(stateCopy.themes[index]);
+    stateCopy.themes.splice(index, 1);
     this.setState(stateCopy);
-    console.log("debug");
-    var index = this.state.themes.length - 1;
-    themeAdd(this.state.themes[index]);
   };
 
   render() {
@@ -145,6 +187,7 @@ class UserProfile extends React.Component {
             addNewTheme={this.addNewTheme}
             saveTheme={this.saveTheme}
             username={this.state.slack_username}
+            deleteTheme={this.deleteTheme}
           />
         </div>
       </div>

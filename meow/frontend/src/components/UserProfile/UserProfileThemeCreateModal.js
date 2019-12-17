@@ -187,7 +187,19 @@ class CreateModal extends React.Component {
               };
               this.props.addNewTheme(themetoAdd);
               this.props.handleCancel();
+              console.log(this.resetState);
               this.setState(this.resetState);
+              this.stateCopy = {
+                colors: [
+                  { color: "#fff", empty: true },
+                  { color: "#fff", empty: true },
+                  { color: "#fff", empty: true },
+                  { color: "#fff", empty: true },
+                  { color: "#fff", empty: true }
+                ],
+                current: 0, //this is the index of the selection
+                name: ""
+              };
             }}
           >
             <Icon type="plus" />
