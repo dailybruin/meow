@@ -14,11 +14,14 @@ urlpatterns = [
     path('themeAdd/', views.themeAdd, name="themeAdd"),
     path('themeEdit/', views.themeEdit, name="themeEdit"),
     path('themeDelete/', views.themeDelete, name="themeDelete"),
+<<<<<<< HEAD
     path('themeStar/', views.themeStar, name="themeStar"),
     path('starredthemesID/', views.starredthemesIDFetch, name="starredthemesID"),
 =======
     path('themeAdd/', views.themeAdd, name="themeAdd"),
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
     path('<str:username>', views.userDetail, name="userDetail"),
     path('', views.userList, name="userList"),
     

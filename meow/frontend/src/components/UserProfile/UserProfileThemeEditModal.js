@@ -1,9 +1,12 @@
 import React from "react";
 import "./styling.css";
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import { connect } from "react-redux";
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 import { Icon, Modal, Button } from "antd";
 import { SketchPicker } from "react-color";
 
@@ -22,10 +25,14 @@ class EditModal extends React.Component {
 
   stateCopy = Object.assign({}, this.state);
 <<<<<<< HEAD
+<<<<<<< HEAD
   oldname = this.stateCopy.name;
 =======
 
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+  oldname = this.stateCopy.name;
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
   items = this.stateCopy.colors.map((item, index) => {
     if (item.empty) {
       return (
@@ -173,9 +180,13 @@ class EditModal extends React.Component {
             onClick={() => {
               var themetoEdit = {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 oldname: this.oldname,
 =======
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+                oldname: this.oldname,
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
                 name: this.state.name,
                 primary: this.state.colors[0].color,
                 secondary: this.state.colors[1].color,
@@ -186,9 +197,13 @@ class EditModal extends React.Component {
                 author: this.props.username
               };
 <<<<<<< HEAD
+<<<<<<< HEAD
               console.log("editing");
 =======
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+              console.log("editing");
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
               console.log(themetoEdit);
               this.props.editCurrentTheme(themetoEdit, this.props.index);
               this.props.handleCancel();

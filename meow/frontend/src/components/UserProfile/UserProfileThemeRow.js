@@ -87,7 +87,15 @@ class UserProfileThemeRow extends React.Component {
         >
           <a className={"user-profile-theme-row-dropdown-menu-item-edit"}>Edit</a>
         </Menu.Item>
-        <Menu.Item key="1" className={"user-profile-theme-row-dropdown-menu-item"}>
+        <Menu.Item
+          key="1"
+          className={"user-profile-theme-row-dropdown-menu-item"}
+          onClick={() => {
+            console.log(this.props.index);
+            console.log("delete");
+            this.props.deleteTheme(this.props.index); //theme deletion function that is passed down
+          }}
+        >
           <a className={"user-profile-theme-row-dropdown-menu-item-delete"}>Delete</a>
         </Menu.Item>
       </Menu>
@@ -128,10 +136,14 @@ class UserProfileThemeRow extends React.Component {
 
         <div className={"user-profile-theme-row-dropdown"}>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <Dropdown overlay={this.menu} disabled={this.props.disabled}>
             {this.icon()}
 =======
           <Dropdown overlay={this.menu}>
+=======
+          <Dropdown overlay={this.menu} disabled={this.props.disabled}>
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
             <a href="#">
               <Icon type="ellipsis" className={"user-profile-theme-row-dropdown-icon"} />
             </a>

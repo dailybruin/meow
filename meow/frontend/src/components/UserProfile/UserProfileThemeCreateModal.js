@@ -191,6 +191,9 @@ class CreateModal extends React.Component {
               this.props.addNewTheme(themetoAdd);
               this.props.handleCancel();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
               console.log(this.resetState);
               this.setState(this.resetState);
               this.stateCopy = {
@@ -204,9 +207,12 @@ class CreateModal extends React.Component {
                 current: 0, //this is the index of the selection
                 name: ""
               };
+<<<<<<< HEAD
 =======
               this.setState(this.resetState);
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
             }}
           >
             <Icon type="plus" />

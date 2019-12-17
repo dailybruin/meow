@@ -84,8 +84,29 @@ export const themeDelete = deletedTheme => {
   });
 =======
 export const themeAdd = newTheme => {
+<<<<<<< HEAD
   return axios.post(`${SERVER_URL}/users/themeAdd/`, newTheme);
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+  return axios.post(`${SERVER_URL}/users/themeAdd/`, newTheme).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
+};
+
+export const themeEdit = updatedTheme => {
+  return axios.put(`${SERVER_URL}/users/themeEdit/`, updatedTheme).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
+};
+
+export const themeDelete = deletedTheme => {
+  return axios.put(`${SERVER_URL}/users/themeDelete/`, deletedTheme).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 };
 
 export const getMe = () => {

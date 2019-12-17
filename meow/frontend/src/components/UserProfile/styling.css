@@ -324,6 +324,9 @@
   background-color: #f0f2f5;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 
 .ant-modal-confirm-body .ant-modal-confirm-title {
   font-weight: 600;
@@ -333,6 +336,7 @@
 .ant-modal-confirm-body .ant-modal-confirm-content {
   font-size: 17px;
 }
+<<<<<<< HEAD
 
 .user-profile-theme-see-more {
   margin-top: -2px;
@@ -346,3 +350,5 @@
 }
 =======
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile

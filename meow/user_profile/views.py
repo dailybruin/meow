@@ -13,6 +13,7 @@ import json
 # Create your views here.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 @api_login_required()
 def themeStar(request):
     user = request.user
@@ -49,17 +50,25 @@ def themeAdd(request):
         new_name = req_data.get("name", None)
 =======
 # @api_login_required()
+=======
+@api_login_required()
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 def themeAdd(request):
     if request.method == "POST":
         themes = Theme.objects.all()
         req_data = json.loads(request.body)
+<<<<<<< HEAD
         new_name = req_data.name.get("name", None)
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+        new_name = req_data.get("name", None)
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
         new_primary = req_data.get("primary", None)
         new_secondary = req_data.get("secondary", None)
         new_primary_font_color = req_data.get("primary_font_color", None)
         new_secondary_font_color = req_data.get("secondary_font_color", None)
         new_tertiary = req_data.get("tertiary", None)
+<<<<<<< HEAD
 <<<<<<< HEAD
         new_id = themes[themes.count()-1].pk + 1
         if new_name == "":
@@ -114,20 +123,58 @@ def themeDelete(request):
         new_id = req_data.get("id", None)
         author = request.data.get("user", None)
         
+=======
+        new_id = themes[themes.count()-1].pk + 1
+        author = req_data.get("author", None)
+        user = User.objects.filter(username=author)[0]
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
         if new_name == "":
             return HttpResponse('Theme name cannot be an empty string', status=400)
         if (themes.filter(name=new_name)):
             return HttpResponse('Theme name must be unique', status=400)
-        new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=author, name=new_name)
-        return HttpResponse(status=200)
-        
-        
-
-        
+        new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name, pk=new_id)
+        return HttpResponse('Successful addition', status=200)
 
 
+@api_login_required()
+def themeEdit(request):
+    if request.method == "PUT":
+        req_data = json.loads(request.body)
+        old_name = req_data.get("oldname", None)
+        if(old_name == 'Daily Bruin' or old_name == 'Dark Bruin'):
+            return HttpResponse('Default themes cannot be modified', status=400)
+        new_name = req_data.get("name", None)
+        new_primary = req_data.get("primary", None)
+        new_secondary = req_data.get("secondary", None)
+        new_primary_font_color = req_data.get("primary_font_color", None)
+        new_secondary_font_color = req_data.get("secondary_font_color", None)
+        new_tertiary = req_data.get("tertiary", None)
+        author = req_data.get("author", None)
+        user = User.objects.filter(username=author)[0]
+        if Theme.objects.filter(author=user, name=new_name) and new_name != old_name:
+            return HttpResponse('Theme name must be unique', status=400)
+        else:
+            Theme.objects.filter(name=old_name, author=user).update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
+        return HttpResponse('Successful update', status=200)
+
+@api_login_required()
+def themeDelete(request):
+    if request.method == "PUT":
+        req_data = json.loads(request.body)
+        delete_name = req_data.get("name", None)
+        if(delete_name == 'Daily Bruin' or delete_name == 'Dark Bruin'):
+            return HttpResponse('Default themes cannot be deleted', status=400) 
+        delete_author = req_data.get("author", None)
+        user = User.objects.filter(username=delete_author)[0]
+        Theme.objects.filter(name=delete_name, author=user).delete()
+        return HttpResponse('Successful deletion', status=200)
+
+<<<<<<< HEAD
 # @api_login_required()
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+@api_login_required()
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 def themeList(request):
     user = request.user
     if request.method == "GET":
@@ -178,6 +225,11 @@ def me(request):
         new_twitter = req_data.get("twitter", None)
         new_theme = req_data.get("selected_theme", None)
         updated = False
+<<<<<<< HEAD
+=======
+        author = User.objects.filter(username=user.username)[0]
+
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
         if new_bio == "" or new_bio:
             user.bio = new_bio
             updated = True
@@ -187,6 +239,7 @@ def me(request):
         if new_twitter == "" or new_twitter:
             user.twitter = new_twitter
             updated = True
+<<<<<<< HEAD
         if new_theme and (new_theme['name'] == 'Dark Bruin' or new_theme['name'] == 'Daily Bruin'):
             user.selected_theme = Theme.objects.get(name=new_theme['name'])
             updated = True
@@ -196,6 +249,16 @@ def me(request):
             # and all the backend does is use the id.
             user.selected_theme = Theme.objects.get(name=new_theme['name'], id=new_theme['id'])
             print(user.selected_theme)
+=======
+        if new_theme and new_theme['name'] is 'Dark Bruin' or 'Daily Bruin':
+            user.selected_theme = Theme.objects.get(name=new_theme['name'])
+            updated = True
+        elif new_theme and Theme.objects.filter(name=new_theme['name'], author=author).count() > 0:
+            # this isn't very good but for now it works
+            # the problem is that the front ends sends the entire theme object
+            # and all the backend does is use the id.
+            user.selected_theme = Theme.objects.get(name=new_theme['name'], author=author)
+>>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
             updated = True
         if updated:
             user.save()
