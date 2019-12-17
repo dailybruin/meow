@@ -14,6 +14,7 @@ import json
 
 @api_login_required()
 def themeAdd(request):
+    user = request.user
     if request.method == "POST":
         themes = Theme.objects.all()
         req_data = json.loads(request.body)
@@ -24,11 +25,9 @@ def themeAdd(request):
         new_secondary_font_color = req_data.get("secondary_font_color", None)
         new_tertiary = req_data.get("tertiary", None)
         new_id = themes[themes.count()-1].pk + 1
-        author = req_data.get("author", None)
-        user = User.objects.filter(username=author)[0]
         if new_name == "":
             return HttpResponse('Theme name cannot be an empty string', status=400)
-        if (themes.filter(name=new_name)):
+        if (themes.filter(name=new_name, author=user)):
             return HttpResponse('Theme name must be unique', status=400)
         new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name, pk=new_id)
         return HttpResponse('Successful addition', status=200)
@@ -36,6 +35,7 @@ def themeAdd(request):
 
 @api_login_required()
 def themeEdit(request):
+    user = request.user
     if request.method == "PUT":
         req_data = json.loads(request.body)
         old_name = req_data.get("oldname", None)
@@ -47,8 +47,6 @@ def themeEdit(request):
         new_primary_font_color = req_data.get("primary_font_color", None)
         new_secondary_font_color = req_data.get("secondary_font_color", None)
         new_tertiary = req_data.get("tertiary", None)
-        author = req_data.get("author", None)
-        user = User.objects.filter(username=author)[0]
         if Theme.objects.filter(author=user, name=new_name) and new_name != old_name:
             return HttpResponse('Theme name must be unique', status=400)
         else:
@@ -57,13 +55,15 @@ def themeEdit(request):
 
 @api_login_required()
 def themeDelete(request):
+    user = request.user
     if request.method == "PUT":
         req_data = json.loads(request.body)
         delete_name = req_data.get("name", None)
         if(delete_name == 'Daily Bruin' or delete_name == 'Dark Bruin'):
-            return HttpResponse('Default themes cannot be deleted', status=400) 
-        delete_author = req_data.get("author", None)
-        user = User.objects.filter(username=delete_author)[0]
+            return HttpResponse('Default themes cannot be deleted', status=400)
+        if user.selected_theme == Theme.objects.filter(name=delete_name, author=user)[0]:
+            user.selected_theme = Theme.objects.get(name="Daily Bruin")
+            user.save()
         Theme.objects.filter(name=delete_name, author=user).delete()
         return HttpResponse('Successful deletion', status=200)
 
@@ -100,7 +100,6 @@ def me(request):
         new_twitter = req_data.get("twitter", None)
         new_theme = req_data.get("selected_theme", None)
         updated = False
-        author = User.objects.filter(username=user.username)[0]
 
         if new_bio == "" or new_bio:
             user.bio = new_bio
@@ -111,14 +110,14 @@ def me(request):
         if new_twitter == "" or new_twitter:
             user.twitter = new_twitter
             updated = True
-        if new_theme and new_theme['name'] is 'Dark Bruin' or 'Daily Bruin':
+        if new_theme and (new_theme['name'] == 'Dark Bruin' or new_theme['name'] == 'Daily Bruin'):
             user.selected_theme = Theme.objects.get(name=new_theme['name'])
             updated = True
-        elif new_theme and Theme.objects.filter(name=new_theme['name'], author=author).count() > 0:
+        elif new_theme and Theme.objects.filter(name=new_theme['name'], author=user).count() > 0:
             # this isn't very good but for now it works
             # the problem is that the front ends sends the entire theme object
             # and all the backend does is use the id.
-            user.selected_theme = Theme.objects.get(name=new_theme['name'], author=author)
+            user.selected_theme = Theme.objects.get(name=new_theme['name'], author=user)
             updated = True
         if updated:
             user.save()
