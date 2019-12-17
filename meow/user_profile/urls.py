@@ -10,6 +10,8 @@ urlpatterns = [
     path('logout/', views.logout, name="userLogout"),
     path('themes/', views.themeList, name="themeList"),
     path('themeAdd/', views.themeAdd, name="themeAdd"),
+    path('themeEdit/', views.themeEdit, name="themeEdit"),
+    path('themeDelete/', views.themeDelete, name="themeDelete"),
     path('<str:username>', views.userDetail, name="userDetail"),
     path('', views.userList, name="userList"),
 ]
