@@ -9,6 +9,7 @@ echo -e "Note: never run this on production!"
 # get rid of old stuff
 docker-compose down
 rm meow/frontend/bundles/* -f
+rm -f celerybeat.pid
 
 
 REDIS_POSTGRES="REDIS_URL=redis://redis:6379/\nDATABASE_URL=postgres://postgres@db:5432/postgres\n"
@@ -38,8 +39,7 @@ npm i
 npm run build
 docker-compose build &&
 docker-compose run web meow/manage.py migrate &&
-echo ">>> The ids and secrets can be found in the #meow_dev channel's pinned messages" &&
-docker-compose run web meow/manage.py collectstatic --noinput
+docker-compose run web meow/manage.py collectstatic --noinput &&
 docker-compose run web meow/manage.py init 
 if [ $? == 0 ]; then
 	echo -e "from scheduler.models import Section\ns = Section(name=\"test\")\ns.save()" | docker-compose run web meow/manage.py shell
