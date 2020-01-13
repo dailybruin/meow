@@ -44,7 +44,7 @@
     "pretty-quick": "1.8.0",
     "prop-types": "15.6.2",
     "react": "16.7.0",
-    "react-dom": "16.7.0",
+    "react-dom": "^16.7.0",
     "react-redux": "6.0.0",
     "react-router-dom": "4.3.1",
     "react-scripts": "2.1.1",
@@ -63,6 +63,9 @@
     "fuse.js": "^3.4.2",
     "react-color": "^2.17.0",
     "react-device-detect": "^1.6.2",
+    "react-tag-input": "^6.4.2",
+    "react-dnd": "5.0.0",
+    "react-dnd-html5-backend": "^3.0.2",
     "sidebar-style-guide": "^2.0.0"
   }
 }

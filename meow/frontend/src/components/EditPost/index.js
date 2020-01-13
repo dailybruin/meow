@@ -33,7 +33,6 @@ class EditPost extends React.Component {
 
     getMe()
       .then(res => {
-        console.log(res.data);
         this.setState({
           user_groups: res.data.groups
         });
@@ -70,7 +69,7 @@ class EditPost extends React.Component {
             day: YMDArray[2]
           };
           let dateString = `${YMD.year}-${YMD.month}-${YMD.day}`;
-          console.log(moment(dateString, "YYYY-MM-DD", true));
+          //console.log(moment(dateString, "YYYY-MM-DD", true));
           if (moment(dateString, "YYYY-MM-DD", true)._isValid) {
             this.setState({
               pub_date: dateString

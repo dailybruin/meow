@@ -12,6 +12,8 @@ class SMPostSerializer(serializers.ModelSerializer):
         model = SMPost
         fields = '__all__'
 
+class TagSerializer(serializers.Serializer):
+    pass
 
 class SectionSerializer(serializers.ModelSerializer):
     class Meta:
