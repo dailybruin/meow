@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^manage/$', views.manage, name="manage"),
     url(r'^history/(?P<post_id>[0-9]+)$', views.get_history, name="history"),
     url(r'^tags/create-many$', views.create_smpost_tags, name="create_many_tags"),
+    url(r'^tags/suggestions$', views.fetch_smpost_tags_suggestions, name="fetch_tags_suggestions"),
     url(r'^$', views.dashboard, name='dashboard'),
 ]
 

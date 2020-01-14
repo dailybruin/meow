@@ -71,11 +71,7 @@ class EditPost extends React.Component {
           padding: "2.2em 2em"
         }}
       >
-        <EditForm
-          {...this.props}
-          tags={[{ id: "hi", text: "hi" }]}
-          onChange={this.handleFormChange}
-        />
+        <EditForm {...this.props} onChange={this.handleFormChange} />
         {this.props.mobile === true ? (
           <React.Fragment>
             <div>{copyEdited}</div>

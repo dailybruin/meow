@@ -19,6 +19,7 @@ import { logout } from "../../actions/user";
 
 import { loadSections } from "../../actions/section";
 import config from "../../config";
+import "./Tags.css";
 
 const { Content } = Layout;
 const contentStyles = { position: "relative", transform: "translateY(-30px)" };
@@ -46,6 +47,11 @@ class EditPost extends React.Component {
       this.props.getPost(postId).then(data => {
         this.setState({
           ...data,
+          tags: data.tags
+            ? data.tags.map(x => {
+                return { id: x, text: x };
+              })
+            : [],
           pub_ready_copy_old: data.pub_ready_copy,
           pub_ready_online_old: data.pub_ready_online
         });
@@ -86,32 +92,37 @@ class EditPost extends React.Component {
     });
   };
 
+  //both send now and save Post use this so its better if its in one place.
+  savePostPromise = postId => {
+    return this.props.savePost(postId, {
+      slug: this.state.slug,
+      story_url: this.state.story_url,
+      section: this.state.section,
+      pub_date: this.state.pub_date,
+      pub_time: this.state.pub_time,
+      pub_ready_copy: false,
+      pub_ready_online: false,
+      post_facebook: this.state.post_facebook,
+      post_twitter: this.state.post_twitter,
+      post_newsletter: this.state.post_newsletter,
+      post_notes: this.state.post_notes,
+      pub_ready_copy: this.state.pub_ready_copy,
+      pub_ready_online: this.state.pub_ready_online,
+      tags: this.state.tags.map(x => {
+        return x.text;
+      })
+    });
+  };
+
   savePost = () => {
     const { postId } = this.props.match.params;
 
-    this.props
-      .savePost(postId, {
-        slug: this.state.slug,
-        story_url: this.state.story_url,
-        section: this.state.section,
-        pub_date: this.state.pub_date,
-        pub_time: this.state.pub_time,
-        pub_ready_copy: false,
-        pub_ready_online: false,
-        post_facebook: this.state.post_facebook,
-        post_twitter: this.state.post_twitter,
-        post_newsletter: this.state.post_newsletter,
-        post_notes: this.state.post_notes,
-        pub_ready_copy: this.state.pub_ready_copy,
-        pub_ready_online: this.state.pub_ready_online,
-        tags: ["fa"]
-      })
-      .then(data => {
-        if (data) {
-          this.props.history.push("/");
-        } else {
-        }
-      });
+    this.savePostPromise(postId).then(data => {
+      if (data) {
+        this.props.history.push("/");
+      } else {
+      }
+    });
   };
 
   deletePost = () => {
@@ -127,35 +138,19 @@ class EditPost extends React.Component {
 
   sendNow = () => {
     const { postId } = this.props.match.params;
-    this.props
-      .savePost(postId, {
-        slug: this.state.slug,
-        story_url: this.state.story_url,
-        section: this.state.section,
-        pub_date: this.state.pub_date,
-        pub_time: this.state.pub_time,
-        pub_ready_copy: false,
-        pub_ready_online: false,
-        post_facebook: this.state.post_facebook,
-        post_twitter: this.state.post_twitter,
-        post_newsletter: this.state.post_newsletter,
-        post_notes: this.state.post_notes,
-        pub_ready_copy: this.state.pub_ready_copy,
-        pub_ready_online: this.state.pub_ready_online,
-        tags: ["fa"]
-      })
-      .then(data => {
-        if (data) {
-          this.props.sendPostNow(postId).then(response => {
-            console.log(response);
-            if (response.error) {
-            } else {
-              //using double == because status might be a string.
-              this.props.history.push("/");
-            }
-          });
-        }
-      });
+
+    this.savePostPromise(postId).then(data => {
+      if (data) {
+        this.props.sendPostNow(postId).then(response => {
+          console.log(response);
+          if (response.error) {
+          } else {
+            //using double == because status might be a string.
+            this.props.history.push("/");
+          }
+        });
+      }
+    });
   };
 
   /**

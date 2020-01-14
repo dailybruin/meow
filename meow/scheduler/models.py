@@ -14,6 +14,7 @@ class SMPostTag(models.Model):
     Tags which meowers provide for analytics reasons.
     """
     text = models.CharField(max_length=25)
+    last_touch = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return text
