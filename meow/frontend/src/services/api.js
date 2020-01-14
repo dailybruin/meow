@@ -84,18 +84,32 @@ export const postDetail = postId => {
     }));
 };
 
+const postTags = postData => {
+  if (postData.tags !== undefined) {
+    //return promise with no then we we can easily hook it together in the chain.
+    return axios.post(`${SERVER_URL}/tags/create-many`, postData.tags);
+  }
+};
+
 export const postPost = (postId, postData) => {
+  //first inspect the data to see if we have tags
+  //they will be formated as an array of strings
+
   if (postId) {
-    return axios.put(`${SERVER_URL}/post/${postId}`, postData).then(res => ({
-      data: res.data,
-      status: res.status
-    }));
+    return postTags(postData).then(() =>
+      axios.put(`${SERVER_URL}/post/${postId}`, postData).then(res => ({
+        data: res.data,
+        status: res.status
+      }))
+    );
   }
 
-  return axios.post(`${SERVER_URL}/post/`, postData).then(res => ({
-    data: res.data,
-    status: res.status
-  }));
+  return postTags(postData).then(() =>
+    axios.post(`${SERVER_URL}/post/`, postData).then(res => ({
+      data: res.data,
+      status: res.status
+    }))
+  );
 };
 
 export const postSendNow = postId => {

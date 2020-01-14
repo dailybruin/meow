@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from scheduler.models import SMPost, Section, PostHistory
+from scheduler.models import SMPost, Section, PostHistory, SMPostTag
 from user_profile.serializers import BasicInfoUserSerializer
 
 class SMPostSerializer(serializers.ModelSerializer):
@@ -7,13 +7,20 @@ class SMPostSerializer(serializers.ModelSerializer):
     #category_name = serializers.CharField(source='category.name')
     pub_ready_copy_user = BasicInfoUserSerializer(required=False)
     pub_ready_online_user = BasicInfoUserSerializer(required=False)
+    tags = serializers.SlugRelatedField(
+        many=True,
+        slug_field='text',
+        queryset=SMPostTag.objects.all()
+     )
 
     class Meta:
         model = SMPost
         fields = '__all__'
 
-class TagSerializer(serializers.Serializer):
-    pass
+class SMPostTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SMPostTag
+        fields = ('text',)
 
 class SectionSerializer(serializers.ModelSerializer):
     class Meta:

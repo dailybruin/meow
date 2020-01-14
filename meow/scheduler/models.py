@@ -9,6 +9,14 @@ from django.core.mail import send_mail
 from bs4 import BeautifulSoup
 from taggit.managers import TaggableManager
 
+class SMPostTag(models.Model):
+    """
+    Tags which meowers provide for analytics reasons.
+    """
+    text = models.CharField(max_length=25)
+
+    def __str__(self):
+        return text
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)
@@ -52,10 +60,11 @@ class SMPost(models.Model):
     sent_error_text = models.TextField(null=True, blank=True)
     send_now = models.BooleanField(
         default=False, help_text="Do you want to send this post immediately?")
-    tags = TaggableManager()
 
     is_active = models.BooleanField(
         default=True, help_text="If false, consider mock-deleted.")
+
+    tags = models.ManyToManyField(SMPostTag)
 
     def __str__(self):
         return "" if self.slug is None else self.slug

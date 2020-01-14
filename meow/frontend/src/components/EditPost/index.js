@@ -103,7 +103,8 @@ class EditPost extends React.Component {
         post_newsletter: this.state.post_newsletter,
         post_notes: this.state.post_notes,
         pub_ready_copy: this.state.pub_ready_copy,
-        pub_ready_online: this.state.pub_ready_online
+        pub_ready_online: this.state.pub_ready_online,
+        tags: ["fa"]
       })
       .then(data => {
         if (data) {
@@ -140,7 +141,8 @@ class EditPost extends React.Component {
         post_newsletter: this.state.post_newsletter,
         post_notes: this.state.post_notes,
         pub_ready_copy: this.state.pub_ready_copy,
-        pub_ready_online: this.state.pub_ready_online
+        pub_ready_online: this.state.pub_ready_online,
+        tags: ["fa"]
       })
       .then(data => {
         if (data) {
