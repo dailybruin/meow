@@ -189,7 +189,7 @@ def create_smpost_tags(request):
 @api_view(http_method_names=['GET'])
 def fetch_smpost_tags_suggestions(request):
     # get 15 last touched tags
-    recent_tags = SMPostTags.objects.order_by('last_touch')[:15]
+    recent_tags = SMPostTag.objects.order_by('-last_touch')[:40]
 
     return Response({"suggestions": [x.text for x in recent_tags]})
 

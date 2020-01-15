@@ -14,10 +14,14 @@ class SMPostTag(models.Model):
     Tags which meowers provide for analytics reasons.
     """
     text = models.CharField(max_length=25)
+    # last touch is the last time someone called .save() on it.
+    # whenever the a meow is edited on the frontend,
+    # the server will call .save() on all of its tags, thereby setting
+    # last touch time to right now.
     last_touch = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return text
+        return self.text
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)

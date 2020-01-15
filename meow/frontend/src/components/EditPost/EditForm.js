@@ -190,6 +190,8 @@ class EditForm extends React.Component {
           })(
             <ReactTags
               tags={getFieldsValue(["tags"]).tags}
+              suggestions={this.props.suggestions || [{ id: "feature", text: "feature" }]}
+              inputFieldPosition="top"
               handleDelete={this.handleDelete}
               handleAddition={this.handleAddition}
               handleDrag={this.handleDrag}

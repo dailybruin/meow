@@ -84,6 +84,13 @@ export const postDetail = postId => {
     }));
 };
 
+export const getTagSuggestions = () => {
+  return axios.get(`${SERVER_URL}/tags/suggestions`).then(res => ({
+    data: res.data,
+    status: res.status
+  }));
+};
+
 const postTags = postData => {
   if (postData.tags !== undefined) {
     //return promise with no then we we can easily hook it together in the chain.

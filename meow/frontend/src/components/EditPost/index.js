@@ -11,7 +11,7 @@ import HistoryBar from "../HistoryBar";
 
 const dateMatcher = /\?date=(\d{4})\-(\d{2})\-(\d{2})/;
 
-import { getMe } from "../../services/api";
+import { getMe, getTagSuggestions } from "../../services/api";
 import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
 import { alertError } from "../../actions/alert";
 
@@ -42,6 +42,13 @@ class EditPost extends React.Component {
         // any error we logout
         this.props.logout();
       });
+    getTagSuggestions().then(res => {
+      this.setState({
+        suggestions: res.data.suggestions.map(x => {
+          return { id: x, text: x };
+        })
+      });
+    });
 
     if (postId) {
       this.props.getPost(postId).then(data => {
@@ -180,7 +187,8 @@ class EditPost extends React.Component {
         </Sidebar>
         <Content style={contentStyles}>
           <EditContent
-            {...this.state}
+            {...this.state} //errr... I don't like this its poluting the props.... we should change this later.
+            suggestions={this.state.suggestions}
             editPost={this.editField}
             savePost={this.savePost.bind(this)}
             user_groups={this.state.user_groups}
