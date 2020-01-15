@@ -40,8 +40,9 @@ div.ReactTags__selected span.ReactTags__tag {
   font-size: 1em;
   display: inline-block;
   font-family: "Varela Round", sans-serif;
-  padding: 7px;
-  margin: 0 5px;
+  padding-left: 7px;
+  padding-right: 7px;
+  margin-right: 5px;
   cursor: move;
   border-radius: 20px;
 }

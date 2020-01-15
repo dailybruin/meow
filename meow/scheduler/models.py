@@ -7,7 +7,6 @@ import requests
 import urllib
 from django.core.mail import send_mail
 from bs4 import BeautifulSoup
-from taggit.managers import TaggableManager
 
 class SMPostTag(models.Model):
     """
