@@ -115,9 +115,11 @@ class EditPost extends React.Component {
       post_notes: this.state.post_notes,
       pub_ready_copy: this.state.pub_ready_copy,
       pub_ready_online: this.state.pub_ready_online,
-      tags: this.state.tags.map(x => {
-        return x.text;
-      })
+      tags: this.state.tags
+        ? this.state.tags.map(x => {
+            return x.text;
+          })
+        : []
     });
   };
 

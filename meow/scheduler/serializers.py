@@ -10,7 +10,8 @@ class SMPostSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(
         many=True,
         slug_field='text',
-        queryset=SMPostTag.objects.all()
+        queryset=SMPostTag.objects.all(),
+        required=False
      )
 
     class Meta:

@@ -92,10 +92,11 @@ export const getTagSuggestions = () => {
 };
 
 const postTags = postData => {
-  if (postData.tags !== undefined) {
+  if (postData !== undefined && postData.tags !== undefined) {
     //return promise with no then we we can easily hook it together in the chain.
     return axios.post(`${SERVER_URL}/tags/create-many`, postData.tags);
   }
+  return Promise.resolve();
 };
 
 export const postPost = (postId, postData) => {
