@@ -8,6 +8,7 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory
 from scheduler.models import SMPostTag
+from scheduler.views import create_smpost_tags
 
 factory = APIRequestFactory()
 
@@ -21,6 +22,7 @@ class SimpleTest(TestCase):
 class SMPostTagTest(TestCase):
     def test_creating_tags(self):
         [x.delete() for x in SMPostTag.objects.all()]
-        request = factory.post('tags/create-many', {'tags': ["tag1", "tag2"]})
+        request = factory.post('tags/create-many', {"tag1":"tag1", "tag2":"tag2"})
+        create_smpost_tags(request)
         # now check that the 2 tags have been created.
-        self.assertEqual(SMPostTag.objects.count() == 0)
+        self.assertEqual(SMPostTag.objects.count(), 2)
