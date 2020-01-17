@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from scheduler.models import MeowSetting
 from django.contrib.auth.models import Group, Permission
-
+import os
 
 class Command(BaseCommand):
     help = "Sets default database settings"
@@ -20,31 +20,47 @@ class Command(BaseCommand):
         s = MeowSetting(setting_key=machine_name, setting_value=user_input)
         s.save()
 
+    def create_setting_from_value(self, machine_name, value):
+        if MeowSetting.objects.filter(setting_key=machine_name).count() > 0:
+            return
+        s = MeowSetting(setting_key=machine_name, setting_value=value)
+        s.save()
+
     def handle(self, *args, **options):
-        print("These values can be found in the pinned messages of the #meow-dev slack channel")
-        self.set_preference("twitter_consumer_key", "Twitter consumer key")
-        self.set_preference("twitter_consumer_secret",
-                            "Twitter consumer secret")
-        self.set_preference("fb_app_id", "Facebook app ID")
-        self.set_preference("fb_app_secret", "Facebook app secret")
-        self.set_preference("fb_default_photo", "Default facebook icon",
-                            "http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg")
-        self.set_preference("twitter_character_limit",
-                            "Twitter character limit", "232")
-        self.set_preference("bitly_access_token", "Bit.ly access token")
-        self.set_preference("site_url", "Meow URL",
-                            "http://meow.dailybruin.com")
-        self.set_preference("organization_name",
-                            "Organization Name", "Daily Bruin Online")
-        self.set_preference("from_email", "Email (from)",
-                            "noreply@dailybruin.com")
-        self.set_preference("send_posts", "Send posts", "Yes")
-        self.set_preference("site_message", "Site message (blank)")
-        self.set_preference("default_image_selector",
-                            "Default featured image selector", "img.attachment-db-category-full")
-        self.set_preference("editor_channel", "Editor Role Channel", "editors-100")
-        self.set_preference("copy_channel", "Copy Role Channel", "editors-100")
-        self.set_preference("online_channel", "Online Role Channel", "editors-100")
+
+        settings = [
+            ("twitter_consumer_key", "Twitter consumer key"),
+            ("twitter_consumer_secret", "Twitter consumer secret"),
+            ("fb_app_id", "Facebook app ID"),
+            ("fb_app_secret", "Facebook app secret"),
+            ("fb_default_photo", "Default facebook icon",
+                                "http://dailybruin.com/images/2013/01/dailybruinicon2.jpeg"),
+            ("twitter_character_limit","Twitter character limit", "232"),
+            ("bitly_access_token", "Bit.ly access token"),
+            ("site_url", "Meow URL", "http://meow.dailybruin.com"),
+            ("organization_name", "Organization Name", "Daily Bruin Online"),
+            ("from_email", "Email (from)", "noreply@dailybruin.com"),
+            ("send_posts", "Send posts", "Yes"),
+            ("site_message", "Site message (blank)"),
+            ("default_image_selector",
+                                "Default featured image selector", "img.attachment-db-category-full"),
+            ("editor_channel", "Editor Role Channel", "editors-100"),
+            ("copy_channel", "Copy Role Channel", "editors-100"),
+            ("online_channel", "Online Role Channel", "editors-100")
+        ]
+        for setting in settings:
+            machine_name = setting[0]
+            human_name = setting[1]
+            default_value = ""
+            if len(setting) > 2:
+                default_value =  setting[2]
+            if machine_name.upper() in os.environ:
+                env_value = os.environ[machine_name.upper()]
+                if env_value == "DEFAULT":
+                    env_value = default_value
+                self.create_setting_from_value(machine_name, env_value)
+            else:
+                self.set_preference(machine_name, human_name, default_value)
 
         # Configure gruops
         if Group.objects.filter(name='Editors').count() == 0:
