@@ -24,12 +24,14 @@ class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
 
     def handle(self, *args, **options):
+        #double check this
+        post_id = args[0]
         send_posts = MeowSetting.objects.get(
             setting_key="send_posts").setting_value
         if send_posts == "No" or send_posts == "no":
             logger.info("Post sending is currently off!")
             return
-
+        '''
         # Get posts from the database that are ready to send
         regularPosts = SMPost.objects.filter(
             pub_date__lte=timezone.localtime(timezone.now()).date()
@@ -65,7 +67,9 @@ class Command(BaseCommand):
 
         if len(posts) == 0:
             logger.info("No posts to send!")
+        '''
 
+        posts = SMPost.objects.filter(id=post_id)
         for post in posts:
             try:
                 # Make sure nothing else is trying to send this post right now
