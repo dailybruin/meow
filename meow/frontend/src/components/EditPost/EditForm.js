@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Row, Col, Input, Checkbox, Radio } from "antd";
 import { Copy, Online } from "../../services/auth";
+import { WithContext as ReactTags } from "react-tag-input";
 import "./EditForm.css";
 import { getMe } from "../../services/api";
 
@@ -88,8 +89,38 @@ class EditForm extends React.Component {
     }
   };
 
+  /** tags **/
+  handleDelete = i => {
+    const { setFieldsValue, getFieldsValue } = this.props.form;
+    const tags = getFieldsValue(["tags"]).tags;
+    if (tags === undefined) return;
+    setFieldsValue({
+      tags: tags.filter((tag, index) => index !== i)
+    });
+  };
+  handleAddition = tag => {
+    const { setFieldsValue, getFieldsValue } = this.props.form;
+    if (getFieldsValue(["tags"]).tags === undefined) {
+      setFieldsValue({ tags: [tag] });
+    } else {
+      setFieldsValue({ tags: [...getFieldsValue(["tags"]).tags, tag] });
+    }
+  };
+
+  handleDrag = (tag, currPos, newPos) => {
+    const { setFieldsValue, getFieldsValue } = this.props.form;
+    const tags = getFieldsValue(["tags"]).tags;
+    if (tags === undefined) return;
+    // mutate array
+    tags.splice(currPos, 1);
+    tags.splice(newPos, 0, tag);
+
+    // re-render
+    setFieldsValue({ tags });
+  };
+
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, getFieldsValue } = this.props.form;
     const CopyEdited = Copy(
       () => (
         <Form.Item className="checkable-items">
@@ -117,7 +148,11 @@ class EditForm extends React.Component {
       this.props.user_groups
     );
 
+    const { tags } = this.state;
+
+    console.log(getFieldsValue(["tags"]).tags);
     // const urlError = isFieldTouched('story_url') && getFieldError('story_url');
+
     return (
       <Form layout="horizontal" className="login-form">
         <Form.Item {...formItemLayout} label="slug">
@@ -147,6 +182,21 @@ class EditForm extends React.Component {
                 </Radio>
               ))}
             </RadioGroup>
+          )}
+        </Form.Item>
+        <Form.Item {...formItemLayout} label="tags">
+          {getFieldDecorator("tags", {
+            rules: []
+          })(
+            <ReactTags
+              tags={getFieldsValue(["tags"]).tags}
+              suggestions={this.props.suggestions || [{ id: "feature", text: "feature" }]}
+              inputFieldPosition="top"
+              handleDelete={this.handleDelete}
+              handleAddition={this.handleAddition}
+              handleDrag={this.handleDrag}
+              delimiters={[13, 188]}
+            />
           )}
         </Form.Item>
         {this.responsiveRender(
@@ -213,6 +263,10 @@ export default Form.create({
       section: Form.createFormField({
         ...props.section,
         value: props.section
+      }),
+      tags: Form.createFormField({
+        ...props.tags,
+        value: props.tags
       }),
       post_facebook: Form.createFormField({
         ...props.post_facebook,

@@ -71,7 +71,11 @@ class EditPost extends React.Component {
           padding: "2.2em 2em"
         }}
       >
-        <EditForm {...this.props} onChange={this.handleFormChange} />
+        <EditForm
+          {...this.props}
+          suggestions={this.props.suggestions}
+          onChange={this.handleFormChange}
+        />
         {this.props.mobile === true ? (
           <React.Fragment>
             <div>{copyEdited}</div>
@@ -113,7 +117,8 @@ const mapStateToProps = state => ({
   pub_ready_copy_user: state.default.post.pub_ready_copy_user,
   pub_ready_online_user: state.default.post.pub_ready_online_user,
   section: state.default.post.section,
-  sections: state.default.section.sections
+  sections: state.default.section.sections,
+  tags: state.default.post.tags
 });
 
 // const mapDispatchToProps = {

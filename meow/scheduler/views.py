@@ -172,6 +172,27 @@ class SMPostDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(http_method_names=['POST'])
+def create_smpost_tags(request):
+    # we are expecting the data to look like this:
+    # request.data = ["str1", "str2", ...]
+    if request.data: # check its None or []
+        for tag in request.data:
+            if isinstance(tag, str):
+                tag, created = SMPostTag.objects.get_or_create(text=tag)
+                tag.save() # so it updates last_touch so we know this tag is in use.
+            else:
+                return Response({"tags": [str(tag) + "Is not a string"]}, status=409)
+        return Response(status=200) # success
+    return Response({"tags": ["No data provided: " + str(request.data)]}) #not really success but not really failure
+
+@api_view(http_method_names=['GET'])
+def fetch_smpost_tags_suggestions(request):
+    # get 15 last touched tags
+    recent_tags = SMPostTag.objects.order_by('-last_touch')[:40]
+
+    return Response({"suggestions": [x.text for x in recent_tags]})
+
 @login_required
 def send_posts_now(request, post_id):
     if not request.user.is_authenticated:
