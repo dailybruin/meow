@@ -9,6 +9,8 @@ set -e
 # python meow/manage.py collectstatic --noinput
 
 # DO NOT USE THIS FOR PROD!
+# Neil 2/2/2020: Turns out its good for log files. If the application crashes 
+# while the logs are still in the buffer, they will be lost. 
 export PYTHONUNBUFFERED=1
 
 # Apply database migrations

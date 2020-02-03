@@ -15,9 +15,6 @@ def api_login_required():
     Keyword Arguments:
         methods {List[str]} -- The HTTP verbs that require authentication (default: {["POST", "PUT", "PATCH", "DELETE"]})
 
-    Raises:
-        AuthenticationRequired -- A KerckhoffCustomException that authentication is necessary
-
     Returns:
         the wrapped function
     """

@@ -5,7 +5,7 @@ services:
     build: .
     image: meow
     command: honcho start -f Procfile.dev
-    entrypoint: ./entrypoint-dev.sh
+    entrypoint: ./entrypoint.sh
     ports:
       - "5000:5000"
     env_file: .env

@@ -60,4 +60,4 @@ ADD . /meow/
 
 EXPOSE 5000
 
-ENTRYPOINT ["./entrypoint-dev.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
