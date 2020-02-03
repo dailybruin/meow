@@ -12,7 +12,7 @@ class SMPostTag(models.Model):
     """
     Tags which meowers provide for analytics reasons.
     """
-    text = models.CharField(max_length=25)
+    text = models.CharField(max_length=40)
     # last touch is the last time someone called .save() on it.
     # whenever the a meow is edited on the frontend,
     # the server will call .save() on all of its tags, thereby setting
