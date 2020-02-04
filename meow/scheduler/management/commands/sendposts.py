@@ -101,8 +101,9 @@ class Command(BaseCommand):
                         post.sent_time = timezone.localtime(timezone.now())
                         post.save()
                     except:
+                        logger.critical("Something is very wrong in sendpost.py ")
+                        logger.critical("Something is very wrong in sendpost.py " + str(traceback.format_exc()))
                         post.log(traceback.format_exc())
-                        logger.critical("Something is very wrong in sendpost.py " + traceback.format_exc())
 
                     logger.info("sendpost.py: Post {}-{} failed to send because it would been late. ".format(post.slug, post.id))
                     continue # skip this iteration of the loop so this post will not be posted.
@@ -148,14 +149,14 @@ class Command(BaseCommand):
                         call_command('sendtweet', smpost=post, section=post.section.also_post_to, url=send_url[1], photo_url=photo_url)
             except:
                 # Something wrong happened. Don't send this post.
-                e = sys.exc_info()[0]
-                post.log(traceback.format_exc())
-                post.log_error(e, post.section, True)
-
                 logger.error(
                     "sendpost.py: {} has errored. It will NOT be sent. trackback: {}"
                     .format(post.slug, traceback.format_exc())
                 );
+
+                e = sys.exc_info()[0]
+                post.log(traceback.format_exc())
+                post.log_error(e, post.section, True)
                 continue # don't do anything else
 
             # Now save whatever we changed to the post

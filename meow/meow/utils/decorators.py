@@ -1,7 +1,6 @@
 from functools import wraps
 from typing import List, Callable
 from django.contrib.auth import get_user_model, authenticate
-from meow.exceptions import AuthenticationRequired
 from django.http import JsonResponse
 
 def api_login_required():

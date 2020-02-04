@@ -60,11 +60,13 @@ def set_profile_picture(backend, user, response, details, *args, **kwargs):
         PARAMS = {'token': access_token}
         slack_res = requests.get(url=PROFILE_ENDPOINT, params=PARAMS)
         slack_res_json = slack_res.json()
-        logger.info("User signed in: " + str(slack_res.json()))
+        
 
 
         user.profile_img = slack_res_json["profile"].get("image_original", None)
         user.save()
+        logger.info("User signed in: ")
+        logger.info("User signed in: " + str(slack_res_json["profile"].get("first_name", "No name") ))
     except Exception as e:
         logger.error(traceback.format_exc())
         raise e # throw it again so the system doesn't do continue

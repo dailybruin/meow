@@ -183,7 +183,7 @@ LOGGING = {
 			'class': 'logging.StreamHandler',
 		},
         'logfile': {
-            'level':'DEBUG',
+            'level':'INFO',
             'class':'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'meow.log'),
             'maxBytes': 1024*1024*3, # 3MB
@@ -196,16 +196,6 @@ LOGGING = {
 			'filters': ['require_debug_false'],
 			'class': 'logging.StreamHandler'
 		},
-		# 'django.server': {
-		# 	'level': 'INFO',
-		# 	'class': 'logging.StreamHandler',
-		# 	'formatter': 'django.server',
-		# },
-		# 'mail_admins': {
-		# 	'level': 'ERROR',
-		# 	'filters': ['require_debug_false'],
-		# 	'class': 'django.utils.log.AdminEmailHandler'
-		# }
 	},
 	'loggers': {
 		'django': {
@@ -220,12 +210,7 @@ LOGGING = {
             'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',
         },
-        # this logger logs 4XX and 5XX responses
-		# 'django.server': {
-		# 	'handlers': ['django.server'],
-		# 	'level': 'INFO',
-		# 	'propagate': False,
-		# }
+
 	}
 }
 

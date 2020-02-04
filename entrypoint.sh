@@ -2,7 +2,7 @@
 set -e
 
 echo "$DEBUG"
-if [ "$DEBUG" -eq "False" ]; then 
+if [ "$DEBUG" = "False" ]; then 
   # Collect static files
   echo "Collect static files"
   python meow/manage.py collectstatic --noinput
