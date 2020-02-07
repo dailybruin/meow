@@ -8,6 +8,12 @@ import urllib
 from django.core.mail import send_mail
 from bs4 import BeautifulSoup
 
+
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from meow.celery import app
+import logging
+
 class SMPostTag(models.Model):
     """
     Tags which meowers provide for analytics reasons.
@@ -329,3 +335,22 @@ class PostHistory(models.Model):
     post_newsletter = models.TextField(null=True, blank=True, default=None)
     last_edit_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     creation_time = models.DateTimeField(auto_now_add=True)
+
+@app.task(ignore_result=True)
+def tester(num):
+    test_logger = logging.getLogger('test_logger')
+    test_logger.info("Successfully executed cronjob")
+    test_logger.info(str(num))
+
+@receiver(post_save, sender=SMPost)
+def create_cronjob(sender, instance, **kwargs):
+    if(instance.pub_ready_online):
+        year = instance.pub_date.year
+        month = instance.pub_date.month
+        day = instance.pub_date.day
+        hour = instance.pub_time.hour
+        minute = instance.pub_time.minute
+        second = instance.pub_time.second
+        microsecond = instance.pub_time.microsecond
+        num = 5
+        tester.apply_async((num,), eta=datetime(year, month, day, hour, minute, second, microsecond))

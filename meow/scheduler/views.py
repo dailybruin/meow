@@ -887,3 +887,4 @@ def new_history(sender, instance, **kwargs):
         post_newsletter=instance.post_newsletter,
         last_edit_user=instance.last_edit_user,
         )
+
