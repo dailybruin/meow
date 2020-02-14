@@ -36,6 +36,7 @@ class SMPost(models.Model):
     post_facebook = models.TextField(null=True, blank=True)
     post_newsletter = models.TextField(null=True, blank=True, default="")
     post_notes = models.TextField(null=True, blank=True, default="")
+    post_instagram = models.TextField(null=True, blank=True, default="")
     # change to decimal(38, 0) if not big enough
     id_facebook = models.DecimalField(
         default=0, max_digits=25, decimal_places=0)

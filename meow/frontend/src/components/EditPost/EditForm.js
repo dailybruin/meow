@@ -240,6 +240,13 @@ class EditForm extends React.Component {
             })(<TextArea rows={6} />)}
           </Form.Item>
         )}
+        {this.responsiveRender(
+          <Form.Item label="instagram">
+            {getFieldDecorator("post_instagram", {
+              rules: []
+            })(<TextArea rows={6} />)}
+          </Form.Item>
+        )}
         {this.responsiveRender(<CopyEdited />, <OnlineReady />)}
       </Form>
     );
@@ -283,6 +290,10 @@ export default Form.create({
       post_notes: Form.createFormField({
         ...props.post_notes,
         value: props.post_notes
+      }),
+      post_instagram: Form.createFormField({
+        ...props.post_instagram,
+        value: props.post_instagram
       }),
       pub_ready_copy: Form.createFormField({
         ...props.pub_ready_copy,
