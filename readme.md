@@ -2,14 +2,6 @@
 
 _Daily Bruin's Twitter and Facebook poster_
 
-## Table of Contents
-
-- [Technologies Used](#)
-- [Services Used](#)
-- [Structure](#)
-- [Getting Started](#)
-- [Adding A Database Field](#)
-
 ## Technologies Used
 
 - [Docker](https://www.docker.com/what-docker) is our way of putting the code
@@ -29,11 +21,6 @@ _Daily Bruin's Twitter and Facebook poster_
 - [Celery](http://www.celeryproject.org/) is a task scheduler that runs certain
   "tasks" at certain intervals.
 
-## Services Used
-
-- [Pyup](https://pyup.io/) is something you'll become very familiar with, as it
-  checks all the dependencies for meow and tells you when it's time to update!
-
 ## Structure
 
 ```
@@ -46,6 +33,8 @@ _Daily Bruin's Twitter and Facebook poster_
 ├── entrypoint.sh
 ├── meow
 │   ├── manage.py
+│   ├── frontend
+│       └── src
 │   ├── meow
 │       └── settings.py
 │   ├── scheduler
@@ -86,17 +75,19 @@ serve to our user!
 
 First, [increase max inotify watchers](https://github.com/guard/listen/wiki/Increasing-the-amount-of-inotify-watchers).
 
-To do this, open up a **separate** Terminal tab by pressing Ctrl+T on Mac and
+Then, open up a **separate** Terminal tab by pressing Ctrl+T on Mac and
 run the command:
 
 ```bash
 npm run watch
 ```
 
+`npm run watch` will recompile the code everytime you make a change! If you don't like this, you can also
+run `npm run build` every time you change your code.
+
 ### 3. Check it out!
 
-Point your browser to [`localhost:5000`](http://localhost:5000). Login with that
-superuser account you created (you remember your password, right?).
+Point your browser to [`localhost:5000`](http://localhost:5000). Login with your @media.ucla.edu slack.
 
 ### 4. Connect Social Media Accounts
 
@@ -113,8 +104,8 @@ The next step is to connect your Twitter account to meow. Head back to
 [`localhost:5000/manage/`](http://localhost:5000/manage/). Ensure that you're
 logged in to the Twitter account you wish to post to or else you might end up
 posting to your personal Twitter! Click "Connect with Twitter" and then
-"Authorize app." When prompted to "Choose a section," select the one you created
-in step 9. After clicking "Connect," you can begin sending meow posts Twitter.
+"Authorize app." When prompted to "Choose a section," select `Test`.
+After clicking "Connect," you can begin sending meow posts Twitter.
 
 ### 5. Send a Post!
 
@@ -132,9 +123,9 @@ database through a nice UI.
 docker-compose run web meow/manage.py create
 ```
 
-You can use any email and password. I like username=`admin`, email=`a@a.com`, and password=`admin123`.
+You can use any email and password. For example, you can set username=`admin`, email=`a@a.com`, and password=`admin123`.
 
-Then navigate to `localhost:5000/admin/`. **THE TRAILING SLASH IS REQUIRED**. Login with the username
+Then navigate to [`localhost:5000/admin/`](localhost:5000/admin/). **THE TRAILING SLASH IS REQUIRED**. Login with the username
 and password from the previous step and now you can access the _admin side_.
 
 ## Adding A Database Field
@@ -171,6 +162,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 >>> from scheduler.models import *
 >>> p =SMPost.objects.create(slug="test")
+>>> print(p)
+test
 >>>
 ```
 
@@ -191,54 +184,12 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> post.delete()
 ```
 
-## Linting FAQ
+## Linting
 
 We use a combination of [eslint](https://eslint.org/docs/about/) and
 [prettier](https://prettier.io/) for our linting and code formatting.
 
 With a few exceptions, we follow the [Airbnb JavaScript guide](https://github.com/airbnb/javascript).
-
-### `Useless constructor`
-
-If the constructor for any class does not do anything except call
-`super(props)`, then this is deemed a "useless constructor" because it does not
-do anything meaningful for that class.
-
-If you bind a function or set the state to a default value, then this error
-will disappear.
-
-### `Component should be written as a pure function`
-
-If you have a component that does not keep its own state (i.e. does not have
-any variables or values in its state), then you can more accurately and
-succinctly write the component as a function! See
-[here](https://stackoverflow.com/a/40853268) for an example!
-
-### `Unexpected block statement surrounding arrow body; move the returned value immediately after the =>.`
-
-If you have a function defined like this:
-
-```javascript
-const myComponent = () => {
-  return (
-    <div>
-      <p />
-    </div>
-  );
-};
-
-export default myComponent;
-```
-
-Then change it to this:
-
-```javascript
-const myComponent = () => (
-  <div>
-    <p />
-  </div>
-);
-```
 
 ## License
 
