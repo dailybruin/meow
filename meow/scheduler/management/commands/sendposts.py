@@ -16,7 +16,6 @@ import time
 import traceback
 import logging
 
-from scheduler.models import MeowSetting, SMPost
 
 logger = logging.getLogger('scheduler')
 
@@ -67,6 +66,8 @@ class Command(BaseCommand):
             logger.info("No posts to send!")
 
         for post in posts:
+            print('hi')
+            '''
             try:
                 # Make sure nothing else is trying to send this post right now
                 # This is not atomic; if meow ever scales a lot more, this will need to be re-written
@@ -169,3 +170,4 @@ class Command(BaseCommand):
                 logger.critical("Something is very wrong" + traceback.format_exc())
                 post.log(traceback.format_exc())
                 post.log_error(e, post.section, True)
+                '''
