@@ -1,6 +1,6 @@
 # meow [![Updates](https://pyup.io/repos/github/daily-bruin/meow/shield.svg)](https://pyup.io/repos/github/daily-bruin/meow/)
 
-_Daily Bruin's Twitter and Facebook poster_
+_Daily Bruin's Twitter and Facebook post scheduler_
 
 ## Technologies Used
 
@@ -64,6 +64,12 @@ To make this whole process easier, we have a script which will run all the steps
 ./init_script.sh
 ```
 
+If you get an error saying cannot connect to docker daemon, you may need to run docker commands with `sudo`. Try calling the sudo version of the init_script.
+
+```bash
+./sudo_init_script.sh # Only run if the ./init_script.sh did not work.
+```
+
 Once you run this, just run `docker-compose up` in one terminal tab and `npm run watch` in another. Then go to
 `localhost:5000` and you should see 1 of several random cats pics :D (and the login page). Now you are done and you can skip all the other steps.
 
@@ -75,7 +81,7 @@ serve to our user!
 
 First, [increase max inotify watchers](https://github.com/guard/listen/wiki/Increasing-the-amount-of-inotify-watchers).
 
-Then, open up a **separate** Terminal tab by pressing Ctrl+T on Mac and
+Then, open up a **separate** Terminal
 run the command:
 
 ```bash
@@ -87,7 +93,7 @@ run `npm run build` every time you change your code.
 
 ### 3. Check it out!
 
-Point your browser to [`localhost:5000`](http://localhost:5000). Login with your @media.ucla.edu slack.
+Point your browser to [`localhost:5000`](http://localhost:5000). Login with your Daily Bruin slack.
 
 ### 4. Connect Social Media Accounts
 
@@ -120,7 +126,7 @@ Superusers have access to Django's admin side. The admin side allows you to acce
 database through a nice UI.
 
 ```
-docker-compose run web meow/manage.py create
+docker-compose run web meow/manage.py createsuperuser
 ```
 
 You can use any email and password. For example, you can set username=`admin`, email=`a@a.com`, and password=`admin123`.
@@ -130,20 +136,20 @@ and password from the previous step and now you can access the _admin side_.
 
 ## Adding A Database Field
 
-In Django, if you want to add fields to your database (postgreSQL in our case),
-you would add a line to a class (each of which represents a table) in models.py.
-Once you finish adding your attributes, you will need to re-make migrations and
-re-build before you use those additional attributes.
+In Django, if you want to add fields to your database,
+you would add a field to the corresponding model (each of which represents a table) in `models.py`.
+Once you finish adding your attributes, you will need to run `makemigrations` so django
+will create code to update the underlying database table headers appropriately.
 
 ```bash
-docker-compose run web meow/manage.py makemigrations
-docker-compose run web meow/manage.py migrate
+docker-compose run web meow/manage.py makemigrations # django makes a script to update database headers
+docker-compose run web meow/manage.py migrate        # django runs all those scripts it made
 docker-compose up --build
 ```
 
-## Testing Snippets of Code
+## Django Shell
 
-Django has a `manage.py shell` which allows you to run any python code in an interactive shell!
+The `manage.py shell` allows you to run any python code in an interactive shell!
 
 In order to access this shell, run `docker-compose run web ./meow/manage.py shell`. Then a prompt like this should show:
 
