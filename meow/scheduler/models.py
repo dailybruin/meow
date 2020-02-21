@@ -17,6 +17,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 from django.utils import timezone
 from django.conf import settings
+from scheduler.models import *
 
 from datetime import datetime, timedelta
 from facepy import GraphAPI
@@ -359,11 +360,15 @@ def tester(num):
     test_logger = logging.getLogger('test_logger')
     test_logger.info("Successfully executed cronjob")
     test_logger.info(str(num))
-    #sendPost(num)
+    sendPost(num)
 
 def sendPost(idno):
     logger = logging.getLogger('test_logger')
+    logger.info("in sendpost")
     posts = SMPost.objects.filter(id = idno)
+    logger.info(len(posts))
+    logger.info(posts)
+    logger.info("now sending prev post")
     for post in posts:
         try:
             # Make sure nothing else is trying to send this post right now
@@ -486,4 +491,5 @@ def create_cronjob(sender, instance, **kwargs):
         second = instance.pub_time.second
         microsecond = instance.pub_time.microsecond
         idno = instance.id
-        tester.apply_async((idno,), eta=datetime(year, month, day, hour, minute, second, microsecond))
+        tester.apply_async((idno,), eta=datetime(year, month, day, hour, minute, second, microsecond), expires=datetime(year,month,day,hour
+                                                                                                                        ,minute,second + 10,microsecond))
