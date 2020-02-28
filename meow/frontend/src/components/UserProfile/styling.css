@@ -213,12 +213,18 @@
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 .user-profile-theme-row-star {
   margin: 0 7px;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 .user-profile-theme-row-dropdown-icon {
   font-size: 30px;
   color: black;
@@ -314,9 +320,13 @@
   display: flex;
   justify-content: flex-start;
 <<<<<<< HEAD
+<<<<<<< HEAD
   margin-top: -2px;
 =======
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+  margin-top: -2px;
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 }
 
 .user-profile-theme-add-button {
@@ -337,6 +347,9 @@
   font-size: 17px;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 
 .user-profile-theme-see-more {
   margin-top: -2px;
@@ -348,7 +361,10 @@
   font-size: 16px;
   font-weight: 300;
 }
+<<<<<<< HEAD
 =======
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 =======
 >>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions

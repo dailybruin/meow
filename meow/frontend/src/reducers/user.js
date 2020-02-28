@@ -10,10 +10,14 @@ const initialState = {
     primary_font_color: "#FFFFFF",
     secondary_font_color: "#FFFFFF",
 <<<<<<< HEAD
+<<<<<<< HEAD
     tertiary: "#ffe600",
 =======
     tertiary: "#FFFFFF",
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+    tertiary: "#ffe600",
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
     id: 1
   }
 };

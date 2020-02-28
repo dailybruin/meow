@@ -2,21 +2,31 @@ import React from "react";
 import UserProfileThemeRow from "./UserProfileThemeRow";
 import CreateModal from "./UserProfileThemeCreateModal";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import UserProfileAdditionalThemeRow from "./UserProfileAdditionalThemeRow";
 =======
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+import UserProfileAdditionalThemeRow from "./UserProfileAdditionalThemeRow";
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 import "./styling.css";
 import { Icon } from "antd";
 
 class UserProfileTheme extends React.Component {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
   state = {
     visible: false,
     seemore: false
   };
+<<<<<<< HEAD
 =======
   state = { visible: false };
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 
   showModal = () => {
     this.setState({
@@ -176,9 +186,13 @@ class UserProfileTheme extends React.Component {
             </button>
           </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <div style={{ marginTop: 12 }}>{seemore}</div>
 =======
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
+=======
+          <div style={{ marginTop: 12 }}>{seemore}</div>
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
         </div>
 
         <CreateModal

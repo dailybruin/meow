@@ -8,6 +8,9 @@ import UserProfileTheme from "./UserProfileTheme";
 import "./styling.css";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 import {
   themeStarRemove,
   themeStarAdd,
@@ -19,12 +22,15 @@ import {
   additionalthemeList,
   starredthemesID
 } from "../../services/api";
+<<<<<<< HEAD
 import { Modal } from "antd";
 =======
 import { userDetail, themeList, themeAdd } from "../../services/api";
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 =======
 import { userDetail, themeList, themeAdd, themeEdit, themeDelete } from "../../services/api";
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 import { Modal } from "antd";
 >>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 
@@ -252,7 +258,12 @@ class UserProfile extends React.Component {
       stateCopy.themes[index] = themeDetails;
       this.setState(stateCopy);
       console.log(stateCopy);
-      themeEdit(this.state.themes[index]); //call the post function
+      themeEdit(this.state.themes[index]).then(d => {
+        //update the index of the theme
+        console.log("The id for the theme is " + d.data);
+        stateCopy.themes[index].id = d.data;
+        this.setState(stateCopy);
+      });
     } else {
       console.log("Error: no same name themes allowed");
       this.ErrorModal();
@@ -271,7 +282,12 @@ class UserProfile extends React.Component {
       stateCopy.themes.push(themeDetails);
       this.setState(stateCopy);
       var index = this.state.themes.length - 1;
-      themeAdd(this.state.themes[index]);
+      themeAdd(this.state.themes[index]).then(d => {
+        //update the index of the theme
+        console.log("The id for the theme is " + d.data);
+        stateCopy.themes[stateCopy.themes.length - 1].id = d.data;
+        this.setState(stateCopy);
+      });
     } else {
       console.log("Error: no same name themes allowed");
       this.ErrorModal();
@@ -291,6 +307,36 @@ class UserProfile extends React.Component {
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 =======
 >>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
+  };
+
+  starfavoriteTheme = theme => {
+    var stateCopy = Object.assign({}, this.state);
+    themeStarAdd(theme).then(d => {
+      console.log("List of starred themes index: ");
+      stateCopy.starred_themes_id = d.data;
+      stateCopy.additionalthemes.map(element => {
+        if (element === theme) {
+          element.favorite_count += 1;
+          console.log(element);
+        }
+      });
+      this.setState(stateCopy);
+    });
+  };
+
+  unstarfavoriteTheme = theme => {
+    var stateCopy = Object.assign({}, this.state);
+    themeStarRemove(theme).then(d => {
+      console.log("List of starred themes index: ");
+      stateCopy.starred_themes_id = d.data;
+      stateCopy.additionalthemes.map(element => {
+        if (element === theme) {
+          element.favorite_count -= 1;
+          console.log(element);
+        }
+      });
+      this.setState(stateCopy);
+    });
   };
 
   render() {
@@ -335,7 +381,15 @@ class UserProfile extends React.Component {
 >>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 =======
             deleteTheme={this.deleteTheme}
+<<<<<<< HEAD
 >>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
+=======
+            loadadditionalThemes={this.loadadditionalThemes}
+            additionalthemes={this.state.additionalthemes}
+            starfavoriteTheme={this.starfavoriteTheme}
+            starred_themes_id={this.state.starred_themes_id}
+            unstarfavoriteTheme={this.unstarfavoriteTheme}
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
           />
         </div>
       </div>

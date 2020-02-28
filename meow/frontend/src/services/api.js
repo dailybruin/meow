@@ -21,6 +21,9 @@ export const themeList = () => {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 export const additionalthemeList = () => {
   return axios.get(`${SERVER_URL}/users/additionalthemes/`).then(res => {
     return {

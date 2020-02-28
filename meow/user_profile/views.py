@@ -42,6 +42,33 @@ def themeStar(request):
 
 
 @api_login_required()
+def themeStar(request):
+    user = request.user
+    if request.method == "POST":
+        req_data = json.loads(request.body)
+        theme_id = req_data['id']
+        themes = Theme.objects.all()
+        star_theme = themes.get(pk=theme_id)
+        user_associated = User.objects.get(username=user.username)
+        user_associated.starred_themes.add(star_theme)
+        starred_themes_id = user_associated.starred_themes.values_list('pk', flat=True)
+        print("Starred Themes ID")
+        starred_themes_id = list(starred_themes_id)
+        return JsonResponse(starred_themes_id, safe=False, status=200)
+    elif request.method == "PUT":
+        req_data = json.loads(request.body)
+        theme_id = req_data['id']
+        themes = Theme.objects.all()
+        #theme we want to remove the relation
+        unstar_theme = themes.get(pk=theme_id)
+        user_associated = User.objects.get(username=user.username)
+        user_associated.starred_themes.remove(unstar_theme)
+        starred_themes_id = user_associated.starred_themes.values_list('pk', flat=True)
+        starred_themes_id = list(starred_themes_id)
+        return JsonResponse(starred_themes_id, safe=False, status=200)
+
+
+@api_login_required()
 def themeAdd(request):
     user = request.user
     if request.method == "POST":
@@ -136,7 +163,7 @@ def themeDelete(request):
         if (themes.filter(name=new_name, author=user)):
             return HttpResponse('Theme name must be unique', status=400)
         new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name, pk=new_id)
-        return HttpResponse('Successful addition', status=200)
+        return JsonResponse(new_id, safe=False, status=200)
 
 
 @api_login_required()
@@ -156,8 +183,13 @@ def themeEdit(request):
         if Theme.objects.filter(author=user, name=new_name) and new_name != old_name:
             return HttpResponse('Theme name must be unique', status=400)
         else:
-            Theme.objects.filter(name=old_name, author=user).update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
-        return HttpResponse('Successful update', status=200)
+            filtered_theme = Theme.objects.filter(name=old_name, author=user)
+            print("Filtered Theme: ")
+            print(filtered_theme)
+            filtered_theme_id = filtered_theme[0].pk
+            filtered_theme.update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
+            return JsonResponse(filtered_theme_id, safe=False, status=200)
+
 
 @api_login_required()
 def themeDelete(request):
@@ -186,6 +218,30 @@ def themeList(request):
         serialized_themes = ThemeSerializer(themes, many=True)
         themeOrderedDict = serialized_themes.data
         return JsonResponse(themeOrderedDict, safe=False, status=200)
+<<<<<<< HEAD
+=======
+
+@api_login_required()
+def additionalthemeList(request):
+    #this functon list out the additional themes
+    user = request.user
+    if request.method == "GET":
+        themes = Theme.objects.exclude(author=user).exclude(author=None)
+        serialized_themes = ThemeSerializer(themes, many=True)
+        themeOrderedDict = serialized_themes.data
+        return JsonResponse(themeOrderedDict, safe=False, status=200)
+
+@api_login_required()
+def starredthemesIDFetch(request):
+    user = request.user
+    if request.method == "GET":
+        user = User.objects.all().get(username=user.username)
+        starred_themes_id = []
+        for theme in user.starred_themes.all():
+            starred_themes_id.append(theme.pk)
+        print(starred_themes_id)
+        return JsonResponse(starred_themes_id, safe=False, status=200)
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
 
 @api_login_required()
 def additionalthemeList(request):
@@ -200,6 +256,7 @@ def additionalthemeList(request):
 @api_login_required()
 def starredthemesIDFetch(request):
     user = request.user
+<<<<<<< HEAD
     if request.method == "GET":
         user = User.objects.all().get(username=user.username)
         starred_themes_id = []
@@ -211,6 +268,8 @@ def starredthemesIDFetch(request):
 @api_login_required()
 def me(request):
     user = request.user
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
     serialized_theme = ThemeSerializer(user.selected_theme)
     if request.method == "GET":
         return JsonResponse({
@@ -231,12 +290,15 @@ def me(request):
         updated = False
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         author = User.objects.filter(username=user.username)[0]
 =======
 >>>>>>> fixed erros for themeadd
 
 >>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
         if new_bio == "" or new_bio:
             user.bio = new_bio
             updated = True
@@ -264,16 +326,21 @@ def me(request):
 >>>>>>> fixed erros for themeadd
             user.selected_theme = Theme.objects.get(name=new_theme['name'])
             updated = True
-        elif new_theme and Theme.objects.filter(name=new_theme['name'], author=user).count() > 0:
+        elif new_theme and Theme.objects.filter(name=new_theme['name'], id=new_theme['id']).count() > 0:
             # this isn't very good but for now it works
             # the problem is that the front ends sends the entire theme object
             # and all the backend does is use the id.
+<<<<<<< HEAD
 <<<<<<< HEAD
             user.selected_theme = Theme.objects.get(name=new_theme['name'], author=author)
 >>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 =======
             user.selected_theme = Theme.objects.get(name=new_theme['name'], author=user)
 >>>>>>> fixed erros for themeadd
+=======
+            user.selected_theme = Theme.objects.get(name=new_theme['name'], id=new_theme['id'])
+            print(user.selected_theme)
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
             updated = True
         if updated:
             user.save()

@@ -59,6 +59,7 @@ def m2m_favorite_themes(sender, **kwargs):
 
 
 m2m_changed.connect(m2m_favorite_themes, sender=User.starred_themes.through)
+<<<<<<< HEAD
 =======
 =======
     name = models.CharField(max_length=50)
@@ -79,3 +80,5 @@ m2m_changed.connect(m2m_favorite_themes, sender=User.starred_themes.through)
     class Meta:
         ordering = ['pk']
 >>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
+=======
+>>>>>>> Implemented Theme Favorite and Unfavorite functions
