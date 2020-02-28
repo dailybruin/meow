@@ -2,11 +2,15 @@ import React from "react";
 
 import UserProfileThemeRow from "./UserProfileThemeRow";
 import CreateModal from "./UserProfileThemeCreateModal";
+import UserProfileAdditionalThemeRow from "./UserProfileAdditionalThemeRow";
 import "./styling.css";
 import { Icon } from "antd";
 
 class UserProfileTheme extends React.Component {
-  state = { visible: false };
+  state = {
+    visible: false,
+    seemore: false
+  };
 
   showModal = () => {
     this.setState({
@@ -29,6 +33,59 @@ class UserProfileTheme extends React.Component {
   };
 
   render() {
+    let seemore = [];
+    if (this.state.seemore === false) {
+      seemore.push(
+        <div className="user-profile-theme-see-more">
+          <button
+            onClick={() => {
+              this.setState({ seemore: true });
+              this.props.loadadditionalThemes();
+            }}
+          >
+            see more...
+          </button>
+        </div>
+      );
+    } else {
+      this.props.additionalthemes.map(item => {
+        let active_theme = item.name === this.props.selected_theme.name;
+        console.log("item id:");
+        console.log(item.id);
+        if (this.props.starred_themes_id.indexOf(item.id) > -1) {
+          seemore.push(
+            <UserProfileAdditionalThemeRow
+              starred={true}
+              unstarfavoriteTheme={this.props.unstarfavoriteTheme}
+              active={active_theme}
+              theme={item}
+              canEdit={this.props.canEdit}
+            />
+          );
+        } else {
+          seemore.push(
+            <UserProfileAdditionalThemeRow
+              starred={false}
+              starfavoriteTheme={this.props.starfavoriteTheme}
+              active={active_theme}
+              theme={item}
+              canEdit={this.props.canEdit}
+            />
+          );
+        }
+      });
+      seemore.push(
+        <div className="user-profile-theme-see-more">
+          <button
+            onClick={() => {
+              this.setState({ seemore: false });
+            }}
+          >
+            close
+          </button>
+        </div>
+      );
+    }
     return (
       <div>
         <div className="user-profile-theme-container">
@@ -84,6 +141,7 @@ class UserProfileTheme extends React.Component {
               />
             </button>
           </div>
+          <div style={{ marginTop: 12 }}>{seemore}</div>
         </div>
 
         <CreateModal

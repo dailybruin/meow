@@ -9,7 +9,7 @@ const initialState = {
     secondary: "#4699DA",
     primary_font_color: "#FFFFFF",
     secondary_font_color: "#FFFFFF",
-    tertiary: "#FFFFFF",
+    tertiary: "#ffe600",
     id: 1
   }
 };

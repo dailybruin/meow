@@ -227,7 +227,8 @@ class Posts extends React.Component {
 
 const mapStateToProps = state => ({
   sections: state.default.section.sections,
-  device: state.default.mobile.device
+  device: state.default.mobile.device,
+  theme: state.default.user.theme
 });
 
 export default withRouter(

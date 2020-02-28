@@ -77,10 +77,21 @@ class Header extends Component {
           color: `${this.props.theme.primary_font_color}`
         }}
       >
-        <h1 onClick={this.toHome} style={{ fontSize: "3em", cursor: "pointer" }}>
+        <h1
+          onClick={this.toHome}
+          style={{
+            fontSize: "3em",
+            cursor: "pointer",
+            color: `${this.props.theme.primary_font_color}`
+          }}
+        >
           {img_address_modifier ? "scott" : "meow"}
         </h1>
-        {this.props.device === config.MOBILE ? null : <h2>today: {this.state.time}</h2>}
+        {this.props.device === config.MOBILE ? null : (
+          <h2 style={{ color: `${this.props.theme.primary_font_color}` }}>
+            today: {this.state.time}
+          </h2>
+        )}
         {this.state.showNewmeow ? (
           <div>
             <span onClick={this.toMe} style={{ fontSize: "1.3em", cursor: "pointer" }}>
@@ -90,8 +101,8 @@ class Header extends Component {
             <Button
               style={{
                 marginLeft: "0.6em",
-                backgroundColor: "#ffe600",
-                color: "black",
+                backgroundColor: `${this.props.theme.tertiary}`,
+                color: `black`,
                 borderRadius: "20px",
                 border: "none",
                 boxShadow: "0 4px 4px rgba(0,0,0,0.5)",
