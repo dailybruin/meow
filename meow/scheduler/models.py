@@ -490,6 +490,8 @@ def create_cronjob(sender, instance, **kwargs):
         minute = instance.pub_time.minute
         second = instance.pub_time.second
         microsecond = instance.pub_time.microsecond
+        la_time = datetime(year, month, day, hour, minute, second, microsecond)
+        utc_time = la_time + timedelta(hours=8)
+        expiry_time = utc_time + timedelta(seconds=10)
         idno = instance.id
-        tester.apply_async((idno,), eta=datetime(year, month, day, hour, minute, second, microsecond), expires=datetime(year,month,day,hour
-                                                                                                                        ,minute,second + 10,microsecond))
+        tester.apply_async((idno,), eta=utc_time, expires=expiry_time)
