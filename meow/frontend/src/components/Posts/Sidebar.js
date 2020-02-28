@@ -82,12 +82,12 @@ class Sidebar extends React.Component {
 
   render() {
     let primaryBackgroundAndFont = {
-      backgroundColor: `#${this.props.theme.primary}`
-      // color: `#${this.props.theme.primary_font_color}`
+      backgroundColor: `${this.props.theme.primary}`,
+      color: `${this.props.theme.secondary_font_color}`
     };
     let secondaryBackgroundAndFont = {
-      backgroundColor: `#${this.props.theme.secondary}`
-      // color: `#${this.props.theme.secondary_font_color}`
+      backgroundColor: `${this.props.theme.secondary}`,
+      color: `${this.props.theme.secondary_font_color}`
     };
     return (
       <div
@@ -146,7 +146,7 @@ class Sidebar extends React.Component {
           style={{
             width: "100%",
             height: "8vh",
-            backgroundColor: `#${this.props.theme.primary}`,
+            backgroundColor: `${this.props.theme.primary}`,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

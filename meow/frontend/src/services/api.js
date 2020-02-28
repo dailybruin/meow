@@ -20,6 +20,42 @@ export const themeList = () => {
     });
 };
 
+export const additionalthemeList = () => {
+  return axios.get(`${SERVER_URL}/users/additionalthemes/`).then(res => {
+    return {
+      data: res.data,
+      status: res.status
+    };
+  });
+};
+
+export const starredthemesID = () => {
+  return axios.get(`${SERVER_URL}/users/starredthemesID/`).then(res => {
+    return {
+      data: res.data,
+      status: res.status
+    };
+  });
+};
+
+export const themeStarAdd = starredTheme => {
+  return axios.post(`${SERVER_URL}/users/themeStar/`, starredTheme).then(res => {
+    return {
+      data: res.data,
+      status: res.status
+    };
+  });
+};
+
+export const themeStarRemove = starredTheme => {
+  return axios.put(`${SERVER_URL}/users/themeStar/`, starredTheme).then(res => {
+    return {
+      data: res.data,
+      status: res.status
+    };
+  });
+};
+
 export const themeAdd = newTheme => {
   return axios.post(`${SERVER_URL}/users/themeAdd/`, newTheme).then(res => {
     return {

@@ -212,6 +212,10 @@
   margin: 0 6px;
 }
 
+.user-profile-theme-row-star {
+  margin: 0 7px;
+}
+
 .user-profile-theme-row-dropdown-icon {
   font-size: 30px;
   color: black;
@@ -306,6 +310,7 @@
 .user-profile-theme-add-button-container {
   display: flex;
   justify-content: flex-start;
+  margin-top: -2px;
 }
 
 .user-profile-theme-add-button {
@@ -320,4 +325,15 @@
 
 .ant-modal-confirm-body .ant-modal-confirm-content {
   font-size: 17px;
+}
+
+.user-profile-theme-see-more {
+  margin-top: -2px;
+}
+
+.user-profile-theme-see-more button {
+  border: none;
+  color: rgb(179, 179, 179);
+  font-size: 16px;
+  font-weight: 300;
 }

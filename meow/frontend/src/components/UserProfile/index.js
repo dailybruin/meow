@@ -6,7 +6,17 @@ import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
 import "./styling.css";
-import { userDetail, themeList, themeAdd, themeEdit, themeDelete } from "../../services/api";
+import {
+  themeStarRemove,
+  themeStarAdd,
+  userDetail,
+  themeList,
+  themeAdd,
+  themeEdit,
+  themeDelete,
+  additionalthemeList,
+  starredthemesID
+} from "../../services/api";
 import { Modal } from "antd";
 
 class UserProfile extends React.Component {
@@ -52,7 +62,9 @@ class UserProfile extends React.Component {
           secondary_font_color: "#123211",
           id: 1
         }
-      ]
+      ],
+      additionalthemes: [],
+      starred_themes_id: []
     };
   }
 
@@ -78,6 +90,21 @@ class UserProfile extends React.Component {
       });
     }
   }
+
+  loadadditionalThemes = () => {
+    starredthemesID().then(d => {
+      console.log(d.data);
+      this.setState({
+        starred_themes_id: d.data
+      });
+    });
+    additionalthemeList().then(d => {
+      this.setState({
+        ...this.state,
+        additionalthemes: d.data
+      });
+    });
+  };
 
   fetchUserFor = username => {
     return userDetail(username).then(d => {
@@ -122,7 +149,12 @@ class UserProfile extends React.Component {
       stateCopy.themes[index] = themeDetails;
       this.setState(stateCopy);
       console.log(stateCopy);
-      themeEdit(this.state.themes[index]); //call the post function
+      themeEdit(this.state.themes[index]).then(d => {
+        //update the index of the theme
+        console.log("The id for the theme is " + d.data);
+        stateCopy.themes[index].id = d.data;
+        this.setState(stateCopy);
+      });
     } else {
       console.log("Error: no same name themes allowed");
       this.ErrorModal();
@@ -141,7 +173,12 @@ class UserProfile extends React.Component {
       stateCopy.themes.push(themeDetails);
       this.setState(stateCopy);
       var index = this.state.themes.length - 1;
-      themeAdd(this.state.themes[index]);
+      themeAdd(this.state.themes[index]).then(d => {
+        //update the index of the theme
+        console.log("The id for the theme is " + d.data);
+        stateCopy.themes[stateCopy.themes.length - 1].id = d.data;
+        this.setState(stateCopy);
+      });
     } else {
       console.log("Error: no same name themes allowed");
       this.ErrorModal();
@@ -156,9 +193,39 @@ class UserProfile extends React.Component {
     this.setState(stateCopy);
   };
 
+  starfavoriteTheme = theme => {
+    var stateCopy = Object.assign({}, this.state);
+    themeStarAdd(theme).then(d => {
+      console.log("List of starred themes index: ");
+      stateCopy.starred_themes_id = d.data;
+      stateCopy.additionalthemes.map(element => {
+        if (element === theme) {
+          element.favorite_count += 1;
+          console.log(element);
+        }
+      });
+      this.setState(stateCopy);
+    });
+  };
+
+  unstarfavoriteTheme = theme => {
+    var stateCopy = Object.assign({}, this.state);
+    themeStarRemove(theme).then(d => {
+      console.log("List of starred themes index: ");
+      stateCopy.starred_themes_id = d.data;
+      stateCopy.additionalthemes.map(element => {
+        if (element === theme) {
+          element.favorite_count -= 1;
+          console.log(element);
+        }
+      });
+      this.setState(stateCopy);
+    });
+  };
+
   render() {
     console.log("Re render");
-    console.log(this.props);
+    console.log(this.state);
     if (this.state.loading) {
       return null;
     }
@@ -178,7 +245,6 @@ class UserProfile extends React.Component {
         </div>
         <div className="user-profile-row">
           <UserProfileBio canEdit={this.state.isMe} bio={this.state.bio} />
-
           <UserProfileTheme
             canEdit={this.state.isMe}
             themes={this.state.themes}
@@ -188,6 +254,11 @@ class UserProfile extends React.Component {
             saveTheme={this.saveTheme}
             username={this.state.slack_username}
             deleteTheme={this.deleteTheme}
+            loadadditionalThemes={this.loadadditionalThemes}
+            additionalthemes={this.state.additionalthemes}
+            starfavoriteTheme={this.starfavoriteTheme}
+            starred_themes_id={this.state.starred_themes_id}
+            unstarfavoriteTheme={this.unstarfavoriteTheme}
           />
         </div>
       </div>
