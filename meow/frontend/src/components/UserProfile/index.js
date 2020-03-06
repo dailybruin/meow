@@ -127,7 +127,7 @@ class UserProfile extends React.Component {
   };
 
   ErrorModal = () => {
-    Modal.error({
+    Modal.warning({
       title: "Naming Error",
       content: "Theme name must be unique!",
       maskClosable: true,

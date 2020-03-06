@@ -2,7 +2,8 @@ import React from "react";
 import "./styling.css";
 import { connect } from "react-redux";
 import { editUser } from "../../actions/user";
-import { Icon } from "antd";
+import { FaStar, FaRegStar } from "react-icons/fa";
+import { MdFavorite } from "react-icons/md";
 
 class UserProfileAdditionalThemeRow extends React.Component {
   render() {
@@ -61,41 +62,56 @@ class UserProfileAdditionalThemeRow extends React.Component {
     console.log("Count: ");
     console.log(this.props.theme.favorite_count);
     if (this.props.starred === true) {
-      return (
-        <div>
-          <Icon
-            type="star"
-            style={{
-              fontSize: 40,
-              color: "#d9c400",
-              borderRadius: 200
-            }}
+      if (this.props.theme.favorite_count >= 5) {
+        return (
+          <div
             onClick={() => {
               this.props.unstarfavoriteTheme(this.props.theme);
               console.log("clicked_star");
             }}
           >
-            <p>{this.props.theme.favorite_count}</p>
-          </Icon>
-          <p style={{ marginTop: -29, marginLeft: 12 }}>{this.props.theme.favorite_count}</p>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Icon
-            type="star"
-            style={{
-              fontSize: 29,
-              color: "black",
-              borderRadius: 200
-            }}
+            <MdFavorite
+              style={{
+                marginTop: 11,
+                fontSize: 30,
+                color: "#d94a4a"
+              }}
+            />
+          </div>
+        );
+      } else {
+        return (
+          <div
             onClick={() => {
-              this.props.starfavoriteTheme(this.props.theme);
+              this.props.unstarfavoriteTheme(this.props.theme);
               console.log("clicked_star");
             }}
+          >
+            <FaStar
+              style={{
+                marginTop: 11,
+                fontSize: 30,
+                color: "#e6cf00"
+              }}
+            />
+          </div>
+        );
+      }
+    } else {
+      return (
+        <div
+          onClick={() => {
+            this.props.starfavoriteTheme(this.props.theme);
+            console.log("clicked_star");
+          }}
+        >
+          <FaRegStar
+            style={{
+              marginTop: 11,
+              fontSize: 30,
+              color: "#cfcfcf"
+            }}
           />
-          <p style={{ marginTop: -29, marginLeft: 12 }}>{this.props.theme.favorite_count}</p>
         </div>
       );
     }
