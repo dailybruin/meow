@@ -1,5 +1,4 @@
 import React from "react";
-
 import UserProfileThemeRow from "./UserProfileThemeRow";
 import CreateModal from "./UserProfileThemeCreateModal";
 import UserProfileAdditionalThemeRow from "./UserProfileAdditionalThemeRow";
@@ -94,39 +93,25 @@ class UserProfileTheme extends React.Component {
             {this.props.themes.map((value, index) => {
               let active = value.name === this.props.selected_theme.name;
               //  return <p key={index}>{value.themeColor}</p>
+              let disabled = false;
               if (index === 0 || index === 1) {
-                return (
-                  <UserProfileThemeRow
-                    canEdit={this.props.canEdit}
-                    key={value.id}
-                    theme={value}
-                    active={active}
-                    editCurrentTheme={this.props.editCurrentTheme}
-                    index={index}
-                    name={value.name}
-                    empty={false}
-                    username={this.props.username}
-                    deleteTheme={this.props.deleteTheme}
-                    disabled={true}
-                  />
-                );
-              } else {
-                return (
-                  <UserProfileThemeRow
-                    canEdit={this.props.canEdit}
-                    key={value.id}
-                    theme={value}
-                    active={active}
-                    editCurrentTheme={this.props.editCurrentTheme}
-                    index={index}
-                    name={value.name}
-                    empty={false}
-                    username={this.props.username}
-                    deleteTheme={this.props.deleteTheme}
-                    disabled={false}
-                  />
-                );
+                disabled = true;
               }
+              return (
+                <UserProfileThemeRow
+                  canEdit={this.props.canEdit}
+                  key={value.id}
+                  theme={value}
+                  active={active}
+                  editCurrentTheme={this.props.editCurrentTheme}
+                  index={index}
+                  name={value.name}
+                  empty={false}
+                  username={this.props.username}
+                  deleteTheme={this.props.deleteTheme}
+                  disabled={disabled}
+                />
+              );
             })}
           </div>
           <div className="user-profile-theme-add-button-container">

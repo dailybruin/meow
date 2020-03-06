@@ -113,7 +113,7 @@ def additionalthemeList(request):
     #this functon list out the additional themes
     user = request.user
     if request.method == "GET":
-        themes = Theme.objects.exclude(author=user).exclude(author=None)
+        themes = Theme.objects.exclude(author=user).exclude(author=None).order_by('-favorite_count')
         serialized_themes = ThemeSerializer(themes, many=True)
         themeOrderedDict = serialized_themes.data
         return JsonResponse(themeOrderedDict, safe=False, status=200)
@@ -126,7 +126,6 @@ def starredthemesIDFetch(request):
         starred_themes_id = []
         for theme in user.starred_themes.all():
             starred_themes_id.append(theme.pk)
-        print(starred_themes_id)
         return JsonResponse(starred_themes_id, safe=False, status=200)
 
 

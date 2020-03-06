@@ -1,6 +1,5 @@
 import React from "react";
 import "./styling.css";
-import { connect } from "react-redux";
 import { Icon, Modal, Button } from "antd";
 import { SketchPicker } from "react-color";
 

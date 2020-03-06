@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Menu, Dropdown, Icon } from "antd";
 import { editUser } from "../../actions/user";
 import EditModal from "./UserProfileThemeEditModal";
+import { IoLogoOctocat } from "react-icons/io";
 
 class UserProfileThemeRow extends React.Component {
   state = { visible: false };
@@ -54,6 +55,22 @@ class UserProfileThemeRow extends React.Component {
     );
   };
 
+  icon = () => {
+    if (this.props.disabled === false) {
+      return <Icon type="ellipsis" className={"user-profile-theme-row-dropdown-icon"} />;
+    } else {
+      return (
+        <IoLogoOctocat
+          style={{
+            fontSize: 30,
+            marginTop: 14,
+            marginLeft: 1
+          }}
+        />
+      );
+    }
+  };
+
   render() {
     return (
       <div class="user-profile-theme-row-row-with-nav">
@@ -87,9 +104,7 @@ class UserProfileThemeRow extends React.Component {
 
         <div className={"user-profile-theme-row-dropdown"}>
           <Dropdown overlay={this.menu} disabled={this.props.disabled}>
-            <a href="#">
-              <Icon type="ellipsis" className={"user-profile-theme-row-dropdown-icon"} />
-            </a>
+            {this.icon()}
           </Dropdown>
         </div>
 
