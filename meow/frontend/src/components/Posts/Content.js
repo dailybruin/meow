@@ -209,6 +209,7 @@ class Posts extends React.Component {
             <Card size="small" title="facebook">
               {post.post_facebook}
             </Card>
+            <a href={"/edit/" + post.id}> edit </a>
           </Panel>
         ))}
       </Collapse>
