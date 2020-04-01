@@ -41,7 +41,7 @@ from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
 class SectionList(APIView):
     """
-    List all SMPosts, or create a new SMPost.
+    List all Section
     """
 
     def get(self, request, format=None):
@@ -82,7 +82,15 @@ class SMPostList(APIView):
         serializer = SMPostSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save(last_edit_user=request.user)
+            keyword_args = {
+                "last_edit_user": request.user
+            }
+            if "pub_ready_copy" in request.data and request.data["pub_ready_copy"]:
+                keyword_args["pub_ready_copy_user"] = request.user
+            if "pub_ready_online" in request.data and request.data["pub_ready_online"]:
+                keyword_args["pub_ready_online_user"] = request.user
+
+            serializer.save(**keyword_args)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print(serializer.errors);
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -147,18 +155,20 @@ class SMPostDetail(APIView):
                     else:
                         update_online_user_to = None
 
-            post = serializer.save(last_edit_user=request.user)
+            # will be passed into serializer.save()
+            serializer_keyword_args = {
+                "last_edit_user": request.user
+            }
 
             # if the user updated the copy edited or online approved status,
             # record them as the copy_user or online_user
             if b_should_update_copy_user:
-                post.pub_ready_copy_user = update_copy_user_to
+                serializer_keyword_args["pub_ready_copy_user"] = update_copy_user_to
 
             if b_should_update_online_user:
-                post.pub_ready_online_user = update_online_user_to
+                serializer_keyword_args["pub_ready_online_user"] = update_online_user_to
 
-            if b_should_update_copy_user or b_should_update_online_user:
-                post.save()
+            post = serializer.save(**serializer_keyword_args)
 
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
