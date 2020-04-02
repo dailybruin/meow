@@ -2,12 +2,8 @@ import React from "react";
 import "./styling.css";
 import { connect } from "react-redux";
 import { editUser } from "../../actions/user";
-<<<<<<< HEAD
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { MdFavorite } from "react-icons/md";
-=======
-import { Icon } from "antd";
->>>>>>> Implemented Theme Favorite and Unfavorite functions
 
 class UserProfileAdditionalThemeRow extends React.Component {
   render() {
@@ -66,7 +62,6 @@ class UserProfileAdditionalThemeRow extends React.Component {
     console.log("Count: ");
     console.log(this.props.theme.favorite_count);
     if (this.props.starred === true) {
-<<<<<<< HEAD
       if (this.props.theme.favorite_count >= 5) {
         return (
           <div
@@ -87,23 +82,11 @@ class UserProfileAdditionalThemeRow extends React.Component {
       } else {
         return (
           <div
-=======
-      return (
-        <div>
-          <Icon
-            type="star"
-            style={{
-              fontSize: 40,
-              color: "#d9c400",
-              borderRadius: 200
-            }}
->>>>>>> Implemented Theme Favorite and Unfavorite functions
             onClick={() => {
               this.props.unstarfavoriteTheme(this.props.theme);
               console.log("clicked_star");
             }}
           >
-<<<<<<< HEAD
             <FaStar
               style={{
                 marginTop: 11,
@@ -129,29 +112,6 @@ class UserProfileAdditionalThemeRow extends React.Component {
               color: "#cfcfcf"
             }}
           />
-=======
-            <p>{this.props.theme.favorite_count}</p>
-          </Icon>
-          <p style={{ marginTop: -29, marginLeft: 12 }}>{this.props.theme.favorite_count}</p>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Icon
-            type="star"
-            style={{
-              fontSize: 29,
-              color: "black",
-              borderRadius: 200
-            }}
-            onClick={() => {
-              this.props.starfavoriteTheme(this.props.theme);
-              console.log("clicked_star");
-            }}
-          />
-          <p style={{ marginTop: -29, marginLeft: 12 }}>{this.props.theme.favorite_count}</p>
->>>>>>> Implemented Theme Favorite and Unfavorite functions
         </div>
       );
     }

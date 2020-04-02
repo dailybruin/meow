@@ -1,32 +1,15 @@
 import React from "react";
 import UserProfileThemeRow from "./UserProfileThemeRow";
 import CreateModal from "./UserProfileThemeCreateModal";
-<<<<<<< HEAD
-<<<<<<< HEAD
 import UserProfileAdditionalThemeRow from "./UserProfileAdditionalThemeRow";
-=======
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
-import UserProfileAdditionalThemeRow from "./UserProfileAdditionalThemeRow";
->>>>>>> Implemented Theme Favorite and Unfavorite functions
 import "./styling.css";
 import { Icon } from "antd";
 
 class UserProfileTheme extends React.Component {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Implemented Theme Favorite and Unfavorite functions
   state = {
     visible: false,
     seemore: false
   };
-<<<<<<< HEAD
-=======
-  state = { visible: false };
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
->>>>>>> Implemented Theme Favorite and Unfavorite functions
 
   showModal = () => {
     this.setState({
@@ -110,14 +93,10 @@ class UserProfileTheme extends React.Component {
             {this.props.themes.map((value, index) => {
               let active = value.name === this.props.selected_theme.name;
               //  return <p key={index}>{value.themeColor}</p>
-<<<<<<< HEAD
-<<<<<<< HEAD
               let disabled = false;
               if (index === 0 || index === 1) {
                 disabled = true;
               }
-=======
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
               return (
                 <UserProfileThemeRow
                   canEdit={this.props.canEdit}
@@ -129,48 +108,10 @@ class UserProfileTheme extends React.Component {
                   name={value.name}
                   empty={false}
                   username={this.props.username}
-<<<<<<< HEAD
                   deleteTheme={this.props.deleteTheme}
                   disabled={disabled}
-=======
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
                 />
               );
-=======
-              if (index === 0 || index === 1) {
-                return (
-                  <UserProfileThemeRow
-                    canEdit={this.props.canEdit}
-                    key={value.id}
-                    theme={value}
-                    active={active}
-                    editCurrentTheme={this.props.editCurrentTheme}
-                    index={index}
-                    name={value.name}
-                    empty={false}
-                    username={this.props.username}
-                    deleteTheme={this.props.deleteTheme}
-                    disabled={true}
-                  />
-                );
-              } else {
-                return (
-                  <UserProfileThemeRow
-                    canEdit={this.props.canEdit}
-                    key={value.id}
-                    theme={value}
-                    active={active}
-                    editCurrentTheme={this.props.editCurrentTheme}
-                    index={index}
-                    name={value.name}
-                    empty={false}
-                    username={this.props.username}
-                    deleteTheme={this.props.deleteTheme}
-                    disabled={false}
-                  />
-                );
-              }
->>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
             })}
           </div>
           <div className="user-profile-theme-add-button-container">
@@ -185,14 +126,7 @@ class UserProfileTheme extends React.Component {
               />
             </button>
           </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
           <div style={{ marginTop: 12 }}>{seemore}</div>
-=======
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
-          <div style={{ marginTop: 12 }}>{seemore}</div>
->>>>>>> Implemented Theme Favorite and Unfavorite functions
         </div>
 
         <CreateModal

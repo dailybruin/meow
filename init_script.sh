@@ -38,18 +38,11 @@ fi
 # this inits everything but will only continue if the pervious step was successful
 npm i
 npm run build
-<<<<<<< HEAD
-docker-compose build &&
-docker-compose run web meow/manage.py migrate &&
-docker-compose run web meow/manage.py collectstatic --noinput &&
-docker-compose run web meow/manage.py init 
-=======
 sudo docker-compose build &&
 sudo docker-compose run web meow/manage.py migrate &&
 echo ">>> The ids and secrets can be found in the #meow_dev channel's pinned messages" &&
 sudo docker-compose run web meow/manage.py collectstatic --noinput
 sudo docker-compose run web meow/manage.py init 
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
 if [ $? == 0 ]; then
 	echo -e "from scheduler.models import Section\ns = Section(name=\"test\")\ns.save()" | sudo docker-compose run web meow/manage.py shell
 	if [ $? != 0 ]; then

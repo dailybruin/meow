@@ -212,19 +212,10 @@
   margin: 0 6px;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Implemented Theme Favorite and Unfavorite functions
 .user-profile-theme-row-star {
   margin: 0 7px;
 }
 
-<<<<<<< HEAD
-=======
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
->>>>>>> Implemented Theme Favorite and Unfavorite functions
 .user-profile-theme-row-dropdown-icon {
   font-size: 30px;
   color: black;
@@ -319,24 +310,13 @@
 .user-profile-theme-add-button-container {
   display: flex;
   justify-content: flex-start;
-<<<<<<< HEAD
-<<<<<<< HEAD
   margin-top: -2px;
-=======
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
-  margin-top: -2px;
->>>>>>> Implemented Theme Favorite and Unfavorite functions
 }
 
 .user-profile-theme-add-button {
   border: 1.2px solid #f0f2f5;
   background-color: #f0f2f5;
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 
 .ant-modal-confirm-body .ant-modal-confirm-title {
   font-weight: 600;
@@ -346,10 +326,6 @@
 .ant-modal-confirm-body .ant-modal-confirm-content {
   font-size: 17px;
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Implemented Theme Favorite and Unfavorite functions
 
 .user-profile-theme-see-more {
   margin-top: -2px;
@@ -361,10 +337,3 @@
   font-size: 16px;
   font-weight: 300;
 }
-<<<<<<< HEAD
-=======
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
->>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
-=======
->>>>>>> Implemented Theme Favorite and Unfavorite functions

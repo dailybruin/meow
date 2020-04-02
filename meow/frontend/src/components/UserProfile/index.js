@@ -6,11 +6,6 @@ import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
 import "./styling.css";
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Implemented Theme Favorite and Unfavorite functions
 import {
   themeStarRemove,
   themeStarAdd,
@@ -22,17 +17,7 @@ import {
   additionalthemeList,
   starredthemesID
 } from "../../services/api";
-<<<<<<< HEAD
 import { Modal } from "antd";
-=======
-import { userDetail, themeList, themeAdd } from "../../services/api";
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
-import { userDetail, themeList, themeAdd, themeEdit, themeDelete } from "../../services/api";
-=======
->>>>>>> Implemented Theme Favorite and Unfavorite functions
-import { Modal } from "antd";
->>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -141,14 +126,8 @@ class UserProfile extends React.Component {
     });
   };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   ErrorModal = () => {
     Modal.warning({
-=======
-  ErrorModal = () => {
-    Modal.error({
->>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
       title: "Naming Error",
       content: "Theme name must be unique!",
       maskClosable: true,
@@ -158,7 +137,6 @@ class UserProfile extends React.Component {
     });
   };
 
-<<<<<<< HEAD
   editCurrentTheme = (themeDetails, index) => {
     var found = false;
     var stateCopy = Object.assign({}, this.state);
@@ -213,100 +191,6 @@ class UserProfile extends React.Component {
     themeDelete(stateCopy.themes[index]);
     stateCopy.themes.splice(index, 1);
     this.setState(stateCopy);
-  };
-
-  starfavoriteTheme = theme => {
-    var stateCopy = Object.assign({}, this.state);
-    themeStarAdd(theme).then(d => {
-      console.log("List of starred themes index: ");
-      stateCopy.starred_themes_id = d.data;
-      stateCopy.additionalthemes.map(element => {
-        if (element === theme) {
-          element.favorite_count += 1;
-          console.log(element);
-        }
-      });
-      this.setState(stateCopy);
-    });
-  };
-
-  unstarfavoriteTheme = theme => {
-    var stateCopy = Object.assign({}, this.state);
-    themeStarRemove(theme).then(d => {
-      console.log("List of starred themes index: ");
-      stateCopy.starred_themes_id = d.data;
-      stateCopy.additionalthemes.map(element => {
-        if (element === theme) {
-          element.favorite_count -= 1;
-          console.log(element);
-        }
-      });
-      this.setState(stateCopy);
-    });
-=======
-=======
->>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
-  editCurrentTheme = (themeDetails, index) => {
-    var found = false;
-    var stateCopy = Object.assign({}, this.state);
-    for (let i = 0; i < stateCopy.themes.length; i++) {
-      if (stateCopy.themes[i].name === themeDetails.name && i != index) {
-        found = true;
-      }
-    }
-    if (!found) {
-      stateCopy.themes[index] = themeDetails;
-      this.setState(stateCopy);
-      console.log(stateCopy);
-      themeEdit(this.state.themes[index]).then(d => {
-        //update the index of the theme
-        console.log("The id for the theme is " + d.data);
-        stateCopy.themes[index].id = d.data;
-        this.setState(stateCopy);
-      });
-    } else {
-      console.log("Error: no same name themes allowed");
-      this.ErrorModal();
-    }
-  };
-
-  addNewTheme = themeDetails => {
-    var found = false;
-    var stateCopy = Object.assign({}, this.state);
-    for (var item of stateCopy.themes) {
-      if (item.name === themeDetails.name) {
-        found = true;
-      }
-    }
-    if (!found) {
-      stateCopy.themes.push(themeDetails);
-      this.setState(stateCopy);
-      var index = this.state.themes.length - 1;
-      themeAdd(this.state.themes[index]).then(d => {
-        //update the index of the theme
-        console.log("The id for the theme is " + d.data);
-        stateCopy.themes[stateCopy.themes.length - 1].id = d.data;
-        this.setState(stateCopy);
-      });
-    } else {
-      console.log("Error: no same name themes allowed");
-      this.ErrorModal();
-    }
-  };
-
-  deleteTheme = index => {
-    var stateCopy = Object.assign({}, this.state);
-    stateCopy.themes[index].author = this.state.slack_username;
-    themeDelete(stateCopy.themes[index]);
-    stateCopy.themes.splice(index, 1);
-    this.setState(stateCopy);
-<<<<<<< HEAD
-    console.log("debug");
-    var index = this.state.themes.length - 1;
-    themeAdd(this.state.themes[index]);
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
->>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
   };
 
   starfavoriteTheme = theme => {
@@ -369,27 +253,12 @@ class UserProfile extends React.Component {
             addNewTheme={this.addNewTheme}
             saveTheme={this.saveTheme}
             username={this.state.slack_username}
-<<<<<<< HEAD
-<<<<<<< HEAD
             deleteTheme={this.deleteTheme}
             loadadditionalThemes={this.loadadditionalThemes}
             additionalthemes={this.state.additionalthemes}
             starfavoriteTheme={this.starfavoriteTheme}
             starred_themes_id={this.state.starred_themes_id}
             unstarfavoriteTheme={this.unstarfavoriteTheme}
-=======
->>>>>>> Added theme color dial in the frontend, added new themeAdd view in views.py
-=======
-            deleteTheme={this.deleteTheme}
-<<<<<<< HEAD
->>>>>>> Implemented theme add, theme delete and theme update functions in views.py of user profile
-=======
-            loadadditionalThemes={this.loadadditionalThemes}
-            additionalthemes={this.state.additionalthemes}
-            starfavoriteTheme={this.starfavoriteTheme}
-            starred_themes_id={this.state.starred_themes_id}
-            unstarfavoriteTheme={this.unstarfavoriteTheme}
->>>>>>> Implemented Theme Favorite and Unfavorite functions
           />
         </div>
       </div>

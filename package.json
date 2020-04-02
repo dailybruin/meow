@@ -63,13 +63,10 @@
     "fuse.js": "^3.4.2",
     "react-color": "^2.17.3",
     "react-device-detect": "^1.6.2",
-<<<<<<< HEAD
     "react-tag-input": "6.4.2",
     "react-dnd": "5.0.0",
     "react-dnd-html5-backend": "3.0.2",
-=======
     "react-icons": "^3.9.0",
->>>>>>> Updated theme favorite feature
     "sidebar-style-guide": "^2.0.0"
   }
 }
