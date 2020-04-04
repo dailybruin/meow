@@ -63,6 +63,7 @@ class EditModal extends React.Component {
     this.stateCopy.name = e.target.value;
     this.setState(this.stateCopy);
     console.log(this.state.name);
+    console.log(this.props.theme);
   };
 
   render() {
@@ -171,12 +172,13 @@ class EditModal extends React.Component {
                 primary_font_color: this.state.colors[2].color,
                 secondary_font_color: this.state.colors[3].color,
                 tertiary: this.state.colors[4].color,
-                id: -1, //id is not used here, database id is not here yet
+                id: this.props.theme.id,
                 author: this.props.username
               };
-              console.log("editing");
-              console.log(themetoEdit);
-              this.props.editCurrentTheme(themetoEdit, this.props.index);
+              let result = this.props.editCurrentTheme(themetoEdit, this.props.index);
+              if (result === "failure") {
+                return;
+              }
               this.props.handleCancel();
             }}
           >

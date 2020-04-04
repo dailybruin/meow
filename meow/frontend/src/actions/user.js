@@ -70,6 +70,7 @@ export const editUser = newData => dispatch => {
   return putUser(newData)
     .then(({ data }) => {
       if (newData.selected_theme) {
+        console.log("new data");
         dispatch({
           type: "THEME_CHANGE",
           payload: {

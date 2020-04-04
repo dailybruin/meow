@@ -28,7 +28,7 @@ class User(AbstractUser):
 
 
 class Theme(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True, blank=False)
     primary = models.CharField(max_length=8)
     secondary = models.CharField(max_length=8)
     primary_font_color = models.CharField(max_length=8)

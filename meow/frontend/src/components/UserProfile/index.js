@@ -5,6 +5,7 @@ import UserProfileImage from "./UserProfileImage";
 import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
+import { editUser } from "../../actions/user.js";
 import "./styling.css";
 import {
   themeStarRemove,
@@ -126,17 +127,6 @@ class UserProfile extends React.Component {
     });
   };
 
-  ErrorModal = () => {
-    Modal.warning({
-      title: "Naming Error",
-      content: "Theme name must be unique!",
-      maskClosable: true,
-      closable: false,
-      okButtonProps: { style: { display: "none" } },
-      style: { marginTop: "30%" }
-    });
-  };
-
   editCurrentTheme = (themeDetails, index) => {
     var found = false;
     var stateCopy = Object.assign({}, this.state);
@@ -151,45 +141,54 @@ class UserProfile extends React.Component {
       console.log(stateCopy);
       themeEdit(this.state.themes[index]).then(d => {
         //update the index of the theme
-        console.log("The id for the theme is " + d.data);
-        stateCopy.themes[index].id = d.data;
-        this.setState(stateCopy);
+        if (d.status === 400) {
+          console.log("Error: no same name themes allowed");
+          return "failure";
+        }
+        //do a theme change here with redux
+        if (this.state.selected_theme.id === this.state.themes[index].id) {
+          console.log("time to change theme after edit");
+          stateCopy.selected_theme = this.state.themes[index];
+          this.props.editUser({ selected_theme: themeDetails });
+          this.setState(stateCopy);
+        }
+        return "success";
       });
     } else {
       console.log("Error: no same name themes allowed");
-      this.ErrorModal();
+      return "failure";
     }
   };
 
   addNewTheme = themeDetails => {
-    var found = false;
     var stateCopy = Object.assign({}, this.state);
-    for (var item of stateCopy.themes) {
-      if (item.name === themeDetails.name) {
-        found = true;
-      }
-    }
-    if (!found) {
-      stateCopy.themes.push(themeDetails);
-      this.setState(stateCopy);
-      var index = this.state.themes.length - 1;
-      themeAdd(this.state.themes[index]).then(d => {
-        //update the index of the theme
+    themeAdd(themeDetails).then(d => {
+      //update the index of the theme
+      if (d.status === 200) {
+        stateCopy.themes.push(themeDetails);
         console.log("The id for the theme is " + d.data);
         stateCopy.themes[stateCopy.themes.length - 1].id = d.data;
+        stateCopy.selected_theme = stateCopy.themes[stateCopy.themes.length - 1];
+        this.props.editUser({ selected_theme: stateCopy.selected_theme });
         this.setState(stateCopy);
-      });
-    } else {
-      console.log("Error: no same name themes allowed");
-      this.ErrorModal();
-    }
+        return "success";
+      } else if (d.status === 400) {
+        return d.data;
+      }
+    });
   };
 
   deleteTheme = index => {
-    var stateCopy = Object.assign({}, this.state);
-    stateCopy.themes[index].author = this.state.slack_username;
+    let stateCopy = Object.assign({}, this.state);
+    let themename = stateCopy.themes[index].name;
     themeDelete(stateCopy.themes[index]);
     stateCopy.themes.splice(index, 1);
+    if (this.state.selected_theme.name === themename) {
+      console.log("time to change theme after delete");
+      stateCopy.selected_theme = this.state.themes[0];
+      this.props.editUser({ selected_theme: stateCopy.selected_theme });
+      this.setState(stateCopy);
+    }
     this.setState(stateCopy);
   };
 
@@ -271,4 +270,26 @@ const mapStateToProps = state => ({
   theme: state.default.user.theme
 });
 
-export default withRouter(connect(mapStateToProps)(UserProfile));
+// const mapDispatchtoProps = dispatch => {
+//   return {
+//     changeTheme: (selected_theme) => {
+//       dispatch({
+//         type: "THEME_CHANGE",
+//         payload: {
+//           theme: selected_theme
+//         }
+//       });
+//     }
+//   }
+// }
+
+const mapDispatchToProps = {
+  editUser: data => editUser(data)
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(UserProfile)
+);

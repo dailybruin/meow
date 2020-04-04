@@ -103,6 +103,7 @@ class Sidebar extends React.Component {
           style={primaryBackgroundAndFont}
           expandIconPosition="right"
           defaultActiveKey={["1"]}
+          bordered={false}
         >
           <Panel
             className="full-width-panel"
@@ -127,18 +128,40 @@ class Sidebar extends React.Component {
           </Panel>
           <Panel header="section" key="2">
             {this.props.sections.map(s => (
-              <Checkbox value={s.id} onChange={this.changeSection(s.id)}>
+              <Checkbox
+                style={{ color: `${this.props.theme.secondary_font_color}` }}
+                value={s.id}
+                onChange={this.changeSection(s.id)}
+              >
                 {s.name}
               </Checkbox>
             ))}
           </Panel>
           <Panel header="post time" style={secondaryBackgroundAndFont} key="3">
-            <TimeSlider onSlideEnd={this.changeTime} />
+            <TimeSlider
+              fontColor={`${this.props.theme.secondary_font_color}`}
+              onSlideEnd={this.changeTime}
+            />
           </Panel>
           <Panel header="status" key="4">
-            <Checkbox onChange={this.changeStatus("READY")}>ready to post</Checkbox>
-            <Checkbox onChange={this.changeStatus("DRAFT")}>draft</Checkbox>
-            <Checkbox onChange={this.changeStatus("SENT")}>sent</Checkbox>
+            <Checkbox
+              style={{ color: `${this.props.theme.secondary_font_color}` }}
+              onChange={this.changeStatus("READY")}
+            >
+              ready to post
+            </Checkbox>
+            <Checkbox
+              style={{ color: `${this.props.theme.secondary_font_color}` }}
+              onChange={this.changeStatus("DRAFT")}
+            >
+              draft
+            </Checkbox>
+            <Checkbox
+              style={{ color: `${this.props.theme.secondary_font_color}` }}
+              onChange={this.changeStatus("SENT")}
+            >
+              sent
+            </Checkbox>
           </Panel>
         </Collapse>
         <div

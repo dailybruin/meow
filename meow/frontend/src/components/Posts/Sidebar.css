@@ -28,3 +28,7 @@
 .full-width-panel .ant-collapse-content-box {
   padding: 0;
 }
+
+.ant-collapse-borderless > .ant-collapse-item {
+  border-bottom: none;
+}

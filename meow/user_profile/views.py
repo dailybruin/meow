@@ -5,12 +5,105 @@ from django.conf import settings
 from django.core import serializers
 
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from meow.utils.decorators import api_login_required
+
 from user_profile.models import User, Theme
 from user_profile.serializers import SafeUserSerializer, ThemeSerializer
 import json
 # Create your views here.
+
+class userThemes(APIView):
+    def get(self, request, id, format=None):
+        if not request.user.is_authenticated:
+            return HttpResponse('Must be logged in', status=403)
+        print("hi im here")
+        user = request.user
+        themes = Theme.objects.filter(name="Daily Bruin")| Theme.objects.filter(name="Dark Bruin") | Theme.objects.filter(author=user)
+        serialized_themes = ThemeSerializer(themes, many=True)
+        themeOrderedDict = serialized_themes.data
+        return JsonResponse(themeOrderedDict, safe=False, status=200)
+    
+    def post(self, request, id, format=None):
+        if not request.user.is_authenticated:
+            return HttpResponse('Must be logged in', status=403)
+        user = request.user
+        themes = Theme.objects.all()
+        req_data = request.data
+        new_name = req_data.get("name", None)
+        new_primary = req_data.get("primary", None)
+        new_secondary = req_data.get("secondary", None)
+        new_primary_font_color = req_data.get("primary_font_color", None)
+        new_secondary_font_color = req_data.get("secondary_font_color", None)
+        new_tertiary = req_data.get("tertiary", None)
+        if new_name == "":
+            return JsonResponse('Theme name cannot be an empty string', safe=False, status=400)
+        if (themes.filter(name=new_name)):
+            return JsonResponse('Theme name must be unique', safe=False, status=400)
+        new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
+        new_id = Theme.objects.get(name=new_name).pk
+        return JsonResponse(new_id, safe=False, status=200)
+
+    def put(self, request, id, format=None):
+        if not request.user.is_authenticated:
+            return HttpResponse('Must be logged in', status=403)
+        user=request.user
+        req_data = request.data
+        old_name = req_data.get("oldname", None)
+        if(old_name == 'Daily Bruin' or old_name == 'Dark Bruin'):
+            return HttpResponse('Default themes cannot be modified', status=400)
+        new_name = req_data.get("name", None)
+        new_primary = req_data.get("primary", None)
+        new_secondary = req_data.get("secondary", None)
+        new_primary_font_color = req_data.get("primary_font_color", None)
+        new_secondary_font_color = req_data.get("secondary_font_color", None)
+        new_tertiary = req_data.get("tertiary", None)
+        if Theme.objects.filter(name=new_name) and new_name != old_name:
+            return HttpResponse('Theme name must be unique', status=400)
+        else:
+            filtered_theme = Theme.objects.filter(pk=id)
+            if(len(filtered_theme)>1):
+                return HttpResponse('Non-unique name in themes corruption', status=400)
+            filtered_theme.update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
+            return HttpResponse('Sucesss', status=200)
+    
+    def delete(self, request, id, format=None):
+        if not request.user.is_authenticated:
+            return HttpResponse('Must be logged in', status=403)
+        user=request.user
+        themetodelete = Theme.objects.get(pk=id)
+        delete_name=themetodelete.name
+        print(delete_name)
+        if(delete_name == 'Daily Bruin' or delete_name == 'Dark Bruin'):
+            return HttpResponse('Default themes cannot be deleted', status=400)
+        if user.selected_theme == Theme.objects.filter(name=delete_name, author=user)[0]:
+            user.selected_theme = Theme.objects.get(name="Daily Bruin")
+            user.save()
+            print(user)
+        Theme.objects.filter(name=delete_name, author=user).delete()
+        return HttpResponse('Successful deletion', status=200)
+        
+
+@api_login_required()
+def additionalthemeList(request):
+    #this functon list out the additional themes
+    user = request.user
+    if request.method == "GET":
+        themes = Theme.objects.exclude(author=user).exclude(author=None).order_by('-favorite_count')
+        serialized_themes = ThemeSerializer(themes, many=True)
+        themeOrderedDict = serialized_themes.data
+        return JsonResponse(themeOrderedDict, safe=False, status=200)
+
+@api_login_required()
+def starredthemesIDFetch(request):
+    user = request.user
+    if request.method == "GET":
+        user = User.objects.all().get(username=user.username)
+        starred_themes_id = []
+        for theme in user.starred_themes.all():
+            starred_themes_id.append(theme.pk)
+        return JsonResponse(starred_themes_id, safe=False, status=200)
 
 @api_login_required()
 def themeStar(request):
@@ -36,96 +129,6 @@ def themeStar(request):
         user_associated.starred_themes.remove(unstar_theme)
         starred_themes_id = user_associated.starred_themes.values_list('pk', flat=True)
         starred_themes_id = list(starred_themes_id)
-        return JsonResponse(starred_themes_id, safe=False, status=200)
-
-
-@api_login_required()
-def themeAdd(request):
-    user = request.user
-    if request.method == "POST":
-        themes = Theme.objects.all()
-        req_data = json.loads(request.body)
-        new_name = req_data.get("name", None)
-        new_primary = req_data.get("primary", None)
-        new_secondary = req_data.get("secondary", None)
-        new_primary_font_color = req_data.get("primary_font_color", None)
-        new_secondary_font_color = req_data.get("secondary_font_color", None)
-        new_tertiary = req_data.get("tertiary", None)
-        new_id = themes[themes.count()-1].pk + 1
-        if new_name == "":
-            return HttpResponse('Theme name cannot be an empty string', status=400)
-        if (themes.filter(name=new_name, author=user)):
-            return HttpResponse('Theme name must be unique', status=400)
-        new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name, pk=new_id)
-        return JsonResponse(new_id, safe=False, status=200)
-
-
-@api_login_required()
-def themeEdit(request):
-    user = request.user
-    if request.method == "PUT":
-        req_data = json.loads(request.body)
-        old_name = req_data.get("oldname", None)
-        if(old_name == 'Daily Bruin' or old_name == 'Dark Bruin'):
-            return HttpResponse('Default themes cannot be modified', status=400)
-        new_name = req_data.get("name", None)
-        new_primary = req_data.get("primary", None)
-        new_secondary = req_data.get("secondary", None)
-        new_primary_font_color = req_data.get("primary_font_color", None)
-        new_secondary_font_color = req_data.get("secondary_font_color", None)
-        new_tertiary = req_data.get("tertiary", None)
-        if Theme.objects.filter(author=user, name=new_name) and new_name != old_name:
-            return HttpResponse('Theme name must be unique', status=400)
-        else:
-            filtered_theme = Theme.objects.filter(name=old_name, author=user)
-            print("Filtered Theme: ")
-            print(filtered_theme)
-            filtered_theme_id = filtered_theme[0].pk
-            filtered_theme.update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
-            return JsonResponse(filtered_theme_id, safe=False, status=200)
-
-
-@api_login_required()
-def themeDelete(request):
-    user = request.user
-    if request.method == "PUT":
-        req_data = json.loads(request.body)
-        delete_name = req_data.get("name", None)
-        if(delete_name == 'Daily Bruin' or delete_name == 'Dark Bruin'):
-            return HttpResponse('Default themes cannot be deleted', status=400)
-        if user.selected_theme == Theme.objects.filter(name=delete_name, author=user)[0]:
-            user.selected_theme = Theme.objects.get(name="Daily Bruin")
-            user.save()
-        Theme.objects.filter(name=delete_name, author=user).delete()
-        return HttpResponse('Successful deletion', status=200)
-
-@api_login_required()
-def themeList(request):
-    user = request.user
-    if request.method == "GET":
-        themes = Theme.objects.filter(name="Daily Bruin")| Theme.objects.filter(name="Dark Bruin") | Theme.objects.filter(author=user)
-        serialized_themes = ThemeSerializer(themes, many=True)
-        themeOrderedDict = serialized_themes.data
-        return JsonResponse(themeOrderedDict, safe=False, status=200)
-
-@api_login_required()
-def additionalthemeList(request):
-    #this functon list out the additional themes
-    user = request.user
-    if request.method == "GET":
-        themes = Theme.objects.exclude(author=user).exclude(author=None).order_by('-favorite_count')
-        serialized_themes = ThemeSerializer(themes, many=True)
-        themeOrderedDict = serialized_themes.data
-        return JsonResponse(themeOrderedDict, safe=False, status=200)
-
-@api_login_required()
-def starredthemesIDFetch(request):
-    user = request.user
-    if request.method == "GET":
-        user = User.objects.all().get(username=user.username)
-        starred_themes_id = []
-        for theme in user.starred_themes.all():
-            starred_themes_id.append(theme.pk)
         return JsonResponse(starred_themes_id, safe=False, status=200)
 
 
@@ -172,7 +175,6 @@ def me(request):
         if updated:
             user.save()
             return HttpResponse(status=200)
-
         return HttpResponse(status=500)
 
 
@@ -188,7 +190,6 @@ def userList(request):
     if request.method == "GET":
         users = User.objects.values('id', 'username', 'first_name', 'last_name',
                                     'section', 'last_login', 'is_superuser', 'bio', 'role', 'email', 'theme', 'groups')
-
         usersRawData = SafeUserSerializer(users, many=True)
         usersOrderedDict = usersRawData.data
         return JsonResponse(usersOrderedDict, safe=False)

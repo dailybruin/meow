@@ -100,7 +100,7 @@ class UserProfileTheme extends React.Component {
               return (
                 <UserProfileThemeRow
                   canEdit={this.props.canEdit}
-                  key={value.id}
+                  key={index}
                   theme={value}
                   active={active}
                   editCurrentTheme={this.props.editCurrentTheme}

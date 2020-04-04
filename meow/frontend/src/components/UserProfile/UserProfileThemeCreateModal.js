@@ -13,7 +13,9 @@ class CreateModal extends React.Component {
       { color: "#fff", empty: true }
     ],
     current: 0, //this is the index of the selection
-    name: ""
+    name: "",
+    error: false,
+    error_msg: ""
   };
 
   stateCopy = Object.assign({}, this.state);
@@ -76,6 +78,12 @@ class CreateModal extends React.Component {
     console.log(this.state.name);
   };
 
+  errorMesage = () => {
+    if (this.state.error) {
+      return <p>{this.state.error_msg}</p>;
+    }
+  };
+
   render() {
     return (
       <Modal
@@ -94,6 +102,7 @@ class CreateModal extends React.Component {
             value={this.state.name}
             onChange={this.handleInputChange}
           />
+          {this.errorMesage()}
         </div>
 
         <div className={"user-profile-theme-row-modal-items"}>
@@ -181,10 +190,19 @@ class CreateModal extends React.Component {
                 primary_font_color: this.state.colors[2].color,
                 secondary_font_color: this.state.colors[3].color,
                 tertiary: this.state.colors[4].color,
-                id: -1, //id is not used here, database id is not here yet
-                author: this.props.username
+                author: this.props.username,
+                id: -1
               };
-              this.props.addNewTheme(themetoAdd);
+              let result = this.props.addNewTheme(themetoAdd);
+              if (result !== "success") {
+                console.log(result);
+                console.log("display error");
+                let stateDuplicate = Object.assign({}, this.state);
+                stateDuplicate.error = true;
+                stateDuplicate.error_msg = result;
+                this.setState(stateDuplicate);
+                return;
+              }
               this.props.handleCancel();
               console.log(this.resetState);
               this.setState(this.resetState);
@@ -197,7 +215,8 @@ class CreateModal extends React.Component {
                   { color: "#fff", empty: true }
                 ],
                 current: 0, //this is the index of the selection
-                name: ""
+                name: "",
+                id: -1
               };
             }}
           >

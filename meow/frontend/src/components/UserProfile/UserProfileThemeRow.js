@@ -32,7 +32,7 @@ class UserProfileThemeRow extends React.Component {
   menu = () => {
     console.log("clicked");
     return (
-      <Menu className={"user-profile-theme-row-dropdown-menu"} mode={"horizontal"}>
+      <Menu className={"user-profile-theme-row-dropdown-menu"}>
         <Menu.Item
           onClick={this.showModal}
           key="0"
@@ -73,7 +73,7 @@ class UserProfileThemeRow extends React.Component {
 
   render() {
     return (
-      <div class="user-profile-theme-row-row-with-nav">
+      <div className="user-profile-theme-row-row-with-nav">
         <div
           className={`user-profile-theme-row${this.props.active ? "-active" : ""}`}
           onClick={this.setAsCurrentTheme}
@@ -125,7 +125,6 @@ class UserProfileThemeRow extends React.Component {
 
   setAsCurrentTheme = () => {
     if (this.props.canEdit) {
-      console.log(this.props.editUser);
       //this will trigger the api call and update the redux state and cause a rerender.
       this.props.editUser({ selected_theme: this.props.theme });
     }

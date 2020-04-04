@@ -8,8 +8,9 @@ axios.defaults.withCredentials = true;
 const { SERVER_URL } = config;
 
 export const themeList = () => {
+  console.log("here");
   return axios
-    .get(`${SERVER_URL}/users/themes/`, {
+    .get(`${SERVER_URL}/users/userThemes/1/`, {
       withCredentials: true
     })
     .then(res => {
@@ -57,16 +58,28 @@ export const themeStarRemove = starredTheme => {
 };
 
 export const themeAdd = newTheme => {
-  return axios.post(`${SERVER_URL}/users/themeAdd/`, newTheme).then(res => {
-    return {
-      data: res.data,
-      status: res.status
-    };
-  });
+  return axios
+    .post(`${SERVER_URL}/users/userThemes/1/`, newTheme)
+    .then(res => {
+      return {
+        data: res.data,
+        status: res.status
+      };
+    })
+    .catch(error => {
+      console.log(error.response.data);
+      console.log(error.response.status);
+      let msg = error.response.data;
+      let status = error.response.status;
+      return {
+        data: msg,
+        status: status
+      };
+    });
 };
 
 export const themeEdit = updatedTheme => {
-  return axios.put(`${SERVER_URL}/users/themeEdit/`, updatedTheme).then(res => {
+  return axios.put(`${SERVER_URL}/users/userThemes/${updatedTheme.id}/`, updatedTheme).then(res => {
     return {
       data: res.data,
       status: res.status
@@ -75,7 +88,7 @@ export const themeEdit = updatedTheme => {
 };
 
 export const themeDelete = deletedTheme => {
-  return axios.put(`${SERVER_URL}/users/themeDelete/`, deletedTheme).then(res => {
+  return axios.delete(`${SERVER_URL}/users/userThemes/${deletedTheme.id}/`).then(res => {
     return {
       data: res.data,
       status: res.status
