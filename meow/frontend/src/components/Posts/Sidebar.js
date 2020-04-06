@@ -109,12 +109,18 @@ class Sidebar extends React.Component {
                 isActive
                   ? {
                       transform: `rotate(90deg)`,
-                      fontSize: 13,
-                      color: `${this.props.theme.secondary_font_color}`
+                      fontSize: 16,
+                      color: `${this.props.theme.secondary_font_color}`,
+                      marginTop: -2,
+                      width: 23,
+                      paddingRight: 10
                     }
                   : {
                       color: `${this.props.theme.secondary_font_color}`,
-                      fontSize: 13
+                      fontSize: 16,
+                      marginTop: -2,
+                      width: 23,
+                      paddingRight: 10
                     }
               }
             />

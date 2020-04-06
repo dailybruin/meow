@@ -59,9 +59,10 @@ class userThemes(APIView):
         new_primary_font_color = req_data.get("primary_font_color", None)
         new_secondary_font_color = req_data.get("secondary_font_color", None)
         new_tertiary = req_data.get("tertiary", None)
+        theme_id = req_data.get('id', None)
         if new_name=="":
             return JsonResponse('Theme name cannot be empty', safe=False, status=400)
-        if Theme.objects.filter(name=new_name) and new_name != old_name:
+        if Theme.objects.filter(name=new_name) and (Theme.objects.get(name=new_name).pk != theme_id):
             return JsonResponse('Theme name taken, enter new name', safe=False, status=400)
         else:
             filtered_theme = Theme.objects.filter(pk=id)

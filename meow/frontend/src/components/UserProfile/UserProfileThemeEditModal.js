@@ -180,6 +180,7 @@ class EditModal extends React.Component {
           <Button
             className={"user-profile-theme-row-modal-create-new-theme"}
             onClick={() => {
+              console.log(this.oldname);
               let themetoEdit = {
                 oldname: this.oldname,
                 name: this.state.name,

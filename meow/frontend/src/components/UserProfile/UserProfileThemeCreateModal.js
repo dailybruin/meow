@@ -7,11 +7,11 @@ import { themeAdd } from "../../services/api.js";
 class CreateModal extends React.Component {
   state = {
     colors: [
-      { color: "#fff", empty: true },
-      { color: "#fff", empty: true },
-      { color: "#fff", empty: true },
-      { color: "#fff", empty: true },
-      { color: "#fff", empty: true }
+      { color: "#FFFFFF", empty: true },
+      { color: "#FFFFFF", empty: true },
+      { color: "#FFFFFF", empty: true },
+      { color: "#FFFFFF", empty: true },
+      { color: "#FFFFFF", empty: true }
     ],
     current: 0, //this is the index of the selection
     name: "",
@@ -29,11 +29,11 @@ class CreateModal extends React.Component {
   stateCopy = Object.assign({}, this.state);
   resetState = {
     colors: [
-      { color: "#fff", empty: true },
-      { color: "#fff", empty: true },
-      { color: "#fff", empty: true },
-      { color: "#fff", empty: true },
-      { color: "#fff", empty: true }
+      { color: "#FFFFFF", empty: true },
+      { color: "#FFFFFF", empty: true },
+      { color: "#FFFFFF", empty: true },
+      { color: "#FFFFFF", empty: true },
+      { color: "#FFFFFF", empty: true }
     ],
     current: 0, //this is the index of the selection
     name: "",
@@ -219,11 +219,11 @@ class CreateModal extends React.Component {
                   this.setState(this.resetState);
                   this.stateCopy = {
                     colors: [
-                      { color: "#fff", empty: true },
-                      { color: "#fff", empty: true },
-                      { color: "#fff", empty: true },
-                      { color: "#fff", empty: true },
-                      { color: "#fff", empty: true }
+                      { color: "#FFFFFF", empty: true },
+                      { color: "#FFFFFF", empty: true },
+                      { color: "#FFFFFF", empty: true },
+                      { color: "#FFFFFF", empty: true },
+                      { color: "#FFFFFF", empty: true }
                     ],
                     current: 0, //this is the index of the selection
                     name: "",
