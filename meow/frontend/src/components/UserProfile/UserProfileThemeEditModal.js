@@ -42,7 +42,6 @@ class EditModal extends React.Component {
         </button>
       );
     } else {
-      console.log(item.color);
       return (
         <button
           className={"user-profile-theme-row-modal-color-dot"}
@@ -55,8 +54,6 @@ class EditModal extends React.Component {
   });
 
   handleChangeComplete = color => {
-    console.log(this.state.current);
-    console.log(this.stateCopy);
     this.stateCopy.current = this.state.current;
     this.stateCopy.colors[this.state.current].color = color.hex;
     this.stateCopy.colors[this.state.current].empty = false;
@@ -65,15 +62,12 @@ class EditModal extends React.Component {
 
   handleColorDotClick = index => {
     this.setState({ current: index });
-    console.log(this.state.current);
   };
 
   handleInputChange = e => {
     e.preventDefault();
     this.stateCopy.name = e.target.value;
     this.setState(this.stateCopy);
-    console.log(this.state.name);
-    console.log(this.props.theme);
   };
 
   errorMesage = () => {
@@ -106,7 +100,6 @@ class EditModal extends React.Component {
           <div className={"user-profile-theme-row-modal-color-dots-container"}>
             {this.state.colors.map((item, index) => {
               if (item.empty) {
-                console.log(this.state.name);
                 if (index === this.state.current) {
                   return (
                     <Tooltip title={this.state.tooltip_msg[index]}>
@@ -144,7 +137,6 @@ class EditModal extends React.Component {
                   );
                 }
               } else {
-                console.log(this.state.name);
                 if (index === this.state.current) {
                   return (
                     <Tooltip title={this.state.tooltip_msg[index]}>
@@ -200,7 +192,6 @@ class EditModal extends React.Component {
                 author: this.props.username
               };
               themeEdit(themetoEdit).then(d => {
-                console.log(d);
                 if (d.status === 200) {
                   let themetoModify = {
                     name: this.state.name,
@@ -212,10 +203,9 @@ class EditModal extends React.Component {
                     id: this.props.theme.id,
                     author: this.props.username
                   };
-                  this.props.editCurrentTheme(themetoModify, this.props.index);
+                  this.props.editCurrentTheme(themetoModify);
                   this.props.handleCancel();
                 } else {
-                  console.log(d.data);
                   let stateDuplicate = Object.assign({}, this.state);
                   stateDuplicate.error = true;
                   stateDuplicate.error_msg = d.data;

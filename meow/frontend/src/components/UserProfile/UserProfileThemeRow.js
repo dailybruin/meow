@@ -137,6 +137,7 @@ class UserProfileThemeRow extends React.Component {
     if (this.props.canEdit) {
       //this will trigger the api call and update the redux state and cause a rerender.
       this.props.editUser({ selected_theme: this.props.theme });
+      this.props.themeChanger(this.props.theme);
     }
   };
 

@@ -18,14 +18,12 @@ class UserProfileTheme extends React.Component {
   };
 
   handleOk = e => {
-    console.log(e);
     this.setState({
       visible: false
     });
   };
 
   handleCancel = e => {
-    console.log(e);
     this.setState({
       visible: false
     });
@@ -49,8 +47,6 @@ class UserProfileTheme extends React.Component {
     } else {
       this.props.additionalthemes.map(item => {
         let active_theme = item.name === this.props.selected_theme.name;
-        console.log("item id:");
-        console.log(item.id);
         if (this.props.starred_themes_id.indexOf(item.id) > -1) {
           seemore.push(
             <UserProfileAdditionalThemeRow
@@ -59,6 +55,7 @@ class UserProfileTheme extends React.Component {
               active={active_theme}
               theme={item}
               canEdit={this.props.canEdit}
+              themeChanger={this.props.themeChanger}
             />
           );
         } else {
@@ -69,6 +66,7 @@ class UserProfileTheme extends React.Component {
               active={active_theme}
               theme={item}
               canEdit={this.props.canEdit}
+              themeChanger={this.props.themeChanger}
             />
           );
         }
@@ -110,6 +108,7 @@ class UserProfileTheme extends React.Component {
                   username={this.props.username}
                   deleteTheme={this.props.deleteTheme}
                   disabled={disabled}
+                  themeChanger={this.props.themeChanger}
                 />
               );
             })}

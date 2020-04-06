@@ -12,13 +12,10 @@ import {
   themeStarAdd,
   userDetail,
   themeList,
-  themeAdd,
-  themeEdit,
   themeDelete,
   additionalthemeList,
   starredthemesID
 } from "../../services/api";
-import { Modal } from "antd";
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -127,16 +124,24 @@ class UserProfile extends React.Component {
     });
   };
 
-  editCurrentTheme = (themeDetails, index) => {
+  editCurrentTheme = themeDetails => {
     let stateCopy = Object.assign({}, this.state);
-    stateCopy.themes[index] = themeDetails;
-    this.setState(stateCopy);
+    let i = 0;
+    for (; i < stateCopy.themes.length; i++) {
+      if (stateCopy.themes[i].id === themeDetails.id) {
+        stateCopy.themes[i] = themeDetails;
+        break;
+      }
+    }
+    console.log(stateCopy.selected_theme);
+    console.log(themeDetails);
     //do a theme change here with redux
     if (this.state.selected_theme.id === themeDetails.id) {
       console.log("time to change theme after edit");
-      stateCopy.selected_theme = this.state.themes[index];
-      this.setState(stateCopy);
       this.props.editUser({ selected_theme: themeDetails });
+      this.setState(stateCopy);
+    } else {
+      this.setState(stateCopy);
     }
   };
 
@@ -155,12 +160,21 @@ class UserProfile extends React.Component {
       if (d.status === 200) {
         stateCopy.themes.splice(index, 1);
         if (this.state.selected_theme.name === themename) {
-          stateCopy.selected_theme = d.data;
+          this.props.editUser({ selected_theme: d.data }).then(() => {
+            stateCopy.selected_theme = d.data;
+            this.setState(stateCopy);
+          });
+        } else {
           this.setState(stateCopy);
-          this.props.editUser({ selected_theme: d.data });
         }
       }
     });
+  };
+
+  themeChanger = data => {
+    let stateCopy = Object.assign({}, this.state);
+    stateCopy.selected_theme = data;
+    this.setState(stateCopy);
   };
 
   starfavoriteTheme = theme => {
@@ -229,6 +243,7 @@ class UserProfile extends React.Component {
             starfavoriteTheme={this.starfavoriteTheme}
             starred_themes_id={this.state.starred_themes_id}
             unstarfavoriteTheme={this.unstarfavoriteTheme}
+            themeChanger={this.themeChanger}
           />
         </div>
       </div>
@@ -240,19 +255,6 @@ const mapStateToProps = state => ({
   username: state.default.user.username,
   theme: state.default.user.theme
 });
-
-// const mapDispatchtoProps = dispatch => {
-//   return {
-//     changeTheme: (selected_theme) => {
-//       dispatch({
-//         type: "THEME_CHANGE",
-//         payload: {
-//           theme: selected_theme
-//         }
-//       });
-//     }
-//   }
-// }
 
 const mapDispatchToProps = {
   editUser: data => editUser(data)

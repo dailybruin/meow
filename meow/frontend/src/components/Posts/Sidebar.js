@@ -8,8 +8,7 @@ import { logout } from "../../actions/user";
 
 import "./Sidebar.css";
 import TimeSlider from "./TimeSlider";
-import { CaretRightOutlined } from "@ant-design/icons";
-
+import { FiChevronRight, FiRotateCcw } from "react-icons/fi";
 const { Panel } = Collapse;
 
 class Sidebar extends React.Component {
@@ -104,8 +103,23 @@ class Sidebar extends React.Component {
           style={primaryBackgroundAndFont}
           defaultActiveKey={["1"]}
           bordered={false}
-          expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-          expandIconPosition="right"
+          expandIcon={({ isActive }) => (
+            <FiChevronRight
+              style={
+                isActive
+                  ? {
+                      transform: `rotate(90deg)`,
+                      fontSize: 13,
+                      color: `${this.props.theme.secondary_font_color}`
+                    }
+                  : {
+                      color: `${this.props.theme.secondary_font_color}`,
+                      fontSize: 13
+                    }
+              }
+            />
+          )}
+          expandIconPosition="left"
         >
           <Panel
             className="full-width-panel"
@@ -200,7 +214,8 @@ class Sidebar extends React.Component {
           <h1
             style={{
               marginBottom: 0,
-              color: `${this.props.theme.primary_font_color}`
+              color: `${this.props.theme.primary_font_color}`,
+              fontSize: 20
             }}
           >
             Sign Out

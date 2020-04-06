@@ -62,7 +62,6 @@ class CreateModal extends React.Component {
         </button>
       );
     } else {
-      console.log(item.color);
       return (
         <button
           className={"user-profile-theme-row-modal-color-dot"}
@@ -75,8 +74,6 @@ class CreateModal extends React.Component {
   });
 
   handleChangeComplete = color => {
-    console.log(this.state.current);
-    console.log(this.stateCopy);
     this.stateCopy.current = this.state.current;
     this.stateCopy.colors[this.state.current].color = color.hex;
     this.stateCopy.colors[this.state.current].empty = false;
@@ -85,14 +82,12 @@ class CreateModal extends React.Component {
 
   handleColorDotClick = index => {
     this.setState({ current: index });
-    console.log(this.state.current);
   };
 
   handleInputChange = e => {
     e.preventDefault();
     this.stateCopy.name = e.target.value;
     this.setState(this.stateCopy);
-    console.log(this.state.name);
   };
 
   errorMesage = () => {
@@ -126,7 +121,6 @@ class CreateModal extends React.Component {
           <div className={"user-profile-theme-row-modal-color-dots-container"}>
             {this.state.colors.map((item, index) => {
               if (item.empty) {
-                console.log(this.state.name);
                 if (index === this.state.current) {
                   return (
                     <Tooltip title={this.state.tooltip_msg[index]}>
@@ -164,7 +158,6 @@ class CreateModal extends React.Component {
                   );
                 }
               } else {
-                console.log(this.state.name);
                 if (index === this.state.current) {
                   return (
                     <Tooltip title={this.state.tooltip_msg[index]}>
@@ -219,7 +212,6 @@ class CreateModal extends React.Component {
                 id: -1
               };
               themeAdd(themetoAdd).then(d => {
-                console.log(d);
                 if (d.status === 200) {
                   themetoAdd.id = d.data;
                   this.props.addNewTheme(themetoAdd);
@@ -247,7 +239,6 @@ class CreateModal extends React.Component {
                     ]
                   };
                 } else {
-                  console.log(d.data);
                   let stateDuplicate = Object.assign({}, this.state);
                   stateDuplicate.error = true;
                   stateDuplicate.error_msg = d.data;
