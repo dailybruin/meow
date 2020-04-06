@@ -1,7 +1,8 @@
 import React from "react";
 import "./styling.css";
-import { Icon, Modal, Button } from "antd";
+import { Icon, Modal, Button, Tooltip } from "antd";
 import { SketchPicker } from "react-color";
+import { themeAdd } from "../../services/api.js";
 
 class CreateModal extends React.Component {
   state = {
@@ -15,7 +16,14 @@ class CreateModal extends React.Component {
     current: 0, //this is the index of the selection
     name: "",
     error: false,
-    error_msg: ""
+    error_msg: "",
+    tooltip_msg: [
+      "header, primary side-bar color",
+      "secondary side-bar color",
+      "header font-color",
+      "sidebar font-color",
+      "new meow button"
+    ]
   };
 
   stateCopy = Object.assign({}, this.state);
@@ -28,7 +36,16 @@ class CreateModal extends React.Component {
       { color: "#fff", empty: true }
     ],
     current: 0, //this is the index of the selection
-    name: ""
+    name: "",
+    error: false,
+    error_msg: "",
+    tooltip_msg: [
+      "header, primary side-bar color",
+      "secondary side-bar color",
+      "header font-color",
+      "sidebar font-color",
+      "new meow button"
+    ]
   };
 
   items = this.stateCopy.colors.map((item, index) => {
@@ -80,7 +97,7 @@ class CreateModal extends React.Component {
 
   errorMesage = () => {
     if (this.state.error) {
-      return <p>{this.state.error_msg}</p>;
+      return <p style={{ color: "red", margin: 0 }}>{this.state.error_msg}</p>;
     }
   };
 
@@ -112,57 +129,65 @@ class CreateModal extends React.Component {
                 console.log(this.state.name);
                 if (index === this.state.current) {
                   return (
-                    <button
-                      className={"user-profile-theme-row-modal-color-dot"}
-                      style={{
-                        backgroundColor: item.color,
-                        border: "5px solid #000"
-                      }}
-                      onClick={() => this.handleColorDotClick(index)}
-                    >
-                      <Icon
-                        className={"user-profile-theme-row-modal-color-dot-plusicon"}
-                        type="plus"
-                      />
-                    </button>
+                    <Tooltip title={this.state.tooltip_msg[index]}>
+                      <button
+                        className={"user-profile-theme-row-modal-color-dot"}
+                        style={{
+                          backgroundColor: item.color,
+                          border: "5px solid #000"
+                        }}
+                        onClick={() => this.handleColorDotClick(index)}
+                      >
+                        <Icon
+                          className={"user-profile-theme-row-modal-color-dot-plusicon"}
+                          type="plus"
+                        />
+                      </button>
+                    </Tooltip>
                   );
                 } else {
                   return (
-                    <button
-                      className={"user-profile-theme-row-modal-color-dot"}
-                      style={{
-                        backgroundColor: item.color
-                      }}
-                      onClick={() => this.handleColorDotClick(index)}
-                    >
-                      <Icon
-                        className={"user-profile-theme-row-modal-color-dot-plusicon"}
-                        type="plus"
-                      />
-                    </button>
+                    <Tooltip title={this.state.tooltip_msg[index]}>
+                      <button
+                        className={"user-profile-theme-row-modal-color-dot"}
+                        style={{
+                          backgroundColor: item.color
+                        }}
+                        onClick={() => this.handleColorDotClick(index)}
+                      >
+                        <Icon
+                          className={"user-profile-theme-row-modal-color-dot-plusicon"}
+                          type="plus"
+                        />
+                      </button>
+                    </Tooltip>
                   );
                 }
               } else {
                 console.log(this.state.name);
                 if (index === this.state.current) {
                   return (
-                    <button
-                      className={"user-profile-theme-row-modal-color-dot"}
-                      style={{
-                        backgroundColor: item.color,
-                        border: "5px solid #000"
-                      }}
-                    />
+                    <Tooltip title={this.state.tooltip_msg[index]}>
+                      <button
+                        className={"user-profile-theme-row-modal-color-dot"}
+                        style={{
+                          backgroundColor: item.color,
+                          border: "5px solid #000"
+                        }}
+                      />
+                    </Tooltip>
                   );
                 } else {
                   return (
-                    <button
-                      className={"user-profile-theme-row-modal-color-dot"}
-                      style={{
-                        backgroundColor: item.color
-                      }}
-                      onClick={() => this.handleColorDotClick(index)}
-                    />
+                    <Tooltip title={this.state.tooltip_msg[index]}>
+                      <button
+                        className={"user-profile-theme-row-modal-color-dot"}
+                        style={{
+                          backgroundColor: item.color
+                        }}
+                        onClick={() => this.handleColorDotClick(index)}
+                      />
+                    </Tooltip>
                   );
                 }
               }
@@ -193,31 +218,42 @@ class CreateModal extends React.Component {
                 author: this.props.username,
                 id: -1
               };
-              let result = this.props.addNewTheme(themetoAdd);
-              if (result !== "success") {
-                console.log(result);
-                console.log("display error");
-                let stateDuplicate = Object.assign({}, this.state);
-                stateDuplicate.error = true;
-                stateDuplicate.error_msg = result;
-                this.setState(stateDuplicate);
-                return;
-              }
-              this.props.handleCancel();
-              console.log(this.resetState);
-              this.setState(this.resetState);
-              this.stateCopy = {
-                colors: [
-                  { color: "#fff", empty: true },
-                  { color: "#fff", empty: true },
-                  { color: "#fff", empty: true },
-                  { color: "#fff", empty: true },
-                  { color: "#fff", empty: true }
-                ],
-                current: 0, //this is the index of the selection
-                name: "",
-                id: -1
-              };
+              themeAdd(themetoAdd).then(d => {
+                console.log(d);
+                if (d.status === 200) {
+                  themetoAdd.id = d.data;
+                  this.props.addNewTheme(themetoAdd);
+                  this.props.handleCancel();
+                  this.setState(this.resetState);
+                  this.stateCopy = {
+                    colors: [
+                      { color: "#fff", empty: true },
+                      { color: "#fff", empty: true },
+                      { color: "#fff", empty: true },
+                      { color: "#fff", empty: true },
+                      { color: "#fff", empty: true }
+                    ],
+                    current: 0, //this is the index of the selection
+                    name: "",
+                    id: -1,
+                    error: false,
+                    error_msg: "",
+                    tooltip_msg: [
+                      "header, primary side-bar color",
+                      "secondary side-bar color",
+                      "header font-color",
+                      "sidebar font-color",
+                      "new meow button"
+                    ]
+                  };
+                } else {
+                  console.log(d.data);
+                  let stateDuplicate = Object.assign({}, this.state);
+                  stateDuplicate.error = true;
+                  stateDuplicate.error_msg = d.data;
+                  this.setState(stateDuplicate);
+                }
+              });
             }}
           >
             <Icon type="plus" />
@@ -228,7 +264,14 @@ class CreateModal extends React.Component {
         <div className={"user-profile-theme-row-modal-items"}>
           <button
             className={"user-profile-theme-row-modal-cancel"}
-            onClick={this.props.handleCancel}
+            onClick={() => {
+              this.props.handleCancel();
+              this.setState({
+                ...this.state,
+                error: false,
+                error_msg: ""
+              });
+            }}
           >
             cancel
           </button>

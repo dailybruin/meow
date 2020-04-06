@@ -97,7 +97,7 @@ class Header extends Component {
             <span onClick={this.toMe} style={{ fontSize: "1.3em", cursor: "pointer" }}>
               Hi there, {this.props.firstName}!
             </span>
-            <SettingsButton />
+            <SettingsButton color={this.props.theme.primary_font_color} />
             <Button
               style={{
                 marginLeft: "0.6em",

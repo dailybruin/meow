@@ -246,7 +246,9 @@
 
 .user-profile-theme-row-modal-items {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
 }
 
 .user-profile-theme-row-modal-create-new-theme,

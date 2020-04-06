@@ -8,6 +8,7 @@ import { logout } from "../../actions/user";
 
 import "./Sidebar.css";
 import TimeSlider from "./TimeSlider";
+import { CaretRightOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
 
@@ -101,14 +102,17 @@ class Sidebar extends React.Component {
         <Collapse
           className="meow-collapse"
           style={primaryBackgroundAndFont}
-          expandIconPosition="right"
           defaultActiveKey={["1"]}
           bordered={false}
+          expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+          expandIconPosition="right"
         >
           <Panel
             className="full-width-panel"
             style={secondaryBackgroundAndFont}
-            header="posts from"
+            header={
+              <span style={{ color: `${this.props.theme.secondary_font_color}` }}>posts from</span>
+            }
             key="1"
           >
             <div style={{ width: "100%", backgroundColor: "white" }}>
@@ -126,7 +130,12 @@ class Sidebar extends React.Component {
               />
             </div>
           </Panel>
-          <Panel header="section" key="2">
+          <Panel
+            header={
+              <span style={{ color: `${this.props.theme.secondary_font_color}` }}>section</span>
+            }
+            key="2"
+          >
             {this.props.sections.map(s => (
               <Checkbox
                 style={{ color: `${this.props.theme.secondary_font_color}` }}
@@ -137,13 +146,24 @@ class Sidebar extends React.Component {
               </Checkbox>
             ))}
           </Panel>
-          <Panel header="post time" style={secondaryBackgroundAndFont} key="3">
+          <Panel
+            header={
+              <span style={{ color: `${this.props.theme.secondary_font_color}` }}>post time</span>
+            }
+            style={secondaryBackgroundAndFont}
+            key="3"
+          >
             <TimeSlider
               fontColor={`${this.props.theme.secondary_font_color}`}
               onSlideEnd={this.changeTime}
             />
           </Panel>
-          <Panel header="status" key="4">
+          <Panel
+            header={
+              <span style={{ color: `${this.props.theme.secondary_font_color}` }}>status</span>
+            }
+            key="4"
+          >
             <Checkbox
               style={{ color: `${this.props.theme.secondary_font_color}` }}
               onChange={this.changeStatus("READY")}
@@ -180,7 +200,7 @@ class Sidebar extends React.Component {
           <h1
             style={{
               marginBottom: 0,
-              color: "white"
+              color: `${this.props.theme.primary_font_color}`
             }}
           >
             Sign Out

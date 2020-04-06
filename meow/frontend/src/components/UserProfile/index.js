@@ -128,68 +128,39 @@ class UserProfile extends React.Component {
   };
 
   editCurrentTheme = (themeDetails, index) => {
-    var found = false;
-    var stateCopy = Object.assign({}, this.state);
-    for (let i = 0; i < stateCopy.themes.length; i++) {
-      if (stateCopy.themes[i].name === themeDetails.name && i != index) {
-        found = true;
-      }
-    }
-    if (!found) {
-      stateCopy.themes[index] = themeDetails;
+    let stateCopy = Object.assign({}, this.state);
+    stateCopy.themes[index] = themeDetails;
+    this.setState(stateCopy);
+    //do a theme change here with redux
+    if (this.state.selected_theme.id === themeDetails.id) {
+      console.log("time to change theme after edit");
+      stateCopy.selected_theme = this.state.themes[index];
       this.setState(stateCopy);
-      console.log(stateCopy);
-      themeEdit(this.state.themes[index]).then(d => {
-        //update the index of the theme
-        if (d.status === 400) {
-          console.log("Error: no same name themes allowed");
-          return "failure";
-        }
-        //do a theme change here with redux
-        if (this.state.selected_theme.id === this.state.themes[index].id) {
-          console.log("time to change theme after edit");
-          stateCopy.selected_theme = this.state.themes[index];
-          this.props.editUser({ selected_theme: themeDetails });
-          this.setState(stateCopy);
-        }
-        return "success";
-      });
-    } else {
-      console.log("Error: no same name themes allowed");
-      return "failure";
+      this.props.editUser({ selected_theme: themeDetails });
     }
   };
 
   addNewTheme = themeDetails => {
-    var stateCopy = Object.assign({}, this.state);
-    themeAdd(themeDetails).then(d => {
-      //update the index of the theme
-      if (d.status === 200) {
-        stateCopy.themes.push(themeDetails);
-        console.log("The id for the theme is " + d.data);
-        stateCopy.themes[stateCopy.themes.length - 1].id = d.data;
-        stateCopy.selected_theme = stateCopy.themes[stateCopy.themes.length - 1];
-        this.props.editUser({ selected_theme: stateCopy.selected_theme });
-        this.setState(stateCopy);
-        return "success";
-      } else if (d.status === 400) {
-        return d.data;
-      }
-    });
+    let stateCopy = Object.assign({}, this.state);
+    stateCopy.themes.push(themeDetails);
+    stateCopy.selected_theme = stateCopy.themes[stateCopy.themes.length - 1];
+    this.props.editUser({ selected_theme: stateCopy.selected_theme });
+    this.setState(stateCopy);
   };
 
   deleteTheme = index => {
     let stateCopy = Object.assign({}, this.state);
     let themename = stateCopy.themes[index].name;
-    themeDelete(stateCopy.themes[index]);
-    stateCopy.themes.splice(index, 1);
-    if (this.state.selected_theme.name === themename) {
-      console.log("time to change theme after delete");
-      stateCopy.selected_theme = this.state.themes[0];
-      this.props.editUser({ selected_theme: stateCopy.selected_theme });
-      this.setState(stateCopy);
-    }
-    this.setState(stateCopy);
+    themeDelete(stateCopy.themes[index]).then(d => {
+      if (d.status === 200) {
+        stateCopy.themes.splice(index, 1);
+        if (this.state.selected_theme.name === themename) {
+          stateCopy.selected_theme = d.data;
+          this.setState(stateCopy);
+          this.props.editUser({ selected_theme: d.data });
+        }
+      }
+    });
   };
 
   starfavoriteTheme = theme => {

@@ -1,7 +1,7 @@
 import React from "react";
 import "./styling.css";
 import { connect } from "react-redux";
-import { Menu, Dropdown, Icon } from "antd";
+import { Menu, Dropdown, Icon, Tooltip } from "antd";
 import { editUser } from "../../actions/user";
 import EditModal from "./UserProfileThemeEditModal";
 import { IoLogoOctocat } from "react-icons/io";
@@ -80,26 +80,36 @@ class UserProfileThemeRow extends React.Component {
         >
           {this.createHandOrGap()}
           <span className="user-profile-theme-row-name">{this.props.theme.name}</span>
-          <div
-            className="user-profile-theme-dot"
-            style={{ backgroundColor: this.props.theme.primary }}
-          />
-          <div
-            className="user-profile-theme-dot"
-            style={{ backgroundColor: this.props.theme.secondary }}
-          />
-          <div
-            className="user-profile-theme-dot"
-            style={{ backgroundColor: this.props.theme.primary_font_color }}
-          />
-          <div
-            className="user-profile-theme-dot"
-            style={{ backgroundColor: this.props.theme.secondary_font_color }}
-          />
-          <div
-            className="user-profile-theme-dot"
-            style={{ backgroundColor: this.props.theme.tertiary }}
-          />
+          <Tooltip title="header, primary side-bar color">
+            <div
+              className="user-profile-theme-dot"
+              style={{ backgroundColor: this.props.theme.primary }}
+            />
+          </Tooltip>
+          <Tooltip title="secondary side-bar color">
+            <div
+              className="user-profile-theme-dot"
+              style={{ backgroundColor: this.props.theme.secondary }}
+            />
+          </Tooltip>
+          <Tooltip title="header font-color">
+            <div
+              className="user-profile-theme-dot"
+              style={{ backgroundColor: this.props.theme.primary_font_color }}
+            />
+          </Tooltip>
+          <Tooltip title="sidebar font-color">
+            <div
+              className="user-profile-theme-dot"
+              style={{ backgroundColor: this.props.theme.secondary_font_color }}
+            />
+          </Tooltip>
+          <Tooltip title="new meow button">
+            <div
+              className="user-profile-theme-dot"
+              style={{ backgroundColor: this.props.theme.tertiary }}
+            />
+          </Tooltip>
         </div>
 
         <div className={"user-profile-theme-row-dropdown"}>

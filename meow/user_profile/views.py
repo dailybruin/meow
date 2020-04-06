@@ -38,9 +38,9 @@ class userThemes(APIView):
         new_secondary_font_color = req_data.get("secondary_font_color", None)
         new_tertiary = req_data.get("tertiary", None)
         if new_name == "":
-            return JsonResponse('Theme name cannot be an empty string', safe=False, status=400)
+            return JsonResponse('Theme name cannot be empty', safe=False, status=400)
         if (themes.filter(name=new_name)):
-            return JsonResponse('Theme name must be unique', safe=False, status=400)
+            return JsonResponse('Theme name taken, enter a new name', safe=False, status=400)
         new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
         new_id = Theme.objects.get(name=new_name).pk
         return JsonResponse(new_id, safe=False, status=200)
@@ -59,8 +59,10 @@ class userThemes(APIView):
         new_primary_font_color = req_data.get("primary_font_color", None)
         new_secondary_font_color = req_data.get("secondary_font_color", None)
         new_tertiary = req_data.get("tertiary", None)
+        if new_name=="":
+            return JsonResponse('Theme name cannot be empty', safe=False, status=400)
         if Theme.objects.filter(name=new_name) and new_name != old_name:
-            return HttpResponse('Theme name must be unique', status=400)
+            return JsonResponse('Theme name taken, enter new name', safe=False, status=400)
         else:
             filtered_theme = Theme.objects.filter(pk=id)
             if(len(filtered_theme)>1):
@@ -76,13 +78,14 @@ class userThemes(APIView):
         delete_name=themetodelete.name
         print(delete_name)
         if(delete_name == 'Daily Bruin' or delete_name == 'Dark Bruin'):
-            return HttpResponse('Default themes cannot be deleted', status=400)
+            return JsonResponse('Default themes cannot be deleted', safe=False, status=400)
         if user.selected_theme == Theme.objects.filter(name=delete_name, author=user)[0]:
             user.selected_theme = Theme.objects.get(name="Daily Bruin")
             user.save()
-            print(user)
         Theme.objects.filter(name=delete_name, author=user).delete()
-        return HttpResponse('Successful deletion', status=200)
+        serialized_theme = ThemeSerializer(user.selected_theme, many=False)
+        themeOrderedDict = serialized_theme.data
+        return JsonResponse(themeOrderedDict, safe=False, status=200)
         
 
 @api_login_required()

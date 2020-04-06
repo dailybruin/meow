@@ -79,21 +79,41 @@ export const themeAdd = newTheme => {
 };
 
 export const themeEdit = updatedTheme => {
-  return axios.put(`${SERVER_URL}/users/userThemes/${updatedTheme.id}/`, updatedTheme).then(res => {
-    return {
-      data: res.data,
-      status: res.status
-    };
-  });
+  return axios
+    .put(`${SERVER_URL}/users/userThemes/${updatedTheme.id}/`, updatedTheme)
+    .then(res => {
+      return {
+        data: res.data,
+        status: res.status
+      };
+    })
+    .catch(error => {
+      console.log(error.response.data);
+      console.log(error.response.response);
+      let msg = error.response.data;
+      let status = error.response.status;
+      return {
+        data: msg,
+        status: status
+      };
+    });
 };
 
 export const themeDelete = deletedTheme => {
-  return axios.delete(`${SERVER_URL}/users/userThemes/${deletedTheme.id}/`).then(res => {
-    return {
-      data: res.data,
-      status: res.status
-    };
-  });
+  return axios
+    .delete(`${SERVER_URL}/users/userThemes/${deletedTheme.id}/`)
+    .then(res => {
+      return {
+        data: res.data,
+        status: res.status
+      };
+    })
+    .catch(error => {
+      return {
+        data: error.response.data,
+        status: error.response.status
+      };
+    });
 };
 
 export const getMe = () => {

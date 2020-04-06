@@ -1,7 +1,8 @@
 import React from "react";
 import "./styling.css";
-import { Icon, Modal, Button } from "antd";
+import { Icon, Modal, Button, Tooltip } from "antd";
 import { SketchPicker } from "react-color";
+import { themeEdit } from "../../services/api.js";
 
 class EditModal extends React.Component {
   state = {
@@ -13,7 +14,16 @@ class EditModal extends React.Component {
       { color: this.props.theme.tertiary, empty: false }
     ],
     current: 0, //this is the index of the selection
-    name: this.props.name
+    name: this.props.name,
+    error: false,
+    error_msg: "",
+    tooltip_msg: [
+      "header, primary side-bar color",
+      "secondary side-bar color",
+      "header font-color",
+      "sidebar font-color",
+      "new meow button"
+    ]
   };
 
   stateCopy = Object.assign({}, this.state);
@@ -66,6 +76,12 @@ class EditModal extends React.Component {
     console.log(this.props.theme);
   };
 
+  errorMesage = () => {
+    if (this.state.error) {
+      return <p style={{ color: "red", margin: 0 }}>{this.state.error_msg}</p>;
+    }
+  };
+
   render() {
     return (
       <Modal
@@ -84,8 +100,8 @@ class EditModal extends React.Component {
             onChange={this.handleInputChange}
             value={this.state.name}
           />
+          {this.errorMesage()}
         </div>
-
         <div className={"user-profile-theme-row-modal-items"}>
           <div className={"user-profile-theme-row-modal-color-dots-container"}>
             {this.state.colors.map((item, index) => {
@@ -93,57 +109,65 @@ class EditModal extends React.Component {
                 console.log(this.state.name);
                 if (index === this.state.current) {
                   return (
-                    <button
-                      className={"user-profile-theme-row-modal-color-dot"}
-                      style={{
-                        backgroundColor: item.color,
-                        border: "5px solid #000"
-                      }}
-                      onClick={() => this.handleColorDotClick(index)}
-                    >
-                      <Icon
-                        className={"user-profile-theme-row-modal-color-dot-plusicon"}
-                        type="plus"
-                      />
-                    </button>
+                    <Tooltip title={this.state.tooltip_msg[index]}>
+                      <button
+                        className={"user-profile-theme-row-modal-color-dot"}
+                        style={{
+                          backgroundColor: item.color,
+                          border: "5px solid #000"
+                        }}
+                        onClick={() => this.handleColorDotClick(index)}
+                      >
+                        <Icon
+                          className={"user-profile-theme-row-modal-color-dot-plusicon"}
+                          type="plus"
+                        />
+                      </button>
+                    </Tooltip>
                   );
                 } else {
                   return (
-                    <button
-                      className={"user-profile-theme-row-modal-color-dot"}
-                      style={{
-                        backgroundColor: item.color
-                      }}
-                      onClick={() => this.handleColorDotClick(index)}
-                    >
-                      <Icon
-                        className={"user-profile-theme-row-modal-color-dot-plusicon"}
-                        type="plus"
-                      />
-                    </button>
+                    <Tooltip title={this.state.tooltip_msg[index]}>
+                      <button
+                        className={"user-profile-theme-row-modal-color-dot"}
+                        style={{
+                          backgroundColor: item.color
+                        }}
+                        onClick={() => this.handleColorDotClick(index)}
+                      >
+                        <Icon
+                          className={"user-profile-theme-row-modal-color-dot-plusicon"}
+                          type="plus"
+                        />
+                      </button>
+                    </Tooltip>
                   );
                 }
               } else {
                 console.log(this.state.name);
                 if (index === this.state.current) {
                   return (
-                    <button
-                      className={"user-profile-theme-row-modal-color-dot"}
-                      style={{
-                        backgroundColor: item.color,
-                        border: "5px solid #000"
-                      }}
-                    />
+                    <Tooltip title={this.state.tooltip_msg[index]}>
+                      <button
+                        className={"user-profile-theme-row-modal-color-dot"}
+                        style={{
+                          backgroundColor: item.color,
+                          border: "5px solid #000"
+                        }}
+                      />
+                    </Tooltip>
                   );
                 } else {
                   return (
-                    <button
-                      className={"user-profile-theme-row-modal-color-dot"}
-                      style={{
-                        backgroundColor: item.color
-                      }}
-                      onClick={() => this.handleColorDotClick(index)}
-                    />
+                    <Tooltip title={this.state.tooltip_msg[index]}>
+                      <button
+                        className={"user-profile-theme-row-modal-color-dot"}
+                        style={{
+                          backgroundColor: item.color
+                        }}
+                        onClick={() => this.handleColorDotClick(index)}
+                      />
+                    </Tooltip>
                   );
                 }
               }
@@ -164,7 +188,7 @@ class EditModal extends React.Component {
           <Button
             className={"user-profile-theme-row-modal-create-new-theme"}
             onClick={() => {
-              var themetoEdit = {
+              let themetoEdit = {
                 oldname: this.oldname,
                 name: this.state.name,
                 primary: this.state.colors[0].color,
@@ -175,11 +199,29 @@ class EditModal extends React.Component {
                 id: this.props.theme.id,
                 author: this.props.username
               };
-              let result = this.props.editCurrentTheme(themetoEdit, this.props.index);
-              if (result === "failure") {
-                return;
-              }
-              this.props.handleCancel();
+              themeEdit(themetoEdit).then(d => {
+                console.log(d);
+                if (d.status === 200) {
+                  let themetoModify = {
+                    name: this.state.name,
+                    primary: this.state.colors[0].color,
+                    secondary: this.state.colors[1].color,
+                    primary_font_color: this.state.colors[2].color,
+                    secondary_font_color: this.state.colors[3].color,
+                    tertiary: this.state.colors[4].color,
+                    id: this.props.theme.id,
+                    author: this.props.username
+                  };
+                  this.props.editCurrentTheme(themetoModify, this.props.index);
+                  this.props.handleCancel();
+                } else {
+                  console.log(d.data);
+                  let stateDuplicate = Object.assign({}, this.state);
+                  stateDuplicate.error = true;
+                  stateDuplicate.error_msg = d.data;
+                  this.setState(stateDuplicate);
+                }
+              });
             }}
           >
             <Icon type="plus" />

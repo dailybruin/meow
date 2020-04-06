@@ -16,7 +16,7 @@ class SettingsButton extends React.PureComponent {
           margin: "0 0.6em 0 0.6em",
           backgroundColor: "transparent",
           fontSize: "1.4em",
-          color: "white",
+          color: `${this.props.color}`,
           border: "transparent"
         }}
         onClick={this.toSettings}
