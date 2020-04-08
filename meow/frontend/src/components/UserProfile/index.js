@@ -91,7 +91,6 @@ class UserProfile extends React.Component {
 
   loadadditionalThemes = () => {
     starredthemesID().then(d => {
-      console.log(d.data);
       this.setState({
         starred_themes_id: d.data
       });
@@ -107,7 +106,6 @@ class UserProfile extends React.Component {
   fetchUserFor = username => {
     return userDetail(username).then(d => {
       let data = d.data;
-      console.log(d.data);
       this.setState({
         loading: false,
         first_name: data.first_name,
@@ -133,11 +131,8 @@ class UserProfile extends React.Component {
         break;
       }
     }
-    console.log(stateCopy.selected_theme);
-    console.log(themeDetails);
     //do a theme change here with redux
     if (this.state.selected_theme.id === themeDetails.id) {
-      console.log("time to change theme after edit");
       this.props.editUser({ selected_theme: themeDetails });
       this.setState(stateCopy);
     } else {
@@ -180,12 +175,10 @@ class UserProfile extends React.Component {
   starfavoriteTheme = theme => {
     var stateCopy = Object.assign({}, this.state);
     themeStarAdd(theme).then(d => {
-      console.log("List of starred themes index: ");
       stateCopy.starred_themes_id = d.data;
       stateCopy.additionalthemes.map(element => {
         if (element === theme) {
           element.favorite_count += 1;
-          console.log(element);
         }
       });
       this.setState(stateCopy);
@@ -195,12 +188,10 @@ class UserProfile extends React.Component {
   unstarfavoriteTheme = theme => {
     var stateCopy = Object.assign({}, this.state);
     themeStarRemove(theme).then(d => {
-      console.log("List of starred themes index: ");
       stateCopy.starred_themes_id = d.data;
       stateCopy.additionalthemes.map(element => {
         if (element === theme) {
           element.favorite_count -= 1;
-          console.log(element);
         }
       });
       this.setState(stateCopy);
@@ -208,8 +199,6 @@ class UserProfile extends React.Component {
   };
 
   render() {
-    console.log("Re render");
-    console.log(this.state);
     if (this.state.loading) {
       return null;
     }

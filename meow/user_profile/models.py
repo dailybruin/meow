@@ -17,7 +17,7 @@ class User(AbstractUser):
     twitter = models.URLField(default="https://twitter.com/Cats")
     profile_img = models.URLField(default=None, null=True)
     # gets first theme (Daily Bruin) in database and sets as default theme
-    selected_theme = models.ForeignKey('Theme', null=True, on_delete=models.SET_NULL, default=1)
+    selected_theme = models.ForeignKey('Theme', null=True, on_delete=models.SET_NULL, default=1, related_name='theme_user')
     starred_themes = models.ManyToManyField('Theme', related_name='related_users')
 
     def __str__(self):
@@ -28,7 +28,7 @@ class User(AbstractUser):
 
 
 class Theme(models.Model):
-    name = models.CharField(max_length=50, unique=True, blank=False)
+    name = models.CharField(max_length=20, unique=True, blank=False)
     primary = models.CharField(max_length=8)
     secondary = models.CharField(max_length=8)
     primary_font_color = models.CharField(max_length=8)
@@ -48,9 +48,7 @@ def m2m_favorite_themes(sender, **kwargs):
         selected_themes = kwargs['model'].objects.filter(pk__in=kwargs['pk_set'])
         if action == 'post_add' or action == 'post_remove':
             for item in selected_themes:
-                print (item.favorite_count)
                 item.favorite_count = item.related_users.count()
-                print (item.favorite_count)
                 item.save()
         else:
             pass

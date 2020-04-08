@@ -33,7 +33,7 @@ class UserProfileTheme extends React.Component {
     let seemore = [];
     if (this.state.seemore === false) {
       seemore.push(
-        <div className="user-profile-theme-see-more">
+        <div key={"seemore-button"} className="user-profile-theme-see-more">
           <button
             onClick={() => {
               this.setState({ seemore: true });
@@ -45,11 +45,12 @@ class UserProfileTheme extends React.Component {
         </div>
       );
     } else {
-      this.props.additionalthemes.map(item => {
+      this.props.additionalthemes.map((item, index) => {
         let active_theme = item.name === this.props.selected_theme.name;
         if (this.props.starred_themes_id.indexOf(item.id) > -1) {
           seemore.push(
             <UserProfileAdditionalThemeRow
+              key={item.name}
               starred={true}
               unstarfavoriteTheme={this.props.unstarfavoriteTheme}
               active={active_theme}
@@ -61,6 +62,7 @@ class UserProfileTheme extends React.Component {
         } else {
           seemore.push(
             <UserProfileAdditionalThemeRow
+              key={item.name}
               starred={false}
               starfavoriteTheme={this.props.starfavoriteTheme}
               active={active_theme}
@@ -72,7 +74,7 @@ class UserProfileTheme extends React.Component {
         }
       });
       seemore.push(
-        <div className="user-profile-theme-see-more">
+        <div key={"close-button"} className="user-profile-theme-see-more">
           <button
             onClick={() => {
               this.setState({ seemore: false });
@@ -98,7 +100,7 @@ class UserProfileTheme extends React.Component {
               return (
                 <UserProfileThemeRow
                   canEdit={this.props.canEdit}
-                  key={index}
+                  key={value.name}
                   theme={value}
                   active={active}
                   editCurrentTheme={this.props.editCurrentTheme}
@@ -142,10 +144,5 @@ class UserProfileTheme extends React.Component {
     );
   }
 }
-
-// //it is important that this component
-// const mapStateToProps = (state) => {
-//   return { theme: state.default.user.theme };
-// }
 
 export default UserProfileTheme;

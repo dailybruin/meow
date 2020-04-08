@@ -70,57 +70,49 @@ class UserProfileAdditionalThemeRow extends React.Component {
   };
 
   starSelected = () => {
+    let clickHandler = null;
+    let icon = null;
     if (this.props.starred === true) {
-      if (this.props.theme.favorite_count >= 5) {
-        return (
-          <div
-            onClick={() => {
-              this.props.unstarfavoriteTheme(this.props.theme);
-            }}
-          >
-            <MdFavorite
-              style={{
-                marginTop: 11,
-                fontSize: 30,
-                color: "#d94a4a"
-              }}
-            />
-          </div>
-        );
-      } else {
-        return (
-          <div
-            onClick={() => {
-              this.props.unstarfavoriteTheme(this.props.theme);
-            }}
-          >
-            <FaStar
-              style={{
-                marginTop: 11,
-                fontSize: 30,
-                color: "#e6cf00"
-              }}
-            />
-          </div>
-        );
-      }
-    } else {
-      return (
-        <div
-          onClick={() => {
-            this.props.starfavoriteTheme(this.props.theme);
-          }}
-        >
-          <FaRegStar
+      clickHandler = () => {
+        this.props.unstarfavoriteTheme(this.props.theme);
+      };
+      if (this.props.favorite_count >= 5) {
+        icon = (
+          <MdFavorite
             style={{
               marginTop: 11,
               fontSize: 30,
-              color: "#cfcfcf"
+              color: "#d94a4a"
             }}
           />
-        </div>
+        );
+      } else {
+        icon = (
+          <FaStar
+            style={{
+              marginTop: 11,
+              fontSize: 30,
+              color: "#e6cf00"
+            }}
+          />
+        );
+      }
+    } else {
+      clickHandler = () => {
+        this.props.starfavoriteTheme(this.props.theme);
+      };
+      icon = (
+        <FaRegStar
+          style={{
+            marginTop: 11,
+            fontSize: 30,
+            color: "#cfcfcf"
+          }}
+        />
       );
     }
+
+    return <div onClick={clickHandler}>{icon}</div>;
   };
 }
 

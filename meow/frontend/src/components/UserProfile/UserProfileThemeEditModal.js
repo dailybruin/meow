@@ -28,30 +28,6 @@ class EditModal extends React.Component {
 
   stateCopy = Object.assign({}, this.state);
   oldname = this.stateCopy.name;
-  items = this.stateCopy.colors.map((item, index) => {
-    if (item.empty) {
-      return (
-        <button
-          className={"user-profile-theme-row-modal-color-dot"}
-          style={{
-            backgroundColor: item.color
-          }}
-          onClick={() => this.handleColorDotClick(index)}
-        >
-          <Icon type="plus-circle" />
-        </button>
-      );
-    } else {
-      return (
-        <button
-          className={"user-profile-theme-row-modal-color-dot"}
-          style={{
-            backgroundColor: item.color
-          }}
-        />
-      );
-    }
-  });
 
   handleChangeComplete = color => {
     this.stateCopy.current = this.state.current;
@@ -102,7 +78,7 @@ class EditModal extends React.Component {
               if (item.empty) {
                 if (index === this.state.current) {
                   return (
-                    <Tooltip title={this.state.tooltip_msg[index]}>
+                    <Tooltip key={index} title={this.state.tooltip_msg[index]}>
                       <button
                         className={"user-profile-theme-row-modal-color-dot"}
                         style={{
@@ -120,7 +96,7 @@ class EditModal extends React.Component {
                   );
                 } else {
                   return (
-                    <Tooltip title={this.state.tooltip_msg[index]}>
+                    <Tooltip key={index} title={this.state.tooltip_msg[index]}>
                       <button
                         className={"user-profile-theme-row-modal-color-dot"}
                         style={{
@@ -139,7 +115,7 @@ class EditModal extends React.Component {
               } else {
                 if (index === this.state.current) {
                   return (
-                    <Tooltip title={this.state.tooltip_msg[index]}>
+                    <Tooltip key={index} title={this.state.tooltip_msg[index]}>
                       <button
                         className={"user-profile-theme-row-modal-color-dot"}
                         style={{
@@ -151,7 +127,7 @@ class EditModal extends React.Component {
                   );
                 } else {
                   return (
-                    <Tooltip title={this.state.tooltip_msg[index]}>
+                    <Tooltip key={index} title={this.state.tooltip_msg[index]}>
                       <button
                         className={"user-profile-theme-row-modal-color-dot"}
                         style={{
