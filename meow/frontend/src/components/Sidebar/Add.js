@@ -16,8 +16,10 @@ class LeftSidebarAdd extends React.Component {
       <div className="leftSidebarAdd">
         <div style={{ width: "100%", backgroundColor: "white" }}>
           <Calendar
-            value={moment(this.props.pub_date)}
+            defaultValue={moment(this.props.pub_date)}
             onChange={x => {
+              console.log("Got in here");
+              this.props.changeDay(x.format("YYYY-MM-DD"));
               this.handleFormChange({
                 pub_date: x.format("YYYY-MM-DD")
               });
@@ -61,7 +63,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  editPost: data => editPost(data)
+  editPost: data => editPost(data),
+  changeDay: data => setDate(date)
 };
 
 export default connect(

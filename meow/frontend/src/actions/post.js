@@ -152,3 +152,10 @@ export const editPost = data => dispatch =>
     type: "EDIT_POST",
     payload: data
   });
+
+//===================== 2-20 =====================
+export const setDate = date => dispatch =>
+  dispatch({
+    type: "SET_DATE",
+    payload: date
+  });
