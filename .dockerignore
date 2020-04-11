@@ -1,5 +1,6 @@
 celerybeat.pid
 
+*.log
 .env
 .gitignore
 .editorconfig
