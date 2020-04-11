@@ -187,7 +187,6 @@ LOGGING = {
             'class':'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'meow.log'),
             'maxBytes': 1024*1024*3, # 3MB
-            'backupCount': 3,
             'formatter': 'simple_server'
         },
         # this handler makes errors show up in rancher's console
@@ -198,10 +197,14 @@ LOGGING = {
 		},
 	},
 	'loggers': {
-		'django': {
+		'django.request': {
 			'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',
 		},
+        'django.security.*': {
+            'handlers': ['console', 'console_debug_false', 'logfile'],
+            'level': 'INFO',
+        },
         'scheduler': {
             'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',

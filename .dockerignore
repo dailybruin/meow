@@ -1,5 +1,8 @@
 celerybeat.pid
 
+*.log
+meow.log
+meow/meow.log
 .env
 .gitignore
 .editorconfig
