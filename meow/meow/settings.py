@@ -197,10 +197,14 @@ LOGGING = {
 		},
 	},
 	'loggers': {
-		'django': {
+		'django.request': {
 			'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',
 		},
+        'django.security.*': {
+            'handlers': ['console', 'console_debug_false', 'logfile'],
+            'level': 'INFO',
+        },
         'scheduler': {
             'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',
