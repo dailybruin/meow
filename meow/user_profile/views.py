@@ -6,6 +6,7 @@ from django.core import serializers
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from meow.utils.decorators import api_login_required
 
@@ -14,11 +15,9 @@ from user_profile.serializers import SafeUserSerializer, ThemeSerializer
 import json
 # Create your views here.
 
-class userThemes(APIView):
+class UserThemes(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, id, format=None):
-        if not request.user.is_authenticated:
-            return HttpResponse('Must be logged in', status=403)
-        print("hi im here")
         user = request.user
         themes = Theme.objects.filter(name="Daily Bruin")| Theme.objects.filter(name="Dark Bruin") | Theme.objects.filter(author=user)
         serialized_themes = ThemeSerializer(themes, many=True)
@@ -26,8 +25,6 @@ class userThemes(APIView):
         return JsonResponse(themeOrderedDict, safe=False, status=200)
     
     def post(self, request, id, format=None):
-        if not request.user.is_authenticated:
-            return HttpResponse('Must be logged in', status=403)
         user = request.user
         themes = Theme.objects.all()
         req_data = request.data
@@ -39,6 +36,8 @@ class userThemes(APIView):
         new_tertiary = req_data.get("tertiary", None)
         if new_name == "":
             return JsonResponse('Theme name cannot be empty', safe=False, status=400)
+        if len(new_name)>20:
+            return JsonResponse('Theme name is limited to 20 characters', safe=False, status=400)
         if (themes.filter(name=new_name)):
             return JsonResponse('Theme name taken, enter a new name', safe=False, status=400)
         new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
@@ -46,8 +45,6 @@ class userThemes(APIView):
         return JsonResponse(new_id, safe=False, status=200)
 
     def put(self, request, id, format=None):
-        if not request.user.is_authenticated:
-            return HttpResponse('Must be logged in', status=403)
         user=request.user
         req_data = request.data
         old_name = req_data.get("oldname", None)
@@ -69,21 +66,22 @@ class userThemes(APIView):
             if(len(filtered_theme)>1):
                 return HttpResponse('Non-unique name in themes corruption', status=400)
             filtered_theme.update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
-            return HttpResponse('Sucesss', status=200)
+            return JsonResponse(theme_id, safe=False, status=200)
     
     def delete(self, request, id, format=None):
-        if not request.user.is_authenticated:
-            return HttpResponse('Must be logged in', status=403)
         user=request.user
         themetodelete = Theme.objects.get(pk=id)
         delete_name=themetodelete.name
-        print(delete_name)
         if(delete_name == 'Daily Bruin' or delete_name == 'Dark Bruin'):
             return JsonResponse('Default themes cannot be deleted', safe=False, status=400)
         if user.selected_theme == Theme.objects.filter(name=delete_name, author=user)[0]:
             user.selected_theme = Theme.objects.get(name="Daily Bruin")
             user.save()
-        Theme.objects.filter(name=delete_name, author=user).delete()
+        if themetodelete.user_set.count()==0 and themetodelete.related_users.count()==0:
+            themetodelete.delete()
+        else:
+            themetodelete.author=None
+            themetodelete.save()
         serialized_theme = ThemeSerializer(user.selected_theme, many=False)
         themeOrderedDict = serialized_theme.data
         return JsonResponse(themeOrderedDict, safe=False, status=200)
@@ -94,7 +92,7 @@ def additionalthemeList(request):
     #this functon list out the additional themes
     user = request.user
     if request.method == "GET":
-        themes = Theme.objects.exclude(author=user).exclude(author=None).order_by('-favorite_count')
+        themes = themes = Theme.objects.exclude(author=user).exclude(name__in=["Daily Bruin", "Dark Bruin"]).order_by('-favorite_count')
         serialized_themes = ThemeSerializer(themes, many=True)
         themeOrderedDict = serialized_themes.data
         return JsonResponse(themeOrderedDict, safe=False, status=200)
@@ -104,9 +102,7 @@ def starredthemesIDFetch(request):
     user = request.user
     if request.method == "GET":
         user = User.objects.all().get(username=user.username)
-        starred_themes_id = []
-        for theme in user.starred_themes.all():
-            starred_themes_id.append(theme.pk)
+        starred_themes_id =[theme.pk for theme in user.starred_themes.all()] 
         return JsonResponse(starred_themes_id, safe=False, status=200)
 
 @api_login_required()
@@ -117,10 +113,8 @@ def themeStar(request):
         theme_id = req_data['id']
         themes = Theme.objects.all()
         star_theme = themes.get(pk=theme_id)
-        user_associated = User.objects.get(username=user.username)
-        user_associated.starred_themes.add(star_theme)
-        starred_themes_id = user_associated.starred_themes.values_list('pk', flat=True)
-        print("Starred Themes ID")
+        user.starred_themes.add(star_theme)
+        starred_themes_id = user.starred_themes.values_list('pk', flat=True)
         starred_themes_id = list(starred_themes_id)
         return JsonResponse(starred_themes_id, safe=False, status=200)
     elif request.method == "PUT":
@@ -129,9 +123,10 @@ def themeStar(request):
         themes = Theme.objects.all()
         #theme we want to remove the relation
         unstar_theme = themes.get(pk=theme_id)
-        user_associated = User.objects.get(username=user.username)
-        user_associated.starred_themes.remove(unstar_theme)
-        starred_themes_id = user_associated.starred_themes.values_list('pk', flat=True)
+        user.starred_themes.remove(unstar_theme)
+        if unstar_theme.author==None and unstar_theme.user_set.count()==0 and unstar_theme.related_users.count()==1:
+            unstar_theme.delete()
+        starred_themes_id = user.starred_themes.values_list('pk', flat=True)
         starred_themes_id = list(starred_themes_id)
         return JsonResponse(starred_themes_id, safe=False, status=200)
 
@@ -166,15 +161,14 @@ def me(request):
         if new_twitter == "" or new_twitter:
             user.twitter = new_twitter
             updated = True
-        if new_theme and (new_theme['name'] == 'Dark Bruin' or new_theme['name'] == 'Daily Bruin'):
-            user.selected_theme = Theme.objects.get(name=new_theme['name'])
-            updated = True
-        elif new_theme and Theme.objects.filter(name=new_theme['name'], id=new_theme['id']).count() > 0:
+        if new_theme and Theme.objects.filter(name=new_theme['name'], id=new_theme['id']).count() > 0:
             # this isn't very good but for now it works
             # the problem is that the front ends sends the entire theme object
             # and all the backend does is use the id.
+            current_selected_theme = user.selected_theme
+            if current_selected_theme.author==None and current_selected_theme.user_set.count()==1 and current_selected_theme.related_users.count()==0 and (current_selected_theme.name not in ['Daily Bruin', 'Dark Bruin']):
+                current_selected_theme.delete()
             user.selected_theme = Theme.objects.get(name=new_theme['name'], id=new_theme['id'])
-            print(user.selected_theme)
             updated = True
         if updated:
             user.save()

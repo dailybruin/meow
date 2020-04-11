@@ -17,7 +17,7 @@ class User(AbstractUser):
     twitter = models.URLField(default="https://twitter.com/Cats")
     profile_img = models.URLField(default=None, null=True)
     # gets first theme (Daily Bruin) in database and sets as default theme
-    selected_theme = models.ForeignKey('Theme', null=True, on_delete=models.SET_NULL, default=1)
+    selected_theme = models.ForeignKey('Theme', null=True, on_delete=models.SET_DEFAULT, default=1)
     starred_themes = models.ManyToManyField('Theme', related_name='related_users')
 
     def __str__(self):

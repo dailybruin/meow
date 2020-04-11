@@ -29,11 +29,11 @@ function UserProfileBasicInfo(props) {
           <div className="user-profile-basic-info-data">{props.slack_username}</div>
         </li>
 
-        <UserProfileSocialMediaContainer
+        {/* <UserProfileSocialMediaContainer
           canEdit={props.canEdit}
           instagram={props.instagram}
           twitter={props.twitter}
-        />
+        /> */}
       </ul>
     </div>
   );

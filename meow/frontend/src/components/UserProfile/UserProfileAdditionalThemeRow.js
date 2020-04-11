@@ -3,7 +3,6 @@ import "./styling.css";
 import { connect } from "react-redux";
 import { editUser } from "../../actions/user";
 import { FaStar, FaRegStar } from "react-icons/fa";
-import { MdFavorite } from "react-icons/md";
 import { Tooltip } from "antd";
 
 class UserProfileAdditionalThemeRow extends React.Component {
@@ -70,57 +69,32 @@ class UserProfileAdditionalThemeRow extends React.Component {
   };
 
   starSelected = () => {
-    if (this.props.starred === true) {
-      if (this.props.theme.favorite_count >= 5) {
-        return (
-          <div
-            onClick={() => {
-              this.props.unstarfavoriteTheme(this.props.theme);
-            }}
-          >
-            <MdFavorite
-              style={{
-                marginTop: 11,
-                fontSize: 30,
-                color: "#d94a4a"
-              }}
-            />
-          </div>
-        );
-      } else {
-        return (
-          <div
-            onClick={() => {
-              this.props.unstarfavoriteTheme(this.props.theme);
-            }}
-          >
-            <FaStar
-              style={{
-                marginTop: 11,
-                fontSize: 30,
-                color: "#e6cf00"
-              }}
-            />
-          </div>
-        );
-      }
-    } else {
-      return (
-        <div
-          onClick={() => {
-            this.props.starfavoriteTheme(this.props.theme);
-          }}
-        >
-          <FaRegStar
-            style={{
-              marginTop: 11,
-              fontSize: 30,
-              color: "#cfcfcf"
-            }}
-          />
-        </div>
-      );
-    }
+    let icon = this.props.starred ? (
+      <FaStar
+        style={{
+          marginTop: 11,
+          fontSize: 30,
+          color: "#e6cf00"
+        }}
+      />
+    ) : (
+      <FaRegStar
+        style={{
+          marginTop: 11,
+          fontSize: 30,
+          color: "#cfcfcf"
+        }}
+      />
+    );
+    return (
+      <div
+        onClick={() => {
+          this.props.handleClick(this.props.theme);
+        }}
+      >
+        {icon}
+      </div>
+    );
   };
 }
 

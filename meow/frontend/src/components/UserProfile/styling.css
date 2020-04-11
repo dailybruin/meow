@@ -115,6 +115,7 @@
   width: 100%;
   margin-bottom: 15px;
   align-items: center;
+  height: auto;
   border: 2px solid lightgrey;
 }
 
@@ -133,6 +134,7 @@
   margin-right: 10px;
   margin-left: 3px;
   text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .user-profile-theme-row-hand {

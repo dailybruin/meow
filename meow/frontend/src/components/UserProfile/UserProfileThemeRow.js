@@ -3,34 +3,39 @@ import "./styling.css";
 import { connect } from "react-redux";
 import { Menu, Dropdown, Icon, Tooltip } from "antd";
 import { editUser } from "../../actions/user";
-import EditModal from "./UserProfileThemeEditModal";
+import UserProfileThemeModal from "./UserProfileThemeModal";
 import { IoLogoOctocat } from "react-icons/io";
+import { themeEdit } from "../../services/api.js";
 
-class UserProfileThemeRow extends React.Component {
-  state = { visible: false };
+class UserProfileThemeRow extends React.PureComponent {
+  state = { visible: false, mounted: false };
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
+      mounted: true
     });
   };
 
   handleOk = e => {
-    console.log(e);
     this.setState({
       visible: false
     });
   };
 
   handleCancel = e => {
-    console.log(e);
     this.setState({
       visible: false
     });
   };
 
-  menu = () => {
-    console.log("clicked");
+  unmountModal = () => {
+    this.setState({
+      mounted: false
+    });
+  };
+
+  renderMenu = () => {
     return (
       <Menu className={"user-profile-theme-row-dropdown-menu"}>
         <Menu.Item
@@ -44,8 +49,6 @@ class UserProfileThemeRow extends React.Component {
           key="1"
           className={"user-profile-theme-row-dropdown-menu-item"}
           onClick={() => {
-            console.log(this.props.index);
-            console.log("delete");
             this.props.deleteTheme(this.props.index); //theme deletion function that is passed down
           }}
         >
@@ -55,7 +58,7 @@ class UserProfileThemeRow extends React.Component {
     );
   };
 
-  icon = () => {
+  renderIcon = () => {
     if (this.props.disabled === false) {
       return <Icon type="ellipsis" className={"user-profile-theme-row-dropdown-icon"} />;
     } else {
@@ -113,22 +116,23 @@ class UserProfileThemeRow extends React.Component {
         </div>
 
         <div className={"user-profile-theme-row-dropdown"}>
-          <Dropdown overlay={this.menu} disabled={this.props.disabled}>
-            {this.icon()}
+          <Dropdown overlay={this.renderMenu} disabled={this.props.disabled}>
+            {this.renderIcon()}
           </Dropdown>
         </div>
-
-        <EditModal
-          handleCancel={this.handleCancel}
-          visible={this.state.visible}
-          handleOk={this.handleOk}
-          handleCancel={this.handleCancel}
-          editCurrentTheme={this.props.editCurrentTheme}
-          index={this.props.index}
-          name={this.props.name}
-          theme={this.props.theme}
-          username={this.props.username}
-        />
+        {this.state.mounted === true ? (
+          <UserProfileThemeModal
+            handleCancel={this.handleCancel}
+            visible={this.state.visible}
+            handleOk={this.handleOk}
+            theme={this.props.theme}
+            username={this.props.username}
+            unmountModal={this.unmountModal}
+            onSubmit={themeEdit}
+            onSuccess={this.props.editCurrentTheme}
+            buttonText={"save colors"}
+          />
+        ) : null}
       </div>
     );
   }

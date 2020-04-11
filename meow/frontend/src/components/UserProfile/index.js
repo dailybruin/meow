@@ -16,6 +16,7 @@ import {
   additionalthemeList,
   starredthemesID
 } from "../../services/api";
+import cloneDeep from "lodash.clonedeep";
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -61,14 +62,13 @@ class UserProfile extends React.Component {
           id: 1
         }
       ],
-      additionalthemes: [],
-      starred_themes_id: []
+      additionalThemes: [],
+      starredThemesId: []
     };
   }
 
   componentWillMount() {
     const { username } = this.props.match.params;
-
     themeList().then(d => {
       this.setState({
         ...this.state,
@@ -91,7 +91,6 @@ class UserProfile extends React.Component {
 
   loadadditionalThemes = () => {
     starredthemesID().then(d => {
-      console.log(d.data);
       this.setState({
         starred_themes_id: d.data
       });
@@ -125,90 +124,89 @@ class UserProfile extends React.Component {
   };
 
   editCurrentTheme = themeDetails => {
-    let stateCopy = Object.assign({}, this.state);
+    const newThemes = cloneDeep(this.state.themes);
     let i = 0;
-    for (; i < stateCopy.themes.length; i++) {
-      if (stateCopy.themes[i].id === themeDetails.id) {
-        stateCopy.themes[i] = themeDetails;
+    for (; i < newThemes.length; i++) {
+      if (newThemes[i].id === themeDetails.id) {
+        newThemes[i] = themeDetails;
         break;
       }
     }
-    console.log(stateCopy.selected_theme);
-    console.log(themeDetails);
-    //do a theme change here with redux
-    if (this.state.selected_theme.id === themeDetails.id) {
-      console.log("time to change theme after edit");
-      this.props.editUser({ selected_theme: themeDetails });
-      this.setState(stateCopy);
-    } else {
-      this.setState(stateCopy);
-    }
+    this.props.editUser({ selected_theme: themeDetails });
+    this.setState({ themes: newThemes });
   };
 
   addNewTheme = themeDetails => {
-    let stateCopy = Object.assign({}, this.state);
-    stateCopy.themes.push(themeDetails);
-    stateCopy.selected_theme = stateCopy.themes[stateCopy.themes.length - 1];
-    this.props.editUser({ selected_theme: stateCopy.selected_theme });
-    this.setState(stateCopy);
+    this.props.editUser({ selected_theme: themeDetails });
+    this.setState(prevState => {
+      return {
+        themes: [...prevState.themes, themeDetails]
+      };
+    });
   };
 
   deleteTheme = index => {
-    let stateCopy = Object.assign({}, this.state);
-    let themename = stateCopy.themes[index].name;
-    themeDelete(stateCopy.themes[index]).then(d => {
+    let themeName = this.state.themes[index].name;
+    themeDelete(this.state.themes[index]).then(d => {
       if (d.status === 200) {
-        stateCopy.themes.splice(index, 1);
-        if (this.state.selected_theme.name === themename) {
+        if (this.state.selected_theme.name === themeName) {
           this.props.editUser({ selected_theme: d.data }).then(() => {
-            stateCopy.selected_theme = d.data;
-            this.setState(stateCopy);
+            const newThemes = cloneDeep(this.state.themes);
+            newThemes.splice(index, 1);
+            this.setState({
+              selected_theme: d.data,
+              themes: newThemes
+            });
           });
         } else {
-          this.setState(stateCopy);
+          const newThemes = cloneDeep(this.state.themes);
+          newThemes.splice(index, 1);
+          this.setState({
+            themes: newThemes
+          });
         }
       }
     });
   };
 
   themeChanger = data => {
-    let stateCopy = Object.assign({}, this.state);
-    stateCopy.selected_theme = data;
-    this.setState(stateCopy);
+    this.setState({
+      ...this.state,
+      selected_theme: data
+    });
   };
 
   starfavoriteTheme = theme => {
-    var stateCopy = Object.assign({}, this.state);
     themeStarAdd(theme).then(d => {
-      console.log("List of starred themes index: ");
-      stateCopy.starred_themes_id = d.data;
-      stateCopy.additionalthemes.map(element => {
+      let additionalThemes = cloneDeep(this.state.additionalThemes);
+      additionalThemes.map(element => {
         if (element === theme) {
-          element.favorite_count += 1;
-          console.log(element);
+          element["starred"] = True;
         }
       });
-      this.setState(stateCopy);
+      this.setState({
+        starredThemesId: d.data,
+        additionalThemes: additionalThemes
+      });
     });
   };
 
   unstarfavoriteTheme = theme => {
-    var stateCopy = Object.assign({}, this.state);
     themeStarRemove(theme).then(d => {
-      console.log("List of starred themes index: ");
-      stateCopy.starred_themes_id = d.data;
-      stateCopy.additionalthemes.map(element => {
+      let additionalThemes = cloneDeep(this.state.additionalThemes);
+      additionalThemes.map(element => {
         if (element === theme) {
-          element.favorite_count -= 1;
-          console.log(element);
+          delete element["starred"];
         }
       });
-      this.setState(stateCopy);
+      this.setState({
+        starredThemesId: d.data,
+        additionalThemes: additionalThemes
+      });
     });
   };
 
   render() {
-    console.log("Re render");
     console.log(this.state);
     if (this.state.loading) {
       return null;
@@ -239,9 +237,9 @@ class UserProfile extends React.Component {
             username={this.state.slack_username}
             deleteTheme={this.deleteTheme}
             loadadditionalThemes={this.loadadditionalThemes}
-            additionalthemes={this.state.additionalthemes}
+            additionalthemes={this.state.additionalThemes}
             starfavoriteTheme={this.starfavoriteTheme}
-            starred_themes_id={this.state.starred_themes_id}
+            starred_themes_id={this.state.starredThemesId}
             unstarfavoriteTheme={this.unstarfavoriteTheme}
             themeChanger={this.themeChanger}
           />

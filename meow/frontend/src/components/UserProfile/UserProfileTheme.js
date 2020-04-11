@@ -1,19 +1,34 @@
 import React from "react";
 import UserProfileThemeRow from "./UserProfileThemeRow";
-import CreateModal from "./UserProfileThemeCreateModal";
+import UserProfileThemeModal from "./UserProfileThemeModal";
 import UserProfileAdditionalThemeRow from "./UserProfileAdditionalThemeRow";
 import "./styling.css";
 import { Icon } from "antd";
+import { themeAdd } from "../../services/api.js";
 
-class UserProfileTheme extends React.Component {
+class UserProfileTheme extends React.PureComponent {
+  defaultTheme = {
+    name: "",
+    id: -1,
+    primary: "#FFFFFF",
+    secondary: "#FFFFFF",
+    primary_font_color: "#FFFFFF",
+    secondary_font_color: "#FFFFFF",
+    tertiary: "#FFFFFF",
+    favorite_count: 0,
+    author: this.props.username
+  };
+
   state = {
     visible: false,
-    seemore: false
+    seeMore: false,
+    mounted: false
   };
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
+      mounted: true
     });
   };
 
@@ -29,14 +44,20 @@ class UserProfileTheme extends React.Component {
     });
   };
 
+  unmountModal = e => {
+    this.setState({
+      mounted: false
+    });
+  };
+
   render() {
-    let seemore = [];
-    if (this.state.seemore === false) {
-      seemore.push(
+    let seeMore = [];
+    if (this.state.seeMore === false) {
+      seeMore.push(
         <div className="user-profile-theme-see-more">
           <button
             onClick={() => {
-              this.setState({ seemore: true });
+              this.setState({ seeMore: true });
               this.props.loadadditionalThemes();
             }}
           >
@@ -47,35 +68,26 @@ class UserProfileTheme extends React.Component {
     } else {
       this.props.additionalthemes.map(item => {
         let active_theme = item.name === this.props.selected_theme.name;
-        if (this.props.starred_themes_id.indexOf(item.id) > -1) {
-          seemore.push(
-            <UserProfileAdditionalThemeRow
-              starred={true}
-              unstarfavoriteTheme={this.props.unstarfavoriteTheme}
-              active={active_theme}
-              theme={item}
-              canEdit={this.props.canEdit}
-              themeChanger={this.props.themeChanger}
-            />
-          );
-        } else {
-          seemore.push(
-            <UserProfileAdditionalThemeRow
-              starred={false}
-              starfavoriteTheme={this.props.starfavoriteTheme}
-              active={active_theme}
-              theme={item}
-              canEdit={this.props.canEdit}
-              themeChanger={this.props.themeChanger}
-            />
-          );
-        }
+        let clickHandler = item.hasOwnProperty("starred")
+          ? this.props.unstarfavoriteTheme
+          : this.props.starfavoriteTheme;
+        let starred = item.hasOwnProperty("starred") ? true : false;
+        seeMore.push(
+          <UserProfileAdditionalThemeRow
+            starred={starred}
+            clickHandler={clickHandler}
+            active={active_theme}
+            theme={item}
+            canEdit={this.props.canEdit}
+            themeChanger={this.props.themeChanger}
+          />
+        );
       });
-      seemore.push(
+      seeMore.push(
         <div className="user-profile-theme-see-more">
           <button
             onClick={() => {
-              this.setState({ seemore: false });
+              this.setState({ seeMore: false });
             }}
           >
             close
@@ -95,6 +107,7 @@ class UserProfileTheme extends React.Component {
               if (index === 0 || index === 1) {
                 disabled = true;
               }
+              console.log(value);
               return (
                 <UserProfileThemeRow
                   canEdit={this.props.canEdit}
@@ -125,19 +138,21 @@ class UserProfileTheme extends React.Component {
               />
             </button>
           </div>
-          <div style={{ marginTop: 12 }}>{seemore}</div>
+          <div style={{ marginTop: 12 }}>{seeMore}</div>
         </div>
-
-        <CreateModal
-          handleCancel={this.handleCancel}
-          visible={this.state.visible}
-          handleOk={this.handleOk}
-          handleCancel={this.handleCancel}
-          addNewTheme={this.props.addNewTheme}
-          name={this.props.name}
-          saveTheme={this.props.saveTheme}
-          username={this.props.username}
-        />
+        {this.state.mounted === true ? (
+          <UserProfileThemeModal
+            handleCancel={this.handleCancel}
+            handleOk={this.handleOk}
+            visible={this.state.visible}
+            unmountModal={this.unmountModal}
+            theme={this.defaultTheme}
+            onSubmit={themeAdd}
+            username={this.props.username}
+            onSuccess={this.props.addNewTheme}
+            buttonText={"create theme"}
+          />
+        ) : null}
       </div>
     );
   }
