@@ -41,7 +41,7 @@ class UserProfileThemeModal extends React.PureComponent {
   handleChangeComplete = color => {
     this.setState(prevState => {
       const newColors = cloneDeep(prevState.colors);
-      newColors[this.state.current] = color.hex;
+      newColors[prevState.current] = color.hex;
       return { colors: newColors };
     });
   };

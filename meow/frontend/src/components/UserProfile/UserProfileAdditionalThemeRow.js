@@ -12,6 +12,12 @@ class UserProfileAdditionalThemeRow extends React.Component {
         <div
           className={`user-profile-theme-row${this.props.active ? "-active" : ""}`}
           onClick={this.setAsCurrentTheme}
+          style={{ animation: `${this.props.animateUnmount ? "slideout" : "slidein"} 1s` }}
+          onAnimationEnd={() => {
+            if (this.props.animateUnmount === true) {
+              this.props.unmountAdditionalThemes();
+            }
+          }}
         >
           {this.createHandOrGap()}
           <span className="user-profile-theme-row-name">{this.props.theme.name}</span>
@@ -69,32 +75,26 @@ class UserProfileAdditionalThemeRow extends React.Component {
   };
 
   starSelected = () => {
-    let icon = this.props.starred ? (
+    let renderIcon = this.props.starred ? (
       <FaStar
-        style={{
-          marginTop: 11,
-          fontSize: 30,
-          color: "#e6cf00"
+        className="starred-icon"
+        onClick={() => {
+          console.log("unstar here");
+          this.props.clickHandler(this.props.theme);
         }}
+        style={{ animation: `${this.props.animateUnmount ? "slideout" : "rotateIn"} 1s` }}
       />
     ) : (
       <FaRegStar
-        style={{
-          marginTop: 11,
-          fontSize: 30,
-          color: "#cfcfcf"
+        className="unstarred-icon"
+        onClick={() => {
+          console.log("star here");
+          this.props.clickHandler(this.props.theme);
         }}
+        style={{ animation: `${this.props.animateUnmount ? "slideout" : "rotateIn"} 1s` }}
       />
     );
-    return (
-      <div
-        onClick={() => {
-          this.props.handleClick(this.props.theme);
-        }}
-      >
-        {icon}
-      </div>
-    );
+    return <div>{renderIcon}</div>;
   };
 }
 

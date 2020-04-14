@@ -6,7 +6,7 @@ import UserProfileSocialMedia from "./UserProfileSocialMedia";
 import { editUser } from "../../actions/user";
 import { connect } from "react-redux";
 
-class UserProfileSocialMediaContainer extends React.Component {
+class UserProfileSocialMediaContainer extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

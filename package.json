@@ -68,6 +68,7 @@
     "react-dnd-html5-backend": "3.0.2",
     "react-icons": "^3.9.0",
     "react-tag-input": "6.4.2",
-    "sidebar-style-guide": "^2.0.0"
+    "sidebar-style-guide": "^2.0.0",
+    "styled-components": "^5.1.0"
   }
 }

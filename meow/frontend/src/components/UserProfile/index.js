@@ -13,8 +13,7 @@ import {
   userDetail,
   themeList,
   themeDelete,
-  additionalthemeList,
-  starredthemesID
+  additionalthemeList
 } from "../../services/api";
 import cloneDeep from "lodash.clonedeep";
 
@@ -89,16 +88,26 @@ class UserProfile extends React.Component {
     }
   }
 
-  loadadditionalThemes = () => {
-    starredthemesID().then(d => {
-      this.setState({
-        starred_themes_id: d.data
-      });
-    });
+  loadAdditionalThemes = () => {
     additionalthemeList().then(d => {
-      this.setState({
-        ...this.state,
-        additionalthemes: d.data
+      this.setState(prevState => {
+        let starredThemesArray = cloneDeep(d.data.additionalThemes);
+        let starredThemesIdArray = cloneDeep(d.data.starredThemesId);
+        let idTrackerMap = {};
+        starredThemesIdArray.forEach(element => {
+          idTrackerMap[element] = 1;
+        });
+        console.log(idTrackerMap);
+        starredThemesArray.map(element => {
+          if (idTrackerMap.hasOwnProperty(element.id)) {
+            element["starred"] = true;
+          }
+        });
+        return {
+          ...prevState,
+          additionalThemes: starredThemesArray,
+          starredThemesId: starredThemesIdArray
+        };
       });
     });
   };
@@ -124,16 +133,21 @@ class UserProfile extends React.Component {
   };
 
   editCurrentTheme = themeDetails => {
-    const newThemes = cloneDeep(this.state.themes);
-    let i = 0;
-    for (; i < newThemes.length; i++) {
-      if (newThemes[i].id === themeDetails.id) {
-        newThemes[i] = themeDetails;
-        break;
+    this.setState(prevState => {
+      const newThemes = cloneDeep(prevState.themes);
+      let i = 0;
+      for (; i < newThemes.length; i++) {
+        if (newThemes[i].id === themeDetails.id) {
+          newThemes[i] = themeDetails;
+          break;
+        }
       }
-    }
+      return {
+        ...prevState,
+        themes: newThemes
+      };
+    });
     this.props.editUser({ selected_theme: themeDetails });
-    this.setState({ themes: newThemes });
   };
 
   addNewTheme = themeDetails => {
@@ -171,37 +185,43 @@ class UserProfile extends React.Component {
 
   themeChanger = data => {
     this.setState({
-      ...this.state,
       selected_theme: data
     });
   };
 
-  starfavoriteTheme = theme => {
+  starFavoriteTheme = theme => {
     themeStarAdd(theme).then(d => {
-      let additionalThemes = cloneDeep(this.state.additionalThemes);
-      additionalThemes.map(element => {
-        if (element === theme) {
-          element["starred"] = True;
-        }
-      });
-      this.setState({
-        starredThemesId: d.data,
-        additionalThemes: additionalThemes
+      this.setState(prevState => {
+        let additionalThemes = cloneDeep(prevState.additionalThemes);
+        additionalThemes.map(element => {
+          if (element.id === theme.id) {
+            element["starred"] = true;
+            element.favorite_count = d.data.favCount;
+          }
+        });
+        return {
+          starredThemesId: d.data.starredThemesId,
+          additionalThemes: additionalThemes
+        };
       });
     });
   };
 
-  unstarfavoriteTheme = theme => {
+  unstarFavoriteTheme = theme => {
     themeStarRemove(theme).then(d => {
-      let additionalThemes = cloneDeep(this.state.additionalThemes);
-      additionalThemes.map(element => {
-        if (element === theme) {
-          delete element["starred"];
-        }
-      });
-      this.setState({
-        starredThemesId: d.data,
-        additionalThemes: additionalThemes
+      this.setState(prevState => {
+        let additionalThemes = cloneDeep(prevState.additionalThemes);
+        additionalThemes.map(element => {
+          if (element.id === theme.id) {
+            delete element["starred"];
+            element.favorite_count = d.data.favCount;
+          }
+        });
+        return {
+          ...prevState,
+          additionalThemes: additionalThemes,
+          starredThemesId: d.data.starredThemesId
+        };
       });
     });
   };
@@ -212,9 +232,12 @@ class UserProfile extends React.Component {
       return null;
     }
     return (
-      <div className="user-profile-container">
-        <div className="user-profile-row">
+      <div className="user-profile-main-container">
+        <div className="user-profile-picture-bio-container">
           <UserProfileImage profile_img={this.state.profile_img} />
+          <UserProfileBio canEdit={this.state.isMe} bio={this.state.bio} />
+        </div>
+        <div className="user-profile-user-info-themes-container">
           <UserProfileBasicInfo
             name={this.state.first_name + " " + this.state.last_name}
             role={this.state.role}
@@ -224,9 +247,6 @@ class UserProfile extends React.Component {
             twitter={this.state.twitter}
             canEdit={this.state.isMe}
           />
-        </div>
-        <div className="user-profile-row">
-          <UserProfileBio canEdit={this.state.isMe} bio={this.state.bio} />
           <UserProfileTheme
             canEdit={this.state.isMe}
             themes={this.state.themes}
@@ -236,11 +256,11 @@ class UserProfile extends React.Component {
             saveTheme={this.saveTheme}
             username={this.state.slack_username}
             deleteTheme={this.deleteTheme}
-            loadadditionalThemes={this.loadadditionalThemes}
-            additionalthemes={this.state.additionalThemes}
-            starfavoriteTheme={this.starfavoriteTheme}
-            starred_themes_id={this.state.starredThemesId}
-            unstarfavoriteTheme={this.unstarfavoriteTheme}
+            loadAdditionalThemes={this.loadAdditionalThemes}
+            additionalThemes={this.state.additionalThemes}
+            starFavoriteTheme={this.starFavoriteTheme}
+            starredThemesId={this.state.starredThemesId}
+            unstarFavoriteTheme={this.unstarFavoriteTheme}
             themeChanger={this.themeChanger}
           />
         </div>

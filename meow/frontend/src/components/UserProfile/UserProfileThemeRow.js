@@ -8,7 +8,7 @@ import { IoLogoOctocat } from "react-icons/io";
 import { themeEdit } from "../../services/api.js";
 
 class UserProfileThemeRow extends React.PureComponent {
-  state = { visible: false, mounted: false };
+  state = { visible: false, mounted: false, animate: false };
 
   showModal = () => {
     this.setState({
@@ -49,6 +49,7 @@ class UserProfileThemeRow extends React.PureComponent {
           key="1"
           className={"user-profile-theme-row-dropdown-menu-item"}
           onClick={() => {
+            this.setState({ unmountThemeRow: true });
             this.props.deleteTheme(this.props.index); //theme deletion function that is passed down
           }}
         >
@@ -80,6 +81,7 @@ class UserProfileThemeRow extends React.PureComponent {
         <div
           className={`user-profile-theme-row${this.props.active ? "-active" : ""}`}
           onClick={this.setAsCurrentTheme}
+          style={{ animation: `fadein 1s` }}
         >
           {this.createHandOrGap()}
           <span className="user-profile-theme-row-name">{this.props.theme.name}</span>

@@ -17,6 +17,7 @@ import json
 
 class UserThemes(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request, id, format=None):
         user = request.user
         themes = Theme.objects.filter(name="Daily Bruin")| Theme.objects.filter(name="Dark Bruin") | Theme.objects.filter(author=user)
@@ -26,21 +27,17 @@ class UserThemes(APIView):
     
     def post(self, request, id, format=None):
         user = request.user
-        themes = Theme.objects.all()
         req_data = request.data
         new_name = req_data.get("name", None)
-        new_primary = req_data.get("primary", None)
-        new_secondary = req_data.get("secondary", None)
-        new_primary_font_color = req_data.get("primary_font_color", None)
-        new_secondary_font_color = req_data.get("secondary_font_color", None)
-        new_tertiary = req_data.get("tertiary", None)
         if new_name == "":
             return JsonResponse('Theme name cannot be empty', safe=False, status=400)
         if len(new_name)>20:
             return JsonResponse('Theme name is limited to 20 characters', safe=False, status=400)
-        if (themes.filter(name=new_name)):
+        serializer = ThemeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(author=request.user)
+        else:
             return JsonResponse('Theme name taken, enter a new name', safe=False, status=400)
-        new_theme = Theme.objects.create(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
         new_id = Theme.objects.get(name=new_name).pk
         return JsonResponse(new_id, safe=False, status=200)
 
@@ -56,17 +53,16 @@ class UserThemes(APIView):
         new_primary_font_color = req_data.get("primary_font_color", None)
         new_secondary_font_color = req_data.get("secondary_font_color", None)
         new_tertiary = req_data.get("tertiary", None)
-        theme_id = req_data.get('id', None)
         if new_name=="":
             return JsonResponse('Theme name cannot be empty', safe=False, status=400)
-        if Theme.objects.filter(name=new_name) and (Theme.objects.get(name=new_name).pk != theme_id):
+        if Theme.objects.filter(name=new_name) and (Theme.objects.get(name=new_name).pk != id):
             return JsonResponse('Theme name taken, enter new name', safe=False, status=400)
         else:
             filtered_theme = Theme.objects.filter(pk=id)
             if(len(filtered_theme)>1):
                 return HttpResponse('Non-unique name in themes corruption', status=400)
             filtered_theme.update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
-            return JsonResponse(theme_id, safe=False, status=200)
+            return JsonResponse(id, safe=False, status=200)
     
     def delete(self, request, id, format=None):
         user=request.user
@@ -92,18 +88,11 @@ def additionalthemeList(request):
     #this functon list out the additional themes
     user = request.user
     if request.method == "GET":
-        themes = themes = Theme.objects.exclude(author=user).exclude(name__in=["Daily Bruin", "Dark Bruin"]).order_by('-favorite_count')
+        themes = Theme.objects.exclude(author=user).exclude(name__in=["Daily Bruin", "Dark Bruin"]).order_by('-favorite_count')
         serialized_themes = ThemeSerializer(themes, many=True)
         themeOrderedDict = serialized_themes.data
-        return JsonResponse(themeOrderedDict, safe=False, status=200)
-
-@api_login_required()
-def starredthemesIDFetch(request):
-    user = request.user
-    if request.method == "GET":
-        user = User.objects.all().get(username=user.username)
         starred_themes_id =[theme.pk for theme in user.starred_themes.all()] 
-        return JsonResponse(starred_themes_id, safe=False, status=200)
+        return JsonResponse({'additionalThemes': themeOrderedDict, 'starredThemesId': starred_themes_id }, safe=False, status=200)
 
 @api_login_required()
 def themeStar(request):
@@ -116,7 +105,7 @@ def themeStar(request):
         user.starred_themes.add(star_theme)
         starred_themes_id = user.starred_themes.values_list('pk', flat=True)
         starred_themes_id = list(starred_themes_id)
-        return JsonResponse(starred_themes_id, safe=False, status=200)
+        return JsonResponse({'starredThemesId': starred_themes_id, 'favCount': themes.get(pk=theme_id).favorite_count }, safe=False, status=200)
     elif request.method == "PUT":
         req_data = json.loads(request.body)
         theme_id = req_data['id']
@@ -128,7 +117,7 @@ def themeStar(request):
             unstar_theme.delete()
         starred_themes_id = user.starred_themes.values_list('pk', flat=True)
         starred_themes_id = list(starred_themes_id)
-        return JsonResponse(starred_themes_id, safe=False, status=200)
+        return JsonResponse({'starredThemesId': starred_themes_id, 'favCount': themes.get(pk=theme_id).favorite_count }, safe=False, status=200)
 
 
 @api_login_required()

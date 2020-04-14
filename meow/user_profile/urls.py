@@ -10,7 +10,6 @@ urlpatterns = [
     path('userThemes/<int:id>/', views.UserThemes.as_view(), name="UserThemes"),
     path('additionalthemes/', views.additionalthemeList, name="additionalthemeList"),
     path('themeStar/', views.themeStar, name="themeStar"),
-    path('starredthemesID/', views.starredthemesIDFetch, name="starredthemesID"),
     path('<str:username>', views.userDetail, name="userDetail"),
     path('', views.userList, name="userList"),
     

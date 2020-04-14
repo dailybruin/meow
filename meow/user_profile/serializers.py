@@ -10,7 +10,7 @@ class BasicInfoUserSerializer(serializers.ModelSerializer):
 
 
 class ThemeSerializer(serializers.ModelSerializer):
-
+    author = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
     class Meta:
         model = Theme
         fields = '__all__'

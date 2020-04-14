@@ -22,7 +22,8 @@ class UserProfileTheme extends React.PureComponent {
   state = {
     visible: false,
     seeMore: false,
-    mounted: false
+    mounted: false,
+    animateUnmount: false
   };
 
   showModal = () => {
@@ -44,6 +45,10 @@ class UserProfileTheme extends React.PureComponent {
     });
   };
 
+  unmountAdditionalThemes = () => {
+    this.setState({ animateUnmount: false, seeMore: false });
+  };
+
   unmountModal = e => {
     this.setState({
       mounted: false
@@ -58,28 +63,29 @@ class UserProfileTheme extends React.PureComponent {
           <button
             onClick={() => {
               this.setState({ seeMore: true });
-              this.props.loadadditionalThemes();
+              this.props.loadAdditionalThemes();
             }}
+            style={{ animation: "fadeIn 1s" }}
           >
             see more...
           </button>
         </div>
       );
     } else {
-      this.props.additionalthemes.map(item => {
-        let active_theme = item.name === this.props.selected_theme.name;
-        let clickHandler = item.hasOwnProperty("starred")
-          ? this.props.unstarfavoriteTheme
-          : this.props.starfavoriteTheme;
+      this.props.additionalThemes.map(item => {
+        let activeTheme = item.name === this.props.selected_theme.name;
         let starred = item.hasOwnProperty("starred") ? true : false;
+        console.log(`starred is ${starred}`);
         seeMore.push(
           <UserProfileAdditionalThemeRow
             starred={starred}
-            clickHandler={clickHandler}
-            active={active_theme}
+            clickHandler={starred ? this.props.unstarFavoriteTheme : this.props.starFavoriteTheme}
+            active={activeTheme}
             theme={item}
             canEdit={this.props.canEdit}
             themeChanger={this.props.themeChanger}
+            animateUnmount={this.state.animateUnmount}
+            unmountAdditionalThemes={this.unmountAdditionalThemes}
           />
         );
       });
@@ -87,8 +93,9 @@ class UserProfileTheme extends React.PureComponent {
         <div className="user-profile-theme-see-more">
           <button
             onClick={() => {
-              this.setState({ seeMore: false });
+              this.setState({ animateUnmount: true });
             }}
+            style={{ animation: `${this.state.animateUnmount ? "slideout" : "slidein"} 1s` }}
           >
             close
           </button>

@@ -30,15 +30,6 @@ export const additionalthemeList = () => {
   });
 };
 
-export const starredthemesID = () => {
-  return axios.get(`${SERVER_URL}/users/starredthemesID/`).then(res => {
-    return {
-      data: res.data,
-      status: res.status
-    };
-  });
-};
-
 export const themeStarAdd = starredTheme => {
   return axios.post(`${SERVER_URL}/users/themeStar/`, starredTheme).then(res => {
     return {

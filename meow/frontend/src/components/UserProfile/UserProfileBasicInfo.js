@@ -2,9 +2,9 @@ import React from "react";
 import UserProfileSocialMediaContainer from "./UserProfileSocialMediaContainer";
 import "./styling.css";
 
-//============================ helper functions =======================//
+//= =========================== helper functions =======================//
 
-//============================ ACTUAL FUNCTIONAL Component ===================//
+//= =========================== ACTUAL FUNCTIONAL Component ===================//
 function UserProfileBasicInfo(props) {
   return (
     <div className="user-profile-basic-info-container">
