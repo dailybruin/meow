@@ -115,7 +115,6 @@ class UserProfile extends React.Component {
   fetchUserFor = username => {
     return userDetail(username).then(d => {
       let data = d.data;
-      console.log(d.data);
       this.setState({
         loading: false,
         first_name: data.first_name,

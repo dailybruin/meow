@@ -115,6 +115,7 @@
   flex-wrap: nowrap;
   width: 100%;
   margin-bottom: 15px;
+  height: auto;
   align-items: center;
   height: auto;
   border: 2px solid lightgrey;
@@ -134,6 +135,7 @@
   width: 34px;
   margin-right: 10px;
   margin-left: 3px;
+  overflow-wrap: anywhere;
   text-align: center;
   overflow-wrap: anywhere;
 }

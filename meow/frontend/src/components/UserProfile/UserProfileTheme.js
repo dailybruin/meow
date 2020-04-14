@@ -118,7 +118,7 @@ class UserProfileTheme extends React.PureComponent {
               return (
                 <UserProfileThemeRow
                   canEdit={this.props.canEdit}
-                  key={index}
+                  key={value.name}
                   theme={value}
                   active={active}
                   editCurrentTheme={this.props.editCurrentTheme}
@@ -164,10 +164,5 @@ class UserProfileTheme extends React.PureComponent {
     );
   }
 }
-
-// //it is important that this component
-// const mapStateToProps = (state) => {
-//   return { theme: state.default.user.theme };
-// }
 
 export default UserProfileTheme;
