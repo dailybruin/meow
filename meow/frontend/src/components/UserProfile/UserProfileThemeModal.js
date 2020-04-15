@@ -35,7 +35,6 @@ class UserProfileThemeModal extends React.PureComponent {
       colors: [primary, secondary, primary_font_color, secondary_font_color, tertiary],
       name: this.props.theme.name
     }));
-    console.log("mounted");
   }
 
   handleChangeComplete = color => {
@@ -96,7 +95,6 @@ class UserProfileThemeModal extends React.PureComponent {
   };
 
   render() {
-    console.log(this.state);
     return (
       <Modal
         afterClose={this.props.unmountModal}

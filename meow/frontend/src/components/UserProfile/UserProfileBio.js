@@ -86,7 +86,6 @@ class UserProfileBio extends React.PureComponent {
           <div>
             <TextArea
               onChange={v => {
-                console.log(v.target.value);
                 this.setState({ value: v.target.value });
               }}
               value={this.state.value}

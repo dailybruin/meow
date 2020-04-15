@@ -59,7 +59,7 @@ class UserProfileTheme extends React.PureComponent {
     let seeMore = [];
     if (this.state.seeMore === false) {
       seeMore.push(
-        <div className="user-profile-theme-see-more">
+        <div key={1} className="user-profile-theme-see-more">
           <button
             onClick={() => {
               this.setState({ seeMore: true });
@@ -72,10 +72,9 @@ class UserProfileTheme extends React.PureComponent {
         </div>
       );
     } else {
-      this.props.additionalThemes.map(item => {
+      this.props.additionalThemes.map((item, index) => {
         let activeTheme = item.name === this.props.selected_theme.name;
         let starred = item.hasOwnProperty("starred") ? true : false;
-        console.log(`starred is ${starred}`);
         seeMore.push(
           <UserProfileAdditionalThemeRow
             starred={starred}
@@ -83,6 +82,7 @@ class UserProfileTheme extends React.PureComponent {
             active={activeTheme}
             theme={item}
             canEdit={this.props.canEdit}
+            key={index}
             themeChanger={this.props.themeChanger}
             animateUnmount={this.state.animateUnmount}
             unmountAdditionalThemes={this.unmountAdditionalThemes}
@@ -90,7 +90,7 @@ class UserProfileTheme extends React.PureComponent {
         );
       });
       seeMore.push(
-        <div className="user-profile-theme-see-more">
+        <div className="user-profile-theme-see-more" key={seeMore.length}>
           <button
             onClick={() => {
               this.setState({ animateUnmount: true });
@@ -114,7 +114,6 @@ class UserProfileTheme extends React.PureComponent {
               if (index === 0 || index === 1) {
                 disabled = true;
               }
-              console.log(value);
               return (
                 <UserProfileThemeRow
                   canEdit={this.props.canEdit}
@@ -139,13 +138,14 @@ class UserProfileTheme extends React.PureComponent {
                 type="plus-circle"
                 style={{
                   fontSize: "40px",
-                  color: "#b3b3b3"
+                  color: "#b3b3b3",
+                  marginBottom: 15
                 }}
                 onClick={this.showModal}
               />
             </button>
           </div>
-          <div style={{ marginTop: 12 }}>{seeMore}</div>
+          {seeMore}
         </div>
         {this.state.mounted === true ? (
           <UserProfileThemeModal

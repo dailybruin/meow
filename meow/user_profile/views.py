@@ -55,13 +55,15 @@ class UserThemes(APIView):
         new_tertiary = req_data.get("tertiary", None)
         if new_name=="":
             return JsonResponse('Theme name cannot be empty', safe=False, status=400)
+        if len(new_name)>20:
+            return JsonResponse('Theme name is limited to 20 characters', safe=False, status=400)
         if Theme.objects.filter(name=new_name) and (Theme.objects.get(name=new_name).pk != id):
             return JsonResponse('Theme name taken, enter new name', safe=False, status=400)
         else:
             filtered_theme = Theme.objects.filter(pk=id)
             if(len(filtered_theme)>1):
                 return HttpResponse('Non-unique name in themes corruption', status=400)
-            filtered_theme.update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, author=user, name=new_name)
+            filtered_theme.update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, name=new_name)
             return JsonResponse(id, safe=False, status=200)
     
     def delete(self, request, id, format=None):

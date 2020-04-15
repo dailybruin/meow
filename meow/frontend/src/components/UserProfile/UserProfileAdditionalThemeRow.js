@@ -5,7 +5,7 @@ import { editUser } from "../../actions/user";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { Tooltip } from "antd";
 
-class UserProfileAdditionalThemeRow extends React.Component {
+class UserProfileAdditionalThemeRow extends React.PureComponent {
   render() {
     return (
       <div className="user-profile-theme-row-row-with-nav">
@@ -79,7 +79,6 @@ class UserProfileAdditionalThemeRow extends React.Component {
       <FaStar
         className="starred-icon"
         onClick={() => {
-          console.log("unstar here");
           this.props.clickHandler(this.props.theme);
         }}
         style={{ animation: `${this.props.animateUnmount ? "slideout" : "rotateIn"} 1s` }}
@@ -88,7 +87,6 @@ class UserProfileAdditionalThemeRow extends React.Component {
       <FaRegStar
         className="unstarred-icon"
         onClick={() => {
-          console.log("star here");
           this.props.clickHandler(this.props.theme);
         }}
         style={{ animation: `${this.props.animateUnmount ? "slideout" : "rotateIn"} 1s` }}

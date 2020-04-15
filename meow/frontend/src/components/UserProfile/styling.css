@@ -16,7 +16,7 @@
 
 /* User Profile Image */
 .user-profile-image-container {
-  width: 45%;
+  width: 500px;
 }
 
 .user-profile-image {
@@ -65,8 +65,7 @@
 }
 
 .user-profile-bio-container {
-  width: 50%;
-  height: 50%;
+  width: 100%;
   margin-right: 40px;
   margin-top: 60px;
   margin-left: 40px;
@@ -89,6 +88,7 @@
   flex-grow: 1;
   padding-bottom: 100px;
   margin-top: 40px;
+  margin-left: 36px;
 }
 
 .user-profile-theme-header {
@@ -311,6 +311,8 @@
   display: flex;
   justify-content: flex-start;
   margin-top: -2px;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .user-profile-theme-add-button {
@@ -334,7 +336,7 @@
 .user-profile-theme-see-more button {
   border: none;
   color: rgb(179, 179, 179);
-  background-color: none;
+  background: none;
   font-size: 16px;
   font-weight: 300;
 }
@@ -407,52 +409,40 @@
 }
 
 @keyframes slidein {
-  from {
-    transform: translateX(15%);
+  0% {
     opacity: 0;
   }
-
-  to {
-    transform: translateX(0%);
+  100% {
     opacity: 1;
   }
 }
 
 @keyframes slideout {
-  from {
-    transform: translateX(0%);
+  0% {
     opacity: 1;
   }
-
-  to {
-    transform: translateX(15%);
+  100% {
     opacity: 0;
   }
-}
-
-.parent {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
 }
 
 .user-profile-picture-bio-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 60%;
   margin-top: 20px;
 }
 
 .user-profile-user-info-themes-container {
   display: flex;
   flex-direction: column;
-  width: 40%;
   margin-top: 20px;
+  align-items: center;
 }
 
 .user-profile-main-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-evenly;
 }

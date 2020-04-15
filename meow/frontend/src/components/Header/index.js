@@ -11,16 +11,17 @@ const options = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-dig
 class Header extends Component {
   state = {
     time: new Date().toLocaleString("en-US", options),
-    showNewmeow: !(
-      this.props.location.pathname === "/add" ||
-      this.props.location.pathname.substring(0, 5) === "/edit"
-    )
+    showNewmeow: null
   };
 
   componentDidMount() {
     setInterval(() => {
       this.setState({
-        time: new Date().toLocaleString("en-US", options)
+        time: new Date().toLocaleString("en-US", options),
+        showNewmeow: !(
+          this.props.location.pathname === "/add" ||
+          this.props.location.pathname.substring(0, 5) === "/edit"
+        )
       });
     }, 1000);
   }

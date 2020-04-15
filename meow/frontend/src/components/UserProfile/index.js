@@ -97,7 +97,6 @@ class UserProfile extends React.Component {
         starredThemesIdArray.forEach(element => {
           idTrackerMap[element] = 1;
         });
-        console.log(idTrackerMap);
         starredThemesArray.map(element => {
           if (idTrackerMap.hasOwnProperty(element.id)) {
             element["starred"] = true;
@@ -226,7 +225,6 @@ class UserProfile extends React.Component {
   };
 
   render() {
-    console.log(this.state);
     if (this.state.loading) {
       return null;
     }

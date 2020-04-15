@@ -161,6 +161,7 @@ class Sidebar extends React.Component {
                 style={{ color: `${this.props.theme.secondary_font_color}` }}
                 value={s.id}
                 onChange={this.changeSection(s.id)}
+                key="4"
               >
                 {s.name}
               </Checkbox>
@@ -187,18 +188,21 @@ class Sidebar extends React.Component {
             <Checkbox
               style={{ color: `${this.props.theme.secondary_font_color}` }}
               onChange={this.changeStatus("READY")}
+              key="1"
             >
               ready to post
             </Checkbox>
             <Checkbox
               style={{ color: `${this.props.theme.secondary_font_color}` }}
               onChange={this.changeStatus("DRAFT")}
+              key="2"
             >
               draft
             </Checkbox>
             <Checkbox
               style={{ color: `${this.props.theme.secondary_font_color}` }}
               onChange={this.changeStatus("SENT")}
+              key="3"
             >
               sent
             </Checkbox>
