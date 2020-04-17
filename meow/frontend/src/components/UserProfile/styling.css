@@ -119,6 +119,8 @@
   align-items: center;
   height: auto;
   border: 2px solid lightgrey;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .user-profile-theme-row-active {
@@ -128,6 +130,8 @@
   margin-bottom: 15px;
   align-items: center;
   border: 3px solid black;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .user-profile-theme-row-name {
@@ -376,7 +380,6 @@
 .user-profile-theme-row-row-with-nav {
   display: flex;
   flex-direction: row;
-  height: 76px;
   width: 465px;
 }
 

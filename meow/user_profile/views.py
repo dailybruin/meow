@@ -28,43 +28,28 @@ class UserThemes(APIView):
     def post(self, request, id, format=None):
         user = request.user
         req_data = request.data
-        new_name = req_data.get("name", None)
-        if new_name == "":
-            return JsonResponse('Theme name cannot be empty', safe=False, status=400)
-        if len(new_name)>20:
-            return JsonResponse('Theme name is limited to 20 characters', safe=False, status=400)
+        new_name =  req_data.get('name', None)
         serializer = ThemeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(author=request.user)
         else:
-            return JsonResponse('Theme name taken, enter a new name', safe=False, status=400)
+            print(serializer.errors)
+            return JsonResponse(serializer.errors, safe=False, status=400)
         new_id = Theme.objects.get(name=new_name).pk
         return JsonResponse(new_id, safe=False, status=200)
 
     def put(self, request, id, format=None):
         user=request.user
         req_data = request.data
-        old_name = req_data.get("oldname", None)
-        if(old_name == 'Daily Bruin' or old_name == 'Dark Bruin'):
+        if(id == 1 or id == 2):
             return HttpResponse('Default themes cannot be modified', status=400)
-        new_name = req_data.get("name", None)
-        new_primary = req_data.get("primary", None)
-        new_secondary = req_data.get("secondary", None)
-        new_primary_font_color = req_data.get("primary_font_color", None)
-        new_secondary_font_color = req_data.get("secondary_font_color", None)
-        new_tertiary = req_data.get("tertiary", None)
-        if new_name=="":
-            return JsonResponse('Theme name cannot be empty', safe=False, status=400)
-        if len(new_name)>20:
-            return JsonResponse('Theme name is limited to 20 characters', safe=False, status=400)
-        if Theme.objects.filter(name=new_name) and (Theme.objects.get(name=new_name).pk != id):
-            return JsonResponse('Theme name taken, enter new name', safe=False, status=400)
+        serializer = ThemeSerializer(Theme.objects.get(pk=id), data=request.data)
+        if serializer.is_valid():
+            serializer.save()
         else:
-            filtered_theme = Theme.objects.filter(pk=id)
-            if(len(filtered_theme)>1):
-                return HttpResponse('Non-unique name in themes corruption', status=400)
-            filtered_theme.update(primary=new_primary, secondary=new_secondary, primary_font_color=new_primary_font_color, secondary_font_color=new_secondary_font_color, tertiary=new_tertiary, name=new_name)
-            return JsonResponse(id, safe=False, status=200)
+            print(serializer.errors)
+            return JsonResponse(serializer.errors,status=400, safe=False)
+        return JsonResponse(id, safe=False, status=200)
     
     def delete(self, request, id, format=None):
         user=request.user

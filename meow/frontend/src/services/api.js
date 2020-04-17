@@ -58,9 +58,7 @@ export const themeAdd = newTheme => {
       };
     })
     .catch(error => {
-      console.log(error.response.data);
-      console.log(error.response.status);
-      let msg = error.response.data;
+      let msg = error.response.data.name[0];
       let status = error.response.status;
       return {
         data: msg,
@@ -79,9 +77,7 @@ export const themeEdit = updatedTheme => {
       };
     })
     .catch(error => {
-      console.log(error.response.data);
-      console.log(error.response.response);
-      let msg = error.response.data;
+      let msg = error.response.data.name[0];
       let status = error.response.status;
       return {
         data: msg,
