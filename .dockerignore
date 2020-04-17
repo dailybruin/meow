@@ -1,6 +1,7 @@
 celerybeat.pid
 
 *.log
+*.logs
 meow.log
 meow/meow.log
 .env

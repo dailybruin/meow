@@ -1,6 +1,7 @@
 *.pyc
 *.swp
 .vagrant
+*.logs
 .DS_Store
 staticfiles
 meow/frontend/bundles/*
