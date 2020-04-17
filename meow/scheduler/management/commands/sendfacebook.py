@@ -39,7 +39,6 @@ class Command(BaseCommand):
             '--fb_default_photo', default=None,
             help="URL to photo to display on Facebook.")
 
-
     def handle(self, *args, **options):
         smpost = options.get('smpost', None)
         section = options.get('section', None)
@@ -71,23 +70,34 @@ class Command(BaseCommand):
             if url:
                 data['link'] = url
 
-            errors = 0
+            #Zerrors = 0
             res = None
-            while errors < 2:
+            try:
+                res = graph.post(**data) #http library throws exception unless return code = success
+            except Exception as e:
+                logger.info("%s\n", str(res))
+                logger.info(type(res))
+                logger.info(str(e))
+                logger.info("Error while sending Facebook post. Traceback: " + traceback.format_exc() )
+                #smpost.log("error in sending")
+                #smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
                 try:
-                    res = graph.post(**data)
-                    break
+                    res = graph.post(**data) #http library throws exception unless return code = success
                 except Exception as e:
-                    smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
-                    if errors >= 2:
-                        raise Exception
-                        break
-                    else:
-                        time.sleep(0.5)
-                        errors += 1
+                    logger.info("%s\n", str(res))
+                    logger.info(type(res))
+                    logger.info(str(e))
+                    logger.info("Error while sending Facebook post a second time, aborting post. Traceback: " + traceback.format_exc() )
+                    return
+                    #smpost.log("error in sending")
+                    #smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
+                
 
             print("----------------------")
-            post_id = res['id'].split('_')[1]
+            if res:
+                post_id = res['id'].split('_')[1]
+            else:
+                return
 
             # Add the id for the post to the database
             smpost.id_facebook = post_id
