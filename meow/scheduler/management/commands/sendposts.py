@@ -45,6 +45,8 @@ class Command(BaseCommand):
             sent=True
         ).exclude(
             section=None
+        ).exclude(
+            sending=True
         )
 
         sendNowPosts = SMPost.objects.filter(
@@ -59,6 +61,8 @@ class Command(BaseCommand):
             sent=True
         ).exclude(
             section=None
+        ).exclude(
+            sending=True
         )
 
         posts = regularPosts | sendNowPosts
