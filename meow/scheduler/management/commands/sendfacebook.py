@@ -78,20 +78,19 @@ class Command(BaseCommand):
                 logger.info("%s\n", str(res))
                 logger.info(type(res))
                 logger.info(str(e))
-                logger.info("Error while sending Facebook post. Traceback: " + traceback.format_exc() )
-                #smpost.log("error in sending")
-                #smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
+                logger.info("Error while sending Facebook post; retrying. Traceback: " + traceback.format_exc() )
+                smpost.log("Error while sending Facebook post; retrying. Traceback: " + traceback.format_exc() )
+                
                 try:
                     res = graph.post(**data) #http library throws exception unless return code = success
                 except Exception as e:
                     logger.info("%s\n", str(res))
                     logger.info(type(res))
                     logger.info(str(e))
-                    logger.info("Error while sending Facebook post a second time, aborting post. Traceback: " + traceback.format_exc() )
+                    logger.error("Error while sending Facebook post a second time, aborting post. Traceback: " + traceback.format_exc() )
+                    smpost.log("Error while sending Facebook post a second time, aborting post. Traceback: " + traceback.format_exc() )
                     return
-                    #smpost.log("error in sending")
-                    #smpost.log("Facebook Errored - #%d attempt. Msg:\n %s \n Traceback:\n %s" % (errors, e, traceback.format_exc()))
-                
+                    
 
             print("----------------------")
             if res:
