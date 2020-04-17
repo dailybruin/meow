@@ -88,6 +88,7 @@ class Command(BaseCommand):
                     logger.info(type(res))
                     logger.info(str(e))
                     logger.error("Error while sending Facebook post a second time, aborting post. Traceback: " + traceback.format_exc() )
+                    smpost.log_error(e, section, True)
                     smpost.log("Error while sending Facebook post a second time, aborting post. Traceback: " + traceback.format_exc() )
                     return
                     
