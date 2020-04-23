@@ -176,8 +176,15 @@ class SMPostDetail(APIView):
 @api_view(http_method_names=['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def get_logs(request):
-    return FileResponse(open("meow/meow.log", "rb"))
+def get_logs(request, name):
+    if name == "meow":
+        return FileResponse(open("meow/meow.log", "rb"))
+    elif name == "worker":
+        return FileResponse(open("celeryworker.log", "rb"))
+    else:
+        return FileResponse(open("celeryclock.log", "rb"))
+
+
 
 @api_view(http_method_names=['POST'])
 def create_smpost_tags(request):
