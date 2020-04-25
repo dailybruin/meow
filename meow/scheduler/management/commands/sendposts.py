@@ -90,6 +90,9 @@ class Command(BaseCommand):
 
                 logger.info("sendpost.py: Post {}-{} will begin sending. ".format(post.slug, post.id))
 
+
+                
+
                 # Make sure this post should actually be sent out. If it's more than
                 # 20 minutes late, we're gonna mark it as an error and send an error
                 # message.
@@ -100,10 +103,20 @@ class Command(BaseCommand):
                         post.sending = False
                         post.log_error(
                             "Would have sent more than 20 minutes late.", post.section, True)
+
                         post.sending = False
                         post.sent = True
                         post.sent_time = timezone.localtime(timezone.now())
                         post.save()
+
+                        # print out all of the model's fields
+
+                        debugging = SMPost.objects.filter(id=post.id)
+                        logger.error("Would have sent more than 20 minutes late")
+                        debug_str = "Model Fields\n"
+                        for key, value in debugging.all().values()[0].items():
+                            debug_str += str(key) + ":   " + str(value) + "\n"
+                        logger.error(debug_str)
                     except:
                         logger.critical("Something is very wrong in sendpost.py ")
                         logger.critical("Something is very wrong in sendpost.py " + str(traceback.format_exc()))
