@@ -15,13 +15,15 @@ class Header extends Component {
   };
 
   componentDidMount() {
+    this.setState({
+      showNewmeow: !(
+        this.props.location.pathname === "/add" ||
+        this.props.location.pathname.substring(0, 5) === "/edit"
+      )
+    });
     setInterval(() => {
       this.setState({
-        time: new Date().toLocaleString("en-US", options),
-        showNewmeow: !(
-          this.props.location.pathname === "/add" ||
-          this.props.location.pathname.substring(0, 5) === "/edit"
-        )
+        time: new Date().toLocaleString("en-US", options)
       });
     }, 1000);
   }

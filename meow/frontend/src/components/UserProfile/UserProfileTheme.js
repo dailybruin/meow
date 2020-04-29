@@ -105,7 +105,7 @@ class UserProfileTheme extends React.PureComponent {
     return (
       <div>
         <div className="user-profile-theme-container">
-          <h2 className="user-profile-theme-header">theme: </h2>
+          <h2 className="user-profile-theme-header">themes: </h2>
           <div className="user-profile-theme-box">
             {this.props.themes.map((value, index) => {
               let active = value.name === this.props.selected_theme.name;

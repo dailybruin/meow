@@ -142,7 +142,8 @@ class UserProfile extends React.Component {
       }
       return {
         ...prevState,
-        themes: newThemes
+        themes: newThemes,
+        selected_theme: themeDetails
       };
     });
     this.props.editUser({ selected_theme: themeDetails });
@@ -152,7 +153,8 @@ class UserProfile extends React.Component {
     this.props.editUser({ selected_theme: themeDetails });
     this.setState(prevState => {
       return {
-        themes: [...prevState.themes, themeDetails]
+        themes: [...prevState.themes, themeDetails],
+        selected_theme: themeDetails
       };
     });
   };

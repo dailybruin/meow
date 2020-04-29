@@ -37,6 +37,12 @@ class Theme(models.Model):
     author = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     favorite_count = models.PositiveIntegerField(default=0)
 
+    def check_if_unused(self):
+        #themes that are unused will not be displayed to users on the frontend when they want to load the additional themes
+        if self.user_set.count()==0 and self.related_users.count()==0:
+            return True
+        return False
+
     class Meta:
         ordering = ['pk']
 
