@@ -51,13 +51,19 @@ def m2m_favorite_themes(sender, **kwargs):
     #when a new theme is added to the many to many relation from the user's point of view
     if kwargs['pk_set']:
         #there should only be one theme updated each time the function is called
-        selected_themes = kwargs['model'].objects.filter(pk__in=kwargs['pk_set'])
-        if action == 'post_add' or action == 'post_remove':
-            for item in selected_themes:
-                item.favorite_count = item.related_users.count()
-                item.save()
-        else:
-            pass
+        if (not kwargs['reverse']):
+            selected_themes = kwargs['model'].objects.filter(pk__in=kwargs['pk_set'])
+            if action == 'post_add' or action == 'post_remove':
+                for item in selected_themes:
+                    item.favorite_count = item.related_users.count()
+                    item.save()
+        else :
+            theme = kwargs['instance']
+            if action == 'post_add' or action == 'post_remove':
+                theme.favorite_count = theme.related_users.count()
+                theme.save()
+
+
 
 
 m2m_changed.connect(m2m_favorite_themes, sender=User.starred_themes.through)
