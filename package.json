@@ -22,7 +22,7 @@
     "@babel/preset-env": "7.2.3",
     "@babel/preset-react": "7.0.0",
     "@fortawesome/fontawesome-free": "5.6.3",
-    "antd": "3.12.1",
+    "antd": "^3.26.5",
     "axios": "0.18.0",
     "babel-loader": "8.0.5",
     "babel-plugin-transform-class-properties": "6.24.1",
@@ -61,11 +61,15 @@
   "dependencies": {
     "font-awesome": "^4.7.0",
     "fuse.js": "^3.4.2",
-    "react-color": "^2.17.0",
+    "lodash.clonedeep": "^4.5.0",
+    "react-color": "^2.17.3",
     "react-device-detect": "^1.6.2",
-    "react-tag-input": "6.4.2",
     "react-dnd": "5.0.0",
     "react-dnd-html5-backend": "3.0.2",
-    "sidebar-style-guide": "^2.0.0"
+    "react-icons": "^3.9.0",
+    "react-image": "^2.4.0",
+    "react-tag-input": "6.4.2",
+    "sidebar-style-guide": "^2.0.0",
+    "styled-components": "^5.1.0"
   }
 }

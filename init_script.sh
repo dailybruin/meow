@@ -40,7 +40,8 @@ npm i
 npm run build
 docker-compose build &&
 docker-compose run web meow/manage.py migrate &&
-docker-compose run web meow/manage.py collectstatic --noinput &&
+echo ">>> The ids and secrets can be found in the #meow_dev channel's pinned messages" &&
+docker-compose run web meow/manage.py collectstatic --noinput
 docker-compose run web meow/manage.py init 
 if [ $? == 0 ]; then
 	echo -e "from scheduler.models import Section\ns = Section(name=\"test\")\ns.save()" | docker-compose run web meow/manage.py shell

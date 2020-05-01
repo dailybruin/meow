@@ -8,7 +8,7 @@ import { logout } from "../../actions/user";
 
 import "./Sidebar.css";
 import TimeSlider from "./TimeSlider";
-
+import { FiChevronRight, FiRotateCcw } from "react-icons/fi";
 const { Panel } = Collapse;
 
 class Sidebar extends React.Component {
@@ -82,12 +82,12 @@ class Sidebar extends React.Component {
 
   render() {
     let primaryBackgroundAndFont = {
-      backgroundColor: `#${this.props.theme.primary}`
-      // color: `#${this.props.theme.primary_font_color}`
+      backgroundColor: `${this.props.theme.primary}`,
+      color: `${this.props.theme.secondary_font_color}`
     };
     let secondaryBackgroundAndFont = {
-      backgroundColor: `#${this.props.theme.secondary}`
-      // color: `#${this.props.theme.secondary_font_color}`
+      backgroundColor: `${this.props.theme.secondary}`,
+      color: `${this.props.theme.secondary_font_color}`
     };
     return (
       <div
@@ -101,13 +101,38 @@ class Sidebar extends React.Component {
         <Collapse
           className="meow-collapse"
           style={primaryBackgroundAndFont}
-          expandIconPosition="right"
           defaultActiveKey={["1"]}
+          bordered={false}
+          expandIcon={({ isActive }) => (
+            <FiChevronRight
+              style={
+                isActive
+                  ? {
+                      transform: `rotate(90deg)`,
+                      fontSize: 16,
+                      color: `${this.props.theme.secondary_font_color}`,
+                      marginTop: -2,
+                      width: 23,
+                      paddingRight: 10
+                    }
+                  : {
+                      color: `${this.props.theme.secondary_font_color}`,
+                      fontSize: 16,
+                      marginTop: -2,
+                      width: 23,
+                      paddingRight: 10
+                    }
+              }
+            />
+          )}
+          expandIconPosition="left"
         >
           <Panel
             className="full-width-panel"
             style={secondaryBackgroundAndFont}
-            header="posts from"
+            header={
+              <span style={{ color: `${this.props.theme.secondary_font_color}` }}>posts from</span>
+            }
             key="1"
           >
             <div style={{ width: "100%", backgroundColor: "white" }}>
@@ -125,20 +150,62 @@ class Sidebar extends React.Component {
               />
             </div>
           </Panel>
-          <Panel header="section" key="2">
+          <Panel
+            header={
+              <span style={{ color: `${this.props.theme.secondary_font_color}` }}>section</span>
+            }
+            key="2"
+          >
             {this.props.sections.map(s => (
-              <Checkbox value={s.id} onChange={this.changeSection(s.id)}>
+              <Checkbox
+                style={{ color: `${this.props.theme.secondary_font_color}` }}
+                value={s.id}
+                onChange={this.changeSection(s.id)}
+                key="4"
+              >
                 {s.name}
               </Checkbox>
             ))}
           </Panel>
-          <Panel header="post time" style={secondaryBackgroundAndFont} key="3">
-            <TimeSlider onSlideEnd={this.changeTime} />
+          <Panel
+            header={
+              <span style={{ color: `${this.props.theme.secondary_font_color}` }}>post time</span>
+            }
+            style={secondaryBackgroundAndFont}
+            key="3"
+          >
+            <TimeSlider
+              fontColor={`${this.props.theme.secondary_font_color}`}
+              onSlideEnd={this.changeTime}
+            />
           </Panel>
-          <Panel header="status" key="4">
-            <Checkbox onChange={this.changeStatus("READY")}>ready to post</Checkbox>
-            <Checkbox onChange={this.changeStatus("DRAFT")}>draft</Checkbox>
-            <Checkbox onChange={this.changeStatus("SENT")}>sent</Checkbox>
+          <Panel
+            header={
+              <span style={{ color: `${this.props.theme.secondary_font_color}` }}>status</span>
+            }
+            key="4"
+          >
+            <Checkbox
+              style={{ color: `${this.props.theme.secondary_font_color}` }}
+              onChange={this.changeStatus("READY")}
+              key="1"
+            >
+              ready to post
+            </Checkbox>
+            <Checkbox
+              style={{ color: `${this.props.theme.secondary_font_color}` }}
+              onChange={this.changeStatus("DRAFT")}
+              key="2"
+            >
+              draft
+            </Checkbox>
+            <Checkbox
+              style={{ color: `${this.props.theme.secondary_font_color}` }}
+              onChange={this.changeStatus("SENT")}
+              key="3"
+            >
+              sent
+            </Checkbox>
           </Panel>
         </Collapse>
         <div
@@ -146,7 +213,7 @@ class Sidebar extends React.Component {
           style={{
             width: "100%",
             height: "8vh",
-            backgroundColor: `#${this.props.theme.primary}`,
+            backgroundColor: `${this.props.theme.primary}`,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -157,7 +224,8 @@ class Sidebar extends React.Component {
           <h1
             style={{
               marginBottom: 0,
-              color: "white"
+              color: `${this.props.theme.primary_font_color}`,
+              fontSize: 20
             }}
           >
             Sign Out

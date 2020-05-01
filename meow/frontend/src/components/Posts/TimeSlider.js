@@ -61,7 +61,13 @@ export default class TimeSlider extends React.Component {
   render() {
     return (
       <div style={{ textAlign: "center" }}>
-        <h3>{this.formatTime()}</h3>
+        <h3
+          style={{
+            color: `${this.props.fontColor}`
+          }}
+        >
+          {this.formatTime()}
+        </h3>
         <Slider
           min={0}
           max={47}

@@ -5,11 +5,11 @@ const initialState = {
   // if you modify this, be sure to modify the database's Daily Bruin theme too.
   theme: {
     name: "Daily Bruin",
-    primary: "3D73AD",
-    secondary: "4699DA",
-    primary_font_color: "FFFFFF",
-    secondary_font_color: "FFFFFF",
-    tertiary: "FFFFFF",
+    primary: "#3D73AD",
+    secondary: "#4699DA",
+    primary_font_color: "#FFFFFF",
+    secondary_font_color: "#FFFFFF",
+    tertiary: "#ffe600",
     id: 1
   }
 };

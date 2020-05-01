@@ -5,8 +5,17 @@ import UserProfileImage from "./UserProfileImage";
 import UserProfileBasicInfo from "./UserProfileBasicInfo";
 import UserProfileBio from "./UserProfileBio";
 import UserProfileTheme from "./UserProfileTheme";
+import { editUser } from "../../actions/user.js";
 import "./styling.css";
-import { userDetail, themeList } from "../../services/api";
+import {
+  themeStarRemove,
+  themeStarAdd,
+  userDetail,
+  themeList,
+  themeDelete,
+  additionalthemeList
+} from "../../services/api";
+import cloneDeep from "lodash.clonedeep";
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -39,7 +48,7 @@ class UserProfile extends React.Component {
         primary: "#00000",
         secondary: "#00000",
         primary_font_color: "#101010",
-        secondary_font_color: "123211",
+        secondary_font_color: "#123211",
         id: 1
       },
       themes: [
@@ -48,16 +57,17 @@ class UserProfile extends React.Component {
           primary: "#00000",
           secondary: "#00000",
           primary_font_color: "#101010",
-          secondary_font_color: "123211",
+          secondary_font_color: "#123211",
           id: 1
         }
-      ]
+      ],
+      additionalThemes: [],
+      starredThemesId: []
     };
   }
 
   componentWillMount() {
     const { username } = this.props.match.params;
-
     themeList().then(d => {
       this.setState({
         ...this.state,
@@ -78,10 +88,32 @@ class UserProfile extends React.Component {
     }
   }
 
+  loadAdditionalThemes = () => {
+    additionalthemeList().then(d => {
+      this.setState(prevState => {
+        let starredThemesArray = cloneDeep(d.data.additionalThemes);
+        let starredThemesIdArray = cloneDeep(d.data.starredThemesId);
+        let idTrackerMap = {};
+        starredThemesIdArray.forEach(element => {
+          idTrackerMap[element] = 1;
+        });
+        starredThemesArray.map(element => {
+          if (idTrackerMap.hasOwnProperty(element.id)) {
+            element["starred"] = true;
+          }
+        });
+        return {
+          ...prevState,
+          additionalThemes: starredThemesArray,
+          starredThemesId: starredThemesIdArray
+        };
+      });
+    });
+  };
+
   fetchUserFor = username => {
     return userDetail(username).then(d => {
       let data = d.data;
-      console.log(d.data);
       this.setState({
         loading: false,
         first_name: data.first_name,
@@ -98,16 +130,113 @@ class UserProfile extends React.Component {
     });
   };
 
+  editCurrentTheme = themeDetails => {
+    this.setState(prevState => {
+      const newThemes = cloneDeep(prevState.themes);
+      let i = 0;
+      for (; i < newThemes.length; i++) {
+        if (newThemes[i].id === themeDetails.id) {
+          newThemes[i] = themeDetails;
+          break;
+        }
+      }
+      return {
+        ...prevState,
+        themes: newThemes,
+        selected_theme: themeDetails
+      };
+    });
+    this.props.editUser({ selected_theme: themeDetails });
+  };
+
+  addNewTheme = themeDetails => {
+    this.props.editUser({ selected_theme: themeDetails });
+    this.setState(prevState => {
+      return {
+        themes: [...prevState.themes, themeDetails],
+        selected_theme: themeDetails
+      };
+    });
+  };
+
+  deleteTheme = index => {
+    let themeName = this.state.themes[index].name;
+    themeDelete(this.state.themes[index]).then(d => {
+      if (d.status === 200) {
+        if (this.state.selected_theme.name === themeName) {
+          this.props.editUser({ selected_theme: d.data }).then(() => {
+            const newThemes = cloneDeep(this.state.themes);
+            newThemes.splice(index, 1);
+            this.setState({
+              selected_theme: d.data,
+              themes: newThemes
+            });
+          });
+        } else {
+          const newThemes = cloneDeep(this.state.themes);
+          newThemes.splice(index, 1);
+          this.setState({
+            themes: newThemes
+          });
+        }
+      }
+    });
+  };
+
+  themeChanger = data => {
+    this.setState({
+      selected_theme: data
+    });
+  };
+
+  starFavoriteTheme = theme => {
+    themeStarAdd(theme).then(d => {
+      this.setState(prevState => {
+        let additionalThemes = cloneDeep(prevState.additionalThemes);
+        additionalThemes.map(element => {
+          if (element.id === theme.id) {
+            element["starred"] = true;
+            element.favorite_count = d.data.favCount;
+          }
+        });
+        return {
+          starredThemesId: d.data.starredThemesId,
+          additionalThemes: additionalThemes
+        };
+      });
+    });
+  };
+
+  unstarFavoriteTheme = theme => {
+    themeStarRemove(theme).then(d => {
+      this.setState(prevState => {
+        let additionalThemes = cloneDeep(prevState.additionalThemes);
+        additionalThemes.map(element => {
+          if (element.id === theme.id) {
+            delete element["starred"];
+            element.favorite_count = d.data.favCount;
+          }
+        });
+        return {
+          ...prevState,
+          additionalThemes: additionalThemes,
+          starredThemesId: d.data.starredThemesId
+        };
+      });
+    });
+  };
+
   render() {
-    console.log("Re render");
-    console.log(this.props);
     if (this.state.loading) {
       return null;
     }
     return (
-      <div className="user-profile-container">
-        <div className="user-profile-row">
+      <div className="user-profile-main-container">
+        <div className="user-profile-picture-bio-container">
           <UserProfileImage profile_img={this.state.profile_img} />
+          <UserProfileBio canEdit={this.state.isMe} bio={this.state.bio} />
+        </div>
+        <div className="user-profile-user-info-themes-container">
           <UserProfileBasicInfo
             name={this.state.first_name + " " + this.state.last_name}
             role={this.state.role}
@@ -117,14 +246,21 @@ class UserProfile extends React.Component {
             twitter={this.state.twitter}
             canEdit={this.state.isMe}
           />
-        </div>
-        <div className="user-profile-row">
-          <UserProfileBio canEdit={this.state.isMe} bio={this.state.bio} />
-
           <UserProfileTheme
             canEdit={this.state.isMe}
             themes={this.state.themes}
             selected_theme={this.state.isMe ? this.props.theme : this.state.selected_theme}
+            editCurrentTheme={this.editCurrentTheme}
+            addNewTheme={this.addNewTheme}
+            saveTheme={this.saveTheme}
+            username={this.state.slack_username}
+            deleteTheme={this.deleteTheme}
+            loadAdditionalThemes={this.loadAdditionalThemes}
+            additionalThemes={this.state.additionalThemes}
+            starFavoriteTheme={this.starFavoriteTheme}
+            starredThemesId={this.state.starredThemesId}
+            unstarFavoriteTheme={this.unstarFavoriteTheme}
+            themeChanger={this.themeChanger}
           />
         </div>
       </div>
@@ -137,4 +273,13 @@ const mapStateToProps = state => ({
   theme: state.default.user.theme
 });
 
-export default withRouter(connect(mapStateToProps)(UserProfile));
+const mapDispatchToProps = {
+  editUser: data => editUser(data)
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(UserProfile)
+);

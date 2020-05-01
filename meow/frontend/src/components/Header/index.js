@@ -11,13 +11,16 @@ const options = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-dig
 class Header extends Component {
   state = {
     time: new Date().toLocaleString("en-US", options),
-    showNewmeow: !(
-      this.props.location.pathname === "/add" ||
-      this.props.location.pathname.substring(0, 5) === "/edit"
-    )
+    showNewmeow: null
   };
 
   componentDidMount() {
+    this.setState({
+      showNewmeow: !(
+        this.props.location.pathname === "/add" ||
+        this.props.location.pathname.substring(0, 5) === "/edit"
+      )
+    });
     setInterval(() => {
       this.setState({
         time: new Date().toLocaleString("en-US", options)
@@ -67,31 +70,42 @@ class Header extends Component {
       <div
         className="meow-header"
         style={{
-          backgroundColor: `#${this.props.theme.primary}`,
+          backgroundColor: `${this.props.theme.primary}`,
           height: "13vh",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           paddingLeft: `${this.props.device === config.MOBILE ? "1em" : "3em"}`,
           paddingRight: `${this.props.device === config.MOBILE ? "1em" : "3em"}`,
-          color: `#${this.props.theme.primary_font_color}`
+          color: `${this.props.theme.primary_font_color}`
         }}
       >
-        <h1 onClick={this.toHome} style={{ fontSize: "3em", cursor: "pointer" }}>
+        <h1
+          onClick={this.toHome}
+          style={{
+            fontSize: "3em",
+            cursor: "pointer",
+            color: `${this.props.theme.primary_font_color}`
+          }}
+        >
           {img_address_modifier ? "scott" : "meow"}
         </h1>
-        {this.props.device === config.MOBILE ? null : <h2>today: {this.state.time}</h2>}
+        {this.props.device === config.MOBILE ? null : (
+          <h2 style={{ color: `${this.props.theme.primary_font_color}` }}>
+            today: {this.state.time}
+          </h2>
+        )}
         {this.state.showNewmeow ? (
           <div>
             <span onClick={this.toMe} style={{ fontSize: "1.3em", cursor: "pointer" }}>
               Hi there, {this.props.firstName}!
             </span>
-            <SettingsButton />
+            <SettingsButton color={this.props.theme.primary_font_color} />
             <Button
               style={{
                 marginLeft: "0.6em",
-                backgroundColor: "#ffe600",
-                color: "black",
+                backgroundColor: `${this.props.theme.tertiary}`,
+                color: `black`,
                 borderRadius: "20px",
                 border: "none",
                 boxShadow: "0 4px 4px rgba(0,0,0,0.5)",

@@ -1,7 +1,7 @@
 import React from "react";
 import "./styling.css";
 
-class UserProfileColorDot extends React.Component {
+class UserProfileColorDot extends React.PureComponent {
   state = {
     displayColorPicker: false
   };

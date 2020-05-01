@@ -9,7 +9,7 @@ const { TextArea } = Input;
 
 const BIO_MAX_LENGTH = 512;
 
-class UserProfileBio extends React.Component {
+class UserProfileBio extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -86,7 +86,6 @@ class UserProfileBio extends React.Component {
           <div>
             <TextArea
               onChange={v => {
-                console.log(v.target.value);
                 this.setState({ value: v.target.value });
               }}
               value={this.state.value}

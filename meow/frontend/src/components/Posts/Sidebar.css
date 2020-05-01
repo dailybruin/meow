@@ -3,23 +3,6 @@
   border: none;
 }
 
-.meow-collapse h3,
-.meow-collapse .ant-checkbox-wrapper {
-  color: black;
-}
-
-.meow-collapse.ant-collapse > .ant-collapse-item > .ant-collapse-header {
-  color: white;
-}
-
-/* .meow-collapse .ant-collapse-item:nth-child(even) {
-  background-color: #2a73b2;
-}
-
-.meow-collapse .ant-collapse-content {
-  background-color: #1a9ae0;
-} */
-
 .meow-collapse .ant-checkbox-wrapper {
   display: block;
   margin-left: 0;
@@ -27,4 +10,8 @@
 
 .full-width-panel .ant-collapse-content-box {
   padding: 0;
+}
+
+.ant-collapse-borderless > .ant-collapse-item {
+  border-bottom: none;
 }

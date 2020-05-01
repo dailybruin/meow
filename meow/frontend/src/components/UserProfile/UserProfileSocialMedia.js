@@ -20,7 +20,7 @@ const SOCIAL_MEDIA_STUFF = {
   }
 };
 
-class UserProfileSocialMedia extends React.Component {
+class UserProfileSocialMedia extends React.PureComponent {
   ///slightly hackish but in order to specify the type of
   //social media link, one past pass medium="instagram"
   //or medium="twitter"

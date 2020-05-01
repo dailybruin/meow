@@ -11,7 +11,7 @@ class Sidebar extends React.Component {
         width="20vw"
         theme="light"
         style={{
-          backgroundColor: `#${this.props.theme.secondary}`
+          backgroundColor: `${this.props.theme.secondary}`
         }}
       >
         {this.props.children}
