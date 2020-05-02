@@ -105,7 +105,12 @@ class HistoryBar extends React.Component {
           console.error("cannot fetch history from the server");
           console.error(`status code: ${status}`);
         }
-        this.setState({ data });
+
+        this.setState({
+          data: data.map(x => {
+            return { ...x, key: x.id };
+          })
+        });
       })
       .catch(err => {
         console.error("Error occured when fetching history from server");
