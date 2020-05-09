@@ -93,7 +93,11 @@ class UserProfileTheme extends React.PureComponent {
         <div className="user-profile-theme-see-more" key={seeMore.length}>
           <button
             onClick={() => {
-              this.setState({ animateUnmount: true });
+              if (this.props.additionalThemes.length > 0) {
+                this.setState({ animateUnmount: true });
+              } else {
+                this.setState({ animateUnmount: true, seeMore: false });
+              }
             }}
             style={{ animation: `${this.state.animateUnmount ? "slideout" : "slidein"} 1s` }}
           >

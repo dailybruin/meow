@@ -53,7 +53,7 @@ class Header extends Component {
     let img_address_modifier = img_d.getMonth() === img_m && img_d.getDate() === img_dd;
 
     if (img_address_modifier) {
-      if (this.props.theme.name != "Scott") {
+      if (this.props.theme.name !== "Scott") {
         this.props.editTheme({
           name: "Scott",
           primary: "1B1813",
@@ -64,6 +64,18 @@ class Header extends Component {
           id: 3
         });
       }
+    }
+
+    if (this.props.theme.primary[0] !== "#") {
+      this.props.editTheme({
+        name: "Daily Bruin",
+        primary: "#3D73AD",
+        secondary: "#4699DA",
+        primary_font_color: "#FFFFFF",
+        secondary_font_color: "#FFFFFF",
+        tertiary: "#ffe600",
+        id: 1
+      });
     }
 
     return (
