@@ -96,7 +96,7 @@ class UserProfileTheme extends React.PureComponent {
               if (this.props.additionalThemes.length > 0) {
                 this.setState({ animateUnmount: true });
               } else {
-                this.setState({ animateUnmount: true, seeMore: false });
+                this.setState({ seeMore: false });
               }
             }}
             style={{ animation: `${this.state.animateUnmount ? "slideout" : "slidein"} 1s` }}
