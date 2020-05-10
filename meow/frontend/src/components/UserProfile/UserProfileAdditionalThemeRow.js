@@ -54,6 +54,14 @@ class UserProfileAdditionalThemeRow extends React.PureComponent {
         </div>
 
         <div className={"user-profile-theme-row-star"}>{this.starSelected()}</div>
+        <p
+          style={{
+            marginLeft: -6,
+            animation: `${this.props.animateUnmount ? "slideout" : "slideIn"} 1s`
+          }}
+        >
+          {this.props.theme.favorite_count}
+        </p>
       </div>
     );
   }

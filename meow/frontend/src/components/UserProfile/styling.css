@@ -50,7 +50,6 @@
 
 .user-profile-basic-info-data {
   flex: 1 0 40%;
-  max-width: 500px;
   font-size: 2em;
   margin-bottom: 0px;
   border-bottom: 2px solid #000;
@@ -119,6 +118,7 @@
   align-items: center;
   height: auto;
   border: 2px solid lightgrey;
+  border-radius: 6px;
   padding-top: 3px;
   padding-bottom: 3px;
 }
@@ -130,6 +130,7 @@
   margin-bottom: 15px;
   align-items: center;
   border: 3px solid black;
+  border-radius: 6px;
   padding-top: 3px;
   padding-bottom: 3px;
 }

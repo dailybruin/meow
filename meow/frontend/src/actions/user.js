@@ -52,6 +52,7 @@ export const getUser = username => {
       .then(({ data }) => data)
       .catch(err => {
         const { status } = err.response;
+
         if (status >= 400 && status < 500)
           dispatch({
             type: "PROFILE_FAIL",

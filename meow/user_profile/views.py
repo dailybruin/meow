@@ -76,7 +76,7 @@ def additionalthemeList(request):
         themes_available = Theme.objects.exclude(author=user).exclude(name__in=["Daily Bruin", "Dark Bruin"]).order_by('-favorite_count') #these are all themes that are available
         themes = []
         for theme in themes_available:
-            if theme.author==None and theme.check_if_unused(): #check_if_unused is defined in models
+            if (theme.author==None and theme.check_if_unused()): #check_if_unused is defined in models
                 continue
             themes.append(theme)
         serialized_themes = ThemeSerializer(themes, many=True)

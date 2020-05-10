@@ -8,7 +8,6 @@ axios.defaults.withCredentials = true;
 const { SERVER_URL } = config;
 
 export const themeList = () => {
-  console.log("here");
   return axios
     .get(`${SERVER_URL}/users/userThemes/1/`, {
       withCredentials: true

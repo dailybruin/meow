@@ -114,6 +114,9 @@ class UserProfile extends React.Component {
   fetchUserFor = username => {
     return userDetail(username).then(d => {
       let data = d.data;
+      if (data.selected_theme !== this.props.theme) {
+        this.props.editUser({ selected_theme: data.selected_theme });
+      }
       this.setState({
         loading: false,
         first_name: data.first_name,
