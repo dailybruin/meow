@@ -22,9 +22,13 @@ class Sidebar extends React.Component {
           use12Hours
           format="h:mm a"
           value={moment(this.props.pub_time, "HH:mm:ss")}
-          onChange={x => {
+          onChange={(x, timestring) => {
+            //timestring = 2:00 pm (implied PST. Meow will always use PST for now)
+            // we need to convert that 14:00:00
+            // Note: we are avoiding date time because its notoriously bad
+            // instead we are using moment.js
             this.props.editPost({
-              pub_time: x.format("HH:mm").concat(":00")
+              pub_time: moment(timestring, "LT").format("HH:mm:ss")
             });
           }}
         />
