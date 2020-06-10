@@ -104,12 +104,7 @@ class Command(BaseCommand):
                         post.log_error(
                             "Would have sent more than 20 minutes late.", post.section, True)
 
-                        post.sending = False
-                        post.sent = True
-                        post.sent_time = timezone.localtime(timezone.now())
-                        post.save()
-
-                        # print out all of the model's fields
+                         # print out all of the model's fields
 
                         debugging = SMPost.objects.filter(id=post.id)
                         logger.error("Would have sent more than 20 minutes late")
@@ -117,6 +112,13 @@ class Command(BaseCommand):
                         for key, value in debugging.all().values()[0].items():
                             debug_str += str(key) + ":   " + str(value) + "\n"
                         logger.error(debug_str)
+                        
+                        post.sending = False
+                        post.sent = True
+                        post.sent_time = timezone.localtime(timezone.now())
+                        post.save()
+
+                       
                     except:
                         logger.critical("Something is very wrong in sendpost.py ")
                         logger.critical("Something is very wrong in sendpost.py " + str(traceback.format_exc()))
@@ -130,7 +132,8 @@ class Command(BaseCommand):
                 send_url = post.get_send_url()
 
                 # This will throw an error if the page cannot be reached
-                photo_url = post.get_post_photo_url()
+                # photo_url = post.get_post_photo_url()
+                # temporary removal of this because new mainsite
 
                 # Get the default fb photo and pass it to the send function
                 # so the same default photo gets posted everywhere
@@ -150,20 +153,20 @@ class Command(BaseCommand):
                 if post.post_facebook:
                     # Section's account
                     if (post.section.facebook_page_id and post.section.facebook_key):
-                        fb_url = call_command('sendfacebook', smpost=post, section=post.section, url=send_url[1], photo_url=photo_url, fb_default_photo=fb_default_photo)
+                        fb_url = call_command('sendfacebook', smpost=post, section=post.section, url=send_url[1], fb_default_photo=fb_default_photo)
                     # Also post to account
                     if (post.section.also_post_to and
                             post.section.also_post_to.facebook_page_id and post.section.also_post_to.facebook_key):
-                        call_command('sendfacebook', smpost=post, section=post.section.also_post_to, url=send_url[1], photo_url=photo_url, fb_default_photo=fb_default_photo)
+                        call_command('sendfacebook', smpost=post, section=post.section.also_post_to, url=send_url[1], fb_default_photo=fb_default_photo)
                 # Post to twitter
                 if post.post_twitter:
                     # Section's account
                     if (post.section.twitter_access_key and post.section.twitter_access_secret):
-                        tweet_url = call_command('sendtweet', smpost=post, section=post.section, url=send_url[1], photo_url=photo_url)
+                        tweet_url = call_command('sendtweet', smpost=post, section=post.section, url=send_url[1])
                     # Also post to account
                     if (post.section.also_post_to and
                             post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
-                        call_command('sendtweet', smpost=post, section=post.section.also_post_to, url=send_url[1], photo_url=photo_url)
+                        call_command('sendtweet', smpost=post, section=post.section.also_post_to, url=send_url[1])
             except:
                 # Something wrong happened. Don't send this post.
                 logger.error(
