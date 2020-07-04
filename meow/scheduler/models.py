@@ -8,6 +8,7 @@ import urllib
 from django.core.mail import send_mail
 from bs4 import BeautifulSoup
 
+
 class SMPostTag(models.Model):
     """
     Tags which meowers provide for analytics reasons.
@@ -21,6 +22,7 @@ class SMPostTag(models.Model):
 
     def __str__(self):
         return self.text
+
 
 class SMPost(models.Model):
     slug = models.CharField(max_length=100, null=True, blank=False)
@@ -37,6 +39,12 @@ class SMPost(models.Model):
     post_newsletter = models.TextField(null=True, blank=True, default="")
     post_notes = models.TextField(null=True, blank=True, default="")
     post_instagram = models.TextField(null=True, blank=True, default="")
+    post_facebook_comments = models.IntegerField(
+        null=True, blank=True)
+    post_facebook_likes = models.IntegerField(
+        null=True, blank=True)
+    post_facebook_shares = models.IntegerField(
+        null=True, blank=True)
     # change to decimal(38, 0) if not big enough
     id_facebook = models.DecimalField(
         default=0, max_digits=25, decimal_places=0)
@@ -317,6 +325,7 @@ class EmailNotification(models.Model):
     def __str__(self):
         return self.name + " <" + self.email_address + ">"
 
+
 class PostHistory(models.Model):
     """
     PostHistory has currently 2 access methods, one implicit and one explicit
@@ -328,5 +337,6 @@ class PostHistory(models.Model):
     post_facebook = models.TextField(null=True, blank=True, default=None)
     post_twitter = models.TextField(null=True, blank=True, default=None)
     post_newsletter = models.TextField(null=True, blank=True, default=None)
-    last_edit_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    last_edit_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     creation_time = models.DateTimeField(auto_now_add=True)
