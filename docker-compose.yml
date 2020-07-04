@@ -16,5 +16,7 @@ services:
       - .:/meow
   db:
     image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: example
   redis:
     image: redis:alpine
