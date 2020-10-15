@@ -126,6 +126,58 @@ class SMPostDetail(APIView):
         serializer = SMPostSerializer(post)
         return Response(serializer.data)
 
+    def user_action_history_update(self, request, post):
+        """
+        Returns a tuple
+        success, object
+
+        it will be unsuccessful only if the user does nott have permission
+        """
+        b_should_update_copy_user = False
+        update_copy_user_to = None
+        b_should_update_online_user = False
+        update_online_user_to = None
+
+
+        if "pub_ready_copy" in request.data and post.pub_ready_copy != request.data["pub_ready_copy"]:
+            # it means that the sender of this request tried to change it
+            # we have to check if they have copy permissions
+            if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
+                #  TODO: what data should the response send back
+                return False, None
+            else:
+                b_should_update_copy_user = True
+                if request.data["pub_ready_copy"]:
+                    update_copy_user_to = request.user
+                else:
+                    update_copy_user_to = None # means that the user marked it as not copy edited so clear the copy edited user
+        if "pub_ready_online" in request.data and post.pub_ready_online != request.data["pub_ready_online"]:
+
+            if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
+                return False, None
+            else:
+                b_should_update_online_user = True
+                if request.data["pub_ready_online"]:
+                    update_online_user_to = request.user
+                else:
+                    update_online_user_to = None
+
+        # will be passed into serializer.save()
+        serializer_keyword_args = {
+            "last_edit_user": request.user
+        }
+
+        # if the user updated the copy edited or online approved status,
+        # record them as the copy_user or online_user
+        if b_should_update_copy_user:
+            serializer_keyword_args["pub_ready_copy_user"] = update_copy_user_to
+
+        if b_should_update_online_user:
+            serializer_keyword_args["pub_ready_online_user"] = update_online_user_to
+
+        return True, serializer_keyword_args
+
+
     def put(self, request, post_id, format=None):
         if not request.user.is_authenticated:
             return Response("Must be logged in", status=403)
@@ -137,51 +189,10 @@ class SMPostDetail(APIView):
             post = self.get_object_with_lock(post_id)
 
             serializer = SMPostSerializer(post, data=request.data)
-
             if serializer.is_valid():
-                b_should_update_copy_user = False
-                update_copy_user_to = None
-                b_should_update_online_user = False
-                update_online_user_to = None
-
-
-                if "pub_ready_copy" in request.data and post.pub_ready_copy != request.data["pub_ready_copy"]:
-                    # it means that the sender of this request tried to change it
-                    # we have to check if they have copy permissions
-                    if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
-                        #  TODO: what data should the response send back
-                        return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
-                    else:
-                        b_should_update_copy_user = True
-                        if request.data["pub_ready_copy"]:
-                            update_copy_user_to = request.user
-                        else:
-                            update_copy_user_to = None # means that the user marked it as not copy edited so clear the copy edited user
-                if "pub_ready_online" in request.data and post.pub_ready_online != request.data["pub_ready_online"]:
-
-                    if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
-                        return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
-                    else:
-                        b_should_update_online_user = True
-                        if request.data["pub_ready_online"]:
-                            update_online_user_to = request.user
-                        else:
-                            update_online_user_to = None
-
-                # will be passed into serializer.save()
-                serializer_keyword_args = {
-                    "last_edit_user": request.user
-                }
-
-                # if the user updated the copy edited or online approved status,
-                # record them as the copy_user or online_user
-                if b_should_update_copy_user:
-                    serializer_keyword_args["pub_ready_copy_user"] = update_copy_user_to
-
-                if b_should_update_online_user:
-                    serializer_keyword_args["pub_ready_online_user"] = update_online_user_to
-
-
+                success, serializer_keyword_args = self.user_action_history_update(request, post)
+                if not success:
+                    return Response({"error": "Permission denied"})
                 # version number is incremented each time someone updates
                 # a post. If someone saves while another person is editing,
                 # the editing person will not see their changes. When 

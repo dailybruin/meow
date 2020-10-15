@@ -139,12 +139,14 @@ class EditPost extends React.Component {
   deletePost = () => {
     const { postId } = this.props.match.params;
 
-    this.props.savePost(postId, { is_active: false }).then(data => {
-      if (data) {
-        this.props.history.push("/");
-      } else {
-      }
-    });
+    this.props
+      .savePost(postId, { is_active: false, version_number: this.state.version_number })
+      .then(data => {
+        if (data) {
+          this.props.history.push("/");
+        } else {
+        }
+      });
   };
 
   sendNow = () => {
