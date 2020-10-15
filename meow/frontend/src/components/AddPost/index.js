@@ -26,6 +26,7 @@ const AddPost = () => {
     pub_ready_copy: false,
     pub_ready_online: false,
     section: null,
+    version_number: 0,
     pub_date: new Intl.DateTimeFormat("en-GB", dateOpts)
       .format(date)
       .split("/")
