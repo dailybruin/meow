@@ -70,6 +70,7 @@ class SMPost(models.Model):
         default=True, help_text="If false, consider mock-deleted.")
 
     tags = models.ManyToManyField(SMPostTag)
+    version_number = models.IntegerField(default=0)
 
     def __str__(self):
         return "" if self.slug is None else self.slug

@@ -29,7 +29,7 @@ export const savePost = (postId, postData) => dispatch => {
     },
     err => {
       if (err.response.status === 403) {
-        console.log("Logging off because of 403 from saving posts");
+        // console.log("Logging off because of 403 from saving posts");
         dispatch({
           type: "LOGOUT"
         });
@@ -41,6 +41,10 @@ export const savePost = (postId, postData) => dispatch => {
       if (data["story_url"] !== undefined) {
         description = "Invalid URL";
       }
+      if (data["error"] !== undefined) {
+        description = data["error"];
+      }
+      console.log(data);
       alertError("Saving failed :(", description)(dispatch);
       dispatch({
         type: "NETWORK_ERROR",

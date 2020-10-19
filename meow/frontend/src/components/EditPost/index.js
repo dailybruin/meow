@@ -116,6 +116,7 @@ class EditPost extends React.Component {
       post_instagram: this.state.post_instagram,
       pub_ready_copy: this.state.pub_ready_copy,
       pub_ready_online: this.state.pub_ready_online,
+      version_number: this.state.version_number,
       tags: this.state.tags
         ? this.state.tags.map(x => {
             return x.text;
@@ -138,12 +139,14 @@ class EditPost extends React.Component {
   deletePost = () => {
     const { postId } = this.props.match.params;
 
-    this.props.savePost(postId, { is_active: false }).then(data => {
-      if (data) {
-        this.props.history.push("/");
-      } else {
-      }
-    });
+    this.props
+      .savePost(postId, { is_active: false, version_number: this.state.version_number })
+      .then(data => {
+        if (data) {
+          this.props.history.push("/");
+        } else {
+        }
+      });
   };
 
   sendNow = () => {

@@ -38,6 +38,8 @@ from .analytics import get_analytics
 # Oauth stuff
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
+from django.db.models import F
+from django.db import transaction
 
 
 
@@ -110,6 +112,12 @@ class SMPostDetail(APIView):
         except SMPost.DoesNotExist:
             raise Http404
 
+    def get_object_with_lock(self, post_id):
+        try:
+            return SMPost.objects.select_for_update().get(id=post_id)
+        except SMPost.DoesNotExist:
+            raise Http404
+
     def get(self, request, post_id, format=None):
         if not request.user.is_authenticated:
             return Response("Must be logged in", status=403)
@@ -118,60 +126,86 @@ class SMPostDetail(APIView):
         serializer = SMPostSerializer(post)
         return Response(serializer.data)
 
+    def user_action_history_update(self, request, post):
+        """
+        Returns a tuple
+        success, object
+
+        it will be unsuccessful only if the user does nott have permission
+        """
+        b_should_update_copy_user = False
+        update_copy_user_to = None
+        b_should_update_online_user = False
+        update_online_user_to = None
+
+
+        if "pub_ready_copy" in request.data and post.pub_ready_copy != request.data["pub_ready_copy"]:
+            # it means that the sender of this request tried to change it
+            # we have to check if they have copy permissions
+            if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
+                #  TODO: what data should the response send back
+                return False, None
+            else:
+                b_should_update_copy_user = True
+                if request.data["pub_ready_copy"]:
+                    update_copy_user_to = request.user
+                else:
+                    update_copy_user_to = None # means that the user marked it as not copy edited so clear the copy edited user
+        if "pub_ready_online" in request.data and post.pub_ready_online != request.data["pub_ready_online"]:
+
+            if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
+                return False, None
+            else:
+                b_should_update_online_user = True
+                if request.data["pub_ready_online"]:
+                    update_online_user_to = request.user
+                else:
+                    update_online_user_to = None
+
+        # will be passed into serializer.save()
+        serializer_keyword_args = {
+            "last_edit_user": request.user
+        }
+
+        # if the user updated the copy edited or online approved status,
+        # record them as the copy_user or online_user
+        if b_should_update_copy_user:
+            serializer_keyword_args["pub_ready_copy_user"] = update_copy_user_to
+
+        if b_should_update_online_user:
+            serializer_keyword_args["pub_ready_online_user"] = update_online_user_to
+
+        return True, serializer_keyword_args
+
+
     def put(self, request, post_id, format=None):
         if not request.user.is_authenticated:
             return Response("Must be logged in", status=403)
 
-        post = self.get_object(post_id)
+       
+        with transaction.atomic():
+            # lock the row. This lock will be released at the end of this transaction
+            # https://docs.djangoproject.com/en/3.1/ref/models/querysets/#select-for-update
+            post = self.get_object_with_lock(post_id)
 
-        serializer = SMPostSerializer(post, data=request.data)
-        if serializer.is_valid():
-            b_should_update_copy_user = False
-            update_copy_user_to = None
-            b_should_update_online_user = False
-            update_online_user_to = None
+            serializer = SMPostSerializer(post, data=request.data)
+            if serializer.is_valid():
+                success, serializer_keyword_args = self.user_action_history_update(request, post)
+                if not success:
+                    return Response({"error": "Permission denied"})
+                # version number is incremented each time someone updates
+                # a post. If someone saves while another person is editing,
+                # the editing person will not see their changes. When 
+                # the editing person saves, the first person's updates will be lost
+                # to prevent this and other confusion, we have this check
+                if request.data["version_number"] < post.version_number:
+                    return Response({"error":"Someone updated this meow before you saved! Please open this meow in a new tab and reapply your changes."}, status=status.HTTP_400_BAD_REQUEST)
 
-            #print(type(request.data["pub_ready_copy"]));
-
-            if "pub_ready_copy" in request.data and post.pub_ready_copy != request.data["pub_ready_copy"]:
-                # it means that the sender of this request tried to change it
-                # we have to check if they have copy permissions
-                #if request.user.group
-                if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
-                    #  TODO: what data should the response send back
-                    return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    b_should_update_copy_user = True
-                    if request.data["pub_ready_copy"]:
-                        update_copy_user_to = request.user
-                    else:
-                        update_copy_user_to = None # means that the user marked it as not copy edited so clear the copy edited user
-            if "pub_ready_online" in request.data and post.pub_ready_online != request.data["pub_ready_online"]:
-
-                if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
-                    return Response({"error":"Permission denied"}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    b_should_update_online_user = True
-                    if request.data["pub_ready_online"]:
-                        update_online_user_to = request.user
-                    else:
-                        update_online_user_to = None
-
-            # will be passed into serializer.save()
-            serializer_keyword_args = {
-                "last_edit_user": request.user
-            }
-
-            # if the user updated the copy edited or online approved status,
-            # record them as the copy_user or online_user
-            if b_should_update_copy_user:
-                serializer_keyword_args["pub_ready_copy_user"] = update_copy_user_to
-
-            if b_should_update_online_user:
-                serializer_keyword_args["pub_ready_online_user"] = update_online_user_to
-
-            post = serializer.save(**serializer_keyword_args)
-
+                post = serializer.save(**serializer_keyword_args)
+                # increment version number
+                post.version_number += 1
+                post.save()
+            # at the end of the transaction, the lock will automatically be released
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
