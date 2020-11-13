@@ -283,3 +283,4 @@ SOCIAL_AUTH_PIPELINE = (
     'meow.pipeline.set_roles_and_profile_pic',
     'social_core.pipeline.user.user_details',
 )
+SESSION_COOKIE_SAMESITE = None
