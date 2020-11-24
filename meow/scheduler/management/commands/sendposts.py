@@ -3,6 +3,7 @@ from django.core.management import call_command
 from django.utils import timezone
 from django.conf import settings
 
+
 from datetime import datetime, timedelta
 from facepy import GraphAPI
 from facepy.exceptions import FacepyError
@@ -96,22 +97,24 @@ class Command(BaseCommand):
                 # Make sure this post should actually be sent out. If it's more than
                 # 20 minutes late, we're gonna mark it as an error and send an error
                 # message.
+                # 11/23/2020 5:15:35 PM01:15:35 worker.1 | sent_error_text:   NoneError: Arts 2020-11-23 17:15:35.661913 -- Would have sent more than 20 minutes late.
                 send_date = datetime.combine(post.pub_date, post.pub_time)
                 send_grace_period = timedelta(minutes=20)
-                if (timezone.now() - timezone.make_aware(send_date)) > send_grace_period:
+                tmp_current_time = timezone.localtime(timezone.now())
+                tmp_send_datetime = timezone.make_aware(send_date)
+                time_since_scheduled_time = (tmp_current_time - tmp_send_datetime)
+                if time_since_scheduled_time > send_grace_period:
                     try:
                         post.sending = False
                         post.log_error(
                             "Would have sent more than 20 minutes late.", post.section, True)
 
                          # print out all of the model's fields
-
-                        debugging = SMPost.objects.filter(id=post.id)
                         logger.error("Would have sent more than 20 minutes late")
-                        debug_str = "Model Fields\n"
-                        for key, value in debugging.all().values()[0].items():
-                            debug_str += str(key) + ":   " + str(value) + "\n"
-                        logger.error(debug_str)
+                        logger.error("Current_time" + str(tmp_current_time))
+                        logger.error("Datetime for post" + str(tmp_send_datetime))
+
+                        post.print_info_to_error_log()
                         
                         post.sending = False
                         post.sent = True

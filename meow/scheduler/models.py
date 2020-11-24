@@ -7,6 +7,10 @@ import requests
 import urllib
 from django.core.mail import send_mail
 from bs4 import BeautifulSoup
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class SMPostTag(models.Model):
     """
@@ -180,6 +184,14 @@ Thanks,
             self.post_statuses.NO_SECTION: "No section",
             self.post_statuses.SENDING: "Sending...",
         }[self.post_status()]
+
+    def print_info_to_error_log(self):
+        debugging = SMPost.objects.filter(id=self.id)
+
+        debug_str = "Model Fields\n"
+        for key, value in debugging.all().values()[0].items():
+            debug_str += str(key) + ":   " + str(value) + "\n"
+        logger.error(debug_str)
 
     # Returns a 2-tuple with (canonical URL, sending URL)
     # Either both are set or neither are set
