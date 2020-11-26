@@ -17,7 +17,7 @@ django-environ==0.4.5
 django-rest-auth==0.9.3
 # django-slack-oauth==1.4.3
 django-webpack-loader==0.6.0
-djangorestframework==3.9.1
+djangorestframework==3.12.2
 enum34==1.1.6
 facepy==1.0.9
 gunicorn==19.7.1
