@@ -47,25 +47,6 @@ class Header extends Component {
   };
 
   render() {
-    let img_d = new Date(),
-      img_m = 3,
-      img_dd = 1;
-    let img_address_modifier = img_d.getMonth() === img_m && img_d.getDate() === img_dd;
-
-    if (img_address_modifier) {
-      if (this.props.theme.name !== "Scott") {
-        this.props.editTheme({
-          name: "Scott",
-          primary: "1B1813",
-          secondary: "614b37",
-          primary_font_color: "C48A96",
-          secondary_font_color: "C48A96",
-          tertiary: "C48A96",
-          id: 3
-        });
-      }
-    }
-
     if (this.props.theme.primary[0] !== "#") {
       this.props.editTheme({
         name: "Daily Bruin",
@@ -100,7 +81,7 @@ class Header extends Component {
             color: `${this.props.theme.primary_font_color}`
           }}
         >
-          {img_address_modifier ? "scott" : "meow"}
+          {"meow"}
         </h1>
         {this.props.device === config.MOBILE ? null : (
           <h2 style={{ color: `${this.props.theme.primary_font_color}` }}>
@@ -127,7 +108,7 @@ class Header extends Component {
               size="large"
               onClick={this.newmeow}
             >
-              {img_address_modifier ? "new scott" : "new meow"}
+              {"new meow"}
             </Button>
           </div>
         ) : null}
