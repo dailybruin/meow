@@ -153,7 +153,7 @@ class EditPost extends React.Component {
     const { postId } = this.props.match.params;
 
     this.savePostPromise(postId).then(data => {
-      if (data) {
+      if (data && data.section !== null) {
         this.props.sendPostNow(postId).then(response => {
           console.log(response);
           if (response.error) {
@@ -162,6 +162,8 @@ class EditPost extends React.Component {
             this.props.history.push("/");
           }
         });
+      } else if (data.section == null) {
+        console.alert("Please make sure to select a section");
       }
     });
   };
