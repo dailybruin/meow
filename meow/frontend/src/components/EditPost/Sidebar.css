@@ -6,3 +6,8 @@
   margin: 1em auto;
   width: 80%;
 }
+
+.error-message-section {
+  position: absolute;
+  color: red;
+}

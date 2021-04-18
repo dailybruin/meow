@@ -68,17 +68,6 @@ class EditForm extends React.Component {
     }
   };
 
-  validateSection = (rule, value, callback) => {
-    const form = this.props.form;
-    if (!value || value !== null) {
-      this.setState({ section_errors: "" });
-      callback();
-    } else {
-      this.setState({ section_errors: "meow please make sure to select a section" });
-      callback("meow meow no section is selected");
-    }
-  };
-
   responsiveRender = (firstComp, secondComp) => {
     if (this.props.mobile === true) {
       return (
@@ -185,7 +174,7 @@ class EditForm extends React.Component {
         </Form.Item>
         <Form.Item {...formItemLayout} label="sections">
           {getFieldDecorator("section", {
-            rules: [{ validator: this.validateSection }]
+            rules: []
           })(
             <RadioGroup>
               {this.props.sections.map(x => (

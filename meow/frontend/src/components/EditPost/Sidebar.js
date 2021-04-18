@@ -46,6 +46,7 @@ class Sidebar extends React.Component {
             size="large"
           >
             now!
+            <span className="error-message-section">{this.props.sectionError}</span>
           </Button>
         )}
         {this.props.mobile === true ? null : (

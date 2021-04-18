@@ -26,7 +26,8 @@ const contentStyles = { position: "relative", transform: "translateY(-30px)" };
 
 class EditPost extends React.Component {
   state = {
-    sections: this.props.sections
+    sections: this.props.sections,
+    sectionerror: ""
   };
 
   componentDidMount() {
@@ -154,6 +155,7 @@ class EditPost extends React.Component {
 
     this.savePostPromise(postId).then(data => {
       if (data && data.section !== null) {
+        this.setState({ sectionerror: "" });
         this.props.sendPostNow(postId).then(response => {
           console.log(response);
           if (response.error) {
@@ -163,7 +165,8 @@ class EditPost extends React.Component {
           }
         });
       } else if (data.section == null) {
-        console.alert("Please make sure to select a section");
+        this.setState({ sectionerror: "Please make sure to select a section" });
+        console.log(this.state.sectionerror);
       }
     });
   };
@@ -191,6 +194,7 @@ class EditPost extends React.Component {
             editPost={this.editField}
             delete={this.deletePost.bind(this)}
             sendNow={this.sendNow}
+            sectionError={this.state.sectionerror}
           />
         </Sidebar>
         <Content style={contentStyles}>
