@@ -33,7 +33,6 @@ class EditForm extends React.Component {
     super(props);
     this.state = {
       story_url_errors: "",
-      section_errors: "",
       twitter_length: 0 //even if post_twitter has something, the constructor will be called
       //before that data is avialable so just set it to 0.
     };
@@ -184,7 +183,6 @@ class EditForm extends React.Component {
               ))}
             </RadioGroup>
           )}
-          <span className="error-message">{this.state.section_errors}</span>
         </Form.Item>
         <Form.Item {...formItemLayout} label="tags">
           {getFieldDecorator("tags", {

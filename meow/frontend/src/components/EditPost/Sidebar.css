@@ -10,4 +10,8 @@
 .error-message-section {
   position: absolute;
   color: red;
+  top: 170px;
+  left: 480px;
+  font-size: small;
+  z-index: 10000;
 }
