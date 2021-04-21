@@ -183,6 +183,7 @@ class EditForm extends React.Component {
               ))}
             </RadioGroup>
           )}
+          <p className="no-section-error">{this.props.sectionError}</p>
         </Form.Item>
         <Form.Item {...formItemLayout} label="tags">
           {getFieldDecorator("tags", {

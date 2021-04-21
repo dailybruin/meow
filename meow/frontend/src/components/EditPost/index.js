@@ -1,8 +1,8 @@
-import React from "react";
+import React, { version } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
-import { Layout } from "antd";
+import { Layout, notification, Icon } from "antd";
 
 import EditSidebar from "./Sidebar";
 import EditContent from "./Content";
@@ -150,10 +150,19 @@ class EditPost extends React.Component {
       });
   };
 
+  popSectionerror = () => {
+    notification.open({
+      message: "Send Failed :(",
+      description: "No section was selected. Please make sure to select one.",
+      icon: <Icon type="close-circle" style={{ color: "#FF0000" }} />
+    });
+  };
+
   sendNow = () => {
     const { postId } = this.props.match.params;
 
     this.savePostPromise(postId).then(data => {
+      data.version_number += 1;
       if (data && data.section !== null) {
         this.setState({ sectionerror: "" });
         this.props.sendPostNow(postId).then(response => {
@@ -166,6 +175,7 @@ class EditPost extends React.Component {
         });
       } else if (data.section == null) {
         this.setState({ sectionerror: "Please make sure to select a section" });
+        this.popSectionerror();
         console.log(this.state.sectionerror);
       }
     });
@@ -194,7 +204,6 @@ class EditPost extends React.Component {
             editPost={this.editField}
             delete={this.deletePost.bind(this)}
             sendNow={this.sendNow}
-            sectionError={this.state.sectionerror}
           />
         </Sidebar>
         <Content style={contentStyles}>
@@ -204,6 +213,7 @@ class EditPost extends React.Component {
             editPost={this.editField}
             savePost={this.savePost.bind(this)}
             user_groups={this.state.user_groups}
+            sectionError={this.state.sectionerror}
           />
         </Content>
         <div style={{ width: "25vw" }}>
