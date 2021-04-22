@@ -162,7 +162,7 @@ class EditPost extends React.Component {
     const { postId } = this.props.match.params;
 
     this.savePostPromise(postId).then(data => {
-      data.version_number += 1;
+      ++this.state.version_number;
       if (data && data.section !== null) {
         this.setState({ sectionerror: "" });
         this.props.sendPostNow(postId).then(response => {
