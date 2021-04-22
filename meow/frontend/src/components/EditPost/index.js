@@ -153,7 +153,7 @@ class EditPost extends React.Component {
   popSectionerror = () => {
     notification.open({
       message: "Send Failed :(",
-      description: "No section was selected. Please make sure to select one.",
+      description: "No section was selected",
       icon: <Icon type="close-circle" style={{ color: "#FF0000" }} />
     });
   };
