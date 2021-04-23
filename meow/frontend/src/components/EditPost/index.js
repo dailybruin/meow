@@ -1,4 +1,4 @@
-import React, { version } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
@@ -162,9 +162,15 @@ class EditPost extends React.Component {
     const { postId } = this.props.match.params;
 
     this.savePostPromise(postId).then(data => {
-      ++this.state.version_number;
+      this.setState({
+        ...this.state,
+        version_number: this.state.version_number + 1
+      });
       if (data && data.section !== null) {
-        this.setState({ sectionerror: "" });
+        this.setState({
+          ...this.state,
+          sectionerror: ""
+        });
         this.props.sendPostNow(postId).then(response => {
           console.log(response);
           if (response.error) {
@@ -174,7 +180,10 @@ class EditPost extends React.Component {
           }
         });
       } else if (data.section == null) {
-        this.setState({ sectionerror: "Please make sure to select a section" });
+        this.setState({
+          ...this.state,
+          sectionerror: "Please make sure to select a section"
+        });
         this.popSectionerror();
         console.log(this.state.sectionerror);
       }

@@ -1,16 +1,9 @@
 import React from "react";
-import { Calendar, TimePicker, Button, notification } from "antd";
+import { Calendar, TimePicker, Button } from "antd";
 import moment from "moment";
 import "./Sidebar.css";
 
 class Sidebar extends React.Component {
-  openNotification = () => {
-    notification.open({
-      message: "Notification Title",
-      description: "This is sadsa"
-    });
-  };
-
   render() {
     return (
       <div className="leftSidebarAdd">
