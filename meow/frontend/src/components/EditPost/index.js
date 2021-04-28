@@ -158,38 +158,6 @@ class EditPost extends React.Component {
     });
   };
 
-  // sendNow = () => {
-  //   const { postId } = this.props.match.params;
-
-  //   this.savePostPromise(postId).then(data => {
-  //     this.setState({
-  //       ...this.state,
-  //       version_number: this.state.version_number + 1
-  //     });
-  //     if (data && data.section !== null) {
-  //       this.setState({
-  //         ...this.state,
-  //         sectionerror: ""
-  //       });
-  //       this.props.sendPostNow(postId).then(response => {
-  //         console.log(response);
-  //         if (response.error) {
-  //         } else {
-  //           //using double == because status might be a string.
-  //           this.props.history.push("/");
-  //         }
-  //       });
-  //     } else if (data.section == null) {
-  //       this.setState({
-  //         ...this.state,
-  //         sectionerror: "Please make sure to select a section"
-  //       });
-  //       this.popSectionerror();
-  //       console.log(this.state.sectionerror);
-  //     }
-  //   });
-  // };
-
   sendNow = data => {
     const { postId } = this.props.match.params;
     if (data && this.state.section !== null) {
