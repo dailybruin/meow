@@ -150,17 +150,30 @@ class EditPost extends React.Component {
       });
   };
 
-  popSectionerror = () => {
-    notification.open({
-      message: "Send Failed :(",
-      description: "No section was selected",
-      icon: <Icon type="close-circle" style={{ color: "#FF0000" }} />
-    });
+  popSectionerror = empty => {
+    if (empty == "section") {
+      notification.open({
+        message: "Send Failed :(",
+        description: "No section was selected",
+        icon: <Icon type="close-circle" style={{ color: "#FF0000" }} />
+      });
+    } else if (empty == "url") {
+      notification.open({
+        message: "No url entered :(",
+        description: "Please enter a url",
+        icon: <Icon type="close-circle" style={{ color: "#FF0000" }} />
+      });
+    }
   };
 
   sendNow = data => {
     const { postId } = this.props.match.params;
-    if (data && this.state.section !== null) {
+    if (
+      data &&
+      this.state.section &&
+      this.state.story_url !== null &&
+      this.state.story_url !== ""
+    ) {
       this.savePostPromise(postId).then(() => {
         this.setState({
           ...this.state,
@@ -179,8 +192,9 @@ class EditPost extends React.Component {
         ...this.state,
         sectionerror: "Please make sure to select a section "
       });
-      this.popSectionerror();
-      console.log(this.state.section);
+      this.popSectionerror("section");
+    } else if (this.state.story_url == "" || this.state.story_url == null) {
+      this.popSectionerror("url");
     }
   };
   /**

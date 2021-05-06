@@ -33,6 +33,7 @@ class EditForm extends React.Component {
     super(props);
     this.state = {
       story_url_errors: "",
+      click_pubready: false,
       twitter_length: 0 //even if post_twitter has something, the constructor will be called
       //before that data is avialable so just set it to 0.
     };
@@ -119,7 +120,20 @@ class EditForm extends React.Component {
     setFieldsValue({ tags });
   };
 
+  handleClickpub = e => {
+    this.setState({
+      ...this.state,
+      click_pubready: e.target.checked
+    });
+  };
+
   render() {
+    let flag_pub = null;
+    if (this.state.click_pubready && (this.props.story_url == "" || this.props.story_url == null)) {
+      flag_pub = <p className="no-url-error">Please make sure to enter a url</p>;
+    } else if (!this.state.click_pubready) {
+      flag_pub = null;
+    }
     const { getFieldDecorator, getFieldsValue } = this.props.form;
     const CopyEdited = Copy(
       () => (
@@ -141,7 +155,12 @@ class EditForm extends React.Component {
             rules: [],
             valuePropName: "checked",
             initialValue: true
-          })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
+          })(
+            <Checkbox style={{ fontSize: "1.2em" }} onClick={this.handleClickpub}>
+              Ready to publish
+            </Checkbox>
+          )}
+          {flag_pub}
         </Form.Item>
       ),
       null,
