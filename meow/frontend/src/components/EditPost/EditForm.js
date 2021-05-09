@@ -128,13 +128,18 @@ class EditForm extends React.Component {
   };
 
   render() {
-    let flag_pub = null;
-    if (this.state.click_pubready && (this.props.story_url == "" || this.props.story_url == null)) {
-      flag_pub = <p className="no-url-error">Please make sure to enter a url</p>;
-    } else if (!this.state.click_pubready) {
-      flag_pub = null;
-    }
     const { getFieldDecorator, getFieldsValue } = this.props.form;
+
+    let flag_urlwarn = null;
+    if (
+      getFieldsValue(["pub_ready_online"]).pub_ready_online &&
+      (this.props.story_url == null || this.props.story_url.trim() == "")
+    ) {
+      flag_urlwarn = <p className="no-url-warning">Warning: no url was entered</p>;
+    } else if (!getFieldsValue(["pub_ready_online"]).pub_ready_online) {
+      flag_urlwarn = null;
+    }
+
     const CopyEdited = Copy(
       () => (
         <Form.Item className="checkable-items">
@@ -155,12 +160,8 @@ class EditForm extends React.Component {
             rules: [],
             valuePropName: "checked",
             initialValue: true
-          })(
-            <Checkbox style={{ fontSize: "1.2em" }} onClick={this.handleClickpub}>
-              Ready to publish
-            </Checkbox>
-          )}
-          {flag_pub}
+          })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
+          {flag_urlwarn}
         </Form.Item>
       ),
       null,
@@ -202,7 +203,9 @@ class EditForm extends React.Component {
               ))}
             </RadioGroup>
           )}
-          <p className="no-section-error">{this.props.sectionError}</p>
+          <p className="no-section-error">
+            {this.props.section == null ? this.props.sectionError : ""}
+          </p>
         </Form.Item>
         <Form.Item {...formItemLayout} label="tags">
           {getFieldDecorator("tags", {
