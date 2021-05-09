@@ -33,7 +33,6 @@ class EditForm extends React.Component {
     super(props);
     this.state = {
       story_url_errors: "",
-      click_pubready: false,
       twitter_length: 0 //even if post_twitter has something, the constructor will be called
       //before that data is avialable so just set it to 0.
     };
