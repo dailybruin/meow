@@ -129,14 +129,16 @@ class EditForm extends React.Component {
   render() {
     const { getFieldDecorator, getFieldsValue } = this.props.form;
 
-    let flag_urlwarn = null;
+    let no_urlwarning = null;
     if (
       getFieldsValue(["pub_ready_online"]).pub_ready_online &&
       (this.props.story_url == null || this.props.story_url.trim() == "")
     ) {
-      flag_urlwarn = <p className="no-url-warning">Warning: no url was entered</p>;
+      no_urlwarning = (
+        <p className="no-url-warning">Warning: post can still be sent, but no url was entered</p>
+      );
     } else if (!getFieldsValue(["pub_ready_online"]).pub_ready_online) {
-      flag_urlwarn = null;
+      no_urlwarning = null;
     }
 
     const CopyEdited = Copy(
@@ -160,7 +162,7 @@ class EditForm extends React.Component {
             valuePropName: "checked",
             initialValue: true
           })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
-          {flag_urlwarn}
+          {no_urlwarning}
         </Form.Item>
       ),
       null,
