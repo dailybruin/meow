@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
-import { Layout } from "antd";
+import { Layout, notification, Icon } from "antd";
 
 import EditSidebar from "./Sidebar";
 import EditContent from "./Content";
@@ -26,7 +26,8 @@ const contentStyles = { position: "relative", transform: "translateY(-30px)" };
 
 class EditPost extends React.Component {
   state = {
-    sections: this.props.sections
+    sections: this.props.sections,
+    sectionerror: ""
   };
 
   componentDidMount() {
@@ -149,23 +150,38 @@ class EditPost extends React.Component {
       });
   };
 
-  sendNow = () => {
-    const { postId } = this.props.match.params;
+  popSectionerror = () => {
+    notification.open({
+      message: "Send Failed :(",
+      description: "No section was selected",
+      icon: <Icon type="close-circle" style={{ color: "#FF0000" }} />
+    });
+  };
 
-    this.savePostPromise(postId).then(data => {
-      if (data) {
+  sendNow = data => {
+    const { postId } = this.props.match.params;
+    if (data && this.state.section !== null) {
+      this.savePostPromise(postId).then(() => {
+        this.setState({
+          ...this.state,
+          version_number: this.state.version_number + 1
+        });
         this.props.sendPostNow(postId).then(response => {
           console.log(response);
           if (response.error) {
           } else {
-            //using double == because status might be a string.
             this.props.history.push("/");
           }
         });
-      }
-    });
+      });
+    } else if (this.state.section == null) {
+      this.setState({
+        ...this.state,
+        sectionerror: "Please make sure to select a section "
+      });
+      this.popSectionerror();
+    }
   };
-
   /**
    * This function is used by the HistoryBar compoenent
    * to replace current posts with one of the historic edits.
@@ -198,6 +214,7 @@ class EditPost extends React.Component {
             editPost={this.editField}
             savePost={this.savePost.bind(this)}
             user_groups={this.state.user_groups}
+            sectionError={this.state.sectionerror}
           />
         </Content>
         <div style={{ width: "25vw" }}>

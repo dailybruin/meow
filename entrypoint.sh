@@ -8,9 +8,10 @@ if [ "$DEBUG" = "False" ]; then
   python meow/manage.py collectstatic --noinput
 
   # Apply database migrations
-  echo "Apply database migrations"
-  python meow/manage.py migrate
+
 
 fi
+echo "Apply database migrations"
+python meow/manage.py migrate
 
 exec "$@"

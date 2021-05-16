@@ -44,3 +44,11 @@
   right: 0px;
   color: red;
 }
+.no-section-error {
+  color: red;
+  font-size: small;
+}
+.no-url-warning {
+  color: #d4b106;
+  font-size: small;
+}
