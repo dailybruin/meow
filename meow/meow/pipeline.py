@@ -60,7 +60,7 @@ def set_profile_picture(backend, user, response, details, *args, **kwargs):
         PARAMS = {'token': access_token}
         slack_res = requests.get(url=PROFILE_ENDPOINT, params=PARAMS)
         slack_res_json = slack_res.json()
-        
+
 
 
         user.profile_img = slack_res_json["profile"].get("image_original", None)

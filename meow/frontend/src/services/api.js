@@ -206,6 +206,14 @@ export const postSendNow = postId => {
   return axios.post(`${SERVER_URL}/post/${postId}/send_now`);
 };
 
+export const checkPostTime = (pub_time, pub_date) => {
+  return axios.post(`${SERVER_URL}/post/check_time_overlap`, { pub_time, pub_date }).then(res => {
+    if (res.data.message !== "Success") {
+      alert("Warning: Your scheduled meow time is within 15 minutes to another meow meeting");
+    }
+  });
+};
+
 export const sectionList = () => {
   return axios
     .get(`${SERVER_URL}/section/`, {

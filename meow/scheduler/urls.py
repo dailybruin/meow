@@ -25,6 +25,9 @@ from . import views
 app_name = "scheduler"
 
 urlpatterns = [
+    url(r'^post/check_time_overlap$',
+        views.check_time_overlap,
+        name='check-time-overlap'),
     url(r'^post/$',
         views.SMPostList.as_view(),
         name='post-list'),

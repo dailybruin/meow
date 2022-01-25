@@ -182,7 +182,7 @@ class SMPostDetail(APIView):
         if not request.user.is_authenticated:
             return Response("Must be logged in", status=403)
 
-       
+
         with transaction.atomic():
             # lock the row. This lock will be released at the end of this transaction
             # https://docs.djangoproject.com/en/3.1/ref/models/querysets/#select-for-update
@@ -195,7 +195,7 @@ class SMPostDetail(APIView):
                     return Response({"error": "Permission denied"})
                 # version number is incremented each time someone updates
                 # a post. If someone saves while another person is editing,
-                # the editing person will not see their changes. When 
+                # the editing person will not see their changes. When
                 # the editing person saves, the first person's updates will be lost
                 # to prevent this and other confusion, we have this check
                 if request.data["version_number"] < post.version_number:
@@ -229,7 +229,6 @@ def get_logs(request, name):
         return FileResponse(open("celeryclock.log", "rb"))
 
 
-
 @api_view(http_method_names=['POST'])
 def create_smpost_tags(request):
     # we are expecting the data to look like this:
@@ -250,6 +249,29 @@ def fetch_smpost_tags_suggestions(request):
     recent_tags = SMPostTag.objects.order_by('-last_touch')[:40]
 
     return Response({"suggestions": [x.text for x in recent_tags]})
+
+@login_required
+@api_view(http_method_names=['POST'])
+def check_time_overlap(request):
+    if not request.user.is_authenticated:
+        return Response("Must be logged in", status=403)
+
+    if 'pub_date' in request.data and 'pub_time' in request.data:
+        year, month, day = str(request.data['pub_date']).split('-')
+        posts = SMPost.objects.filter(pub_date=datetime.date(int(year), int(month), int(day))).exclude(is_active=False)
+
+        for post in posts:
+            other_pub_time = datetime.datetime.strptime(str(post.pub_time),'%H:%M:%S')
+            new_pub_time = datetime.datetime.strptime(request.data['pub_time'],'%H:%M:%S')
+            time_difference = (new_pub_time - other_pub_time) if other_pub_time < new_pub_time else (other_pub_time - new_pub_time)
+            if time_difference <= datetime.timedelta(minutes=15):
+                return Response(
+                    {'message': 'Your meow is too close to other scheduled meows! Please choose a different time.'},
+                    status=200
+                    )
+
+        return Response({'message': 'Success'}, status=200)
+    return Response({'message': 'Missing pub_date or pub_time'}, status=status.HTTP_400_BAD_REQUEST)
 
 @login_required
 def send_posts_now(request, post_id):
