@@ -6,21 +6,31 @@ import "./Sidebar.css";
 
 class Sidebar extends React.Component {
   state = {
-    date: new Intl.DateTimeFormat("en-GB", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    })
-      .format(new Date())
-      .split("/")
-      .reverse()
-      .join("-"),
     intialTimeCheck: true
   };
 
   componentDidUpdate() {
-    if (this.state.intialTimeCheck && this.props.pub_time !== null) {
-      checkPostTime(this.props.pub_time, this.state.date);
+    if (
+      this.state.intialTimeCheck &&
+      this.props.pub_time !== null &&
+      this.props.pub_date !== null
+    ) {
+      checkPostTime(this.props.pub_time, this.props.pub_date)
+        .then(response => {
+          if (response.data && response.data.message) {
+            if (response.data.message !== "Success") {
+              // this.setState({meowWithin15Mins: true});
+              this.props.handleMeowWithin15Mins(true);
+            } else {
+              // this.setState({meowWithin15Mins: false});
+              this.props.handleMeowWithin15Mins(false);
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
       this.setState({ intialTimeCheck: false });
     }
   }
@@ -48,13 +58,37 @@ class Sidebar extends React.Component {
             // we need to convert that 14:00:00
             // Note: we are avoiding date time because its notoriously bad
             // instead we are using moment.js
-            checkPostTime(moment(timestring, "LT").format("HH:mm:ss"), this.state.date);
+
+            checkPostTime(moment(timestring, "LT").format("HH:mm:ss"), this.props.pub_date)
+              .then(response => {
+                if (response.data && response.data.message) {
+                  if (response.data.message !== "Success") {
+                    // this.setState({meowWithin15Mins: true});
+                    this.props.handleMeowWithin15Mins(true);
+                  } else {
+                    // this.setState({meowWithin15Mins: false});
+                    this.props.handleMeowWithin15Mins(false);
+                  }
+                }
+              })
+              .catch(error => {
+                console.log(error);
+              });
 
             this.props.editPost({
               pub_time: moment(timestring, "LT").format("HH:mm:ss")
             });
           }}
         />
+        {this.props && this.props.meowWithIn15Mins ? (
+          <div
+            style={{
+              color: "white"
+            }}
+          >
+            Warning: This meeting time is within 15 minutes to another scheduled meow meeting.
+          </div>
+        ) : null}
         {this.props.mobile === true ? null : (
           <Button
             onClick={this.props.sendNow}

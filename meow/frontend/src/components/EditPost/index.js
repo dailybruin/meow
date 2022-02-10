@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
-import { Layout, notification, Icon } from "antd";
+import { Layout, notification, Icon, Modal } from "antd";
 
 import EditSidebar from "./Sidebar";
 import EditContent from "./Content";
@@ -13,7 +13,6 @@ const dateMatcher = /\?date=(\d{4})\-(\d{2})\-(\d{2})/;
 
 import { getMe, getTagSuggestions } from "../../services/api";
 import { getPost, editPost, savePost, sendPostNow } from "../../actions/post";
-import { alertError } from "../../actions/alert";
 
 import { logout } from "../../actions/user";
 
@@ -27,7 +26,9 @@ const contentStyles = { position: "relative", transform: "translateY(-30px)" };
 class EditPost extends React.Component {
   state = {
     sections: this.props.sections,
-    sectionerror: ""
+    sectionerror: "",
+    meowWithIn15Mins: false,
+    displayMeowWarningModal: false
   };
 
   componentDidMount() {
@@ -94,6 +95,11 @@ class EditPost extends React.Component {
     }
   }
 
+  handleMeowWithin15Mins = newWarningState => {
+    this.setState({ meowWithIn15Mins: newWarningState });
+    console.log("index: ", this.state);
+  };
+
   editField = changedField => {
     this.setState({
       ...changedField
@@ -126,8 +132,28 @@ class EditPost extends React.Component {
     });
   };
 
+  modalSavePost = () => {
+    console.log("executed");
+
+    const { postId } = this.props.match.params;
+
+    this.setState({ displayMeowWarningModal: false });
+    this.savePostPromise(postId).then(data => {
+      if (data) {
+        this.props.history.push("/");
+      } else {
+      }
+    });
+  };
+
   savePost = () => {
     const { postId } = this.props.match.params;
+
+    console.log("index: ", this.state);
+    if (this.state.meowWithIn15Mins && !this.state.displayMeowWarningModal) {
+      this.setState({ displayMeowWarningModal: true });
+      return;
+    }
 
     this.savePostPromise(postId).then(data => {
       if (data) {
@@ -199,12 +225,25 @@ class EditPost extends React.Component {
 
     return (
       <React.Fragment>
+        <Modal
+          title="Meow Meeting Warning"
+          visible={this.state.displayMeowWarningModal}
+          onOk={this.modalSavePost}
+          onCancel={() => this.setState({ displayMeowWarningModal: false })}
+        >
+          <p>
+            Warning: This meeting time is within 15 minutes to another scheduled meow meeting. If
+            you don't want this to happen, please schedule a different time. Otherwise, you can
+            click OK to proceed.
+          </p>
+        </Modal>
         <Sidebar>
           <EditSidebar
             {...this.state}
             editPost={this.editField}
             delete={this.deletePost.bind(this)}
             sendNow={this.sendNow}
+            handleMeowWithin15Mins={this.handleMeowWithin15Mins}
           />
         </Sidebar>
         <Content style={contentStyles}>
