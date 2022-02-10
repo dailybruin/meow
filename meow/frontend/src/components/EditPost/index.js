@@ -97,7 +97,6 @@ class EditPost extends React.Component {
 
   handleMeowWithin15Mins = newWarningState => {
     this.setState({ meowWithIn15Mins: newWarningState });
-    console.log("index: ", this.state);
   };
 
   editField = changedField => {
@@ -133,8 +132,6 @@ class EditPost extends React.Component {
   };
 
   modalSavePost = () => {
-    console.log("executed");
-
     const { postId } = this.props.match.params;
 
     this.setState({ displayMeowWarningModal: false });

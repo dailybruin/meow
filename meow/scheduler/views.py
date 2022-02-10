@@ -260,9 +260,6 @@ def check_time_overlap(request):
         year, month, day = str(request.data['pub_date']).split('-')
         posts = SMPost.objects.filter(pub_date=datetime.date(int(year), int(month), int(day))).exclude(is_active=False)
 
-        print(posts)
-        print(year, month, day)
-
         for post in posts:
             other_pub_time = datetime.datetime.strptime(str(post.pub_time),'%H:%M:%S')
             new_pub_time = datetime.datetime.strptime(request.data['pub_time'],'%H:%M:%S')
