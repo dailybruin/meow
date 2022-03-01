@@ -19,11 +19,9 @@ class Sidebar extends React.Component {
         .then(response => {
           if (response.data && response.data.message) {
             if (response.data.message !== "Success") {
-              // this.setState({meowWithin15Mins: true});
-              this.props.handleMeowWithin15Mins(true);
+              this.props.setMeowWithin15Mins(true);
             } else {
-              // this.setState({meowWithin15Mins: false});
-              this.props.handleMeowWithin15Mins(false);
+              this.props.setMeowWithin15Mins(false);
             }
           }
         })
@@ -63,11 +61,9 @@ class Sidebar extends React.Component {
               .then(response => {
                 if (response.data && response.data.message) {
                   if (response.data.message !== "Success") {
-                    // this.setState({meowWithin15Mins: true});
-                    this.props.handleMeowWithin15Mins(true);
+                    this.props.setMeowWithin15Mins(true);
                   } else {
-                    // this.setState({meowWithin15Mins: false});
-                    this.props.handleMeowWithin15Mins(false);
+                    this.props.setMeowWithin15Mins(false);
                   }
                 }
               })
@@ -80,13 +76,13 @@ class Sidebar extends React.Component {
             });
           }}
         />
-        {this.props && this.props.meowWithIn15Mins ? (
+        {this.props && this.props.hasMeowWithin15Mins ? (
           <div
             style={{
               color: "white"
             }}
           >
-            Warning: This meeting time is within 15 minutes to another scheduled meow meeting.
+            Warning: The selected time is within 15 minutes of another scheduled meow.
           </div>
         ) : null}
         {this.props.mobile === true ? null : (

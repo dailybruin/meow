@@ -26,8 +26,8 @@ const contentStyles = { position: "relative", transform: "translateY(-30px)" };
 class EditPost extends React.Component {
   state = {
     sections: this.props.sections,
-    sectionerror: "",
-    meowWithIn15Mins: false,
+    sectionError: "",
+    hasMeowWithin15Mins: false,
     displayMeowWarningModal: false
   };
 
@@ -95,8 +95,8 @@ class EditPost extends React.Component {
     }
   }
 
-  handleMeowWithin15Mins = newWarningState => {
-    this.setState({ meowWithIn15Mins: newWarningState });
+  setMeowWithin15Mins = newWarningState => {
+    this.setState({ hasMeowWithin15Mins: newWarningState });
   };
 
   editField = changedField => {
@@ -146,8 +146,7 @@ class EditPost extends React.Component {
   savePost = () => {
     const { postId } = this.props.match.params;
 
-    console.log("index: ", this.state);
-    if (this.state.meowWithIn15Mins && !this.state.displayMeowWarningModal) {
+    if (this.state.hasMeowWithin15Mins && !this.state.displayMeowWarningModal) {
       this.setState({ displayMeowWarningModal: true });
       return;
     }
@@ -200,7 +199,7 @@ class EditPost extends React.Component {
     } else if (this.state.section == null) {
       this.setState({
         ...this.state,
-        sectionerror: "Please make sure to select a section "
+        sectionError: "Please make sure to select a section "
       });
       this.popSectionerror();
     }
@@ -223,15 +222,15 @@ class EditPost extends React.Component {
     return (
       <React.Fragment>
         <Modal
-          title="Meow Meeting Warning"
+          title="Meow Warning"
           visible={this.state.displayMeowWarningModal}
           onOk={this.modalSavePost}
           onCancel={() => this.setState({ displayMeowWarningModal: false })}
         >
           <p>
-            Warning: This meeting time is within 15 minutes to another scheduled meow meeting. If
-            you don't want this to happen, please schedule a different time. Otherwise, you can
-            click OK to proceed.
+            Warning: The selected time is within 15 minutes of another scheduled meow. If you don't
+            want this to happen, please schedule a different time. Otherwise, you can click OK to
+            proceed.
           </p>
         </Modal>
         <Sidebar>
@@ -240,7 +239,7 @@ class EditPost extends React.Component {
             editPost={this.editField}
             delete={this.deletePost.bind(this)}
             sendNow={this.sendNow}
-            handleMeowWithin15Mins={this.handleMeowWithin15Mins}
+            setMeowWithin15Mins={this.setMeowWithin15Mins}
           />
         </Sidebar>
         <Content style={contentStyles}>
@@ -250,7 +249,7 @@ class EditPost extends React.Component {
             editPost={this.editField}
             savePost={this.savePost.bind(this)}
             user_groups={this.state.user_groups}
-            sectionError={this.state.sectionerror}
+            sectionError={this.state.sectionError}
           />
         </Content>
         <div style={{ width: "25vw" }}>

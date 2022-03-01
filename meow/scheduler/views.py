@@ -258,22 +258,20 @@ def check_time_overlap(request):
 
     if 'pub_date' in request.data and 'pub_time' in request.data:
         year, month, day = str(request.data['pub_date']).split('-')
-        posts = SMPost.objects.filter(pub_date=datetime.date(int(year), int(month), int(day))).exclude(is_active=False)
+        new_pub_time = datetime.datetime.strptime(request.data['pub_time'],'%H:%M:%S')
+        meow_time_range = datetime.timedelta(minutes=15)
 
-        for post in posts:
-            other_pub_time = datetime.datetime.strptime(str(post.pub_time),'%H:%M:%S')
-            new_pub_time = datetime.datetime.strptime(request.data['pub_time'],'%H:%M:%S')
+        posts = SMPost.objects.filter(pub_date=datetime.date(int(year), int(month), int(day))) \
+            .filter(pub_time__range=(new_pub_time - meow_time_range, new_pub_time + meow_time_range)) \
+            .exclude(is_active=False)
 
-
-
-            time_difference = (new_pub_time - other_pub_time) if other_pub_time < new_pub_time else (other_pub_time - new_pub_time)
-            if time_difference <= datetime.timedelta(minutes=15):
-                return Response(
+        if posts.count() == 0:
+            return Response({'message': 'Success'}, status=200)
+        else:
+            return Response(
                     {'message': 'Your meow is too close to other scheduled meows! Please choose a different time.'},
                     status=200
                     )
-
-        return Response({'message': 'Success'}, status=200)
     return Response({'message': 'Missing pub_date or pub_time'}, status=status.HTTP_400_BAD_REQUEST)
 
 @login_required
