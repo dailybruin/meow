@@ -18,7 +18,7 @@ class Sidebar extends React.Component {
       checkPostTime(this.props.pub_time, this.props.pub_date)
         .then(response => {
           if (response.data && response.data.message) {
-            if (response.data.message !== "Success") {
+            if (response.data.hasConflict) {
               this.props.setHasMeowWithin15Mins(true);
             } else {
               this.props.setHasMeowWithin15Mins(false);

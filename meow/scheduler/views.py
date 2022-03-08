@@ -272,10 +272,13 @@ def check_time_overlap(request):
                               .exclude(is_active=False)
 
         if posts.count() == 0:
-            return Response({'message': 'Success'}, status=200)
+            return Response({'message': 'Success', 'hasConflict': False}, status=200)
         else:
             return Response(
-                    {'message': 'Your meow is too close to other scheduled meows! Please choose a different time.'},
+                    {
+                        'message': 'Your meow is too close to other scheduled meows! Please choose a different time.',
+                        'hasConflict': True
+                    },
                     status=200
                     )
 
