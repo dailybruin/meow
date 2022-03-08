@@ -19,9 +19,9 @@ class Sidebar extends React.Component {
         .then(response => {
           if (response.data && response.data.message) {
             if (response.data.message !== "Success") {
-              this.props.setMeowWithin15Mins(true);
+              this.props.setHasMeowWithin15Mins(true);
             } else {
-              this.props.setMeowWithin15Mins(false);
+              this.props.setHasMeowWithin15Mins(false);
             }
           }
         })
@@ -61,9 +61,9 @@ class Sidebar extends React.Component {
               .then(response => {
                 if (response.data && response.data.message) {
                   if (response.data.message !== "Success") {
-                    this.props.setMeowWithin15Mins(true);
+                    this.props.setHasMeowWithin15Mins(true);
                   } else {
-                    this.props.setMeowWithin15Mins(false);
+                    this.props.setHasMeowWithin15Mins(false);
                   }
                 }
               })

@@ -95,7 +95,7 @@ class EditPost extends React.Component {
     }
   }
 
-  setMeowWithin15Mins = newWarningState => {
+  setHasMeowWithin15Mins = newWarningState => {
     this.setState({ hasMeowWithin15Mins: newWarningState });
   };
 
@@ -239,7 +239,7 @@ class EditPost extends React.Component {
             editPost={this.editField}
             delete={this.deletePost.bind(this)}
             sendNow={this.sendNow}
-            setMeowWithin15Mins={this.setMeowWithin15Mins}
+            setHasMeowWithin15Mins={this.setHasMeowWithin15Mins}
           />
         </Sidebar>
         <Content style={contentStyles}>
