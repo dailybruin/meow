@@ -19,6 +19,11 @@ export default function post(state = initialState, action) {
         ...state,
         ...action.payload
       };
+    case "SET_DATE":
+      return {
+        ...state,
+        selected_date: action.payload
+      };
     default:
       return state;
   }

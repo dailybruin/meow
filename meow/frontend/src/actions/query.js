@@ -1,14 +1,6 @@
 /**
  * @param time has range [0:24)
  */
-export const changeTime = time => {
-  return dispatch => {
-    dispatch({
-      type: "CHANGE_TIME",
-      time
-    });
-  };
-};
 
 export const addStatus = status => {
   return dispatch => {

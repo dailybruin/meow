@@ -1,4 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { setDate } from "../../actions/post";
+
 import { Calendar, TimePicker, Button } from "antd";
 import { checkPostTime } from "../../services/api";
 import moment from "moment";
@@ -39,8 +43,13 @@ class Sidebar extends React.Component {
         <div style={{ width: "100%", backgroundColor: "white" }}>
           <Calendar
             fullscreen={false}
-            value={moment(this.props.pub_date)}
+            defaultValue={
+              this.props.pub_date
+                ? moment(this.props.pub_date, "YYYY-MM-DD")
+                : moment(this.props.date, "YYYY-MM-DD")
+            }
             onChange={x => {
+              this.props.changeDay(x.format("YYYY-MM-DD"));
               this.props.editPost({
                 pub_date: x.format("YYYY-MM-DD")
               });
@@ -122,4 +131,16 @@ class Sidebar extends React.Component {
   }
 }
 
-export default Sidebar;
+const mapStateToProps = state => ({
+  pub_date: state.default.post.selected_date
+});
+const mapDispatchToProps = {
+  changeDay: date => setDate(date)
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Sidebar)
+);

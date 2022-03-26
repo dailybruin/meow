@@ -5,6 +5,7 @@ import { Collapse, Calendar, Checkbox } from "antd";
 import moment from "moment";
 
 import { logout } from "../../actions/user";
+import { setDate } from "../../actions/post";
 
 import "./Sidebar.css";
 import TimeSlider from "./TimeSlider";
@@ -137,15 +138,19 @@ class Sidebar extends React.Component {
           >
             <div style={{ width: "100%", backgroundColor: "white" }}>
               <Calendar
-                onSelect={x =>
-                  this.props.history.push({
-                    pathname: "/",
-                    search: `date=${x.format("YYYY-MM-DD")}`
-                  })
-                }
+                onSelect={x => {
+                  this.props.changeDay(x.format("YYYY-MM-DD"));
+                }}
                 fullscreen={false}
+                value={
+                  this.props.calendar_date
+                    ? moment(this.props.calendar_date, "YYYY-MM-DD")
+                    : moment(this.props.date, "YYYY-MM-DD")
+                }
                 defaultValue={
-                  this.props.date ? moment(this.props.date, "YYYY-MM-DD") : moment.now()
+                  this.props.calendar_date
+                    ? moment(this.props.calendar_date, "YYYY-MM-DD")
+                    : moment(this.props.date, "YYYY-MM-DD")
                 }
               />
             </div>
@@ -238,11 +243,13 @@ class Sidebar extends React.Component {
 
 const mapStateToProps = state => ({
   sections: state.default.section.sections,
-  theme: state.default.user.theme
+  theme: state.default.user.theme,
+  calendar_date: state.default.post.selected_date
 });
 
 const mapDispatchToProps = {
-  logout
+  logout,
+  changeDay: date => setDate(date)
 };
 
 export default withRouter(
