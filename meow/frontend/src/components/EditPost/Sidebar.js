@@ -6,16 +6,20 @@ import "./Sidebar.css";
 
 class Sidebar extends React.Component {
   state = {
-    intialTimeCheck: true
+    intialTimeCheck: true,
+    selectedSection: null
   };
 
   componentDidUpdate() {
     if (
-      this.state.intialTimeCheck &&
-      this.props.pub_time !== null &&
-      this.props.pub_date !== null
+      (this.state.intialTimeCheck &&
+        this.props.pub_time !== null &&
+        this.props.pub_date !== null &&
+        this.props.section !== null) ||
+      (this.state.selectedSection !== null && this.state.selectedSection !== this.props.section)
     ) {
-      checkPostTime(this.props.pub_time, this.props.pub_date)
+      this.setState({ selectedSection: this.props.section });
+      checkPostTime(this.props.pub_time, this.props.pub_date, this.props.section)
         .then(response => {
           if (response.data && response.data.message) {
             if (response.data.hasConflict) {
@@ -57,7 +61,11 @@ class Sidebar extends React.Component {
             // Note: we are avoiding date time because its notoriously bad
             // instead we are using moment.js
 
-            checkPostTime(moment(timestring, "LT").format("HH:mm:ss"), this.props.pub_date)
+            checkPostTime(
+              moment(timestring, "LT").format("HH:mm:ss"),
+              this.props.pub_date,
+              this.props.section
+            )
               .then(response => {
                 if (response.data && response.data.message) {
                   if (response.data.message !== "Success") {

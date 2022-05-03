@@ -260,7 +260,7 @@ def check_time_overlap(request):
     if not request.user.is_authenticated:
         return Response("Must be logged in", status=403)
 
-    if 'pub_date' in request.data and 'pub_time' in request.data:
+    if 'pub_date' in request.data and 'pub_time' in request.data and 'selectedSection' in request.data:
         year, month, day = str(request.data['pub_date']).split('-')
         new_pub_time = datetime.datetime.strptime(request.data['pub_time'],'%H:%M:%S')
         meow_time_range = datetime.timedelta(minutes=15)
@@ -269,6 +269,7 @@ def check_time_overlap(request):
                               .filter(
                                   pub_time__range=(new_pub_time - meow_time_range, new_pub_time + meow_time_range
                                )) \
+                              .filter(section=request.data['selectedSection']) \
                               .exclude(is_active=False)
 
         if posts.count() == 0:
@@ -276,13 +277,13 @@ def check_time_overlap(request):
         else:
             return Response(
                     {
-                        'message': 'Your meow is too close to other scheduled meows! Please choose a different time.',
+                        'message': 'Your meow is too close to other scheduled meows in this section! Please choose a different time.',
                         'hasConflict': True
                     },
                     status=200
                     )
 
-    return Response({'message': 'Missing pub_date or pub_time'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'message': 'Missing pub_date or pub_time or section'}, status=status.HTTP_400_BAD_REQUEST)
 
 @login_required
 def send_posts_now(request, post_id):

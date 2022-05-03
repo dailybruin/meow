@@ -240,6 +240,7 @@ class EditPost extends React.Component {
             delete={this.deletePost.bind(this)}
             sendNow={this.sendNow}
             setHasMeowWithin15Mins={this.setHasMeowWithin15Mins}
+            section={this.state.section}
           />
         </Sidebar>
         <Content style={contentStyles}>
