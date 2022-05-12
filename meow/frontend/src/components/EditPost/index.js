@@ -232,9 +232,9 @@ class EditPost extends React.Component {
           onCancel={() => this.setState({ displayMeowWarningModal: false })}
         >
           <p>
-            Warning: The selected time is within 15 minutes of another scheduled meow. If you don't
-            want this to happen, please schedule a different time. Otherwise, you can click OK to
-            proceed.
+            Warning: The selected time is within 15 minutes of another scheduled meow in this
+            section. If you don't want this to happen, please schedule a different time. Otherwise,
+            you can click OK to proceed.
           </p>
         </Modal>
         <Sidebar>

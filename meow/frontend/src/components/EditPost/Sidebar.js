@@ -94,7 +94,8 @@ class Sidebar extends React.Component {
               color: "white"
             }}
           >
-            Warning: The selected time is within 15 minutes of another scheduled meow.
+            Warning: The selected time is within 15 minutes of another scheduled meow in this
+            section.
           </div>
         ) : null}
         {this.props.mobile === true ? null : (
