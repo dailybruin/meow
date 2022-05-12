@@ -27,6 +27,7 @@ class EditPost extends React.Component {
   state = {
     sections: this.props.sections,
     sectionError: "",
+    section: null,
     hasMeowWithin15Mins: false,
     displayMeowWarningModal: false
   };
