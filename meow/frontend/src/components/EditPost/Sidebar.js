@@ -7,7 +7,7 @@ import "./Sidebar.css";
 class Sidebar extends React.Component {
   state = {
     intialTimeCheck: true,
-    selectedSection: null
+    previousSection: null // the previous section that the user selected
   };
 
   componentDidUpdate() {
@@ -16,9 +16,9 @@ class Sidebar extends React.Component {
         this.props.pub_time !== null &&
         this.props.pub_date !== null &&
         this.props.section !== null) ||
-      (this.state.selectedSection !== null && this.state.selectedSection !== this.props.section)
-    ) {
-      this.setState({ selectedSection: this.props.section });
+      (this.state.previousSection !== null && this.state.previousSection !== this.props.section) // we include this comparison because otherwise the request is  
+    ) {                                                                                          // invoked during every update
+      this.setState({ previousSection: this.props.section });
       checkPostTime(this.props.pub_time, this.props.pub_date, this.props.section)
         .then(response => {
           if (response.data && response.data.message) {
