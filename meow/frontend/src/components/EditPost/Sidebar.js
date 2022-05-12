@@ -1,14 +1,17 @@
 import React from "react";
+import moment from "moment";
 import { Calendar, TimePicker, Button } from "antd";
 import { checkPostTime } from "../../services/api";
-import moment from "moment";
 import "./Sidebar.css";
 
 class Sidebar extends React.Component {
-  state = {
-    intialTimeCheck: true,
-    previousSection: null // the previous section that the user selected
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      intialTimeCheck: true,
+      previousSection: null // the previous section that the user selected
+    };
+  }
 
   componentDidUpdate() {
     if (
@@ -16,8 +19,9 @@ class Sidebar extends React.Component {
         this.props.pub_time !== null &&
         this.props.pub_date !== null &&
         this.props.section !== null) ||
-      (this.state.previousSection !== null && this.state.previousSection !== this.props.section) // we include this comparison because otherwise the request is  
-    ) {                                                                                          // invoked during every update
+      // we include this comparison because otherwise the request is invoked during every update
+      (this.state.previousSection !== null && this.state.previousSection !== this.props.section)
+    ) {
       this.setState({ previousSection: this.props.section });
       checkPostTime(this.props.pub_time, this.props.pub_date, this.props.section)
         .then(response => {
@@ -56,7 +60,7 @@ class Sidebar extends React.Component {
           format="h:mm a"
           value={moment(this.props.pub_time, "HH:mm:ss")}
           onChange={(x, timestring) => {
-            //timestring = 2:00 pm (implied PST. Meow will always use PST for now)
+            // timestring = 2:00 pm (implied PST. Meow will always use PST for now)
             // we need to convert that 14:00:00
             // Note: we are avoiding date time because its notoriously bad
             // instead we are using moment.js

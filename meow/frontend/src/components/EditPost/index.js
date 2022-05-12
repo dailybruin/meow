@@ -24,13 +24,16 @@ const { Content } = Layout;
 const contentStyles = { position: "relative", transform: "translateY(-30px)" };
 
 class EditPost extends React.Component {
-  state = {
-    sections: this.props.sections,
-    sectionError: "",
-    section: null,
-    hasMeowWithin15Mins: false,
-    displayMeowWarningModal: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      sections: this.props.sections,
+      sectionError: "",
+      section: null,
+      hasMeowWithin15Mins: false,
+      displayMeowWarningModal: false
+    };
+  }
 
   componentDidMount() {
     const { postId } = this.props.match.params;
