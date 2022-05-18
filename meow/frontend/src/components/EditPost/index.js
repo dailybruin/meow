@@ -24,12 +24,16 @@ const { Content } = Layout;
 const contentStyles = { position: "relative", transform: "translateY(-30px)" };
 
 class EditPost extends React.Component {
-  state = {
-    sections: this.props.sections,
-    sectionError: "",
-    hasMeowWithin15Mins: false,
-    displayMeowWarningModal: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      sections: this.props.sections,
+      sectionError: "",
+      section: null,
+      hasMeowWithin15Mins: false,
+      displayMeowWarningModal: false
+    };
+  }
 
   componentDidMount() {
     const { postId } = this.props.match.params;
@@ -228,9 +232,9 @@ class EditPost extends React.Component {
           onCancel={() => this.setState({ displayMeowWarningModal: false })}
         >
           <p>
-            Warning: The selected time is within 15 minutes of another scheduled meow. If you don't
-            want this to happen, please schedule a different time. Otherwise, you can click OK to
-            proceed.
+            Warning: The selected time is within 15 minutes of another scheduled meow in this
+            section. If you don't want this to happen, please schedule a different time. Otherwise,
+            you can click OK to proceed.
           </p>
         </Modal>
         <Sidebar>
@@ -240,6 +244,7 @@ class EditPost extends React.Component {
             delete={this.deletePost.bind(this)}
             sendNow={this.sendNow}
             setHasMeowWithin15Mins={this.setHasMeowWithin15Mins}
+            section={this.state.section}
           />
         </Sidebar>
         <Content style={contentStyles}>

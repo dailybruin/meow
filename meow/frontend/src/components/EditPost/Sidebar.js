@@ -1,21 +1,29 @@
 import React from "react";
+import moment from "moment";
 import { Calendar, TimePicker, Button } from "antd";
 import { checkPostTime } from "../../services/api";
-import moment from "moment";
 import "./Sidebar.css";
 
 class Sidebar extends React.Component {
-  state = {
-    intialTimeCheck: true
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      intialTimeCheck: true,
+      previousSection: null // the previous section that the user selected
+    };
+  }
 
   componentDidUpdate() {
     if (
-      this.state.intialTimeCheck &&
-      this.props.pub_time !== null &&
-      this.props.pub_date !== null
+      (this.state.intialTimeCheck &&
+        this.props.pub_time !== null &&
+        this.props.pub_date !== null &&
+        this.props.section !== null) ||
+      // we include this comparison because otherwise the request is invoked during every update
+      (this.state.previousSection !== null && this.state.previousSection !== this.props.section)
     ) {
-      checkPostTime(this.props.pub_time, this.props.pub_date)
+      this.setState({ previousSection: this.props.section });
+      checkPostTime(this.props.pub_time, this.props.pub_date, this.props.section)
         .then(response => {
           if (response.data && response.data.message) {
             if (response.data.hasConflict) {
@@ -52,12 +60,16 @@ class Sidebar extends React.Component {
           format="h:mm a"
           value={moment(this.props.pub_time, "HH:mm:ss")}
           onChange={(x, timestring) => {
-            //timestring = 2:00 pm (implied PST. Meow will always use PST for now)
+            // timestring = 2:00 pm (implied PST. Meow will always use PST for now)
             // we need to convert that 14:00:00
             // Note: we are avoiding date time because its notoriously bad
             // instead we are using moment.js
 
-            checkPostTime(moment(timestring, "LT").format("HH:mm:ss"), this.props.pub_date)
+            checkPostTime(
+              moment(timestring, "LT").format("HH:mm:ss"),
+              this.props.pub_date,
+              this.props.section
+            )
               .then(response => {
                 if (response.data && response.data.message) {
                   if (response.data.message !== "Success") {
@@ -82,7 +94,8 @@ class Sidebar extends React.Component {
               color: "white"
             }}
           >
-            Warning: The selected time is within 15 minutes of another scheduled meow.
+            Warning: The selected time is within 15 minutes of another scheduled meow in this
+            section.
           </div>
         ) : null}
         {this.props.mobile === true ? null : (

@@ -206,8 +206,12 @@ export const postSendNow = postId => {
   return axios.post(`${SERVER_URL}/post/${postId}/send_now`);
 };
 
-export const checkPostTime = (pub_time, pub_date) => {
-  return axios.post(`${SERVER_URL}/post/check_time_overlap`, { pub_time, pub_date });
+export const checkPostTime = (pub_time, pub_date, section) => {
+  return axios.post(`${SERVER_URL}/post/check_time_overlap`, {
+    pub_time,
+    pub_date,
+    selectedSection: section
+  });
 };
 
 export const sectionList = () => {
