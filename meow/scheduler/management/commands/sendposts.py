@@ -7,6 +7,7 @@ from django.conf import settings
 from datetime import datetime, timedelta
 from facepy import GraphAPI
 from facepy.exceptions import FacepyError
+from meow.scheduler.management.healthcheck import HealthCheck
 import tweepy
 import re
 import io
@@ -18,6 +19,7 @@ import traceback
 import logging
 
 from scheduler.models import MeowSetting, SMPost
+from scheduler.management import healthcheck
 
 logger = logging.getLogger('scheduler')
 
@@ -125,6 +127,7 @@ class Command(BaseCommand):
                     except:
                         logger.critical("Something is very wrong in sendpost.py ")
                         logger.critical("Something is very wrong in sendpost.py " + str(traceback.format_exc()))
+                        HealthCheck.setUnhealthy("Something is very wrong in sendpost.py " + str(traceback.format_exc()))
                         post.log(traceback.format_exc())
 
                     logger.info("sendpost.py: Post {}-{} failed to send because it would been late. ".format(post.slug, post.id))
@@ -190,5 +193,6 @@ class Command(BaseCommand):
                 post.save()
             except (Exception) as e:
                 logger.critical("Something is very wrong" + traceback.format_exc())
+                HealthCheck.setUnhealthy("Something is very wrong" + traceback.format_exc())
                 post.log(traceback.format_exc())
                 post.log_error(e, post.section, True)
