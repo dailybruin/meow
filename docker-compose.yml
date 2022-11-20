@@ -14,6 +14,8 @@ services:
       - redis
     volumes:
       - .:/meow
+    environment:
+      PYTHONUNBUFFERED: 1
   db:
     image: postgres:latest
     environment:

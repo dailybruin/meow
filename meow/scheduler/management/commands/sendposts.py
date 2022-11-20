@@ -18,6 +18,7 @@ import traceback
 import logging
 
 from scheduler.models import MeowSetting, SMPost
+from scheduler.management.healthcheck import HealthCheck
 
 logger = logging.getLogger('scheduler')
 
@@ -125,6 +126,7 @@ class Command(BaseCommand):
                     except:
                         logger.critical("Something is very wrong in sendpost.py ")
                         logger.critical("Something is very wrong in sendpost.py " + str(traceback.format_exc()))
+                        HealthCheck.setUnhealthy("Something is very wrong in sendpost.py " + str(traceback.format_exc()))
                         post.log(traceback.format_exc())
 
                     logger.info("sendpost.py: Post {}-{} failed to send because it would been late. ".format(post.slug, post.id))
@@ -190,5 +192,6 @@ class Command(BaseCommand):
                 post.save()
             except (Exception) as e:
                 logger.critical("Something is very wrong" + traceback.format_exc())
+                HealthCheck.setUnhealthy("Something is very wrong" + traceback.format_exc())
                 post.log(traceback.format_exc())
                 post.log_error(e, post.section, True)
