@@ -7,7 +7,6 @@ from django.conf import settings
 from datetime import datetime, timedelta
 from facepy import GraphAPI
 from facepy.exceptions import FacepyError
-from meow.scheduler.management.healthcheck import HealthCheck
 import tweepy
 import re
 import io
@@ -19,7 +18,7 @@ import traceback
 import logging
 
 from scheduler.models import MeowSetting, SMPost
-from scheduler.management import healthcheck
+from scheduler.management.healthcheck import HealthCheck
 
 logger = logging.getLogger('scheduler')
 
