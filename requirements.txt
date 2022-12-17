@@ -14,7 +14,7 @@ django-celery-beat==1.1.1
 django-cors-headers==2.2.0
 django-environ==0.4.5
 # django-oauth-toolkit==1.2.0
-django-rest-auth==0.9.3
+django-rest-auth==0.9.5
 # django-slack-oauth==1.4.3
 django-webpack-loader==0.6.0
 djangorestframework==3.9.1
