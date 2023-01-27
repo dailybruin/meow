@@ -1,63 +1,43 @@
-# Stage 0 - Node build
-FROM node:8
-WORKDIR /meow
-ADD package.json package-lock.json /meow/
+FROM node:10-slim
+
+# Create and define the node_modules's cache directory.
+RUN mkdir /usr/src/cache
+WORKDIR /usr/src/cache
+
+# Install the application's dependencies into the node_modules's cache directory.
+COPY package.json ./
+COPY package-lock.json ./
 RUN npm install
-COPY ./webpack.config.js ./webpack.prod.config.js ./jsconfig.json ./
+
+WORKDIR /meow
+COPY package.json package-lock.json /meow/
+COPY ./webpack.config.js ./webpack.prod.config.js ./jsconfig.json /meow/
 COPY meow/frontend meow/frontend
+RUN cp -r /usr/src/cache/node_modules/. /meow/node_modules/
+# RUN npm run build
 RUN npm run build-production
 
-# Slightly modified from
-# https://www.caktusgroup.com/blog/2017/03/14/production-ready-dockerfile-your-python-django-app/
-#FROM python:3.6-alpine
-FROM python:3.6
-ENV PYTHONDONTWRITEBYTECODE 1
+RUN apt update && \
+    apt install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget && \
+    wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz && \
+    tar xzf Python-3.7.4.tgz && \
+    cd Python-3.7.4 && \
+    ./configure && \
+    make && \
+    make install
+
 ENV PYTHONUNBUFFERED 1
-
-# Copy in your requirements file
-WORKDIR /meow
-
+ENV PYTHONDONTWRITEBYTECODE 1
 RUN apt-get update && apt-get install -y curl \
-  build-essential \
-  libpq-dev
+                                         build-essential \
+                                         libpq-dev \
+                                         git \
+                                         zlib1g
 
+ENV LIBRARY_PATH=/lib:/usr/lib
 ADD requirements.txt /meow/
-RUN pip install -U -r requirements.txt
-
-# ADD requirements.txt /meow/
-
-# Install build deps, then run `pip install`, then remove unneeded build deps all in a single step. Correct the path to your production requirements file, if needed.
-# RUN set -ex \
-#   && apk add --no-cache --virtual .build-deps \
-#   gcc \
-#   make \
-#   tzdata \
-#   libc-dev \
-#   musl-dev \
-#   linux-headers \
-#   pcre-dev \
-#   postgresql-dev \
-#   && cp /usr/share/zoneinfo/America/Los_Angeles /etc/localtime \
-#   && echo "America/Los_Angeles" >  /etc/timezone \
-#   && python3.6 -m venv /venv \
-#   && /venv/bin/pip install -U pip \
-#   && LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "/venv/bin/pip install --no-cache-dir -r requirements.txt" \
-#   && runDeps="$( \
-#   scanelf --needed --nobanner --recursive /venv \
-#   | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-#   | sort -u \
-#   | xargs -r apk info --installed \
-#   | sort -u \
-#   )" \
-#   && apk add --virtual .python-rundeps $runDeps \
-#   && apk del .build-deps
-
-# Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)
-
-COPY --from=0 /meow /meow
-
+RUN python3.7 -m pip install --upgrade pip && python3.7 -m pip install -r requirements.txt
 ADD . /meow/
 
 EXPOSE 5000
-
 ENTRYPOINT ["./entrypoint.sh"]

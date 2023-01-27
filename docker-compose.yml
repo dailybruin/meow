@@ -5,7 +5,7 @@ services:
     build: .
     image: meow
     command: honcho start -f Procfile.dev
-    entrypoint: ./entrypoint.sh
+    entrypoint: ./dev-entrypoint.sh
     ports:
       - "5000:5000"
     env_file: .env
@@ -17,7 +17,7 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
   db:
-    image: postgres:latest
+    image: postgres:12
     environment:
       POSTGRES_PASSWORD: example
   redis:

@@ -36,8 +36,6 @@ fi
 
 
 # this inits everything but will only continue if the pervious step was successful
-npm i
-npm run build
 docker-compose build &&
 docker-compose run web meow/manage.py migrate &&
 echo ">>> The ids and secrets can be found in the #meow_dev channel's pinned messages" &&
@@ -49,6 +47,13 @@ if [ $? == 0 ]; then
 		echo "!!!!! Failed to create Test section !!!!!"
 	else
 		echo "Created section \"Test\""
+	fi
+
+	echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@myproject.com', '12345')" | docker-compose run web meow/manage.py shell
+	if [ $? != 0 ]; then
+		echo "!!!!! Failed to create the super user !!!!!"
+	else
+		echo "Created the super users"
 	fi
 	
 	echo -e "from django_celery_beat.models import PeriodicTask, IntervalSchedule\nschedule=IntervalSchedule.objects.create(every=$PERIODIC_TASK_MINUTES, period=IntervalSchedule.MINUTES)\nPeriodicTask.objects.create(interval=schedule, name='Send Posts', task='sendposts')\n" | docker-compose run web meow/manage.py shell

@@ -36,8 +36,6 @@ fi
 
 
 # this inits everything but will only continue if the pervious step was successful
-npm i
-npm run build
 sudo docker-compose build &&
 sudo docker-compose run web meow/manage.py migrate &&
 echo ">>> The ids and secrets can be found in the #meow_dev channel's pinned messages" &&
