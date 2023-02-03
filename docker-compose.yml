@@ -2,7 +2,9 @@ version: "3"
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     image: meow
     command: honcho start -f Procfile.dev
     entrypoint: ./dev-entrypoint.sh
