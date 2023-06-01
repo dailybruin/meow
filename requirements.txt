@@ -34,7 +34,7 @@ Pillow==4.2.1
 pylint==1.7.2
 pyshorteners==0.6.1
 pytz==2017.2
-redis==2.10.6
+redis==4.3.6
 requests==2.20.0
 requests-oauthlib==0.8.0
 singledispatch==3.4.0.3
