@@ -43,7 +43,10 @@ module.exports = {
             loader: "css-loader" // translates CSS into CommonJS
           },
           {
-            loader: "sass-loader" // translates CSS into CommonJS
+            loader: "sass-loader", // translates CSS into CommonJS
+            options: {
+              implementation: require("sass")
+            }
           }
         ]
       },
