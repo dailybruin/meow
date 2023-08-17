@@ -780,16 +780,18 @@ def twitter_connect(request):
         section.twitter_access_secret = twitter_auth.access_token_secret
         section.twitter_account_handle = None
         section.save()
-        try:
-            # If this fails it doesn't matter; it's just a screen name
-            api = tweepy.API(twitter_auth)
-            screen_name = api.me().screen_name
-            section.twitter_account_handle = screen_name
-            section.save()
-        except:
-            pass
-        request.session["message"] = "Twitter account, @" + \
-            screen_name + ", successfully added."
+
+        twitter_api = tweepy.Client(
+            consumer_key=TWITTER_CONSUMER_KEY,
+            consumer_secret=TWITTER_CONSUMER_SECRET,
+            access_token=twitter_auth.access_token,
+            access_token_secret=twitter_auth.access_token_secret
+        )
+        screen_name = twitter_api.get_me().data['name']
+        section.twitter_account_handle = screen_name
+        section.save()
+
+        request.session["message"] = f"Twitter account, @{screen_name}, successfully added."
         request.session.save()
         return redirect("/")
 

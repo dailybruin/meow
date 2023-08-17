@@ -25,10 +25,13 @@ def get_analytics(smposts):
             ACCESS_KEY = section.twitter_access_key
             ACCESS_SECRET = section.twitter_access_secret
 
-            auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-            auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+            twitter_api = tweepy.Client(
+                consumer_key=CONSUMER_KEY,
+                consumer_secret=CONSUMER_SECRET,
+                access_token=ACCESS_KEY,
+                access_token_secret=ACCESS_SECRET
+            )
 
-            twitter_api = tweepy.API(auth)
 
             tweet = twitter_api.get_status(tw_id)
             tw_retweet = tweet.retweet_count

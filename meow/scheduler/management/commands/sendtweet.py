@@ -52,27 +52,40 @@ class Command(BaseCommand):
             auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
             auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 
-            api = tweepy.API(auth)
-
+            api = tweepy.Client(
+                consumer_key=CONSUMER_KEY,
+                consumer_secret=CONSUMER_SECRET,
+                access_token=ACCESS_KEY,
+                access_token_secret=ACCESS_SECRET
+            )            
+            
             # Make the tweet follow DB social media standards
             tweet = smpost.post_twitter
 
             if url is not None:
                 tweet = tweet + " " + url
 
-            res = api.update_status(status=tweet)
+            res = api.create_tweet(text=tweet)
 
             # Add the id for the post to the database
-            smpost.id_twitter = res.id
+            tweet_id = res.data['id']
+            smpost.id_twitter = tweet_id
             smpost.save()
 
+            tweet_url = f"https://twitter.com/twitter/status/{tweet_id}"
             logger.info('Tweet {} has sent successfully. URL: {}'.format(
                 smpost.slug,
-                "https://twitter.com/statuses/{}".format(res.id))
+                tweet_url,
+                )
             )
-            return "https://twitter.com/statuses/{}".format(res.id)
+            return tweet_url
 
-        except tweepy.TweepError as e:
+        except tweepy.errors.TweepyException as e:
+            smpost.log(traceback.format_exc())
+            smpost.log_error(e, section, True)
+
+            logger.error("Send tweet errored\nslug: {} {}".format(smpost.slug, traceback.format_exc()))
+        except Exception as e:
             smpost.log(traceback.format_exc())
             smpost.log_error(e, section, True)
 
