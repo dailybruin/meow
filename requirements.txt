@@ -27,7 +27,7 @@ isort==4.2.15
 kombu==4.2.1
 lazy-object-proxy==1.3.1
 mccabe==0.6.1
-oauthlib==2.0.3
+oauthlib==3.2.0
 parsedatetime==2.4
 psycopg2==2.7.5
 Pillow==4.2.1
@@ -35,13 +35,13 @@ pylint==1.7.2
 pyshorteners==0.6.1
 pytz==2017.2
 redis==2.10.6
-requests==2.20.0
-requests-oauthlib==0.8.0
+requests>=2.9.1
+requests-oauthlib==1.3.0
 singledispatch==3.4.0.3
 six==1.10.0
 social-auth-app-django==3.1.0
 social-auth-core==3.2.0
-tweepy==3.8.0
+tweepy==4.6.0
 urllib3==1.24.2
 vine==1.1.4
 whitenoise==3.3.1
