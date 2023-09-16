@@ -262,7 +262,8 @@ def check_time_overlap(request):
 
     if 'pub_date' in request.data and 'pub_time' in request.data and 'selectedSection' in request.data:
         year, month, day = str(request.data['pub_date']).split('-')
-        new_pub_time = datetime.datetime.strptime(request.data['pub_time'],'%H:%M:%S')
+        request_pub_time = request.data['pub_time'].split('.')[0] # ignore milliseconds if present in string
+        new_pub_time = datetime.datetime.strptime(request_pub_time,'%H:%M:%S')
         meow_time_range = datetime.timedelta(minutes=15)
 
         posts = SMPost.objects.filter(pub_date=datetime.date(int(year), int(month), int(day))) \
