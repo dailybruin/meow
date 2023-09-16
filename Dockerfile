@@ -10,7 +10,7 @@ RUN npm run build-production
 # Slightly modified from
 # https://www.caktusgroup.com/blog/2017/03/14/production-ready-dockerfile-your-python-django-app/
 #FROM python:3.6-alpine
-FROM python:3.6
+FROM python:3.8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
