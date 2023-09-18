@@ -1,6 +1,6 @@
 amqp==2.2.1
 astroid==1.5.3
-backports.functools-lru-cache==1.4
+backports.functools-lru-cache==1.5
 beautifulsoup4==4.6.0
 billiard==3.5.0.3
 celery==4.2.0
