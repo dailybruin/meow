@@ -1,5 +1,5 @@
 # Stage 0 - Node build
-FROM node:8
+FROM node:14
 WORKDIR /meow
 ADD package.json package-lock.json /meow/
 RUN npm install
