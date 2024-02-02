@@ -36,8 +36,7 @@
 }
 
 .ant-table-tbody .section,
-.ant-table-tbody .slug,
-.ant-table-tbody .status {
+.ant-table-tbody .slug {
   white-space: nowrap;
 }
 
