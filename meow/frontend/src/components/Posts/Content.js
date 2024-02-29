@@ -25,6 +25,26 @@ const NoPosts = () => (
 );
 
 const displayStatus = postObject => {
+  if (postObject.sent_error) {
+    try {
+      const error = postObject.sent_error_text;
+      let i = error.toLowerCase().indexOf("raise"); // search for "raise", then "error"
+      if (i === -1) {
+        i = error.toLowerCase().indexOf("error");
+      }
+
+      const DISPLAYED_ERROR_LENGTH = 150;
+      if (i >= 0) {
+        if (i + DISPLAYED_ERROR_LENGTH >= error.length) {
+          return error.substring(error.length - DISPLAYED_ERROR_LENGTH);
+        }
+        return error.substring(i, i + DISPLAYED_ERROR_LENGTH);
+      }
+      return error.substring(0, DISPLAYED_ERROR_LENGTH);
+    } catch {
+      return "Error";
+    }
+  }
   if (postObject.sending) {
     return "Sending";
   }
@@ -36,9 +56,6 @@ const displayStatus = postObject => {
       return "Ready to post";
     }
     return "Copy-Edited";
-  }
-  if (postObject.sent_error) {
-    return "Error";
   }
   return "Draft";
 };
