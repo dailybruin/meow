@@ -39,7 +39,7 @@ six==1.16.0
 social-auth-app-django==3.4.0
 social-auth-core==3.4.0
 tweepy==4.6.0
-urllib3==2.0.4
+urllib3==2.2.2
 vine==5.0.0
 whitenoise==6.5.0
 wrapt==1.15.0
