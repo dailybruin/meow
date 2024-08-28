@@ -54,7 +54,7 @@
     "redux-thunk": "2.3.0",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.1",
-    "webpack": "4.28.1",
+    "webpack": "5.94.0",
     "webpack-bundle-tracker": "0.4.3",
     "webpack-cli": "3.2.1"
   },
