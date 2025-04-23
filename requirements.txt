@@ -1,6 +1,6 @@
 amqp==5.1.1
 astroid==2.15.6
-beautifulsoup4==4.12.2
+beautifulsoup4==4.13.4
 billiard==3.6.4.0
 celery==5.2.2
 certifi==2023.7.22
