@@ -29,9 +29,7 @@ class EditPost extends React.Component {
     this.state = {
       sections: this.props.sections,
       sectionError: "",
-      section: null,
-      hasMeowWithin15Mins: false,
-      displayMeowWarningModal: false
+      section: null
     };
   }
 
@@ -99,10 +97,6 @@ class EditPost extends React.Component {
     }
   }
 
-  setHasMeowWithin15Mins = newWarningState => {
-    this.setState({ hasMeowWithin15Mins: newWarningState });
-  };
-
   editField = changedField => {
     this.setState({
       ...changedField
@@ -135,26 +129,8 @@ class EditPost extends React.Component {
     });
   };
 
-  modalSavePost = () => {
-    const { postId } = this.props.match.params;
-
-    this.setState({ displayMeowWarningModal: false });
-    this.savePostPromise(postId).then(data => {
-      if (data) {
-        this.props.history.push("/");
-      } else {
-      }
-    });
-  };
-
   savePost = () => {
     const { postId } = this.props.match.params;
-
-    if (this.state.hasMeowWithin15Mins && !this.state.displayMeowWarningModal) {
-      this.setState({ displayMeowWarningModal: true });
-      return;
-    }
-
     this.savePostPromise(postId).then(data => {
       if (data) {
         this.props.history.push("/");
@@ -225,25 +201,12 @@ class EditPost extends React.Component {
 
     return (
       <React.Fragment>
-        <Modal
-          title="Meow Warning"
-          visible={this.state.displayMeowWarningModal}
-          onOk={this.modalSavePost}
-          onCancel={() => this.setState({ displayMeowWarningModal: false })}
-        >
-          <p>
-            Warning: The selected time is within 15 minutes of another scheduled meow in this
-            section. If you don't want this to happen, please schedule a different time. Otherwise,
-            you can click OK to proceed.
-          </p>
-        </Modal>
         <Sidebar>
           <EditSidebar
             {...this.state}
             editPost={this.editField}
             delete={this.deletePost.bind(this)}
             sendNow={this.sendNow}
-            setHasMeowWithin15Mins={this.setHasMeowWithin15Mins}
             section={this.state.section}
           />
         </Sidebar>
