@@ -227,7 +227,7 @@ class Sidebar extends React.Component {
         {this.props.device !== config.MOBILE && (
           <h3
             style={{
-              marginLeft: "15px",
+              alignSelf: "center",
               color: this.props.theme.secondary_font_color
             }}
           >

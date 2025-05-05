@@ -88,7 +88,7 @@ class Header extends Component {
         {this.state.showNewmeow ? (
           <Input
             placeholder="Search slug…"
-            style={{ width: "550px", height: "40px", borderRadius: "2px", margin: "0 1em" }}
+            style={{ width: "750px", height: "40px", borderRadius: "12px", margin: "0 1em" }}
             value={this.state.searchTerm}
             onChange={this.handleSearch}
           />
