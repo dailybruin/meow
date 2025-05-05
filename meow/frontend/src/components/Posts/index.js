@@ -59,22 +59,33 @@ class Posts extends React.Component {
   }
 
   filterPosts = () => {
+    let results = dataStore;
+
     const { time, status, section } = this.state.query;
 
-    if (!(time || status.length || section.length)) {
-      return dataStore;
+    if (time || status.length || section.length) {
+      results = results.filter(
+        x =>
+          (time ? x.pub_time > time : true) &&
+          (status.length && status.includes("READY") ? x.pub_ready_online : true) &&
+          (status.length && status.includes("DRAFT")
+            ? !(x.pub_ready_online || x.pub_ready_copy)
+            : true) &&
+          (status.length && status.includes("SENT") ? x.sent : true) &&
+          (section.length ? section.includes(x.section) : true)
+      );
     }
 
-    return dataStore.filter(
-      x =>
-        (time ? x.pub_time > time : true) &&
-        (status.length && status.includes("READY") ? x.pub_ready_online : true) &&
-        (status.length && status.includes("DRAFT")
-          ? !(x.pub_ready_online || x.pub_ready_copy)
-          : true) &&
-        (status.length && status.includes("SENT") ? x.sent : true) &&
-        (section.length ? section.includes(x.section) : true)
-    );
+    const { searchTerm } = this.props;
+    if (searchTerm && searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      results = results.filter(post => {
+        const slug = (post.slug || "").toLowerCase();
+        return slug.includes(term);
+      });
+    }
+
+    return results;
   };
 
   queryChanged = change => {
@@ -115,7 +126,8 @@ class Posts extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  device: state.default.mobile.device
+  device: state.default.mobile.device,
+  searchTerm: state.default.post.searchTerm
 });
 
 const mapDispatchToProps = {

@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 import "./index.css";
 import SettingsButton from "./SettingsButton";
 import config from "../../config";
+import { setSearchTerm } from "../../reducers/post";
 
 const options = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-digit" };
 
 class Header extends Component {
   state = {
-    time: new Date().toLocaleString("en-US", options),
-    showNewmeow: null
+    showNewmeow: null,
+    searchTerm: ""
   };
 
   componentDidMount() {
@@ -21,11 +22,6 @@ class Header extends Component {
         this.props.location.pathname.substring(0, 5) === "/edit"
       )
     });
-    setInterval(() => {
-      this.setState({
-        time: new Date().toLocaleString("en-US", options)
-      });
-    }, 1000);
   }
 
   newmeow = () => {
@@ -44,6 +40,12 @@ class Header extends Component {
 
   toMe = () => {
     this.props.history.push("/me");
+  };
+
+  handleSearch = e => {
+    const term = e.target.value;
+    this.setState({ searchTerm: term });
+    this.props.setSearchTerm(term);
   };
 
   render() {
@@ -83,11 +85,14 @@ class Header extends Component {
         >
           {"meow"}
         </h1>
-        {this.props.device === config.MOBILE ? null : (
-          <h2 style={{ color: `${this.props.theme.primary_font_color}` }}>
-            today: {this.state.time}
-          </h2>
-        )}
+        {this.state.showNewmeow ? (
+          <Input
+            placeholder="Search slug…"
+            style={{ width: "550px", height: "40px", borderRadius: "2px", margin: "0 1em" }}
+            value={this.state.searchTerm}
+            onChange={this.handleSearch}
+          />
+        ) : null}
         {this.state.showNewmeow ? (
           <div>
             <span onClick={this.toMe} style={{ fontSize: "1.3em", cursor: "pointer" }}>
@@ -121,7 +126,8 @@ const mapStateToProps = state => ({
   username: state.default.user.username,
   firstName: state.default.user.firstName,
   theme: state.default.user.theme,
-  device: state.default.mobile.device
+  device: state.default.mobile.device,
+  searchTerm: state.default.post.searchTerm
 });
 
 const mapDispatchToProps = {
@@ -132,7 +138,8 @@ const mapDispatchToProps = {
         theme: new_theme
       }
     });
-  }
+  },
+  setSearchTerm
 };
 
 export default withRouter(

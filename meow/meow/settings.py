@@ -15,9 +15,9 @@ DEBUG = env('DEBUG')
 SLACK_ENDPOINT = env('SLACK_ENDPOINT')
 
 if not DEBUG:
-    ALLOWED_HOSTS = [env('SITE_HOST'), ]
+    ALLOWED_HOSTS = [env('SITE_HOST'), '0.0.0.0']
 else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0']
 
 # ALLOWED_HOSTS=['*']
 # print(ALLOWED_HOSTS)

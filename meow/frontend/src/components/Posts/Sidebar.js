@@ -3,18 +3,34 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Collapse, Calendar, Checkbox } from "antd";
 import moment from "moment";
-
+import config from "../../config";
 import { logout } from "../../actions/user";
-
 import "./Sidebar.css";
 import TimeSlider from "./TimeSlider";
 import { FiChevronRight, FiRotateCcw } from "react-icons/fi";
 const { Panel } = Collapse;
 
+const timeOptions = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-digit" };
+
 class Sidebar extends React.Component {
+  state = {
+    time: new Date().toLocaleString("en-US", timeOptions)
+  };
   constructor(props) {
     super(props);
     this.editParent = this.props.editParent.bind(this);
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      this.setState({
+        time: new Date().toLocaleString("en-US", timeOptions)
+      });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   logout = () => {
@@ -208,6 +224,16 @@ class Sidebar extends React.Component {
             </Checkbox>
           </Panel>
         </Collapse>
+        {this.props.device !== config.MOBILE && (
+          <h3
+            style={{
+              marginLeft: "15px",
+              color: this.props.theme.secondary_font_color
+            }}
+          >
+            today: {this.state.time}
+          </h3>
+        )}
         <div
           onClick={this.logout}
           style={{
@@ -238,7 +264,8 @@ class Sidebar extends React.Component {
 
 const mapStateToProps = state => ({
   sections: state.default.section.sections,
-  theme: state.default.user.theme
+  theme: state.default.user.theme,
+  device: state.default.mobile.device
 });
 
 const mapDispatchToProps = {
