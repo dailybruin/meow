@@ -1,4 +1,15 @@
-const initialState = { slug: "" };
+const initialState = {
+  slug: "",
+  searchTerm: ""
+};
+
+export const SET_SEARCH_TERM = "SET_SEARCH_TERM";
+
+export const setSearchTerm = term => ({
+  type: SET_SEARCH_TERM,
+  payload: term
+});
+
 export default function post(state = initialState, action) {
   switch (action.type) {
     case "FETCH_POST_SUCCESS":
@@ -18,6 +29,11 @@ export default function post(state = initialState, action) {
       return {
         ...state,
         ...action.payload
+      };
+    case SET_SEARCH_TERM:
+      return {
+        ...state,
+        searchTerm: action.payload
       };
     default:
       return state;
