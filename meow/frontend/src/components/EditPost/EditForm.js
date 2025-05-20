@@ -26,15 +26,20 @@ const formItemLayout = {
 };
 
 const TWITTER_MAX_LENGTH = 232; // this is hardcoded and does not change if the backend changes.
-const TWITTER_MAX_RECOMMENDED_LENGTH = 200;
+const TWITTER_MAX_RECOMMENDED_LENGTH = 232;
+
+const FB_MAX_LENGTH = 75;
+const FB_MAX_RECOMMENDED_LENGTH = 50;
 
 class EditForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       story_url_errors: "",
-      twitter_length: 0 //even if post_twitter has something, the constructor will be called
+      twitter_length: 0, //even if post_twitter has something, the constructor will be called
       //before that data is avialable so just set it to 0.
+      facebook_length: 0,
+      newsletter_length: 0
     };
   }
 
@@ -125,6 +130,14 @@ class EditForm extends React.Component {
       click_pubready: e.target.checked
     });
   };
+
+  getWordCount = text =>
+    text
+      ? text
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean).length
+      : 0;
 
   render() {
     const { getFieldDecorator, getFieldsValue } = this.props.form;
@@ -227,7 +240,27 @@ class EditForm extends React.Component {
           <Form.Item label="facebook">
             {getFieldDecorator("post_facebook", {
               rules: []
-            })(<TextArea rows={6} />)}
+            })(
+              <TextArea
+                rows={6}
+                onChange={v => {
+                  const count = this.getWordCount(v.target.value);
+                  this.setState({ facebook_length: count });
+                }}
+              />
+            )}
+            <span
+              style={{
+                color:
+                  this.state.facebook_length >= FB_MAX_LENGTH
+                    ? "red"
+                    : this.state.facebook_length >= FB_MAX_RECOMMENDED_LENGTH
+                    ? "#F59F00"
+                    : "black"
+              }}
+            >
+              {this.state.facebook_length} / {FB_MAX_LENGTH} words
+            </span>
           </Form.Item>,
           <Form.Item label="twitter">
             {getFieldDecorator("post_twitter", {
@@ -245,7 +278,12 @@ class EditForm extends React.Component {
             <span
               style={{
                 color:
-                  this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH ? "black" : "#F59F00"
+                  // this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH ? "black" : "#F59F00"
+                  this.state.twitter_length >= TWITTER_MAX_LENGTH
+                    ? "red"
+                    : this.state.twitter_length >= 200
+                    ? "#F59F00"
+                    : "black"
               }}
             >
               {this.state.twitter_length} / {TWITTER_MAX_RECOMMENDED_LENGTH}
@@ -256,7 +294,28 @@ class EditForm extends React.Component {
           <Form.Item label="newsletter">
             {getFieldDecorator("post_newsletter", {
               rules: []
-            })(<TextArea rows={6} />)}
+            })(
+              <TextArea
+                rows={6}
+                onChange={v => {
+                  // console.log(v.target.value.length);
+                  const count = this.getWordCount(v.target.value);
+                  this.setState({ newsletter_length: count });
+                }}
+              />
+            )}
+            <span
+              style={{
+                color:
+                  this.state.newsletter_length >= FB_MAX_LENGTH
+                    ? "red"
+                    : this.state.newsletter_length >= FB_MAX_RECOMMENDED_LENGTH
+                    ? "#F59F00"
+                    : "black"
+              }}
+            >
+              {this.state.newsletter_length} / {FB_MAX_LENGTH} words
+            </span>
           </Form.Item>,
           <Form.Item label="notes">
             {getFieldDecorator("post_notes", {
