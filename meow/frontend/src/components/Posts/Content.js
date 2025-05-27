@@ -24,6 +24,16 @@ const NoPosts = () => (
   </div>
 );
 
+const displayStageLabel = stage => {
+  if (stage.pub_ready_social) return "Ready for social";
+  if (stage.pub_ready_online) return "Ready to publish";
+  if (stage.pub_ready_copy) return "Copy-edited";
+  return "n/a";
+};
+
+const stageRank = stage =>
+  stage.pub_ready_social ? 3 : stage.pub_ready_online ? 2 : stage.pub_ready_copy ? 1 : 0;
+
 const displayStatus = postObject => {
   if (postObject.sent_error) {
     try {
@@ -51,11 +61,14 @@ const displayStatus = postObject => {
   if (postObject.sent) {
     return "Sent";
   }
-  if (postObject.pub_ready_copy) {
-    if (postObject.pub_ready_online) {
-      return "Ready to post";
+  if (postObject.pub_ready_social) {
+    if (postObject.pub_ready_copy) {
+      if (postObject.pub_ready_online) {
+        return "Ready to post";
+      }
+      return "Copy-Edited";
     }
-    return "Copy-Edited";
+    return "Ready for social";
   }
   return "Draft";
 };
@@ -67,9 +80,12 @@ const statusCSS = record => {
   if (record.sent_error) return "sent-error";
   if (record.sending) return "sending";
   if (record.sent) return "sent";
-  if (record.pub_ready_copy) {
-    if (record.pub_ready_online) return "ready-to-post";
-    return "copy-edited";
+  if (record.pub_ready_social) {
+    if (record.pub_ready_copy) {
+      if (record.pub_ready_online) return "ready-to-post";
+      return "copy-edited";
+    }
+    return "ready-for-social";
   }
   return "draft";
 };
@@ -151,6 +167,15 @@ class Posts extends React.Component {
       className: "facebook",
       sortDirections: ["ascend", "descend"],
       sorter: (a, b) => strNullSorter(a.post_facebook, b.post_facebook)
+    },
+    {
+      key: "stage",
+      title: "stage",
+      dataIndex: "stage",
+      className: "stage",
+      sortDirections: ["ascend", "descend"],
+      sorter: (a, b) => stageRank(a) - stageRank(b),
+      render: (_, record) => displayStageLabel(record)
     },
     {
       key: "pub_time",

@@ -89,6 +89,8 @@ class SMPostList(APIView):
             keyword_args = {
                 "last_edit_user": request.user
             }
+            if "pub_ready_social" in request.data and request.data["pub_ready_social"]:
+                keyword_args["pub_ready_social_user"] = request.user
             if "pub_ready_copy" in request.data and request.data["pub_ready_copy"]:
                 keyword_args["pub_ready_copy_user"] = request.user
             if "pub_ready_online" in request.data and request.data["pub_ready_online"]:
@@ -133,11 +135,22 @@ class SMPostDetail(APIView):
 
         it will be unsuccessful only if the user does nott have permission
         """
+        b_should_update_social_user = False
+        update_social_user_to = None
         b_should_update_copy_user = False
         update_copy_user_to = None
         b_should_update_online_user = False
         update_online_user_to = None
 
+        if "pub_ready_social" in request.data and post.pub_ready_social != request.data["pub_ready_social"]:
+            if request.user.groups.filter(name="Social").count() <= 0:
+                return False, None
+            else:
+                b_should_update_social_user = True
+                if request.data["pub_ready_social"]:
+                    update_social_user_to = request.user
+                else:
+                    update_social_user_to = None
 
         if "pub_ready_copy" in request.data and post.pub_ready_copy != request.data["pub_ready_copy"]:
             # it means that the sender of this request tried to change it
@@ -169,6 +182,9 @@ class SMPostDetail(APIView):
 
         # if the user updated the copy edited or online approved status,
         # record them as the copy_user or online_user
+        if b_should_update_social_user:
+            serializer_keyword_args["pub_ready_social_user"] = update_social_user_to
+
         if b_should_update_copy_user:
             serializer_keyword_args["pub_ready_copy_user"] = update_copy_user_to
 
@@ -287,6 +303,8 @@ def send_posts_now(request, post_id):
 
     if request.method == "POST":
         sendNowPost = SMPost.objects.get(id=post_id)
+        if not sendNowPost.pub_ready_social:
+            return JsonResponse({"error": "Post is not ready for social"}, safe=True, status=409 )
         if not sendNowPost.pub_ready_online:
             return JsonResponse({"error": "Post is not ready to publish"}, safe=True, status=409 )
         if not sendNowPost.pub_ready_copy:
@@ -308,9 +326,15 @@ def get_settings():
 
 def can_edit_post(user, post):
     if (user.has_perm('scheduler.add_edit_post') and
-        (((user.has_perm('scheduler.approve_copy') or not post.pub_ready_copy) and
-          (user.has_perm('scheduler.approve_online') or not post.pub_ready_online))
-         or (user.has_perm('scheduler.approve_online')))
+        (
+            (
+                (user.has_perm('scheduler.approve_social') or not post.pub_ready_social) and
+                (user.has_perm('scheduler.approve_copy') or not post.pub_ready_copy) and
+                (user.has_perm('scheduler.approve_online') or not post.pub_ready_online)
+            )
+            or (user.has_perm('scheduler.approve_online')
+            )
+        )
             and not post.sent):
         return True
     elif post.sent_error:
@@ -486,6 +510,15 @@ def edit(request, post_id, post=None):
         #     post.pub_time = None
 
         # Checkboxes
+        if request.user.has_perm('scheduler.approve_social'):
+            if request.POST.get('approve-social', False) == 'on':
+                if post.pub_ready_social == False:
+                    post.pub_ready_social_user = request.user
+                post.pub_ready_social = True
+            else:
+                post.pub_ready_social = False
+                post.pub_ready_social_user = None
+
         if request.user.has_perm('scheduler.approve_copy'):
             if request.POST.get('approve-copy', False) == 'on':
                 if post.pub_ready_copy == False:

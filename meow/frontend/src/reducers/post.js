@@ -1,6 +1,9 @@
 const initialState = {
   slug: "",
-  searchTerm: ""
+  searchTerm: "",
+  pub_ready_social: false,
+  pub_ready_copy: false,
+  pub_ready_online: false
 };
 
 export const SET_SEARCH_TERM = "SET_SEARCH_TERM";
@@ -22,8 +25,12 @@ export default function post(state = initialState, action) {
         post_twitter: action.payload.post_twitter,
         pub_date: action.payload.pub_date,
         pub_time: action.payload.pub_time,
+        pub_ready_social: action.payload.pub_ready_social,
+        pub_ready_copy: action.payload.pub_ready_copy,
+        pub_ready_online: action.payload.pub_ready_online,
         pub_ready_copy_user: action.payload.pub_ready_copy_user,
-        pub_ready_online_user: action.payload.pub_ready_online_user
+        pub_ready_online_user: action.payload.pub_ready_online_user,
+        pub_ready_social_user: action.payload.pub_ready_social_user
       };
     case "EDIT_POST":
       return {

@@ -25,6 +25,7 @@ const AddPost = () => {
     pub_ready_online_user: null,
     pub_ready_copy: false,
     pub_ready_online: false,
+    pub_ready_social: false,
     section: null,
     version_number: 0,
     pub_date: new Intl.DateTimeFormat("en-GB", dateOpts)

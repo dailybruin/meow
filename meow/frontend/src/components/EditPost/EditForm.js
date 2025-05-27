@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Row, Col, Input, Checkbox, Radio } from "antd";
-import { Copy, Online } from "../../services/auth";
+import { Copy, Online, Social } from "../../services/auth";
 import { WithContext as ReactTags } from "react-tag-input";
 import "./EditForm.css";
 import { getMe } from "../../services/api";
@@ -141,37 +141,52 @@ class EditForm extends React.Component {
       no_urlwarning = null;
     }
 
-    const CopyEdited = Copy(
-      () => (
-        <Form.Item className="checkable-items">
-          {getFieldDecorator("pub_ready_copy", {
-            rules: [],
-            valuePropName: "checked",
-            initialValue: false
-          })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
-        </Form.Item>
-      ),
-      null,
-      this.props.user_groups
-    );
-    const OnlineReady = Online(
-      () => (
-        <Form.Item className="checkable-items">
-          {getFieldDecorator("pub_ready_online", {
-            rules: [],
-            valuePropName: "checked",
-            initialValue: true
-          })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
-          {no_urlwarning}
-        </Form.Item>
-      ),
-      null,
-      this.props.user_groups
-    );
+    // const CopyEdited = Copy(
+    //   () => (
+    //     <Form.Item className="checkable-items">
+    //       {getFieldDecorator("pub_ready_copy", {
+    //         rules: [],
+    //         valuePropName: "checked",
+    //         initialValue: false
+    //       })(<Checkbox style={{ fontSize: "1.2em" }}>Copy-edited</Checkbox>)}
+    //     </Form.Item>
+    //   ),
+    //   null,
+    //   this.props.user_groups
+    // );
+    // const OnlineReady = Online(
+    //   () => (
+    //     <Form.Item className="checkable-items">
+    //       {getFieldDecorator("pub_ready_online", {
+    //         rules: [],
+    //         valuePropName: "checked",
+    //         initialValue: true
+    //       })(<Checkbox style={{ fontSize: "1.2em" }}>Ready to publish</Checkbox>)}
+    //       {no_urlwarning}
+    //     </Form.Item>
+    //   ),
+    //   null,
+    //   this.props.user_groups
+    // );
+
+    // const SocialReady = Social(
+    //   () => (
+    //     <Form.Item className="checkable-items">
+    //       {getFieldDecorator("pub_ready_social", {
+    //         rules: [],
+    //         valuePropName: "checked",
+    //         initialValue: true
+    //       })(<Checkbox style={{ fontSize: "1.2em" }}>Ready for social</Checkbox>)}
+    //       {no_urlwarning}
+    //     </Form.Item>
+    //   ),
+    //   null,
+    //   this.props.user_groups
+    // );
 
     const { tags } = this.state;
 
-    console.log(getFieldsValue(["tags"]).tags);
+    // console.log(getFieldsValue(["tags"]).tags);
     // const urlError = isFieldTouched('story_url') && getFieldError('story_url');
 
     return (
@@ -208,7 +223,8 @@ class EditForm extends React.Component {
             {this.props.section == null ? this.props.sectionError : ""}
           </p>
         </Form.Item>
-        <Form.Item {...formItemLayout} label="tags">
+
+        {/* <Form.Item {...formItemLayout} label="tags">
           {getFieldDecorator("tags", {
             rules: []
           })(
@@ -222,7 +238,48 @@ class EditForm extends React.Component {
               delimiters={[13, 188]}
             />
           )}
+        </Form.Item> */}
+        {/* <Form.Item {...formItemLayout} label="readyfor">
+          <Row className="customEditFormRow" type="flex" gutter={12}>
+            <SocialReady />
+          </Row>
+          <Row className="customEditFormRow" type="flex" gutter={12}>
+            <CopyEdited />
+          </Row>
+          <Row className="customEditFormRow" type="flex" gutter={12}>
+            <OnlineReady />
+          </Row>
+        </Form.Item> */}
+
+        <Form.Item {...formItemLayout} label="stage">
+          <Row type="flex" gutter={2} className="customEditFormRow">
+            <Col>
+              {getFieldDecorator("pub_ready_social", {
+                rules: [],
+                valuePropName: "checked",
+                initialValue: this.props.pub_ready_social || false
+                // initialValue: true
+              })(<Checkbox>Ready for social</Checkbox>)}
+            </Col>
+            <Col>
+              {getFieldDecorator("pub_ready_copy", {
+                rules: [],
+                valuePropName: "checked",
+                initialValue: this.props.pub_ready_copy || false
+                // initialValue: true
+              })(<Checkbox>Copy-edited</Checkbox>)}
+            </Col>
+            <Col>
+              {getFieldDecorator("pub_ready_online", {
+                rules: [],
+                valuePropName: "checked",
+                initialValue: this.props.pub_ready_online || false
+                // initialValue: true
+              })(<Checkbox>Ready to publish</Checkbox>)}
+            </Col>
+          </Row>
         </Form.Item>
+
         {this.responsiveRender(
           <Form.Item label="facebook">
             {getFieldDecorator("post_facebook", {
@@ -271,7 +328,7 @@ class EditForm extends React.Component {
             })(<TextArea rows={6} />)}
           </Form.Item>
         )}
-        {this.responsiveRender(<CopyEdited />, <OnlineReady />)}
+        {/* {this.responsiveRender(<CopyEdited />, <OnlineReady />)} */}
       </Form>
     );
   }
@@ -295,9 +352,21 @@ export default Form.create({
         ...props.section,
         value: props.section
       }),
-      tags: Form.createFormField({
-        ...props.tags,
-        value: props.tags
+      // tags: Form.createFormField({
+      //   ...props.tags,
+      //   value: props.tags
+      // }),
+      pub_ready_social: Form.createFormField({
+        ...props.pub_ready_social,
+        value: props.pub_ready_social
+      }),
+      pub_ready_copy: Form.createFormField({
+        ...props.pub_ready_copy,
+        value: props.pub_ready_copy
+      }),
+      pub_ready_online: Form.createFormField({
+        ...props.pub_ready_online,
+        value: props.pub_ready_online
       }),
       post_facebook: Form.createFormField({
         ...props.post_facebook,
@@ -318,18 +387,11 @@ export default Form.create({
       post_instagram: Form.createFormField({
         ...props.post_instagram,
         value: props.post_instagram
-      }),
-      pub_ready_copy: Form.createFormField({
-        ...props.pub_ready_copy,
-        value: props.pub_ready_copy
-      }),
-      pub_ready_online: Form.createFormField({
-        ...props.pub_ready_online,
-        value: props.pub_ready_online
       })
     };
   },
   onValuesChange(props, values) {
+    console.log("[EditForm] onValuesChange:", values);
     props.onChange(values);
   }
 })(EditForm);

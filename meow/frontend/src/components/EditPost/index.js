@@ -64,7 +64,8 @@ class EditPost extends React.Component {
               })
             : [],
           pub_ready_copy_old: data.pub_ready_copy,
-          pub_ready_online_old: data.pub_ready_online
+          pub_ready_online_old: data.pub_ready_online,
+          pub_ready_social_old: data.pub_ready_social
         });
       });
       this.props.loadSections();
@@ -105,12 +106,14 @@ class EditPost extends React.Component {
 
   //both send now and save Post use this so its better if its in one place.
   savePostPromise = postId => {
+    console.log("savePostPromise pub_ready_copy", this.state.pub_ready_copy);
     return this.props.savePost(postId, {
       slug: this.state.slug,
       story_url: this.state.story_url,
       section: this.state.section,
       pub_date: this.state.pub_date,
       pub_time: this.state.pub_time,
+      pub_ready_social: false,
       pub_ready_copy: false,
       pub_ready_online: false,
       post_facebook: this.state.post_facebook,
@@ -118,6 +121,7 @@ class EditPost extends React.Component {
       post_newsletter: this.state.post_newsletter,
       post_notes: this.state.post_notes,
       post_instagram: this.state.post_instagram,
+      pub_ready_social: this.state.pub_ready_social,
       pub_ready_copy: this.state.pub_ready_copy,
       pub_ready_online: this.state.pub_ready_online,
       version_number: this.state.version_number,

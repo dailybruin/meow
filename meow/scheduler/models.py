@@ -49,11 +49,14 @@ class SMPost(models.Model):
     pub_ready_copy = models.BooleanField(
         default=False, help_text="Is this copy-edited?")
     pub_ready_online = models.BooleanField(
-        default=False, help_text="Is this ready to send out?")
-
+        default=False, help_text="Is this ready to publish?")
+    pub_ready_social = models.BooleanField(
+        default=False, help_text="Is this ready for social?")
     pub_ready_copy_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
     pub_ready_online_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
+    pub_ready_social_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
     last_edit_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, blank=True, null=True, related_name='+', on_delete=models.SET_NULL)
@@ -82,6 +85,7 @@ class SMPost(models.Model):
     class Meta:
         permissions = (
             ("add_edit_post", "Can add and edit posts"),
+            ("approve_social",  "Can mark the post as approved for social"), 
             ("approve_copy", "Can mark the post as approved by copy"),
             ("approve_online", "Can mark the post as approved by online"),
         )

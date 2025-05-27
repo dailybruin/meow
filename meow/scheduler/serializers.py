@@ -7,6 +7,7 @@ class SMPostSerializer(serializers.ModelSerializer):
     #category_name = serializers.CharField(source='category.name')
     pub_ready_copy_user = BasicInfoUserSerializer(required=False)
     pub_ready_online_user = BasicInfoUserSerializer(required=False)
+    pub_ready_social_user = BasicInfoUserSerializer(required=False)
     tags = serializers.SlugRelatedField(
         many=True,
         slug_field='text',

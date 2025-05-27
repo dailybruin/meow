@@ -11,7 +11,9 @@ class EditPost extends React.Component {
   };
 
   handleFormChange = changedFields => {
+    console.log("[EditPost] handleFormChange:", changedFields);
     this.props.editPost(changedFields);
+    this.setState(changedFields);
   };
 
   handleOk = () => {
@@ -19,6 +21,13 @@ class EditPost extends React.Component {
   };
 
   render() {
+    const socialReady =
+      this.props.pub_ready_social_user !== null && this.props.pub_ready_social_user !== undefined
+        ? `Marked social ready by: ${this.props.pub_ready_social_user.first_name +
+            " " +
+            this.props.pub_ready_social_user.last_name}`
+        : `Not ready for social`;
+
     const copyEdited =
       this.props.pub_ready_copy_user !== null && this.props.pub_ready_copy_user !== undefined
         ? `Copy-edited by: ${this.props.pub_ready_copy_user.first_name +
@@ -26,12 +35,12 @@ class EditPost extends React.Component {
             this.props.pub_ready_copy_user.last_name}`
         : `Not copy-edited`;
 
-    const markedReady =
+    const publishReady =
       this.props.pub_ready_online_user !== null && this.props.pub_ready_online_user !== undefined
-        ? `Marked ready by: ${this.props.pub_ready_online_user.first_name +
+        ? `Marked publish ready by: ${this.props.pub_ready_online_user.first_name +
             " " +
             this.props.pub_ready_online_user.last_name}`
-        : `Not ready to send`;
+        : `Not ready to publish`;
 
     const actionButtons = (
       <React.Fragment>
@@ -75,11 +84,13 @@ class EditPost extends React.Component {
           {...this.props}
           suggestions={this.props.suggestions}
           onChange={this.handleFormChange}
+          // onChange={this.editField}
         />
         {this.props.mobile === true ? (
           <React.Fragment>
+            <div>{socialReady}</div>
             <div>{copyEdited}</div>
-            <div>{markedReady}</div>
+            <div>{publishReady}</div>
             {actionButtons}
           </React.Fragment>
         ) : (
@@ -89,8 +100,9 @@ class EditPost extends React.Component {
                 marginBottom: "1.2em"
               }}
             >
-              <Col span={12}>{copyEdited}</Col>
-              <Col span={12}>{markedReady}</Col>
+              <Col span={8}>{socialReady}</Col>
+              <Col span={8}>{copyEdited}</Col>
+              <Col span={8}>{publishReady}</Col>
             </Row>
             <div
               style={{
@@ -114,8 +126,10 @@ const mapStateToProps = state => ({
   post_twitter: state.default.post.post_twitter,
   pub_ready_copy: state.default.post.pub_ready_copy,
   pub_ready_online: state.default.post.pub_ready_online,
+  pub_ready_social: state.default.post.pub_ready_social,
   pub_ready_copy_user: state.default.post.pub_ready_copy_user,
   pub_ready_online_user: state.default.post.pub_ready_online_user,
+  pub_ready_social_user: state.default.post.pub_ready_social_user,
   section: state.default.post.section,
   sections: state.default.section.sections,
   tags: state.default.post.tags
