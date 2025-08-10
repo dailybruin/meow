@@ -6,7 +6,7 @@ celery==5.2.2
 certifi==2023.7.22
 chardet==3.0.4
 Django==3.2.21
-django-allauth==0.56.1
+django-allauth==0.63.6
 django-celery-beat==2.1.0
 django-cors-headers==4.0
 django-environ==0.11.2
