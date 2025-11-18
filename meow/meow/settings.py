@@ -6,6 +6,9 @@ root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
 environ.Env.read_env()  # reading .env file
 
+SITE_URL = env('SITE_URL', default='http://localhost:5000')
+SITE_ORIGIN = SITE_URL.rstrip('/')
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -267,9 +270,9 @@ SOCIAL_AUTH_MEOW_SCOPE = ['groups:read',
 SOCIAL_AUTH_MEOW_TEAM = 'dailybruin'
 
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5000/' if DEBUG else 'https://meow.dailybruin.com/'
-LOGIN_REDIRECT_URL = 'http://localhost:5000/' if DEBUG else 'https://meow.dailybruin.com/'
-LOGOUT_REDIRECT_URL = 'http://localhost:5000/' if DEBUG else 'https://meow.dailybruin.com/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = f'{SITE_ORIGIN}/' if DEBUG else 'https://meow.dailybruin.com/'
+LOGIN_REDIRECT_URL = f'{SITE_ORIGIN}/' if DEBUG else 'https://meow.dailybruin.com/'
+LOGOUT_REDIRECT_URL = f'{SITE_ORIGIN}/' if DEBUG else 'https://meow.dailybruin.com/'
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',

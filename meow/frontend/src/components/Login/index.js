@@ -1,14 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Divider, Button } from "antd";
+import { Button } from "antd";
 
 import { login } from "../../actions/user";
 
-const AUTH_URL =
+const ORIGIN =
   process.env.NODE_ENV === "production"
-    ? "https://meow.dailybruin.com/api/v1/auth/login/meow/"
-    : "http://localhost:5000/api/v1/auth/login/meow/";
+    ? "https://meow.dailybruin.com"
+    : typeof window !== "undefined"
+    ? window.location.origin
+    : "http://localhost:5000";
+
+const AUTH_URL = `${ORIGIN}/api/v1/auth/login/meow/`;
 
 class Login extends React.Component {
   componentDidMount() {
@@ -20,9 +24,9 @@ class Login extends React.Component {
   }
 
   render() {
-    let img_index = Math.floor(10 * Math.random() + 1);
-    let img_extension = img_index == 5 ? "png" : "jpg";
-    let img_url = `/static/cats/${img_index}.${img_extension}`;
+    const imgIndex = Math.floor(10 * Math.random() + 1);
+    const imgExtension = imgIndex === 5 ? "png" : "jpg";
+    const imgUrl = `/static/cats/${imgIndex}.${imgExtension}`;
 
     return (
       <div
@@ -31,7 +35,7 @@ class Login extends React.Component {
           height: "100vh",
           display: "flex",
           justifyContent: "center",
-          backgroundImage: `url("${img_url}")`,
+          backgroundImage: `url("${imgUrl}")`,
           backgroundSize: "cover"
         }}
       >

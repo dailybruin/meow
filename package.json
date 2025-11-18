@@ -9,9 +9,9 @@
   },
   "scripts": {
     "precommit": "pretty-quick --staged",
-    "build": "webpack",
-    "build-production": "webpack --config webpack.prod.config.js --mode production --progress --colors --optimize-minimize --display-error-details",
-    "watch": "webpack --watch",
+    "build": "node scripts/webpack-runner.js",
+    "build-production": "node scripts/webpack-runner.js --config webpack.prod.config.js --mode production --progress --colors --optimize-minimize --display-error-details",
+    "watch": "node scripts/webpack-runner.js --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

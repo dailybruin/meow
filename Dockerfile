@@ -4,6 +4,7 @@ WORKDIR /meow
 ADD package.json package-lock.json /meow/
 RUN npm install
 COPY ./webpack.config.js ./webpack.prod.config.js ./jsconfig.json ./
+COPY scripts scripts
 COPY meow/frontend meow/frontend
 RUN npm run build-production
 
@@ -58,6 +59,6 @@ COPY --from=0 /meow /meow
 
 ADD . /meow/
 
-EXPOSE 5000
+EXPOSE 5001
 
 ENTRYPOINT ["./entrypoint.sh"]

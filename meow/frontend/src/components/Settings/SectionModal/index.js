@@ -5,22 +5,25 @@ import { Modal, Input, Form } from "antd";
 
 import "./index.css";
 
-const FB_URL =
+const ORIGIN =
   process.env.NODE_ENV === "production"
-    ? "https://meow.dailybruin.com/api/v1/fb-redir/"
-    : "http://localhost:5000/api/v1/fb-redir/";
-const TWIT_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://meow.dailybruin.com/api/v1/twitter-redir/"
-    : "http://localhost:5000/api/v1/twitter-redir/";
+    ? "https://meow.dailybruin.com"
+    : typeof window !== "undefined"
+    ? window.location.origin
+    : "http://localhost:5000";
+const FB_URL = `${ORIGIN}/api/v1/fb-redir/`;
+const TWIT_URL = `${ORIGIN}/api/v1/twitter-redir/`;
 
 class SectionModal extends React.Component {
-  state = {
-    name: this.props.name,
-    id: this.props.id,
-    facebook_account_handle: this.props.facebook_account_handle,
-    twitter_account_handle: this.props.twitter_account_handle
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: props.name,
+      id: props.id,
+      facebook_account_handle: props.facebook_account_handle,
+      twitter_account_handle: props.twitter_account_handle
+    };
+  }
 
   render() {
     const { name, facebook_account_handle, twitter_account_handle } = this.state;

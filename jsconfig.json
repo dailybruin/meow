@@ -1,4 +1,4 @@
 {
-  "include": ["./frontend/**/*"],
-  "exclude": ["node_modules", "./frontend/bundles/**/*"]
+  "include": ["./meow/frontend/**/*"],
+  "exclude": ["node_modules", "./meow/frontend/bundles/**/*"]
 }
