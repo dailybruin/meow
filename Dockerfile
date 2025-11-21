@@ -59,6 +59,6 @@ COPY --from=0 /meow /meow
 
 ADD . /meow/
 
-EXPOSE 5001
+EXPOSE 5000
 
 ENTRYPOINT ["./entrypoint.sh"]

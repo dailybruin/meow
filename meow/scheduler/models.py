@@ -96,10 +96,43 @@ class SMPost(models.Model):
             self.sent_error_text = text
         self.save()
 
-    def log_error(self, e, section, send_email=False):
+    def log_error(self, e, section, send_email=False, context=None, traceback_text=None):
+        """
+        Record an error against this post with enough detail to debug quickly.
+        `e` may be an Exception instance or a string description.
+        """
         self.sent_error = True
-        self.sent_error_text = str(self.sent_error_text) + "Error: " + str(
-            section.name) + " " + str(datetime.now()) + " -- " + str(e) + "\n"
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        section_name = section.name if section else "Unknown section"
+
+        # Build a detailed, single-line error entry.
+        error_parts = [
+            f"{section_name} {timestamp}",
+        ]
+
+        if context:
+            error_parts.append(f"context={context}")
+
+        # Handle both strings and Exception instances.
+        if isinstance(e, BaseException):
+            error_parts.append(f"{type(e).__name__}: {e}")
+        elif e is not None:
+            error_parts.append(str(e))
+        else:
+            error_parts.append("Unknown error")
+
+        if traceback_text:
+            error_parts.append(traceback_text.strip())
+
+        error_entry = "Error: " + " | ".join(error_parts)
+
+        existing = self.sent_error_text or ""
+        if existing:
+            self.sent_error_text = existing + "\n" + error_entry
+        else:
+            self.sent_error_text = error_entry
+
         self.sending = False
         self.save()
 
@@ -130,9 +163,17 @@ Thanks,
                     setting_key='organization_name').setting_value
                 from_email = MeowSetting.objects.get(
                     setting_key='from_email').setting_value
+                section_name = section.name if section else "Unknown section"
 
-                email_message = email_message.format(name=email.name, error=str(e), time=str(datetime.now(
-                )), section=str(section.name), site_url=site_url, organization_name=organization_name)
+                error_text = traceback_text or str(e)
+                email_message = email_message.format(
+                    name=email.name,
+                    error=error_text,
+                    time=str(datetime.now()),
+                    section=section_name,
+                    site_url=site_url,
+                    organization_name=organization_name
+                )
                 send_mail('[' + organization_name + '] Meow send error', email_message,
                           from_email, [email.email_address], fail_silently=False)
             except:

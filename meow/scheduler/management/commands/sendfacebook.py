@@ -88,7 +88,7 @@ class Command(BaseCommand):
                     logger.info(type(res))
                     logger.info(str(e))
                     logger.error("Error while sending Facebook post a second time, aborting post. Traceback: " + traceback.format_exc() )
-                    smpost.log_error(e, section, True)
+                    smpost.log_error(e, section, True, context="sendfacebook retry", traceback_text=traceback.format_exc())
                     smpost.log("Error while sending Facebook post a second time, aborting post. Traceback: " + traceback.format_exc() )
                     return
                     
@@ -109,5 +109,9 @@ class Command(BaseCommand):
 
         except (FacepyError) as e:
             smpost.log(traceback.format_exc())
-            smpost.log_error(e, section, True)
-            logger.error("Send facebook errored\nslug: {} {}".format(smpost.slug, traceback.format_exc()))
+            smpost.log_error(e, section, True, context="sendfacebook", traceback_text=traceback.format_exc())
+            logger.exception("Send facebook errored\nslug: %s", smpost.slug)
+        except Exception as e:
+            smpost.log(traceback.format_exc())
+            smpost.log_error(e, section, True, context="sendfacebook unexpected", traceback_text=traceback.format_exc())
+            logger.exception("Send facebook hit unexpected error\nslug: %s", smpost.slug)

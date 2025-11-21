@@ -26,9 +26,19 @@ class Command(BaseCommand):
     help = "Sends the appropriate social media posts"
 
     def handle(self, *args, **options):
-        send_posts = MeowSetting.objects.get(
-            setting_key="send_posts").setting_value
-        if send_posts == "No" or send_posts == "no":
+        try:
+            send_posts = MeowSetting.objects.get(
+                setting_key="send_posts").setting_value
+        except MeowSetting.DoesNotExist:
+            logger.critical("send_posts setting is missing; aborting send run.")
+            HealthCheck.setUnhealthy("send_posts setting is missing; aborting send run.")
+            return
+        except Exception:
+            logger.exception("Unable to read send_posts setting; aborting send run.")
+            HealthCheck.setUnhealthy("Unable to read send_posts setting; aborting send run.")
+            return
+
+        if send_posts is not None and str(send_posts).lower() == "no":
             logger.info("Post sending is currently off!")
             return
 
@@ -172,17 +182,27 @@ class Command(BaseCommand):
                     if (post.section.also_post_to and
                             post.section.also_post_to.twitter_access_key and post.section.also_post_to.twitter_access_secret):
                         call_command('sendtweet', smpost=post, section=post.section.also_post_to, url=send_url[1])
-            except:
+            except Exception as exc:
                 # Something wrong happened. Don't send this post.
-                logger.error(
-                    "sendpost.py: {} has errored. It will NOT be sent. trackback: {}"
-                    .format(post.slug, traceback.format_exc())
-                );
+                logger.exception(
+                    "sendpost.py: %s (%s) has errored. It will NOT be sent.",
+                    post.slug,
+                    post.id
+                )
 
-                e = sys.exc_info()[0]
                 post.log(traceback.format_exc())
-                post.log_error(e, post.section, True)
+                post.log_error(exc, post.section, True, context="sendposts main loop", traceback_text=traceback.format_exc())
                 continue # don't do anything else
+            except BaseException as exc:
+                # Catch SystemExit/KeyboardInterrupt to keep the worker alive and capture details.
+                logger.exception(
+                    "sendpost.py: %s (%s) hit a fatal error. It will NOT be sent.",
+                    post.slug,
+                    post.id
+                )
+                post.log(traceback.format_exc())
+                post.log_error(exc, post.section, True, context="sendposts fatal", traceback_text=traceback.format_exc())
+                continue
 
             # Now save whatever we changed to the post
             try:
@@ -191,7 +211,7 @@ class Command(BaseCommand):
                 post.sent_time = timezone.localtime(timezone.now())
                 post.save()
             except (Exception) as e:
-                logger.critical("Something is very wrong" + traceback.format_exc())
-                HealthCheck.setUnhealthy("Something is very wrong" + traceback.format_exc())
+                logger.exception("Failed to finalize send for %s (%s).", post.slug, post.id)
+                HealthCheck.setUnhealthy("Failed to finalize send for {} ({})".format(post.slug, post.id))
                 post.log(traceback.format_exc())
-                post.log_error(e, post.section, True)
+                post.log_error(e, post.section, True, context="sendposts finalize", traceback_text=traceback.format_exc())

@@ -82,11 +82,11 @@ class Command(BaseCommand):
 
         except tweepy.errors.TweepyException as e:
             smpost.log(traceback.format_exc())
-            smpost.log_error(e, section, True)
+            smpost.log_error(e, section, True, context="sendtweet", traceback_text=traceback.format_exc())
 
-            logger.error("Send tweet errored\nslug: {} {}".format(smpost.slug, traceback.format_exc()))
+            logger.exception("Send tweet errored\nslug: %s", smpost.slug)
         except Exception as e:
             smpost.log(traceback.format_exc())
-            smpost.log_error(e, section, True)
+            smpost.log_error(e, section, True, context="sendtweet unexpected", traceback_text=traceback.format_exc())
 
-            logger.error("Send tweet errored\nslug: {} {}".format(smpost.slug, traceback.format_exc()))
+            logger.exception("Send tweet errored\nslug: %s", smpost.slug)
