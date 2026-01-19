@@ -70,6 +70,17 @@ If you get an error saying cannot connect to docker daemon, you may need to run 
 ./sudo_init_script.sh # Only run if the ./init_script.sh did not work.
 ```
 
+#### macOS port 5000 in use (AirPlay Receiver)
+
+On macOS, ControlCenter/AirPlay Receiver can bind port 5000 and block `docker-compose up` with “Ports are not available” errors. If that happens:
+
+1. Turn off AirPlay Receiver: System Settings → General → AirDrop & Handoff → set “AirPlay Receiver” to Off.
+2. Restart ControlCenter (or reboot): `killall ControlCenter`
+3. Verify the port is free: `sudo lsof -i :5000` (expect no output)
+4. Re-run `docker-compose up --remove-orphans`
+
+Alternatively, you can temporarily remap the host port (e.g., `5001:5000` in a `docker-compose.override.yml`), but Slack redirect URLs must match the chosen port.
+
 Once you run this, just run `docker-compose up` in one terminal tab and `npm run watch` in another. Then go to
 `localhost:5000` and you should see 1 of several random cats pics :D (and the login page). Now you are done and you can skip all the other steps.
 
