@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 from django.utils import timezone
 from django.conf import settings
-
+from django.db import transaction, OperationalError
 
 from datetime import datetime, timedelta
 from facepy import GraphAPI
@@ -73,22 +73,42 @@ class Command(BaseCommand):
             logger.info("No posts to send!")
 
         for post in posts:
+            post_id = post.id
             try:
-                # Make sure nothing else is trying to send this post right now
-                # This is not atomic; if meow ever scales a lot more, this will need to be re-written
-                # TODO: Yes this isn't.
-                if post.send_now:
-                    post.sending = False
-                    post.sent = True
-                    post.sent_time = timezone.localtime(timezone.now())
-                    post.save()
+                # Atomic lock acquisition to prevent race conditions
+                # This fixes the "not atomic" issue mentioned in the original TODO
+                with transaction.atomic():
+                    try:
+                        # Acquire row-level lock; nowait=True skips if already locked
+                        locked_post = SMPost.objects.select_for_update(nowait=True).get(id=post_id)
+                    except OperationalError:
+                        # Another worker has the lock - skip this post
+                        logger.info("sendpost.py: Post {}-{} is locked by another worker, skipping.".format(post.slug, post_id))
+                        continue
+                    except SMPost.DoesNotExist:
+                        logger.warning("sendpost.py: Post {} no longer exists, skipping.".format(post_id))
+                        continue
 
-                if post.sending:
-                    logger.info("sendpost.py: Post {}-{} is currently in the process of being sent. ".format(post.slug, post.id))
-                    continue # if its in the processs of being sent, ignore
-                else:
-                    post.sending = True
-                    post.save()
+                    # Re-check state now that we have the lock
+                    if locked_post.send_now:
+                        locked_post.sending = False
+                        locked_post.sent = True
+                        locked_post.sent_time = timezone.localtime(timezone.now())
+                        locked_post.save()
+
+                    if locked_post.sending:
+                        logger.info("sendpost.py: Post {}-{} is currently in the process of being sent. ".format(locked_post.slug, locked_post.id))
+                        continue
+                    
+                    if locked_post.sent:
+                        logger.info("sendpost.py: Post {}-{} already sent, skipping.".format(locked_post.slug, locked_post.id))
+                        continue
+
+                    locked_post.sending = True
+                    locked_post.save()
+                
+                # Lock released - reload post for rest of processing
+                post = SMPost.objects.get(id=post_id)
 
                 logger.info("sendpost.py: Post {}-{} will begin sending. ".format(post.slug, post.id))
 
