@@ -107,8 +107,8 @@ class Command(BaseCommand):
                     locked_post.sending = True
                     locked_post.save()
                 
-                # Lock released - reload post for rest of processing
-                post = SMPost.objects.get(id=post_id)
+                # Lock released - reuse locked_post for rest of processing
+                post = locked_post
 
                 logger.info("sendpost.py: Post {}-{} will begin sending. ".format(post.slug, post.id))
 
