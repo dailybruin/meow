@@ -75,8 +75,8 @@ class Command(BaseCommand):
         for post in posts:
             post_id = post.id
             try:
-                # Atomic lock acquisition to prevent race conditions
-                # This fixes the "not atomic" issue mentioned in the original TODO
+                # Atomic lock acquisition to prevent multiple workers from sending the same post concurrently
+                # This addresses the previous "not atomic" TODO by using a per-post database row lock
                 with transaction.atomic():
                     try:
                         # Acquire row-level lock; nowait=True skips if already locked
