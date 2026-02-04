@@ -91,9 +91,9 @@ class Command(BaseCommand):
 
                     # Re-check state now that we have the lock
                     if locked_post.send_now:
-                        locked_post.sending = False
-                        locked_post.sent = True
-                        locked_post.sent_time = timezone.localtime(timezone.now())
+                        # Clear the send_now flag so this post is handled like a regular post,
+                        # but do not mark it as sent yet; that only happens after a successful send.
+                        locked_post.send_now = False
                         locked_post.save()
 
                     if locked_post.sending:
