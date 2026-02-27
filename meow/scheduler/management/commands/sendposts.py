@@ -75,8 +75,8 @@ class Command(BaseCommand):
         for post in posts:
             post_id = post.id
             try:
-                # Atomic lock acquisition to prevent race conditions
-                # This fixes the "not atomic" issue mentioned in the original TODO
+                # Atomic lock acquisition to prevent multiple workers from sending the same post concurrently
+                # This addresses the previous "not atomic" TODO by using a per-post database row lock
                 with transaction.atomic():
                     try:
                         # Acquire row-level lock; nowait=True skips if already locked
@@ -91,9 +91,9 @@ class Command(BaseCommand):
 
                     # Re-check state now that we have the lock
                     if locked_post.send_now:
-                        locked_post.sending = False
-                        locked_post.sent = True
-                        locked_post.sent_time = timezone.localtime(timezone.now())
+                        # Clear the send_now flag so this post is handled like a regular post,
+                        # but do not mark it as sent yet; that only happens after a successful send.
+                        locked_post.send_now = False
                         locked_post.save()
 
                     if locked_post.sending:
@@ -107,8 +107,8 @@ class Command(BaseCommand):
                     locked_post.sending = True
                     locked_post.save()
                 
-                # Lock released - reload post for rest of processing
-                post = SMPost.objects.get(id=post_id)
+                # Lock released - reuse locked_post for rest of processing
+                post = locked_post
 
                 logger.info("sendpost.py: Post {}-{} will begin sending. ".format(post.slug, post.id))
 
