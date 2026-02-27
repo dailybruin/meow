@@ -116,11 +116,11 @@ class Command(BaseCommand):
                 
 
                 # Make sure this post should actually be sent out. If it's more than
-                # 20 minutes late, we're gonna mark it as an error and send an error
+                # 60 minutes late, we're gonna mark it as an error and send an error
                 # message.
-                # 11/23/2020 5:15:35 PM01:15:35 worker.1 | sent_error_text:   NoneError: Arts 2020-11-23 17:15:35.661913 -- Would have sent more than 20 minutes late.
+                # 11/23/2020 5:15:35 PM01:15:35 worker.1 | sent_error_text:   NoneError: Arts 2020-11-23 17:15:35.661913 -- Would have sent more than 60 minutes late.
                 send_date = datetime.combine(post.pub_date, post.pub_time)
-                send_grace_period = timedelta(minutes=20)
+                send_grace_period = timedelta(minutes=60)
                 tmp_current_time = timezone.localtime(timezone.now())
                 tmp_send_datetime = timezone.make_aware(send_date)
                 time_since_scheduled_time = (tmp_current_time - tmp_send_datetime)
@@ -128,10 +128,10 @@ class Command(BaseCommand):
                     try:
                         post.sending = False
                         post.log_error(
-                            "Would have sent more than 20 minutes late.", post.section, True)
+                            "Would have sent more than 60 minutes late.", post.section, True)
 
                          # print out all of the model's fields
-                        logger.error("Would have sent more than 20 minutes late")
+                        logger.error("Would have sent more than 60 minutes late")
                         logger.error("Current_time" + str(tmp_current_time))
                         logger.error("Datetime for post" + str(tmp_send_datetime))
 
