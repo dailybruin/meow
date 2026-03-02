@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 from django.utils import timezone
 from django.conf import settings
-
+from django.db import transaction, OperationalError
 
 from datetime import datetime, timedelta
 from facepy import GraphAPI
@@ -73,22 +73,42 @@ class Command(BaseCommand):
             logger.info("No posts to send!")
 
         for post in posts:
+            post_id = post.id
             try:
-                # Make sure nothing else is trying to send this post right now
-                # This is not atomic; if meow ever scales a lot more, this will need to be re-written
-                # TODO: Yes this isn't.
-                if post.send_now:
-                    post.sending = False
-                    post.sent = True
-                    post.sent_time = timezone.localtime(timezone.now())
-                    post.save()
+                # Atomic lock acquisition to prevent multiple workers from sending the same post concurrently
+                # This addresses the previous "not atomic" TODO by using a per-post database row lock
+                with transaction.atomic():
+                    try:
+                        # Acquire row-level lock; nowait=True skips if already locked
+                        locked_post = SMPost.objects.select_for_update(nowait=True).get(id=post_id)
+                    except OperationalError:
+                        # Another worker has the lock - skip this post
+                        logger.info("sendpost.py: Post {}-{} is locked by another worker, skipping.".format(post.slug, post_id))
+                        continue
+                    except SMPost.DoesNotExist:
+                        logger.warning("sendpost.py: Post {} no longer exists, skipping.".format(post_id))
+                        continue
 
-                if post.sending:
-                    logger.info("sendpost.py: Post {}-{} is currently in the process of being sent. ".format(post.slug, post.id))
-                    continue # if its in the processs of being sent, ignore
-                else:
-                    post.sending = True
-                    post.save()
+                    # Re-check state now that we have the lock
+                    if locked_post.send_now:
+                        # Clear the send_now flag so this post is handled like a regular post,
+                        # but do not mark it as sent yet; that only happens after a successful send.
+                        locked_post.send_now = False
+                        locked_post.save()
+
+                    if locked_post.sending:
+                        logger.info("sendpost.py: Post {}-{} is currently in the process of being sent. ".format(locked_post.slug, locked_post.id))
+                        continue
+                    
+                    if locked_post.sent:
+                        logger.info("sendpost.py: Post {}-{} already sent, skipping.".format(locked_post.slug, locked_post.id))
+                        continue
+
+                    locked_post.sending = True
+                    locked_post.save()
+                
+                # Lock released - reuse locked_post for rest of processing
+                post = locked_post
 
                 logger.info("sendpost.py: Post {}-{} will begin sending. ".format(post.slug, post.id))
 
@@ -96,11 +116,11 @@ class Command(BaseCommand):
                 
 
                 # Make sure this post should actually be sent out. If it's more than
-                # 20 minutes late, we're gonna mark it as an error and send an error
+                # 60 minutes late, we're gonna mark it as an error and send an error
                 # message.
-                # 11/23/2020 5:15:35 PM01:15:35 worker.1 | sent_error_text:   NoneError: Arts 2020-11-23 17:15:35.661913 -- Would have sent more than 20 minutes late.
+                # 11/23/2020 5:15:35 PM01:15:35 worker.1 | sent_error_text:   NoneError: Arts 2020-11-23 17:15:35.661913 -- Would have sent more than 60 minutes late.
                 send_date = datetime.combine(post.pub_date, post.pub_time)
-                send_grace_period = timedelta(minutes=20)
+                send_grace_period = timedelta(minutes=60)
                 tmp_current_time = timezone.localtime(timezone.now())
                 tmp_send_datetime = timezone.make_aware(send_date)
                 time_since_scheduled_time = (tmp_current_time - tmp_send_datetime)
@@ -108,10 +128,10 @@ class Command(BaseCommand):
                     try:
                         post.sending = False
                         post.log_error(
-                            "Would have sent more than 20 minutes late.", post.section, True)
+                            "Would have sent more than 60 minutes late.", post.section, True)
 
                          # print out all of the model's fields
-                        logger.error("Would have sent more than 20 minutes late")
+                        logger.error("Would have sent more than 60 minutes late")
                         logger.error("Current_time" + str(tmp_current_time))
                         logger.error("Datetime for post" + str(tmp_send_datetime))
 
