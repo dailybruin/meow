@@ -171,16 +171,22 @@ LOGGING = {
 	},
 	'formatters': {
 		'simple_server': {
-			'()': 'django.utils.log.ServerFormatter',
+			'()': 'meow.logging.OAuthRedactingFormatter',
 			'format': '[%(asctime)s|%(levelname)s] %(message)s',
 		},
 
 	},
 	'handlers': {
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple_server',
+        },
 		'console': {
 			'level': 'INFO',
 			'filters': ['require_debug_true'],
 			'class': 'logging.StreamHandler',
+			'formatter': 'simple_server',
 		},
         'logfile': {
             'level':'INFO',
@@ -193,10 +199,16 @@ LOGGING = {
 		'console_debug_false': {
 			'level': 'ERROR',
 			'filters': ['require_debug_false'],
-			'class': 'logging.StreamHandler'
+			'class': 'logging.StreamHandler',
+			'formatter': 'simple_server',
 		},
 	},
 	'loggers': {
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        },
 		'django.request': {
 			'handlers': ['console', 'console_debug_false', 'logfile'],
 			'level': 'INFO',

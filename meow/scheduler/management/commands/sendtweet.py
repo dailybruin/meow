@@ -49,8 +49,6 @@ class Command(BaseCommand):
             ACCESS_KEY = section.twitter_access_key
             ACCESS_SECRET = section.twitter_access_secret
 
-            auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-            auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 
             api = tweepy.Client(
                 consumer_key=CONSUMER_KEY,
