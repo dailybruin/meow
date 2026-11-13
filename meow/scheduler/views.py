@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.http import HttpResponse, Http404, JsonResponse, FileResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from functools import wraps
 
@@ -41,7 +42,9 @@ from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from django.db.models import F
 from django.db import transaction
 
-
+# twitter authentication
+import logging
+logger = logging.getLogger(__name__)
 
 class SectionList(APIView):
     """
@@ -728,8 +731,12 @@ def twitter_redir(request):
     twitter_auth = tweepy.OAuthHandler(
         TWITTER_CONSUMER_KEY,
         TWITTER_CONSUMER_SECRET,
-        MeowSetting.objects.get(
-            setting_key="site_url").setting_value + '/api/v1/twitter-connect/'
+        callback=(
+            MeowSetting.objects.get(
+                setting_key="site_url"
+            ).setting_value.rstrip("/")
+            + reverse("scheduler:twitter_connect")
+        ),
     )
     twitter_auth.secure = True
     twitter_auth_url = twitter_auth.get_authorization_url()
@@ -740,70 +747,85 @@ def twitter_redir(request):
 
 # @user_passes_test(can_manage)
 def twitter_connect(request):
-    print("INSIDE TWITTER CONNECT")
     context = {
         "user": request.user,
         "site_settings": get_settings(),
         "sections": Section.objects.all(),
     }
-    if request.method == "POST" and request.POST.get("action", None) == "connect":
-        print("here")
+
+    if request.method == "POST" and request.POST.get("action") == "connect":
         try:
-            TWITTER_CONSUMER_KEY = MeowSetting.objects.get(
-                setting_key='twitter_consumer_key').setting_value
-            print(TWITTER_CONSUMER_KEY)
-            TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(
-                setting_key='twitter_consumer_secret').setting_value
-            print(TWITTER_CONSUMER_SECRET)
+            consumer_key = MeowSetting.objects.get(
+                setting_key="twitter_consumer_key"
+            ).setting_value
+            consumer_secret = MeowSetting.objects.get(
+                setting_key="twitter_consumer_secret"
+            ).setting_value
+
             twitter_auth = tweepy.OAuthHandler(
-                TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+                consumer_key, consumer_secret
+            )
             twitter_auth.secure = True
-            token = request.session['twitter_auth_token']
-            twitter_auth.request_token = token
-            twitter_auth.get_access_token(request.POST.get("verifier", None))
+            twitter_auth.request_token = request.session["twitter_auth_token"]
+            twitter_auth.get_access_token(request.POST.get("verifier"))
+
             section = Section.objects.get(
-                pk=request.POST.get("section_id", None))
-        except:
-            errMessage = sys.exc_info()[0]
+                pk=request.POST.get("section_id")
+            )
+
+            twitter_api = tweepy.Client(
+                consumer_key=consumer_key,
+                consumer_secret=consumer_secret,
+                access_token=twitter_auth.access_token,
+                access_token_secret=twitter_auth.access_token_secret,
+            )
+            username = twitter_api.get_me().data.username
+
+            if not username:
+                raise ValueError("X did not return a username")
+
+            with transaction.atomic():
+                section.twitter_access_key = twitter_auth.access_token
+                section.twitter_access_secret = twitter_auth.access_token_secret
+                section.twitter_account_handle = username
+                section.save(update_fields=[
+                    "twitter_access_key",
+                    "twitter_access_secret",
+                    "twitter_account_handle",
+                ])
+
+        except Exception:
+            logger.exception("Failed to connect X account")
             context["message"] = {
                 "mtype": "alert",
                 "mtext": "Error: Couldn't connect to your account. Try again.",
             }
-            return render(request, 'scheduler/twitter_connect.html', context)
+            return render(request, "twit-connect.html", context)
 
-        section.twitter_access_key = twitter_auth.access_token
-        section.twitter_access_secret = twitter_auth.access_token_secret
-        section.twitter_account_handle = None
-        section.save()
-
-        twitter_api = tweepy.Client(
-            consumer_key=TWITTER_CONSUMER_KEY,
-            consumer_secret=TWITTER_CONSUMER_SECRET,
-            access_token=twitter_auth.access_token,
-            access_token_secret=twitter_auth.access_token_secret
+        request.session["message"] = (
+            f"Twitter account, @{username}, successfully added."
         )
-        screen_name = twitter_api.get_me().data['name']
-        section.twitter_account_handle = screen_name
-        section.save()
-
-        request.session["message"] = f"Twitter account, @{screen_name}, successfully added."
-        request.session.save()
         return redirect("/")
 
-    else:
-        print("there")
-        token = request.GET.get("oauth_token", None)
-        print(token)
-        verifier = request.GET.get("oauth_verifier", None)
-        print(verifier)
-        message = {}
-        if not (token and verifier):
-            message["mtype"] = "alert"
-            message["mtext"] = "Connection to Twitter failed; try again and be sure to authorize the application."
-        context["message"] = message
-        context["token"] = token
-        context["verifier"] = verifier
-        return render(request, 'twit-connect.html', context)
+    token = request.GET.get("oauth_token")
+    verifier = request.GET.get("oauth_verifier")
+    message = {}
+
+    if not (token and verifier):
+        message = {
+            "mtype": "alert",
+            "mtext": (
+                "Connection to Twitter failed; try again and be sure "
+                "to authorize the application."
+            ),
+        }
+
+    context["message"] = message
+    context["token"] = token
+    context["verifier"] = verifier
+    return render(request, "twit-connect.html", context)
+
+    
 
 
 def fb_redir(request):
