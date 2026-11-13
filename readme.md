@@ -190,6 +190,40 @@ test
 >>> post.delete()
 ```
 
+## Continuous integration
+
+[GitHub Actions](.github/workflows/ci.yml) runs the **Docker build** check on
+every pull request, on pushes to `master`, and when triggered manually from the
+Actions tab. New commits cancel older runs for the same pull request or branch.
+
+The check builds the existing Dockerfile, which compiles the production React
+frontend and installs the Python backend dependencies. It does not start the
+application, run tests, or publish or deploy the image. No repository secrets,
+production database, or social account credentials are needed.
+
+To reproduce the check locally with Docker running:
+
+```bash
+docker build --tag meow:ci .
+```
+
+To enable and enforce CI on GitHub:
+
+1. Commit and push the workflow and open a pull request targeting `master`.
+2. In **Settings → Actions → General**, ensure GitHub Actions is enabled and
+   the repository policy allows `actions/checkout`. Organization policies may
+   require an organization administrator to enable it.
+3. Open the pull request's checks or the **Actions** tab and confirm that
+   **CI / Docker build** succeeds. Resolve any build failures before requiring
+   the check.
+4. In **Settings → Branches**, add or edit the branch protection rule for
+   `master`. Enable **Require a pull request before merging** and **Require
+   status checks to pass before merging**, then select **Docker build** as a
+   required check and save. This requires repository administration permissions
+   and a GitHub plan that supports branch protection for the repository.
+5. Merge the pull request. After the workflow is on the default branch, you can
+   also trigger it through **Actions → CI → Run workflow**.
+
 ## Linting
 
 We use a combination of [eslint](https://eslint.org/docs/about/) and
