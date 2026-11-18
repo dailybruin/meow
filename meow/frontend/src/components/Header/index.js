@@ -11,8 +11,7 @@ const options = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-dig
 
 class Header extends Component {
   state = {
-    showNewmeow: null,
-    searchTerm: ""
+    showNewmeow: null
   };
 
   componentDidMount() {
@@ -44,7 +43,6 @@ class Header extends Component {
 
   handleSearch = e => {
     const term = e.target.value;
-    this.setState({ searchTerm: term });
     this.props.setSearchTerm(term);
   };
 
@@ -89,7 +87,7 @@ class Header extends Component {
           <Input
             placeholder="Search slug…"
             style={{ width: "750px", height: "40px", borderRadius: "12px", margin: "0 1em" }}
-            value={this.state.searchTerm}
+            value={this.props.searchTerm}
             onChange={this.handleSearch}
           />
         ) : null}

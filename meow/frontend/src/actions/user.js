@@ -1,4 +1,5 @@
 import { getMe, userDetail, logout as apiLogout, putUser } from "../services/api";
+import { alertError } from "./alert";
 
 const loginSuccess = ({ username, firstName, isAuthenticated, theme }) => ({
   type: "USER_LOGIN_SUCCESS",
@@ -38,12 +39,17 @@ export const login = () => {
 };
 
 export const logout = () => dispatch => {
-  // We logout frontend no matter what heppens
-  dispatch({
-    type: "LOGOUT"
-  });
-  // we don't care what returns from server
-  apiLogout();
+  // End the server session before authorization redirects to the login page.
+  return apiLogout()
+    .then(() => {
+      dispatch({ type: "LOGOUT" });
+    })
+    .catch(error => {
+      dispatch(
+        alertError("Sign out failed", "Could not end the server session. Please try again.")
+      );
+      throw error;
+    });
 };
 
 export const getUser = username => {

@@ -7,36 +7,25 @@ import config from "../../config";
 import { logout } from "../../actions/user";
 import "./Sidebar.css";
 import TimeSlider from "./TimeSlider";
+import TodayClock from "./TodayClock";
 import { FiChevronRight, FiRotateCcw } from "react-icons/fi";
 const { Panel } = Collapse;
 
-const timeOptions = { month: "long", day: "2-digit", hour: "2-digit", minute: "2-digit" };
-
 class Sidebar extends React.Component {
-  state = {
-    time: new Date().toLocaleString("en-US", timeOptions)
-  };
   constructor(props) {
     super(props);
     this.editParent = this.props.editParent.bind(this);
   }
 
-  componentDidMount() {
-    this.timer = setInterval(() => {
-      this.setState({
-        time: new Date().toLocaleString("en-US", timeOptions)
-      });
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
-
   logout = () => {
-    this.props.logout().then(() => {
-      this.props.history.push("/");
-    });
+    return this.props
+      .logout()
+      .then(() => {
+        this.props.history.push("/login");
+      })
+      .catch(() => {
+        // The logout action displays the error; keep the current page for retry.
+      });
   };
 
   addStatus = status => {
@@ -225,14 +214,7 @@ class Sidebar extends React.Component {
           </Panel>
         </Collapse>
         {this.props.device !== config.MOBILE && (
-          <h3
-            style={{
-              alignSelf: "center",
-              color: this.props.theme.secondary_font_color
-            }}
-          >
-            today: {this.state.time}
-          </h3>
+          <TodayClock color={this.props.theme.secondary_font_color} />
         )}
         <div
           onClick={this.logout}
