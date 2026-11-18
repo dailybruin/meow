@@ -11,7 +11,7 @@ class OAuthRedactingFormatter(ServerFormatter):
         r"(\b(?:oauth_token(?:_secret)?|oauth_verifier|oauth_consumer_key|"
         r"access_token(?:_secret)?|consumer_key|consumer_secret|"
         r"twitter_access_key|twitter_access_secret)\b[\"']?\s*[:=]\s*[\"']?)"
-        r"[^&\s\"',<>]+",
+        r"[^&\s\"',<>)}]+",
         re.IGNORECASE,
     )
 

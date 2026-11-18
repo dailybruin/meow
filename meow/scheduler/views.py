@@ -37,7 +37,7 @@ from meow.celery import sendposts
 from .analytics import get_analytics
 
 # Oauth stuff
-from requests_oauthlib import OAuth2Session
+from requests_oauthlib import OAuth1Session, OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from django.db.models import F
 from django.db import transaction
@@ -755,6 +755,10 @@ def twitter_connect(request):
 
     if request.method == "POST" and request.POST.get("action") == "connect":
         try:
+            # Validate the section before consuming the one-time OAuth verifier.
+            section = Section.objects.get(
+                pk=request.POST.get("section_id")
+            )
             consumer_key = MeowSetting.objects.get(
                 setting_key="twitter_consumer_key"
             ).setting_value
@@ -762,37 +766,33 @@ def twitter_connect(request):
                 setting_key="twitter_consumer_secret"
             ).setting_value
 
-            twitter_auth = tweepy.OAuthHandler(
-                consumer_key, consumer_secret
-            )
-            twitter_auth.secure = True
-            twitter_auth.request_token = request.session["twitter_auth_token"]
-            twitter_auth.get_access_token(request.POST.get("verifier"))
+            request_token = request.session["twitter_auth_token"]
+            with OAuth1Session(
+                consumer_key,
+                client_secret=consumer_secret,
+                resource_owner_key=request_token["oauth_token"],
+                resource_owner_secret=request_token["oauth_token_secret"],
+                verifier=request.POST.get("verifier"),
+            ) as oauth:
+                credentials = oauth.fetch_access_token(
+                    "https://api.twitter.com/oauth/access_token",
+                    timeout=15,
+                )
 
-            section = Section.objects.get(
-                pk=request.POST.get("section_id")
-            )
+            access_token = credentials["oauth_token"]
+            access_secret = credentials["oauth_token_secret"]
+            username = credentials["screen_name"]
+            if not all((access_token, access_secret, username)):
+                raise ValueError("X did not return complete account credentials")
 
-            twitter_api = tweepy.Client(
-                consumer_key=consumer_key,
-                consumer_secret=consumer_secret,
-                access_token=twitter_auth.access_token,
-                access_token_secret=twitter_auth.access_token_secret,
-            )
-            username = twitter_api.get_me().data.username
-
-            if not username:
-                raise ValueError("X did not return a username")
-
-            with transaction.atomic():
-                section.twitter_access_key = twitter_auth.access_token
-                section.twitter_access_secret = twitter_auth.access_token_secret
-                section.twitter_account_handle = username
-                section.save(update_fields=[
-                    "twitter_access_key",
-                    "twitter_access_secret",
-                    "twitter_account_handle",
-                ])
+            section.twitter_access_key = access_token
+            section.twitter_access_secret = access_secret
+            section.twitter_account_handle = username
+            section.save(update_fields=[
+                "twitter_access_key",
+                "twitter_access_secret",
+                "twitter_account_handle",
+            ])
 
         except Exception:
             logger.exception("Failed to connect X account")
@@ -824,8 +824,6 @@ def twitter_connect(request):
     context["token"] = token
     context["verifier"] = verifier
     return render(request, "twit-connect.html", context)
-
-    
 
 
 def fb_redir(request):

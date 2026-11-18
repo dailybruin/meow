@@ -23,7 +23,7 @@ class OAuthLoggingTest(SimpleTestCase):
                         name, logging.ERROR, __file__, 1,
                         '"GET %s HTTP/1.1" %s',
                         (
-                            "/manage/twitter-connect/?oauth_token=private-token"
+                            "/api/v1/twitter-connect/?oauth_token=private-token"
                             "&oauth_verifier=private-verifier&next=/settings",
                             200,
                         ),
@@ -68,3 +68,13 @@ class OAuthLoggingTest(SimpleTestCase):
                 self.assertNotIn("private-value", formatter.format(record))
         record = logging.makeLogRecord({"msg": "Connection failed: 403 Forbidden"})
         self.assertEqual(formatter.format(record), "Connection failed: 403 Forbidden")
+
+    def test_redaction_preserves_closing_punctuation(self):
+        formatter = OAuthRedactingFormatter("%(message)s")
+        for message, expected in (
+            ("foo(oauth_token=abc)", "foo(oauth_token=[REDACTED])"),
+            ("{oauth_token=abc}", "{oauth_token=[REDACTED]}"),
+        ):
+            with self.subTest(message=message):
+                record = logging.makeLogRecord({"msg": message})
+                self.assertEqual(formatter.format(record), expected)

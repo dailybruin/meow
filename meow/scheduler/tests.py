@@ -12,7 +12,6 @@ from scheduler.views import create_smpost_tags
 
 from contextlib import ExitStack
 from io import StringIO
-from types import SimpleNamespace
 from unittest.mock import patch
 
 from scheduler.models import MeowSetting, Section
@@ -71,20 +70,23 @@ class TwitterConnectTest(TestCase):
         self.stack = ExitStack()
         self.addCleanup(self.stack.close)
 
-        self.oauth = self.stack.enter_context(
+        self.oauth_handler = self.stack.enter_context(
             patch("scheduler.views.tweepy.OAuthHandler")
         ).return_value
-        self.oauth.access_token = "fake-access-token"
-        self.oauth.access_token_secret = "fake-access-secret"
-
-        self.api = self.stack.enter_context(
+        self.oauth_session = self.stack.enter_context(
+            patch("scheduler.views.OAuth1Session")
+        )
+        self.oauth = self.oauth_session.return_value.__enter__.return_value
+        self.credentials = {
+            "oauth_token": "fake-access-token",
+            "oauth_token_secret": "fake-access-secret",
+            "screen_name": "dailybruin",
+            "user_id": "12345",
+        }
+        self.oauth.fetch_access_token.return_value = self.credentials.copy()
+        # A connection must not depend on a second API call for the handle.
+        self.twitter_client = self.stack.enter_context(
             patch("scheduler.views.tweepy.Client")
-        ).return_value
-        self.api.get_me.return_value = SimpleNamespace(
-            data=SimpleNamespace(
-                username="dailybruin",
-                name="Daily Bruin",
-            )
         )
 
         self.stdout = self.stack.enter_context(
@@ -94,12 +96,16 @@ class TwitterConnectTest(TestCase):
             patch("sys.stderr", new_callable=StringIO)
         )
 
-    def connect(self, path="/api/v1/twitter-connect/"):
-        return self.client.post(path, {
+    def connect(self, **overrides):
+        data = {
             "action": "connect",
             "section_id": self.section.pk,
             "verifier": "fake-verifier",
-        })
+        }
+        data.update(overrides)
+        if data.get("section_id") is None:
+            data.pop("section_id", None)
+        return self.client.post("/api/v1/twitter-connect/", data)
 
     def assert_no_credentials(self, output):
         for value in [
@@ -113,9 +119,9 @@ class TwitterConnectTest(TestCase):
         ]:
             self.assertNotIn(value, output)
 
-    def assert_failed_without_saving(self):
+    def assert_failed_without_saving(self, **overrides):
         with self.assertLogs("scheduler.views", level="ERROR") as logs:
-            response = self.connect()
+            response = self.connect(**overrides)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "twit-connect.html")
@@ -135,6 +141,7 @@ class TwitterConnectTest(TestCase):
         self.assertEqual(self.section.twitter_access_key, "old-key")
         self.assertEqual(self.section.twitter_access_secret, "old-secret")
         self.assertNotIn("message", self.client.session)
+        self.twitter_client.assert_not_called()
 
         self.assert_no_credentials(
             "\n".join(logs.output)
@@ -142,7 +149,7 @@ class TwitterConnectTest(TestCase):
             + self.stderr.getvalue()
         )
 
-    def test_success_saves_username_and_tokens(self):
+    def test_success_saves_screen_name_and_tokens_from_exchange(self):
         with patch("scheduler.views.logger") as logger:
             response = self.connect()
 
@@ -160,8 +167,18 @@ class TwitterConnectTest(TestCase):
             self.section.twitter_access_secret, "fake-access-secret"
         )
         self.assertIn("@dailybruin", self.client.session["message"])
-        self.oauth.get_access_token.assert_called_once_with("fake-verifier")
-        self.api.get_me.assert_called_once_with()
+        self.oauth_session.assert_called_once_with(
+            "fake-consumer-key",
+            client_secret="fake-consumer-secret",
+            resource_owner_key="fake-request-token",
+            resource_owner_secret="fake-request-secret",
+            verifier="fake-verifier",
+        )
+        self.oauth.fetch_access_token.assert_called_once_with(
+            "https://api.twitter.com/oauth/access_token", timeout=15,
+        )
+        self.twitter_client.assert_not_called()
+        self.oauth_handler.get_access_token.assert_not_called()
         logger.exception.assert_not_called()
 
         self.assert_no_credentials(
@@ -171,45 +188,40 @@ class TwitterConnectTest(TestCase):
         )
 
     def test_token_exchange_failure_saves_nothing(self):
-        self.oauth.get_access_token.side_effect = RuntimeError(
+        self.oauth.fetch_access_token.side_effect = RuntimeError(
             "OAuth exchange failed"
         )
         self.assert_failed_without_saving()
-        self.api.get_me.assert_not_called()
-
-    def test_profile_lookup_failure_saves_nothing(self):
-        self.api.get_me.side_effect = RuntimeError(
-            "Profile lookup failed"
+        self.oauth.fetch_access_token.assert_called_once_with(
+            "https://api.twitter.com/oauth/access_token", timeout=15,
         )
-        self.assert_failed_without_saving()
 
-    def test_legacy_callback_shows_section_selector(self):
-        response = self.client.get("/manage/twitter-connect/", {
-            "oauth_token": "fake-request-token",
-            "oauth_verifier": "fake-verifier",
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "twit-connect.html")
-        self.assertContains(response, "Choose a section")
-        self.oauth.get_access_token.assert_not_called()
-        self.section.refresh_from_db()
-        self.assertEqual(self.section.twitter_access_key, "old-key")
+    def test_invalid_section_does_not_consume_verifier(self):
+        for section_id in (None, "", "not-an-id", self.section.pk + 1000):
+            with self.subTest(section_id=section_id):
+                self.assert_failed_without_saving(section_id=section_id)
+                self.oauth_session.assert_not_called()
+                self.oauth.fetch_access_token.assert_not_called()
 
-    def test_legacy_callback_saves_connection(self):
-        response = self.connect("/manage/twitter-connect/")
-        self.assertRedirects(response, "/", fetch_redirect_response=False)
-        self.section.refresh_from_db()
-        self.assertEqual(self.section.twitter_account_handle, "dailybruin")
-        self.assertEqual(self.section.twitter_access_key, "fake-access-token")
-        self.assertEqual(self.section.twitter_access_secret, "fake-access-secret")
+    def test_incomplete_exchange_response_saves_nothing(self):
+        for key in ("oauth_token", "oauth_token_secret", "screen_name"):
+            for value in (None, ""):
+                with self.subTest(key=key, value=value):
+                    credentials = self.credentials.copy()
+                    if value is None:
+                        del credentials[key]
+                    else:
+                        credentials[key] = value
+                    self.oauth.fetch_access_token.return_value = credentials
+                    self.assert_failed_without_saving()
 
     def test_redirect_builds_canonical_callback(self):
         MeowSetting.objects.create(
             setting_key="site_url", setting_value="http://localhost:5000/"
         )
-        self.oauth.get_authorization_url.return_value = "https://example.com/authorize"
-        self.oauth.request_token = {"oauth_token": "fake-request-token"}
-        with patch("scheduler.views.tweepy.OAuthHandler", return_value=self.oauth) as handler:
+        self.oauth_handler.get_authorization_url.return_value = "https://example.com/authorize"
+        self.oauth_handler.request_token = {"oauth_token": "fake-request-token"}
+        with patch("scheduler.views.tweepy.OAuthHandler", return_value=self.oauth_handler) as handler:
             response = self.client.get("/api/v1/twitter-redir/")
         self.assertRedirects(
             response, "https://example.com/authorize", fetch_redirect_response=False
