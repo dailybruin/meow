@@ -40,7 +40,6 @@ class SendPostsTest(TestCase):
                 side_effect=AssertionError("sendposts tests must not make HTTP calls"),
             )
         )
-        # Check even if sendposts swallows an unexpected network exception.
         self.addCleanup(self.http.assert_not_called)
         self.stack.enter_context(
             patch("scheduler.management.commands.sendposts.logger")
@@ -71,7 +70,6 @@ class SendPostsTest(TestCase):
             "section": self.section,
             "post_facebook": "Test Facebook copy",
             "post_twitter": "Test X copy",
-            # An empty URL keeps the real get_send_url path away from bit.ly.
             "story_url": "",
         }
         fields.update(overrides)
@@ -81,7 +79,6 @@ class SendPostsTest(TestCase):
         Command().handle()
 
     def assert_post_sent(self, post):
-        # Assert dispatch, not just that the error-swallowing command returned.
         self.assertEqual(self.send_command.call_args_list, [
             call(
                 "sendfacebook",
@@ -157,7 +154,7 @@ class SendPostsTest(TestCase):
         self.assertEqual(post.sent_time, self.now)
         self.assertIn("Would have sent more than 60 minutes late.", post.sent_error_text)
 
-    # The past-time fix removes this expectedFailure marker.
+
     @unittest.expectedFailure
     def test_post_at_2359_yesterday_is_sent_at_000030_today(self):
         self.clock.return_value = self.local_zone.localize(
@@ -170,7 +167,6 @@ class SendPostsTest(TestCase):
         self.run_sendposts()
         self.assert_post_sent(post)
 
-    # The past-time fix removes this expectedFailure marker.
     @unittest.expectedFailure
     def test_post_at_2350_yesterday_is_sent_at_0020_today(self):
         self.clock.return_value = self.local_zone.localize(
@@ -183,7 +179,6 @@ class SendPostsTest(TestCase):
         self.run_sendposts()
         self.assert_post_sent(post)
 
-    # The past-time fix removes this expectedFailure marker.
     @unittest.expectedFailure
     def test_post_in_spring_dst_gap_is_sent_at_0310(self):
         self.clock.return_value = self.local_zone.localize(
@@ -196,7 +191,6 @@ class SendPostsTest(TestCase):
         self.run_sendposts()
         self.assert_post_sent(post)
 
-    # The past-time fix removes this expectedFailure marker.
     @unittest.expectedFailure
     def test_post_in_repeated_fall_dst_hour_is_sent_at_0145(self):
         # Use the second 01:45 (PST); the scheduled naive 01:30 is ambiguous.
