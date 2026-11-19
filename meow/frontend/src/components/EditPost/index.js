@@ -44,7 +44,9 @@ class EditPost extends React.Component {
       })
       .catch(err => {
         // any error we logout
-        this.props.logout();
+        this.props.logout().catch(() => {
+          // The logout action has already displayed the error.
+        });
       });
     getTagSuggestions().then(res => {
       this.setState({
