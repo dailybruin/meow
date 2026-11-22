@@ -156,7 +156,7 @@ class EditForm extends React.Component {
       : 0;
 
   render() {
-    const { getFieldDecorator, getFieldsValue } = this.props.form;
+    const { getFieldDecorator, getFieldsValue, getFieldValue } = this.props.form;
 
     let no_urlwarning = null;
     if (
@@ -199,6 +199,8 @@ class EditForm extends React.Component {
     );
 
     const { tags } = this.state;
+    const hasUrl = !!(this.props.story_url && this.props.story_url.trim());
+    const twitterLength = getTweetLength(getFieldValue("post_twitter") || "", hasUrl);
 
     console.log(getFieldsValue(["tags"]).tags);
     // const urlError = isFieldTouched('story_url') && getFieldError('story_url');
@@ -281,30 +283,20 @@ class EditForm extends React.Component {
           <Form.Item label="twitter">
             {getFieldDecorator("post_twitter", {
               rules: []
-            })(
-              <TextArea
-                rows={6}
-                onChange={v => {
-                  // console.log(v.target.value.length);
-                  const count = getTweetLength(v.target.value, this.props.story_url != null);
-                  this.setState({ twitter_length: count });
-                }}
-              />
-            )}
+            })(<TextArea rows={6} />)}
             <span
               style={{
                 color:
-                  // this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH ? "black" : "#F59F00"
-                  this.state.twitter_length >= TWITTER_MAX_LENGTH
+                  twitterLength >= TWITTER_MAX_LENGTH
                     ? "red"
-                    : this.state.twitter_length >= TWITTER_MAX_RECOMMENDED_LENGTH
+                    : twitterLength >= TWITTER_MAX_RECOMMENDED_LENGTH
                     ? "#F59F00"
                     : "black"
               }}
             >
-              {this.state.twitter_length > 280
-                ? `Over X's limit by ${this.state.twitter_length - 280}`
-                : `${this.state.twitter_length} / ${TWITTER_MAX_LENGTH}`}
+              {twitterLength > TWITTER_MAX_LENGTH
+                ? `Over X's limit by ${twitterLength - TWITTER_MAX_LENGTH}`
+                : `${twitterLength} / ${TWITTER_MAX_LENGTH}`}
             </span>
           </Form.Item>
         )}
