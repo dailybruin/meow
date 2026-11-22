@@ -302,7 +302,7 @@ class EditForm extends React.Component {
                     : "black"
               }}
             >
-              {this.state.twitter_length >= 280
+              {this.state.twitter_length > 280
                 ? `Over X's limit by ${this.state.twitter_length - 280}`
                 : `${this.state.twitter_length} / ${TWITTER_MAX_LENGTH}`}
             </span>
