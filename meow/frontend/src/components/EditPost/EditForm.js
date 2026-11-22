@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, Row, Col, Input, Checkbox, Radio } from "antd";
-import { getTweetLength } from "../../../../meow/utils/tweetLength.js";
 import { Copy, Online } from "../../services/auth";
 import { WithContext as ReactTags } from "react-tag-input";
 import "./EditForm.css";
@@ -31,6 +30,38 @@ const TWITTER_MAX_RECOMMENDED_LENGTH = 232;
 
 const FB_MAX_LENGTH = 75;
 const FB_MAX_RECOMMENDED_LENGTH = 50;
+
+function getTweetLength(text, hasStoryUrl) {
+  if (!text) return 0;
+  const URL_REGEX = /https?:\/\/[^\s]+/gi;
+
+  const EMOJI_REGEX = /(?:\p{Regional_Indicator}{2})|(?:[0-9#*]\uFE0F?\u20E3)|(?:\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})*(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})*)*)/gu;
+
+  const isLight = cp =>
+    cp <= 0x10ff ||
+    (cp >= 0x2000 && cp <= 0x200d) ||
+    (cp >= 0x2010 && cp <= 0x201f) ||
+    (cp >= 0x2032 && cp <= 0x2037);
+
+  const reserved = hasStoryUrl ? 24 : 0;
+
+  let rest = text.normalize("NFC");
+  let length = 0;
+
+  const urls = rest.match(URL_REGEX) || [];
+  length += urls.length * 23;
+  rest = rest.replace(URL_REGEX, "");
+
+  const emoji = rest.match(EMOJI_REGEX) || [];
+  length += emoji.length * 2;
+  rest = rest.replace(EMOJI_REGEX, "");
+
+  for (const char of rest) {
+    length += isLight(char.codePointAt(0)) ? 1 : 2;
+  }
+
+  return length + reserved;
+}
 
 class EditForm extends React.Component {
   constructor(props) {
