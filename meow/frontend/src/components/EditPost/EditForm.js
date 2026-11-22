@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Row, Col, Input, Checkbox, Radio } from "antd";
+import { getTweetLength } from "../../../../meow/utils/tweetLength.js";
 import { Copy, Online } from "../../services/auth";
 import { WithContext as ReactTags } from "react-tag-input";
 import "./EditForm.css";
@@ -25,7 +26,7 @@ const formItemLayout = {
   }
 };
 
-const TWITTER_MAX_LENGTH = 232; // this is hardcoded and does not change if the backend changes.
+const TWITTER_MAX_LENGTH = 280; // this is hardcoded and does not change if the backend changes.
 const TWITTER_MAX_RECOMMENDED_LENGTH = 232;
 
 const FB_MAX_LENGTH = 75;
@@ -49,9 +50,10 @@ class EditForm extends React.Component {
     // this is kinda gross but unfortunately, its neccessary for
     // setting the length if post was a non empty string
     // before the editing session started
-    const twitter_length_from_field = getFieldValue("post_twitter")
-      ? getFieldValue("post_twitter").normalize("NFC").length
-      : 0;
+    const twitter_length_from_field = getTweetLength(
+      getFieldValue("post_twitter"),
+      props.story_url != null
+    );
     if (twitter_length_from_field != current_state.twitter_length) {
       updates.twitter_length = twitter_length_from_field;
     }
@@ -284,9 +286,9 @@ class EditForm extends React.Component {
                 rows={6}
                 onChange={v => {
                   // console.log(v.target.value.length);
-                  this.setState({ twitter_length: v.target.value.normalize("NFC").length });
+                  const count = getTweetLength(v.target.value, this.props.story_url != null);
+                  this.setState({ twitter_length: count });
                 }}
-                maxLength={TWITTER_MAX_LENGTH}
               />
             )}
             <span
@@ -295,12 +297,14 @@ class EditForm extends React.Component {
                   // this.state.twitter_length < TWITTER_MAX_RECOMMENDED_LENGTH ? "black" : "#F59F00"
                   this.state.twitter_length >= TWITTER_MAX_LENGTH
                     ? "red"
-                    : this.state.twitter_length >= 200
+                    : this.state.twitter_length >= TWITTER_MAX_RECOMMENDED_LENGTH
                     ? "#F59F00"
                     : "black"
               }}
             >
-              {this.state.twitter_length} / {TWITTER_MAX_RECOMMENDED_LENGTH}
+              {this.state.twitter_length >= 280
+                ? `Over X's limit by ${this.state.twitter_length - 280}`
+                : `${this.state.twitter_length} / ${TWITTER_MAX_LENGTH}`}
             </span>
           </Form.Item>
         )}
