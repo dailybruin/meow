@@ -45,18 +45,32 @@ class EditForm extends React.Component {
 
   static getDerivedStateFromProps(props, current_state) {
     const { getFieldValue } = props.form;
+    const updates = {};
     // this is kinda gross but unfortunately, its neccessary for
-    // setting the twitter_length if post_twitter was a non empty string
+    // setting the length if post was a non empty string
     // before the editing session started
     const twitter_length_from_field = getFieldValue("post_twitter")
       ? getFieldValue("post_twitter").normalize("NFC").length
       : 0;
     if (twitter_length_from_field != current_state.twitter_length) {
-      return {
-        twitter_length: twitter_length_from_field
-      };
+      updates.twitter_length = twitter_length_from_field;
     }
-    return null;
+    const wordCount = text =>
+      text
+        ? text
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean).length
+        : 0;
+    const facebook_length_from_field = wordCount(getFieldValue("post_facebook"));
+    if (facebook_length_from_field != current_state.facebook_length) {
+      updates.facebook_length = facebook_length_from_field;
+    }
+    const newsletter_length_from_field = wordCount(getFieldValue("post_newsletter"));
+    if (newsletter_length_from_field != current_state.newsletter_length) {
+      updates.newsletter_length = newsletter_length_from_field;
+    }
+    return Object.keys(updates).length > 0 ? updates : null;
   }
 
   validateURL = (rule, value, callback) => {
