@@ -675,22 +675,6 @@ Thanks,
     site_message = MeowSetting.objects.get(
         setting_key='site_message').setting_value
 
-    TWITTER_CONSUMER_KEY = MeowSetting.objects.get(
-        setting_key='twitter_consumer_key').setting_value
-    TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(
-        setting_key='twitter_consumer_secret').setting_value
-
-    twitter_auth = tweepy.OAuthHandler(
-        TWITTER_CONSUMER_KEY,
-        TWITTER_CONSUMER_SECRET,
-        MeowSetting.objects.get(
-            setting_key="site_url").setting_value + "/api/v1/twitter-connect/"
-    )
-    twitter_auth.secure = True
-    twitter_auth_url = twitter_auth.get_authorization_url()
-    request.session["twitter_auth_token"] = twitter_auth.request_token
-    request.session.save()
-
     fb_app_id = MeowSetting.objects.get(setting_key="fb_app_id").setting_value
     fb_app_secret = MeowSetting.objects.get(
         setting_key="fb_app_secret").setting_value
@@ -715,13 +699,13 @@ Thanks,
         "old_fields": old_fields,
         "send_posts": send_posts,
         "site_settings": get_settings(),
-        "twitter_auth_url": twitter_auth_url,
         "facebook_auth_url": facebook_auth_url,
         "fb_app_id": fb_app_id
     }
     return render(request, 'scheduler/manage.html', context)
 
 
+@user_passes_test(can_manage)
 def twitter_redir(request):
     TWITTER_CONSUMER_KEY = MeowSetting.objects.get(
         setting_key='twitter_consumer_key').setting_value
@@ -745,7 +729,7 @@ def twitter_redir(request):
     return redirect(twitter_auth_url)
 
 
-# @user_passes_test(can_manage)
+@user_passes_test(can_manage)
 def twitter_connect(request):
     context = {
         "user": request.user,

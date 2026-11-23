@@ -6,6 +6,9 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase, override_settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from rest_framework.test import APIRequestFactory
 from scheduler.models import SMPostTag
 from scheduler.views import create_smpost_tags
@@ -58,6 +61,22 @@ class TwitterConnectTest(TestCase):
             twitter_account_handle="old_handle",
             twitter_access_key="old-key",
             twitter_access_secret="old-secret",
+        )
+
+        manager = get_user_model().objects.create_user(
+            username="manager", selected_theme=None
+        )
+        content_type, _ = ContentType.objects.get_or_create(
+            app_label="auth", model="user"
+        )
+        permission, _ = Permission.objects.get_or_create(
+            content_type=content_type,
+            codename="add_user",
+            defaults={"name": "Can add user"},
+        )
+        manager.user_permissions.add(permission)
+        self.client.force_login(
+            manager, backend="django.contrib.auth.backends.ModelBackend"
         )
 
         session = self.client.session
