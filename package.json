@@ -12,7 +12,7 @@
     "build": "webpack",
     "build-production": "webpack --config webpack.prod.config.js --mode production --progress --colors --optimize-minimize --display-error-details",
     "watch": "webpack --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test \"meow/frontend/src/**/*.test.js\""
   },
   "keywords": [],
   "author": "Dustin Newman",
