@@ -318,7 +318,7 @@ class EditForm extends React.Component {
             <span
               style={{
                 color:
-                  twitterLength >= TWITTER_MAX_LENGTH
+                  twitterLength > TWITTER_MAX_LENGTH
                     ? "red"
                     : twitterLength >= TWITTER_MAX_RECOMMENDED_LENGTH
                     ? "#F59F00"
