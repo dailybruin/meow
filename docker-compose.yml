@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   web:
     build: .
@@ -10,15 +8,27 @@ services:
       - "5000:5000"
     env_file: .env
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - .:/meow
     environment:
       PYTHONUNBUFFERED: 1
   db:
-    image: postgres:latest
+    image: postgres:18
     environment:
       POSTGRES_PASSWORD: example
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
   redis:
-    image: redis:alpine
+    image: redis:8-alpine
+
+volumes:
+  pgdata:

@@ -6,8 +6,8 @@
 
 echo -e "Note: never run this on production!"
 
-# get rid of old stuff
-sudo docker-compose down
+# get rid of old stuff (-v also deletes the pgdata volume, so the database is re-seeded from empty)
+sudo docker-compose down -v
 rm meow/frontend/bundles/* -f
 rm -f celerybeat.pid
 

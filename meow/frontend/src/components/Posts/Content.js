@@ -6,6 +6,7 @@ import { Table, ConfigProvider, List, Collapse, Card } from "antd";
 import moment from "moment";
 import "./styles.css";
 import config from "../../config";
+import { strNullSorter, findSectionName } from "./sorters";
 
 const { Panel } = Collapse;
 
@@ -75,20 +76,6 @@ const statusCSS = record => {
 };
 
 /**
- * strNullSorter sorts string alphabetically.
- * Null and undefined are sorted in ascending order.
- * The original ordering should be preserved both are null (stable sorting).
- * @param {string|null|undefined} a
- * @param {string|null|undefined} b
- */
-const strNullSorter = (a, b) => {
-  if (a && b) return a > b;
-  if (a) return false;
-  if (b) return true;
-  return false;
-};
-
-/**
  * time sorter sorts time string by parsing it with moment
  * @param {string} a time string in format of HH:mm:ss
  * @param {string} b time string in format of HH:mm:ss
@@ -115,8 +102,10 @@ class Posts extends React.Component {
     return this.columns;
   };
 
-  displaySection = text =>
-    text && this.props.sections ? this.props.sections.find(x => x.id === text).name : "No Section";
+  displaySection = text => {
+    if (!text || !this.props.sections) return "No Section";
+    return findSectionName(this.props.sections, text) || "Unknown section";
+  };
 
   columns = [
     {
@@ -126,7 +115,12 @@ class Posts extends React.Component {
       className: "section",
       sortDirections: ["ascend", "descend"],
       render: text => this.displaySection(text),
-      sorter: (a, b) => strNullSorter(a.section, b.section)
+      sorter: (a, b, order) =>
+        strNullSorter(
+          findSectionName(this.props.sections, a.section),
+          findSectionName(this.props.sections, b.section),
+          order
+        )
     },
     {
       key: "slug",
@@ -134,7 +128,7 @@ class Posts extends React.Component {
       dataIndex: "slug",
       className: "slug",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => strNullSorter(a.slug, b.slug)
+      sorter: (a, b, order) => strNullSorter(a.slug, b.slug, order)
     },
     {
       key: "post_twitter",
@@ -142,7 +136,7 @@ class Posts extends React.Component {
       dataIndex: "post_twitter",
       className: "twitter",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => strNullSorter(a.post_twitter, b.post_twitter)
+      sorter: (a, b, order) => strNullSorter(a.post_twitter, b.post_twitter, order)
     },
     {
       key: "post_facebook",
@@ -150,7 +144,7 @@ class Posts extends React.Component {
       dataIndex: "post_facebook",
       className: "facebook",
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => strNullSorter(a.post_facebook, b.post_facebook)
+      sorter: (a, b, order) => strNullSorter(a.post_facebook, b.post_facebook, order)
     },
     {
       key: "pub_time",
