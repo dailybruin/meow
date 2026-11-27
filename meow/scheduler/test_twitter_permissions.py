@@ -129,20 +129,9 @@ class TwitterPermissionsTest(TestCase):
     def test_logged_out_connect_post_requires_login(self):
         self.assert_rejected_without_changes("POST", "/api/v1/twitter-connect/")
 
-    def test_non_manager_twitter_redirect_is_rejected(self):
+    def test_logged_in_user_can_complete_oauth_connection(self):
+        # Any logged-in staffer may connect; no manage permission is needed.
         self.login_as(self.editor)
-        self.assert_rejected_without_changes("GET", "/api/v1/twitter-redir/")
-
-    def test_non_manager_connect_get_is_rejected(self):
-        self.login_as(self.editor)
-        self.assert_rejected_without_changes("GET", "/api/v1/twitter-connect/")
-
-    def test_non_manager_connect_post_is_rejected(self):
-        self.login_as(self.editor)
-        self.assert_rejected_without_changes("POST", "/api/v1/twitter-connect/")
-
-    def test_manager_can_complete_oauth_connection(self):
-        self.login_as(self.manager)
         response = self.client.get("/api/v1/twitter-redir/")
         self.assertRedirects(
             response, "https://example.invalid/authorize",

@@ -705,7 +705,7 @@ Thanks,
     return render(request, 'scheduler/manage.html', context)
 
 
-@user_passes_test(can_manage)
+@login_required
 def twitter_redir(request):
     TWITTER_CONSUMER_KEY = MeowSetting.objects.get(
         setting_key='twitter_consumer_key').setting_value
@@ -729,7 +729,7 @@ def twitter_redir(request):
     return redirect(twitter_auth_url)
 
 
-@user_passes_test(can_manage)
+@login_required
 def twitter_connect(request):
     context = {
         "user": request.user,
