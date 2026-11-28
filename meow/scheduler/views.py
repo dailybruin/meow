@@ -84,22 +84,23 @@ class SMPostList(APIView):
         if not request.user.is_authenticated:
             return Response("Must be logged in", status=403)
 
-        print(request.data)
-
         serializer = SMPostSerializer(data=request.data)
 
         if serializer.is_valid():
             keyword_args = {
                 "last_edit_user": request.user
             }
-            if "pub_ready_copy" in request.data and request.data["pub_ready_copy"]:
-                keyword_args["pub_ready_copy_user"] = request.user
-            if "pub_ready_online" in request.data and request.data["pub_ready_online"]:
-                keyword_args["pub_ready_online_user"] = request.user
+            for field, group in (("pub_ready_copy", "Copy"), ("pub_ready_online", "Online")):
+                if serializer.validated_data.get(field):
+                    if not request.user.groups.filter(name=group).exists():
+                        return Response(
+                            {"error": "Permission denied"},
+                            status=status.HTTP_403_FORBIDDEN,
+                        )
+                    keyword_args[f"{field}_user"] = request.user
 
             serializer.save(**keyword_args)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors);
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -129,54 +130,21 @@ class SMPostDetail(APIView):
         serializer = SMPostSerializer(post)
         return Response(serializer.data)
 
-    def user_action_history_update(self, request, post):
+    def user_action_history_update(self, user, post, validated_data):
         """
         Returns a tuple
         success, object
 
         it will be unsuccessful only if the user does nott have permission
         """
-        b_should_update_copy_user = False
-        update_copy_user_to = None
-        b_should_update_online_user = False
-        update_online_user_to = None
-
-
-        if "pub_ready_copy" in request.data and post.pub_ready_copy != request.data["pub_ready_copy"]:
-            # it means that the sender of this request tried to change it
-            # we have to check if they have copy permissions
-            if request.user.groups.filter(name="Copy").count() <= 0: # user is not part of copy group
-                #  TODO: what data should the response send back
-                return False, None
-            else:
-                b_should_update_copy_user = True
-                if request.data["pub_ready_copy"]:
-                    update_copy_user_to = request.user
-                else:
-                    update_copy_user_to = None # means that the user marked it as not copy edited so clear the copy edited user
-        if "pub_ready_online" in request.data and post.pub_ready_online != request.data["pub_ready_online"]:
-
-            if request.user.groups.filter(name="Online").count() <= 0: # user is not part of group
-                return False, None
-            else:
-                b_should_update_online_user = True
-                if request.data["pub_ready_online"]:
-                    update_online_user_to = request.user
-                else:
-                    update_online_user_to = None
-
-        # will be passed into serializer.save()
-        serializer_keyword_args = {
-            "last_edit_user": request.user
-        }
-
-        # if the user updated the copy edited or online approved status,
-        # record them as the copy_user or online_user
-        if b_should_update_copy_user:
-            serializer_keyword_args["pub_ready_copy_user"] = update_copy_user_to
-
-        if b_should_update_online_user:
-            serializer_keyword_args["pub_ready_online_user"] = update_online_user_to
+        serializer_keyword_args = {"last_edit_user": user}
+        for field, group in (("pub_ready_copy", "Copy"), ("pub_ready_online", "Online")):
+            if field in validated_data and validated_data[field] != getattr(post, field):
+                if not user.groups.filter(name=group).exists():
+                    return False, None
+                serializer_keyword_args[f"{field}_user"] = (
+                    user if validated_data[field] else None
+                )
 
         return True, serializer_keyword_args
 
@@ -192,24 +160,29 @@ class SMPostDetail(APIView):
             post = self.get_object_with_lock(post_id)
 
             serializer = SMPostSerializer(post, data=request.data)
+            serializer.fields["version_number"].required = True
             if serializer.is_valid():
-                success, serializer_keyword_args = self.user_action_history_update(request, post)
+                success, serializer_keyword_args = self.user_action_history_update(
+                    request.user, post, serializer.validated_data
+                )
                 if not success:
-                    return Response({"error": "Permission denied"})
+                    return Response(
+                        {"error": "Permission denied"},
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
                 # version number is incremented each time someone updates
                 # a post. If someone saves while another person is editing,
                 # the editing person will not see their changes. When
                 # the editing person saves, the first person's updates will be lost
                 # to prevent this and other confusion, we have this check
-                if request.data["version_number"] < post.version_number:
+                if serializer.validated_data["version_number"] < post.version_number:
                     return Response({"error":"Someone updated this meow before you saved! Please open this meow in a new tab and reapply your changes."}, status=status.HTTP_400_BAD_REQUEST)
 
                 post = serializer.save(**serializer_keyword_args)
                 # increment version number
                 post.version_number += 1
                 post.save()
-            # at the end of the transaction, the lock will automatically be released
-            return Response(serializer.data)
+                return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, post_id, format=None):
