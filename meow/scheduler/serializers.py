@@ -17,6 +17,10 @@ class SMPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = SMPost
         fields = '__all__'
+        read_only_fields = (
+            'sent', 'sending', 'sent_time', 'sent_error', 'sent_error_text',
+            'send_now', 'id_twitter', 'id_facebook',
+        )
 
 class SMPostTagSerializer(serializers.ModelSerializer):
     class Meta:
